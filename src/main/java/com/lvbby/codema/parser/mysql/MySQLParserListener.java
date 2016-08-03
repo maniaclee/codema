@@ -1,5 +1,5 @@
 // Generated from /Users/psyco/workspace/github/codema/src/main/resources/MySQLParser.g4 by ANTLR 4.5.1
-package com.lvbby.codema.gen.mysql;
+package com.lvbby.codema.parser.mysql;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**

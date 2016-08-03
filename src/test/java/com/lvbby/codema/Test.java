@@ -27,8 +27,8 @@ package com.lvbby.codema;/*
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.lvbby.codema.gen.java8.Java8Lexer;
-import com.lvbby.codema.gen.java8.Java8Parser;
+import com.lvbby.codema.parser.java8.Java8Lexer;
+import com.lvbby.codema.parser.java8.Java8Parser;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.LexerATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionMode;
@@ -130,10 +130,10 @@ class Test {
 				}
 				doFiles(javaFiles);
 
-//				DOTGenerator gen = new DOTGenerator(null);
-//				String dot = gen.getDOT(Java8Parser._decisionToDFA[112], false);
+//				DOTGenerator parser = new DOTGenerator(null);
+//				String dot = parser.getDOT(Java8Parser._decisionToDFA[112], false);
 //				System.out.println(dot);
-//				dot = gen.getDOT(Java8Parser._decisionToDFA[81], false);
+//				dot = parser.getDOT(Java8Parser._decisionToDFA[81], false);
 //				System.out.println(dot);
 
 				if ( x2 ) {

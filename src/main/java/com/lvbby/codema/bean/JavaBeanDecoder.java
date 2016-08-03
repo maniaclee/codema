@@ -1,7 +1,7 @@
 package com.lvbby.codema.bean;
 
-import com.lvbby.codema.gen.java8.Java8Lexer;
-import com.lvbby.codema.gen.java8.Java8Parser;
+import com.lvbby.codema.parser.java8.Java8Lexer;
+import com.lvbby.codema.parser.java8.Java8Parser;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 16/8/3.
  */
-public class JavaBeanParser {
+public class JavaBeanDecoder {
 
     public JavaBean parse(String s) {
         JavaBean re = new JavaBean();

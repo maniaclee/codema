@@ -1,5 +1,5 @@
 // Generated from /Users/psyco/workspace/github/codema/src/main/resources/Java8.g4 by ANTLR 4.5.1
-package com.lvbby.codema.gen.java8;
+package com.lvbby.codema.parser.java8;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
