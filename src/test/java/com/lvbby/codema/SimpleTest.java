@@ -27,19 +27,8 @@ package com.lvbby.codema;/*
   THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.alibaba.fastjson.JSON;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.expr.*;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.visitor.GenericVisitorAdapter;
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.google.common.collect.Lists;
 import com.lvbby.codema.bean.JavaBean;
 import com.lvbby.codema.bean.JavaBeanDecoder;
 import com.lvbby.codema.parser.java8.Java8Lexer;
@@ -48,20 +37,17 @@ import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.github.javaparser.ast.type.VoidType.VOID_TYPE;
+import static com.lvbby.codema.lexer.JavaLexer.getFields;
+import static com.lvbby.codema.tool.JavaCoderTool.genConvertFromMethod;
+import static com.lvbby.codema.tool.JavaCoderTool.genConvertToMethod;
 
 /* This more or less duplicates the functionality of grun (TestRig) but it
  * has a few specific options for benchmarking like -x2 and -threaded.
@@ -146,9 +132,6 @@ public class SimpleTest {
         // parse a file
         CompilationUnit cu = JavaParser.parse(new File("/Users/psyco/workspace/dp/hui-order/hui-order-service/src/main/java/com/dianping/hui/order/entity/OrderDetailEntity.java"));
 
-        // visit and change the methods names and parameters
-        new MethodChangerVisitor().visit(cu, null);
-
         // prints the changed compilation unit
         System.out.println(cu);
 
@@ -156,119 +139,11 @@ public class SimpleTest {
         System.out.println("----------");
         System.out.println(getFields(cu).get(0).createGetter());
         System.out.println("==================");
-        System.out.println(genConvertMethod(cu.getType(0), "Out"));
-    }
+        System.out.println(genConvertToMethod(cu.getType(0), "Out"));
+        System.out.println(genConvertFromMethod(cu.getType(0), "Out"));
 
-    private static List<FieldDeclaration> getFields(CompilationUnit cu) {
-        if (CollectionUtils.isEmpty(cu.getTypes()) || cu.getTypes().size() < 1)
-            return Lists.newLinkedList();
-        return getFields(cu.getType(0));
-    }
-
-    private static List<FieldDeclaration> getFields(TypeDeclaration<?> cu) {
-        return cu.getFields().stream().filter(f -> isProperty(f)).collect(Collectors.toList());
-    }
-
-
-    private static boolean isProperty(FieldDeclaration n) {
-        return !n.isStatic() && !n.isTransient();
-    }
-
-    public static String getFieldName(FieldDeclaration fieldDeclaration) {
-        return fieldDeclaration.getVariable(0).getNameAsString();
-    }
-
-    public static String getFieldGetterName(FieldDeclaration fieldDeclaration) {
-        return camal("get", getFieldName(fieldDeclaration));
-    }
-
-    public static String getFieldSetterName(FieldDeclaration fieldDeclaration) {
-        return camal("set", getFieldName(fieldDeclaration));
-    }
-
-    public static String camal(String s, String... ss) {
-        if (ss == null || ss.length == 0)
-            return s.toLowerCase();
-        return s.toLowerCase() + Lists.newArrayList(ss).stream().map(e -> StringUtils.capitalize(e)).collect(Collectors.joining());
-    }
-
-    public static void genGetter(FieldDeclaration fieldDeclaration) {
-        MethodDeclaration method = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), VOID_TYPE, "get" + StringUtils.capitalize(getFieldName(fieldDeclaration)));
-
-
-        // add a body to the method
-        BlockStmt block = new BlockStmt();
-        method.setBody(block);
-
-        // add a statement do the method body
-        NameExpr clazz = new NameExpr("System");
-        FieldAccessExpr field = new FieldAccessExpr(clazz, "out");
-        MethodCallExpr call = new MethodCallExpr(field, "println");
-        call.addArgument(new StringLiteralExpr("Hello World!"));
-        block.addStatement(call);
-
-
-    }
-
-    @org.junit.Test
-    public void test() {
-        /**a.set(b.get())*/
-        NameExpr a = new NameExpr("a");
-        NameExpr b = new NameExpr("b");
-        MethodCallExpr methodCallExpr = new MethodCallExpr(a, "set").addArgument(new MethodCallExpr(b, "get"));
-        System.out.println(methodCallExpr);
-    }
-
-    public static MethodDeclaration genConvertMethod(TypeDeclaration<?> typeDeclaration, String otherClass) {
-        MethodDeclaration method = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), new ClassOrInterfaceType(StringUtils.capitalize(otherClass)), camal("build", otherClass));
-        BlockStmt blockStmt = new BlockStmt();
-        getFields(typeDeclaration).forEach(e -> blockStmt.addStatement(convertStatement(e, StringUtils.uncapitalize(otherClass))));
-        return method.setBody(blockStmt);
-    }
-
-    /**
-     * a.set(b.get())
-     */
-    public static MethodCallExpr convertStatement(FieldDeclaration fieldDeclaration, String destVar) {
-        NameExpr a = new NameExpr(getFieldName(fieldDeclaration));
-        NameExpr b = new NameExpr(destVar);
-        return new MethodCallExpr(a, getFieldSetterName(fieldDeclaration)).addArgument(new MethodCallExpr(b, getFieldGetterName(fieldDeclaration)));
-    }
-
-    public static void statement(Expression var, String method, Expression... expressions) {
-        FieldAccessExpr field = new FieldAccessExpr(var, method);
-        MethodCallExpr call = new MethodCallExpr(field, "println");
-        call.addArgument(new StringLiteralExpr("Hello World!"));
-    }
-
-    /**
-     * Simple visitor implementation for visiting MethodDeclaration nodes.
-     */
-    private static class MethodChangerVisitor extends VoidVisitorAdapter {
-        @Override
-        public void visit(MethodDeclaration n, Object arg) {
-            ArrayList<Modifier> modifiers = Lists.newArrayList(n.getModifiers());
-            if (modifiers.contains(Modifier.STATIC) || modifiers.contains(Modifier.TRANSIENT))
-                return;
-
-            // change the name of the method to upper case
-
-            n.setName(n.getNameAsString().toUpperCase());
-
-            // add a new parameter to the method
-            n.addParameter("int", "value");
-        }
-    }
-
-    private static class MethodVistor extends GenericVisitorAdapter<String, String> {
-        @Override
-        public String visit(FieldDeclaration n, String arg) {
-            System.out.println("sdfs---> " + JSON.toJSONString(Lists.newArrayList(n.getVariable(0).getNameAsString(), arg)));
-            String visit = super.visit(n, arg);
-            System.out.println(visit);
-            return visit;
-        }
-
+        //        VariableDeclarationExpr parse  = new VariableDeclarationExpr(new ClassOrInterfaceType("String"),"a").set;
+        //        System.out.println(parse);
     }
 }
 
