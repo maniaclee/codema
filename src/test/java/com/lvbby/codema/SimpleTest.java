@@ -46,8 +46,8 @@ import java.io.FileInputStream;
 import java.util.List;
 
 import static com.lvbby.codema.lexer.JavaLexer.getFields;
-import static com.lvbby.codema.tool.JavaCoderTool.genConvertFromMethod;
-import static com.lvbby.codema.tool.JavaCoderTool.genConvertToMethod;
+import static com.lvbby.codema.tool.JavaConvertMethod.genConvertFromMethod;
+import static com.lvbby.codema.tool.JavaConvertMethod.genConvertToMethod;
 
 /* This more or less duplicates the functionality of grun (TestRig) but it
  * has a few specific options for benchmarking like -x2 and -threaded.

@@ -1,8 +1,11 @@
 package com.lvbby.codema.lexer;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -19,6 +22,13 @@ import java.util.stream.Collectors;
  * Created by lipeng on 16/12/16.
  */
 public class JavaLexer {
+    public static CompilationUnit read(String code) {
+        return JavaParser.parse(code);
+    }
+
+    public static TypeDeclaration<?> parseJavaClass(String code) {
+        return read(code).getType(0);
+    }
 
     public static List<FieldDeclaration> getFields(CompilationUnit cu) {
         if (CollectionUtils.isEmpty(cu.getTypes()) || cu.getTypes().size() < 1)
@@ -30,6 +40,11 @@ public class JavaLexer {
         return cu.getFields().stream().filter(f -> isProperty(f)).collect(Collectors.toList());
     }
 
+
+    public static List<MethodDeclaration> getMethods(TypeDeclaration<?> cu, Modifier... modifiers) {
+        List<Modifier> ms = modifiers == null || modifiers.length == 0 ? null : Lists.newArrayList(modifiers);
+        return cu.getMethods().stream().filter(m -> ms == null || m.getModifiers().containsAll(ms)).collect(Collectors.toList());
+    }
 
     public static boolean isProperty(FieldDeclaration n) {
         return !n.isStatic() && !n.isTransient();

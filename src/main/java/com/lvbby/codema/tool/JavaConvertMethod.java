@@ -1,7 +1,5 @@
 package com.lvbby.codema.tool;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -18,16 +16,8 @@ import static com.lvbby.codema.lexer.JavaLexer.*;
 /**
  * Created by lipeng on 16/12/16.
  */
-public class JavaCoderTool {
+public class JavaConvertMethod {
 
-
-    public static CompilationUnit read(String code) {
-        return JavaParser.parse(code);
-    }
-
-    public static TypeDeclaration<?> parseJavaClass(String code) {
-        return read(code).getType(0);
-    }
 
     public static MethodDeclaration genConvertToMethod(TypeDeclaration<?> typeDeclaration, String otherClass) {
         return genConvertMethod(typeDeclaration, typeDeclaration.getNameAsString(), otherClass);
@@ -51,7 +41,6 @@ public class JavaCoderTool {
                 .setBody(blockStmt);
     }
 
-
     /**
      * a.set(b.get())
      */
@@ -60,4 +49,5 @@ public class JavaCoderTool {
         NameExpr b = new NameExpr(right);
         return new MethodCallExpr(a, getFieldSetterName(fieldDeclaration)).addArgument(new MethodCallExpr(b, getFieldGetterName(fieldDeclaration)));
     }
+
 }
