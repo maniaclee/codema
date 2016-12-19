@@ -4,10 +4,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -41,6 +38,14 @@ public class JavaLexer {
     }
 
 
+    public static List<MethodDeclaration> getMethodsFromClassOrInterface(TypeDeclaration<?> cu) {
+        ClassOrInterfaceDeclaration classOrInterfaceType = (ClassOrInterfaceDeclaration) cu;
+        if (classOrInterfaceType.isInterface()) {
+            return getMethods(cu);
+        }
+        return getMethods(cu, Modifier.PUBLIC);
+    }
+
     public static List<MethodDeclaration> getMethods(TypeDeclaration<?> cu, Modifier... modifiers) {
         List<Modifier> ms = modifiers == null || modifiers.length == 0 ? null : Lists.newArrayList(modifiers);
         return cu.getMethods().stream().filter(m -> ms == null || m.getModifiers().containsAll(ms)).collect(Collectors.toList());
@@ -64,7 +69,7 @@ public class JavaLexer {
 
     public static String camel(String s, String... ss) {
         if (ss == null || ss.length == 0)
-            return s.toLowerCase();
+            return StringUtils.uncapitalize(s);
         return s.toLowerCase() + Lists.newArrayList(ss).stream().map(e -> StringUtils.capitalize(e)).collect(Collectors.joining());
     }
 
