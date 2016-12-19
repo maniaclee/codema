@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static com.lvbby.codema.lexer.JavaLexer.*;
+import static com.lvbby.codema.utils.JavaUtils.binaryReturnOperator;
 
 /**
  * Created by lipeng on 16/12/16.
@@ -64,7 +65,7 @@ public class JavaSpringBeanTest {
 
     public static MethodDeclaration genTestMethod(NameExpr bean, MethodDeclaration m) {
         MethodDeclaration methodDeclaration = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), VoidType.VOID_TYPE, m.getNameAsString())
-                .setBody(genTestStatement(bean, m).stream().reduce(new BlockStmt(), (blockStmt, expression) -> blockStmt.addStatement(expression), (blockStmt, blockStmt2) -> blockStmt));
+                .setBody(genTestStatement(bean, m).stream().reduce(new BlockStmt(), (blockStmt, expression) -> blockStmt.addStatement(expression), binaryReturnOperator()));
         methodDeclaration.addAnnotation(Test.class);
         if (CollectionUtils.isNotEmpty(m.getThrownExceptions()))
             methodDeclaration.setThrownExceptions(NodeList.nodeList(new ClassOrInterfaceType(Exception.class.getSimpleName())));
