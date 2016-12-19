@@ -32,7 +32,7 @@ public class JavaConvertMethod {
         String destVar = camel(otherClass);
         BlockStmt blockStmt = getFields(typeDeclaration).stream()
                 .reduce(
-                        new BlockStmt().addStatement(newVar(type(otherClass), destVar)),
+                        new BlockStmt().addStatement(declareNewVarConstructor(type(otherClass), destVar)),
                         (blockStmt1, fieldDeclaration) -> blockStmt1.addStatement(convertStatement(destVar, fieldDeclaration, srcVar)),
                         (blockStmt1, blockStmt2) -> blockStmt1)
                 .addStatement(new ReturnStmt().setExpression(new NameExpr(destVar)));

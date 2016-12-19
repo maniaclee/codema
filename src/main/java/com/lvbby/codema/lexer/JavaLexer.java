@@ -5,6 +5,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -78,8 +79,23 @@ public class JavaLexer {
     }
 
 
-    public static VariableDeclarationExpr newVar(ClassOrInterfaceType type, String var) {
-        return new VariableDeclarationExpr(new VariableDeclarator(type, var, new ObjectCreationExpr(null, type, new NodeList<>())));
+    public static VariableDeclarationExpr declareNewVarConstructor(ClassOrInterfaceType type, String var) {
+        return declareNewVar(type, var, new ObjectCreationExpr(null, type, new NodeList<>()));
+    }
+
+    public static VariableDeclarationExpr declareNewVar(ClassOrInterfaceType type, String var, Expression expression) {
+        return new VariableDeclarationExpr(new VariableDeclarator(type, var, expression));
+    }
+
+
+    public static Expression newVar(ClassOrInterfaceType type, Expression... expressions) {
+        return new ObjectCreationExpr(null, type, NodeList.nodeList(expressions));
+    }
+
+
+    public static String methodReturnType(MethodDeclaration m) {
+        String s = m.getType().toString();
+        return "void".equalsIgnoreCase(s) ? null : s;
     }
 
 
