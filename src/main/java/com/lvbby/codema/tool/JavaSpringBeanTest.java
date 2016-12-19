@@ -20,10 +20,8 @@ import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.lvbby.codema.lexer.JavaLexer.*;
 
@@ -74,7 +72,7 @@ public class JavaSpringBeanTest {
     }
 
     private static List<Expression> genTestStatement(NameExpr bean, MethodDeclaration m) {
-        MethodCallExpr invokeExpr = new MethodCallExpr(bean, m.getNameAsString()).setArguments(NodeList.nodeList(newType(m)));
+        MethodCallExpr invokeExpr = new MethodCallExpr(bean, m.getNameAsString()).setArguments(NodeList.nodeList(newInstanceForDefaultValue(m)));
         String methodReturnType = methodReturnType(m);
         if (methodReturnType == null)
             return Lists.newArrayList(invokeExpr);
@@ -85,21 +83,4 @@ public class JavaSpringBeanTest {
         );
     }
 
-    private static List<Expression> newType(MethodDeclaration m) {
-        return m.getParameters().stream().map(p -> newType(p.getType().toString())).collect(Collectors.toList());
-    }
-
-    private static Expression newType(String type) {
-        String lowerCase = type.toLowerCase().replaceAll("<[^>]+>", "");//remove generic type
-        List<String> numbers = Lists.newArrayList("int", "Integer", "short", "double", "float", "byte", "long");
-        if (numbers.contains(lowerCase)) {
-            return new NameExpr("1");
-        }
-        if ("String".equalsIgnoreCase(lowerCase))
-            return new NameExpr("\"\"");
-        ArrayList<String> collections = Lists.newArrayList("collection", "list", "iterable");
-        if (collections.contains(lowerCase))
-            return new NameExpr("new ArrayList()");
-        return newVar(type(type));
-    }
 }

@@ -6,6 +6,7 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -13,6 +14,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,5 +100,32 @@ public class JavaLexer {
         return "void".equalsIgnoreCase(s) ? null : s;
     }
 
+    /***
+     * gen parameters' instances
+     * @param m
+     * @return
+     */
+    public static List<Expression> newInstanceForDefaultValue(MethodDeclaration m) {
+        return m.getParameters().stream().map(p -> newInstanceForDefaultValue(p.getType().toString())).collect(Collectors.toList());
+    }
+
+    /***
+     * gen instance for given type : like String ->"" , int -> 1, List -> new ArrayList()
+     * @param type
+     * @return
+     */
+    public static Expression newInstanceForDefaultValue(String type) {
+        String lowerCase = type.toLowerCase().replaceAll("<[^>]+>", "");//remove generic type
+        List<String> numbers = Lists.newArrayList("int", "Integer", "short", "double", "float", "byte", "long");
+        if (numbers.contains(lowerCase)) {
+            return new NameExpr("1");
+        }
+        if ("String".equalsIgnoreCase(lowerCase))
+            return new NameExpr("\"\"");
+        ArrayList<String> collections = Lists.newArrayList("collection", "list", "iterable");
+        if (collections.contains(lowerCase))
+            return new NameExpr("new ArrayList()");
+        return newVar(type(type));
+    }
 
 }
