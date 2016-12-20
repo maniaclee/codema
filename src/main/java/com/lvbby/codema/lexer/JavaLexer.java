@@ -3,12 +3,15 @@ package com.lvbby.codema.lexer;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.imports.SingleTypeImportDeclaration;
+import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -102,6 +105,7 @@ public class JavaLexer {
 
     /***
      * gen parameters' instances
+     *
      * @param m
      * @return
      */
@@ -111,6 +115,7 @@ public class JavaLexer {
 
     /***
      * gen instance for given type : like String ->"" , int -> 1, List -> new ArrayList()
+     *
      * @param type
      * @return
      */
@@ -126,6 +131,35 @@ public class JavaLexer {
         if (collections.contains(lowerCase))
             return new NameExpr("new ArrayList()");
         return newVar(type(type));
+    }
+
+    public static <T extends NodeWithAnnotations> T addAnnotationWithImport(T t, Class annotation) {
+        t.addAnnotation(annotation);
+        if (t instanceof Node) {
+            CompilationUnit ancestorOfType = getAncestorOfType((Node) t, CompilationUnit.class);
+            if (ancestorOfType != null) {
+                if (hasImport(ancestorOfType, annotation))
+                    ancestorOfType.addImport(annotation);
+            }
+        }
+        return t;
+    }
+
+    public static boolean hasImport(CompilationUnit compilationUnit, Class clz) {
+        return compilationUnit.getImports().stream()
+                .filter(im -> im instanceof SingleTypeImportDeclaration && ((SingleTypeImportDeclaration) im).getType().getNameAsString().equalsIgnoreCase(clz.getName()))
+                .findFirst().isPresent();
+    }
+
+    public static <N> N getAncestorOfType(Node node, Class<N> classType) {
+        Node parent = node.getParentNode().orElse(null);
+        while (parent != null) {
+            if (classType.isAssignableFrom(parent.getClass())) {
+                return classType.cast(parent);
+            }
+            parent = parent.getParentNode().orElse(null);
+        }
+        return null;
     }
 
 }

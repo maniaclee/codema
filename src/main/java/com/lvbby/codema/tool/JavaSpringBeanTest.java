@@ -34,13 +34,16 @@ public class JavaSpringBeanTest {
     private static String newVarNameDefault = "result";
 
     public static TypeDeclaration<?> genTest(String code) {
+        return genTest(null, code);
+    }
+
+    public static TypeDeclaration<?> genTest(CompilationUnit parent, String code) {
         TypeDeclaration<?> typeDeclaration = parseJavaClass(code);
         String beanName = camel(typeDeclaration.getNameAsString());
 
         /** test class */
         ClassOrInterfaceDeclaration testClass = new ClassOrInterfaceDeclaration(EnumSet.of(Modifier.PUBLIC), false, typeDeclaration.getNameAsString() + "Test");
-        testClass.tryAddImportToParentCompilationUnit(Test.class);
-
+        testClass.setParentNode(parent);
         /** bean field */
         testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
 
@@ -50,23 +53,22 @@ public class JavaSpringBeanTest {
     }
 
     public static CompilationUnit genTestClass(String code) {
-        TypeDeclaration<?> typeDeclaration = genTest(code);
-        return new CompilationUnit().setTypes(NodeList.nodeList(typeDeclaration))
-                .addImport(Test.class)
+        CompilationUnit compilationUnit = new CompilationUnit();
+        return compilationUnit.setTypes(NodeList.nodeList(genTest(compilationUnit,code)))
                 .addImport(JSON.class)
                 .addImport("org.springframework.beans.factory.annotation.Autowired");
     }
 
     @Test
     public void test() throws IOException {
-        CompilationUnit a = genTestClass(IOUtils.toString(new FileInputStream("/Users/lipeng/workspace/bridge/bridge-api/src/main/java/com/lvbby/bridge/gateway/ApiGateWay.java")));
+        CompilationUnit a = genTestClass(IOUtils.toString(new FileInputStream("/Users/psyco/workspace/dp/ssp-search-service/ssp-es-admin-api/src/main/java/com/dianping/ssp/search/es/admin/api/EsAdminService.java")));
         System.out.println(a);
     }
 
     public static MethodDeclaration genTestMethod(NameExpr bean, MethodDeclaration m) {
         MethodDeclaration methodDeclaration = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), VoidType.VOID_TYPE, m.getNameAsString())
                 .setBody(genTestStatement(bean, m).stream().reduce(new BlockStmt(), (blockStmt, expression) -> blockStmt.addStatement(expression), binaryReturnOperator()));
-        methodDeclaration.addAnnotation(Test.class);
+        addAnnotationWithImport(methodDeclaration, Test.class);
         if (CollectionUtils.isNotEmpty(m.getThrownExceptions()))
             methodDeclaration.setThrownExceptions(NodeList.nodeList(new ClassOrInterfaceType(Exception.class.getSimpleName())));
         return methodDeclaration;
