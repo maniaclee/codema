@@ -48,13 +48,13 @@ public class JavaSpringBeanTest {
         testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
 
         /** methods */
-        getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m)));
+        getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
         return testClass;
     }
 
     public static CompilationUnit genTestClass(String code) {
         CompilationUnit compilationUnit = new CompilationUnit();
-        return compilationUnit.setTypes(NodeList.nodeList(genTest(compilationUnit,code)))
+        return compilationUnit.setTypes(NodeList.nodeList(genTest(compilationUnit, code)))
                 .addImport(JSON.class)
                 .addImport("org.springframework.beans.factory.annotation.Autowired");
     }
@@ -65,9 +65,10 @@ public class JavaSpringBeanTest {
         System.out.println(a);
     }
 
-    public static MethodDeclaration genTestMethod(NameExpr bean, MethodDeclaration m) {
-        MethodDeclaration methodDeclaration = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), VoidType.VOID_TYPE, m.getNameAsString())
-                .setBody(genTestStatement(bean, m).stream().reduce(new BlockStmt(), (blockStmt, expression) -> blockStmt.addStatement(expression), binaryReturnOperator()));
+    public static MethodDeclaration genTestMethod(NameExpr bean, MethodDeclaration m, TypeDeclaration typeDeclaration) {
+        MethodDeclaration methodDeclaration = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), VoidType.VOID_TYPE, m.getNameAsString());
+        methodDeclaration.setParentNode(typeDeclaration);
+        methodDeclaration.setBody(genTestStatement(bean, m).stream().reduce(new BlockStmt(), (blockStmt, expression) -> blockStmt.addStatement(expression), binaryReturnOperator()));
         addAnnotationWithImport(methodDeclaration, Test.class);
         if (CollectionUtils.isNotEmpty(m.getThrownExceptions()))
             methodDeclaration.setThrownExceptions(NodeList.nodeList(new ClassOrInterfaceType(Exception.class.getSimpleName())));
