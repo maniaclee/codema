@@ -4,9 +4,9 @@ import com.lvbby.codema.coder.CoderExecutor;
 import com.lvbby.codema.tool.coder.JavaClassCoder;
 import com.lvbby.codema.tool.coder.JavaInitCoder;
 import com.lvbby.codema.tool.coder.source.JavaSourceCoderRequest;
-import com.lvbby.codema.tool.coder.source.coder.JavaSourceClassNameCoder;
-import com.lvbby.codema.tool.coder.source.coder.JavaSourceParserCoder;
-import com.lvbby.codema.tool.coder.source.coder.JavaSpringBeanTestCoder;
+import com.lvbby.codema.tool.coder.source.handler.JavaSourceClassNameCoder;
+import com.lvbby.codema.tool.coder.source.handler.JavaSourceParserCoder;
+import com.lvbby.codema.tool.coder.source.handler.JavaSourceSpringBeanTestCoder;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class SourceTest {
                 new JavaSourceParserCoder(),
                 new JavaSourceClassNameCoder("Test"),
                 new JavaClassCoder(),
-                new JavaSpringBeanTestCoder()
+                new JavaSourceSpringBeanTestCoder()
         );
         System.out.println(request.getResult());
     }

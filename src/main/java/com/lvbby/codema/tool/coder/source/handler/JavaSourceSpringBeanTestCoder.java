@@ -1,4 +1,4 @@
-package com.lvbby.codema.tool.coder.source.coder;
+package com.lvbby.codema.tool.coder.source.handler;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -27,7 +27,7 @@ import static com.lvbby.codema.utils.JavaUtils.binaryReturnOperator;
 /**
  * Created by lipeng on 16/12/16.
  */
-public class JavaSpringBeanTestCoder extends TypedCoderHandler<JavaSourceCoderRequest> {
+public class JavaSourceSpringBeanTestCoder extends TypedCoderHandler<JavaSourceCoderRequest> {
 
     private static String newVarNameDefault = "result";
 

@@ -1,5 +1,6 @@
 package com.lvbby.codema.tool.coder.source;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.lvbby.codema.tool.coder.JavaCoderRequest;
 
@@ -24,5 +25,9 @@ public class JavaSourceCoderRequest extends JavaCoderRequest {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public ClassOrInterfaceDeclaration findClass() {
+        return typeDeclaration.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().orElse(null);
     }
 }
