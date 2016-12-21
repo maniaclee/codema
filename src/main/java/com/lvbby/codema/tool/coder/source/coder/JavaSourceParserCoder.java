@@ -1,8 +1,8 @@
-package com.lvbby.codema.tool.coder.source;
+package com.lvbby.codema.tool.coder.source.coder;
 
 import com.lvbby.codema.lexer.JavaLexer;
-import com.lvbby.codema.tool.coder.JavaSourceCoderRequest;
-import com.lvbby.codema.tool.coder.TypedCoderHandler;
+import com.lvbby.codema.coder.TypedCoderHandler;
+import com.lvbby.codema.tool.coder.source.JavaSourceCoderRequest;
 
 /**
  * Created by lipeng on 2016/12/20.

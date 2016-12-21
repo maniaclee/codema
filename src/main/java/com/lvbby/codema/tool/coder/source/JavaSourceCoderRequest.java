@@ -1,6 +1,7 @@
-package com.lvbby.codema.tool.coder;
+package com.lvbby.codema.tool.coder.source;
 
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.lvbby.codema.tool.coder.JavaCoderRequest;
 
 /**
  * Created by lipeng on 2016/12/20.

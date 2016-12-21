@@ -1,7 +1,4 @@
-package com.lvbby.codema.tool.coder;
-
-import com.lvbby.codema.coder.CoderBaseRequest;
-import com.lvbby.codema.coder.CoderHandler;
+package com.lvbby.codema.coder;
 
 import java.lang.reflect.ParameterizedType;
 

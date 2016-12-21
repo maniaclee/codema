@@ -11,6 +11,11 @@ import java.util.stream.Collectors;
  */
 public class CoderExecutor {
 
+    public void exec(CoderBaseRequest request, CoderHandler... coderHandlers) throws Exception {
+        if (coderHandlers != null)
+            exec(request, Lists.newArrayList(coderHandlers));
+    }
+
     public void exec(CoderBaseRequest request, List<CoderHandler> coderHandlers) throws Exception {
         if (CollectionUtils.isNotEmpty(coderHandlers))
             for (CoderHandler coderHandler : coderHandlers) {
