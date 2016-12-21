@@ -103,6 +103,15 @@ public class JavaLexer {
         return "void".equalsIgnoreCase(s) ? null : s;
     }
 
+    public static List<Expression> getMethodParameterVars(MethodDeclaration m) {
+        return m.getParameters().stream().map(p -> new NameExpr(p.getName())).collect(Collectors.toList());
+    }
+
+    public static ClassOrInterfaceDeclaration addField(ClassOrInterfaceDeclaration testClass, TypeDeclaration typeDeclaration) {
+        testClass.addField(typeDeclaration.getNameAsString(), JavaLexer.camel(typeDeclaration.getNameAsString()), Modifier.PRIVATE);
+        return testClass;
+    }
+
     /***
      * gen parameters' instances
      *

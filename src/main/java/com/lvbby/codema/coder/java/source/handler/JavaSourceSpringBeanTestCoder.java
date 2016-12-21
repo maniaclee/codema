@@ -1,4 +1,4 @@
-package com.lvbby.codema.tool.coder.source.handler;
+package com.lvbby.codema.coder.java.source.handler;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -14,7 +14,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.coder.TypedCoderHandler;
-import com.lvbby.codema.tool.coder.source.JavaSourceCoderRequest;
+import com.lvbby.codema.coder.java.source.JavaSourceCoderRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
