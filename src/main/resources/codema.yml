@@ -3,28 +3,28 @@ common:
 
 java:
   basic:
-    package: labrador
-    srcRoot: ''
+    pack: labrador
+    src-root: ''
   testcase:
     from: 'file://localhost:2181'
     dest-class-suffix: 'Test'
-    dest-package: ''
+    dest-pack: ''
     is-spring: true
   delegate:
     from: '所有的from都是生成代码的源,通过url来进行标示'
     dest-class-suffix: ''
   entity:
-    package: ''
+    pack: ''
   dto:
-    package: ''
+    pack: ''
   dao:
-    package: ''
+    pack: ''
     sql: ''
   repositoy:
     convert-to-dto: ''
   service:
     from: ''
-    inteface-package: ''
+    inteface-pack: ''
 
   maven:
     artifact-id: ' '

@@ -1,8 +1,12 @@
 package com.lvbby.codema;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.lvbby.codema.core.ConfigLoader;
 import com.lvbby.codema.core.ConfigLoaderHelper;
 import com.lvbby.codema.core.YamlConfigLoader;
+import com.lvbby.codema.core.config.CoderJavaBasicConfig;
+import com.lvbby.codema.core.config.CoderJavaTestcaseConfig;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -18,8 +22,16 @@ public class ColdLoaderTest {
 
     @Test
     public void sdf() throws Exception {
-        ConfigLoader load = ConfigLoaderHelper.load(IOUtils.toString(new FileInputStream("/Users/psyco/workspace/github/codema/src/main/resources/codema.yml")), YamlConfigLoader.class);
+        ConfigLoader load = ConfigLoaderHelper.load(IOUtils.toString(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codema.yml")), YamlConfigLoader.class);
+
+        print(load.getConfig(CoderJavaBasicConfig.class));
+        print(load.getConfig(CoderJavaTestcaseConfig.class));
     }
+
+    private void print(Object a) {
+        System.out.println(JSON.toJSONString(a, SerializerFeature.PrettyFormat));
+    }
+
     @Test
     public void snakeYamel() throws Exception {
         Yaml yaml = new Yaml();
@@ -35,6 +47,10 @@ public class ColdLoaderTest {
             System.out.println(next.get(key));
         }
     }
+
+
+
+
 
 
 }
