@@ -9,6 +9,23 @@ java:
     from: 'file://localhost:2181'
     dest-class-suffix: 'Test'
     dest-package: ''
+    is-spring: true
   delegate:
-    from: ''
+    from: '所有的from都是生成代码的源,通过url来进行标示'
     dest-class-suffix: ''
+  entity:
+    package: ''
+  dto:
+    package: ''
+  dao:
+    package: ''
+    sql: ''
+  repositoy:
+    convert-to-dto: ''
+  service:
+    from: ''
+    inteface-package: ''
+
+  maven:
+    artifact-id: ' '
+    group-id: ''
