@@ -1,0 +1,14 @@
+common:
+  author: maniaclee
+
+java:
+  basic:
+    package: labrador
+    srcRoot: ''
+  testcase:
+    from: 'file://localhost:2181'
+    dest-class-suffix: 'Test'
+    dest-package: ''
+  delegate:
+    from: ''
+    dest-class-suffix: ''
