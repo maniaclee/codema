@@ -1,4 +1,4 @@
-package com.lvbby.codema.tool.coder;
+package com.lvbby.codema.coder.java;
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;

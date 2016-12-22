@@ -1,4 +1,4 @@
-package com.lvbby.codema.tool.coder;
+package com.lvbby.codema.coder.java;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.coder.CoderBaseRequest;

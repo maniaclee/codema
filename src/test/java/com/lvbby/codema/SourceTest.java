@@ -1,12 +1,13 @@
 package com.lvbby.codema;
 
 import com.lvbby.codema.coder.CoderExecutor;
-import com.lvbby.codema.tool.coder.JavaClassCoder;
-import com.lvbby.codema.tool.coder.JavaInitCoder;
-import com.lvbby.codema.tool.coder.source.JavaSourceCoderRequest;
-import com.lvbby.codema.tool.coder.source.handler.JavaSourceClassNameCoder;
-import com.lvbby.codema.tool.coder.source.handler.JavaSourceParserCoder;
-import com.lvbby.codema.tool.coder.source.handler.JavaSourceSpringBeanTestCoder;
+import com.lvbby.codema.coder.java.JavaClassCoder;
+import com.lvbby.codema.coder.java.JavaDelegateCoder;
+import com.lvbby.codema.coder.java.JavaInitCoder;
+import com.lvbby.codema.coder.java.source.JavaSourceCoderRequest;
+import com.lvbby.codema.coder.java.source.handler.JavaSourceClassNameCoder;
+import com.lvbby.codema.coder.java.source.handler.JavaSourceParserCoder;
+import com.lvbby.codema.coder.java.source.handler.JavaSourceSpringBeanTestCoder;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ import java.io.FileInputStream;
 public class SourceTest {
 
     @Test
-    public void sdfs() throws Exception {
+    public void springTest() throws Exception {
         JavaSourceCoderRequest request = new JavaSourceCoderRequest();
         request.setAuthor("lipeng");
         request.setSource(IOUtils.toString(new FileInputStream("/Users/psyco/workspace/dp/ssp-search-service/ssp-es-admin-api/src/main/java/com/dianping/ssp/search/es/admin/api/EsAdminService.java")));
@@ -28,6 +29,21 @@ public class SourceTest {
                 new JavaSourceClassNameCoder("Test"),
                 new JavaClassCoder(),
                 new JavaSourceSpringBeanTestCoder()
+        );
+        System.out.println(request.getResult());
+    }
+
+    @Test
+    public void delegate() throws Exception {
+        JavaSourceCoderRequest request = new JavaSourceCoderRequest();
+        request.setAuthor("lipeng");
+        request.setSource(IOUtils.toString(new FileInputStream("/Users/lipeng/workspace/bridge/bridge-api/src/main/java/com/lvbby/bridge/gateway/ApiGateWay.java")));
+        new CoderExecutor().exec(request,
+                new JavaInitCoder(),
+                new JavaSourceParserCoder(),
+                new JavaSourceClassNameCoder("Service"),
+                new JavaClassCoder(),
+                new JavaDelegateCoder()
         );
         System.out.println(request.getResult());
     }
