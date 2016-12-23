@@ -2,6 +2,7 @@ package com.lvbby.codema;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.ConfigLoader;
 import com.lvbby.codema.core.ConfigLoaderHelper;
 import com.lvbby.codema.core.YamlConfigLoader;
@@ -48,9 +49,10 @@ public class ColdLoaderTest {
         }
     }
 
-
-
-
+    @Test
+    public void codema() throws Exception {
+        Codema.fromYaml(IOUtils.toString(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codema.yml"))).run();
+    }
 
 
 }
