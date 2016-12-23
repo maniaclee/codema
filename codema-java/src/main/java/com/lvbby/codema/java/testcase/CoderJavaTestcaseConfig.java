@@ -1,4 +1,6 @@
-package com.lvbby.codema.core.config;
+package com.lvbby.codema.java.testcase;
+
+import com.lvbby.codema.java.config.CoderJavaAbstractConfig;
 
 import java.io.Serializable;
 

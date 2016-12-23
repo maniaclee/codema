@@ -1,4 +1,4 @@
-package com.lvbby.codema.lexer;
+package com.lvbby.codema.java.lexer;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;

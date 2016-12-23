@@ -1,4 +1,4 @@
-package com.lvbby.codema;
+package com.lvbby.codema.java;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -6,8 +6,8 @@ import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.ConfigLoader;
 import com.lvbby.codema.core.ConfigLoaderHelper;
 import com.lvbby.codema.core.YamlConfigLoader;
-import com.lvbby.codema.core.config.CoderJavaBasicConfig;
-import com.lvbby.codema.core.config.CoderJavaTestcaseConfig;
+import com.lvbby.codema.java.config.CoderJavaBasicConfig;
+import com.lvbby.codema.java.testcase.CoderJavaTestcaseConfig;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;

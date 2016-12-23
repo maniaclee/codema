@@ -1,9 +1,8 @@
-package com.lvbby.codema.machine;
+package com.lvbby.codema.java.testcase;
 
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.ConfigBind;
-import com.lvbby.codema.core.config.CoderJavaTestcaseConfig;
 
 /**
  * Created by lipeng on 16/12/23.

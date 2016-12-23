@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.dozer.DozerBeanMapper;
-import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.Arrays;
@@ -110,8 +109,4 @@ public class YamlConfigLoader implements ConfigLoader {
         this.caseFormat = caseFormat;
     }
 
-    @Test
-    public void test() {
-        System.out.println(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_HYPHEN, "camelCase"));
-    }
 }

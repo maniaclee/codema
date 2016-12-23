@@ -1,4 +1,4 @@
-package com.lvbby.codema.core.config;
+package com.lvbby.codema.java.config;
 
 /**
  * Created by lipeng on 2016/12/22.

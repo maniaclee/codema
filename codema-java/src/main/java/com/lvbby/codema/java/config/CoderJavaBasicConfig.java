@@ -1,4 +1,4 @@
-package com.lvbby.codema.core.config;
+package com.lvbby.codema.java.config;
 
 import com.lvbby.codema.core.ConfigKey;
 
