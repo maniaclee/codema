@@ -11,5 +11,5 @@ public abstract class TypedCodeMachine<T> extends TypeCapable<T> implements Code
         }
     }
 
-    public abstract void code(CodemaContext codemaContext, T config);
+    public abstract void code(CodemaContext codemaContext, T config) throws Exception;
 }

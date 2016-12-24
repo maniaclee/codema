@@ -50,7 +50,7 @@ public class YamlConfigLoader implements ConfigLoader {
         /** guess using class name , convert class name into a.b.camelCase*/
         if (annotation == null || StringUtils.isBlank(annotation.value())) {
             String clzSimpleName = clz.getSimpleName();
-            String prefix = "Coder";
+            String prefix = "Codema";
             String suffix = "Config";
             if (clzSimpleName.startsWith(prefix) && clzSimpleName.endsWith(suffix))
                 return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clzSimpleName.substring(prefix.length(), clzSimpleName.length() - suffix.length())).replaceAll("_", ".");

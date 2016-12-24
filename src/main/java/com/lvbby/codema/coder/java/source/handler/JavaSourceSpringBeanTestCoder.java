@@ -22,7 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static com.lvbby.codema.lexer.JavaLexer.*;
-import static com.lvbby.codema.utils.JavaUtils.binaryReturnOperator;
+import static com.lvbby.codema.core.utils.JavaUtils.binaryReturnOperator;
 
 /**
  * Created by lipeng on 16/12/16.

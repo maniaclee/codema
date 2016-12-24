@@ -10,6 +10,15 @@ import java.io.Serializable;
 @ConfigKey("common")
 public class CoderCommonConfig implements Serializable {
     private String author;
+    private String from;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     public String getAuthor() {
         return author;

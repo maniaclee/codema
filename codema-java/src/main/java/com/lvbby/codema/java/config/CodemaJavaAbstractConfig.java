@@ -3,7 +3,7 @@ package com.lvbby.codema.java.config;
 /**
  * Created by lipeng on 2016/12/22.
  */
-public abstract class CoderJavaAbstractConfig {
+public abstract class CodemaJavaAbstractConfig {
     private String from;
     private String destClassSuffix;
     private String destPack;

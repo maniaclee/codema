@@ -3,9 +3,7 @@ package com.lvbby.codema.core;
 import com.google.common.collect.Lists;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -26,7 +24,12 @@ public class Codema {
     }
 
 
+    public <T extends CodemaMachine> T getCodemaMachineByType(Class<T> clz) {
+        return (T) codemaMachines.stream().filter(codemaMachine -> codemaMachine.getClass().equals(clz));
+    }
+
     public void run() throws Exception {
+        /** 整个codema生命周期内共用一个context */
         CodemaContext codemaContext = new CodemaContext();
         codemaContext.setConfigLoader(configLoader);
         for (CodemaMachine codemaMachine : codemaMachines) {
@@ -34,11 +37,16 @@ public class Codema {
         }
     }
 
-    private List<CodemaMachine> loadCodemaMachines() {
-        return Lists.newArrayList(ServiceLoader.load(CodemaMachine.class)).stream().filter(m -> useCodema(m.getClass())).collect(Collectors.toList());
+    public Codema addCodemaMachine(CodemaMachine codemaMachine) {
+        this.codemaMachines.add(codemaMachine);
+        return this;
     }
 
-    private boolean useCodema(Class<?> codemaMachine) {
-        return Optional.of(codemaMachine.getAnnotation(ConfigBind.class)).map(configBind -> configLoader.getConfig(configBind.value())).isPresent();
+    /***
+     * 加载CodeMachine，通过CodeMachine的注解ConfigBind来从Yaml进行筛选，减少不必要的执行，不筛选也行，
+     */
+    private List<CodemaMachine> loadCodemaMachines() {
+        return Lists.newArrayList(ServiceLoader.load(CodemaMachine.class));
     }
+
 }

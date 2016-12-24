@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.config;
+package com.lvbby.codema.java.baisc;
 
 import com.lvbby.codema.core.ConfigKey;
 
@@ -8,8 +8,10 @@ import java.io.Serializable;
  * Created by lipeng on 2016/12/22.
  */
 @ConfigKey("java.basic")
-public class CoderJavaBasicConfig implements Serializable {
+public class CodemaJavaBasicConfig implements Serializable {
+    /** 目标package */
     private String pack;
+    /** 目标src路径 */
     private String srcRoot;
 
     public String getPack() {

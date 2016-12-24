@@ -1,4 +1,4 @@
-package com.lvbby.codema.utils;
+package com.lvbby.codema.core.utils;
 
 import java.util.function.BinaryOperator;
 
@@ -12,5 +12,14 @@ public class JavaUtils {
      */
     public static <T> BinaryOperator<T> binaryReturnOperator() {
         return (t, t2) -> t;
+    }
+
+
+    public static <T> T instance(Class<T> clz) {
+        try {
+            return clz.newInstance();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
