@@ -5,7 +5,7 @@ import java.net.URI;
 /**
  * Created by lipeng on 2016/12/24.
  */
-public interface SourceParser {
+public interface SourceParser<T> {
 
     /***
      * 定义支持的uri的 scheme和authority ， 如schema://authority/
@@ -14,6 +14,6 @@ public interface SourceParser {
      */
     String getSupportedUriScheme();
 
-    Object parse(URI from) throws Exception;
+    T parse(URI from) throws Exception;
 
 }

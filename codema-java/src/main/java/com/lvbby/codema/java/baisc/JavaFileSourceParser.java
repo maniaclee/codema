@@ -12,9 +12,9 @@ import java.net.URI;
 /**
  * Created by lipeng on 2016/12/24.
  */
-public class JavaFileSourceParser implements SourceParser {
+public class JavaFileSourceParser implements SourceParser<JavaSourceParam> {
     @Override
-    public Object parse(URI from) throws Exception {
+    public JavaSourceParam parse(URI from) throws Exception {
         JavaSourceParam re = new JavaSourceParam();
         File file = new File(from.getPath());
         if (file.isFile()) {
