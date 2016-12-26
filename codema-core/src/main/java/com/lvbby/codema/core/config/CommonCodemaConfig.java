@@ -38,11 +38,17 @@ public class CommonCodemaConfig implements Serializable {
         this.author = author;
     }
 
-    public ResultHandler findResultHandler() {
-        return null;//TODO
+    public <T extends CommonCodemaConfig> ResultHandler<T> findResultHandler() {
+        return findResultHandler(getResultHandler());
     }
 
-    public static ResultHandler findResultHandler(String handler) {
-        return null;//TODO
+    public static <T extends CommonCodemaConfig> ResultHandler<T> findResultHandler(String handler) {
+        try {
+            Object o = Class.forName(handler).newInstance();
+            if (o instanceof ResultHandler)
+                return (ResultHandler<T>) o;
+        } catch (Exception e) {
+        }
+        throw new IllegalArgumentException("handler not found");
     }
 }

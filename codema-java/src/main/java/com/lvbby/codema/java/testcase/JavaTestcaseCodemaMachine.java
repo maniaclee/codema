@@ -36,25 +36,12 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
     @CodemaRunner
     public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source) {
-        JavaClassTemplate.classOrInterfaceTemplate(codemaContext, config, source, (context, conf, target, src) -> {
-            genTest(target, src);
-            System.out.println(target);
-        });
+        /** 遍历的模板执行器 */
+        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
+                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
     }
 
-
-    public static void genTest(ClassOrInterfaceDeclaration testClass, ClassOrInterfaceDeclaration typeDeclaration) {
-        String beanName = camel(typeDeclaration.getNameAsString());
-        if (testClass == null)
-            return;
-        /** bean field */
-        testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
-
-        /** methods */
-        getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
-    }
-
-    public static void genTest(CompilationUnit parent, ClassOrInterfaceDeclaration typeDeclaration) {
+    public static CompilationUnit genTest(CompilationUnit parent, ClassOrInterfaceDeclaration typeDeclaration) {
         String beanName = camel(typeDeclaration.getNameAsString());
         parent.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
             /** bean field */
@@ -62,7 +49,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
             /** methods */
             getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
         });
-
+        return parent;
     }
 
 
