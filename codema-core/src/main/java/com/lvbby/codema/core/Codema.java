@@ -33,8 +33,20 @@ public class Codema {
         CodemaContext codemaContext = new CodemaContext();
         codemaContext.setConfigLoader(configLoader);
         for (CodemaMachine codemaMachine : codemaMachines) {
-            codemaMachine.code(codemaContext);
+            handleCodemaMachine(codemaContext, codemaMachine);
         }
+    }
+
+    private void handleCodemaMachine(CodemaContext codemaContext, CodemaMachine codemaMachine) throws Exception {
+        codemaMachine.code(codemaContext);
+        //        /** 查找resultHandler来处理结果，优先级 CodemaResult.resultHandler, CoderCommonConfig.findResultHandler*/
+        //        if (result != null && result.getResult() != null) {
+        //            ResultHandler resultHandler = codemaContext.loadConfig(CoderCommonConfig.class).map(e -> e.findResultHandler()).orElse(result.getResultHandler());
+        //            if (resultHandler != null) {
+        //                resultHandler.handle(codemaContext, result);
+        //                codemaContext.storeParam(result.getResult());//存储结果给其他模块调用
+        //            }
+        //        }
     }
 
     public Codema addCodemaMachine(CodemaMachine codemaMachine) {

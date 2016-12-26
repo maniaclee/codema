@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +38,10 @@ public class JavaLexer {
         if (CollectionUtils.isEmpty(cu.getTypes()) || cu.getTypes().size() < 1)
             return Lists.newLinkedList();
         return getFields(cu.getType(0));
+    }
+
+    public static Optional<ClassOrInterfaceDeclaration> getClass(CompilationUnit cu) {
+        return Optional.ofNullable(cu.getTypes()).filter(typeDeclarations -> typeDeclarations.size() > 0).map(typeDeclarations -> (ClassOrInterfaceDeclaration) typeDeclarations.get(0));
     }
 
     public static List<FieldDeclaration> getFields(TypeDeclaration<?> cu) {

@@ -1,6 +1,7 @@
 package com.lvbby.codema.java.baisc;
 
 import com.lvbby.codema.core.ConfigKey;
+import com.lvbby.codema.core.config.CoderCommonConfig;
 
 import java.io.Serializable;
 
@@ -8,25 +9,69 @@ import java.io.Serializable;
  * Created by lipeng on 2016/12/22.
  */
 @ConfigKey("java.basic")
-public class CodemaJavaBasicConfig implements Serializable {
-    /** 目标package */
-    private String pack;
-    /** 目标src路径 */
-    private String srcRoot;
+public class CodemaJavaBasicConfig extends CoderCommonConfig implements Serializable {
+    /**
+     * 目标package
+     */
+    private String destPackage;
+    /**
+     * 目标src路径
+     */
+    private String destSrcRoot;
 
-    public String getPack() {
-        return pack;
+    private String destClassName;
+    /**
+     * 选取类的package
+     */
+    private String fromPackage;
+    private String resultHandler;
+    private boolean toBeInterface = false;
+
+    public boolean isToBeInterface() {
+        return toBeInterface;
     }
 
-    public void setPack(String pack) {
-        this.pack = pack;
+    public void setToBeInterface(boolean toBeInterface) {
+        this.toBeInterface = toBeInterface;
     }
 
-    public String getSrcRoot() {
-        return srcRoot;
+    public String getDestSrcRoot() {
+        return destSrcRoot;
     }
 
-    public void setSrcRoot(String srcRoot) {
-        this.srcRoot = srcRoot;
+    public void setDestSrcRoot(String srcRoot) {
+        this.destSrcRoot = srcRoot;
+    }
+
+    public String getDestPackage() {
+        return destPackage;
+    }
+
+    public void setDestPackage(String destPackage) {
+        this.destPackage = destPackage;
+    }
+
+    public String getDestClassName() {
+        return destClassName;
+    }
+
+    public void setDestClassName(String destClassName) {
+        this.destClassName = destClassName;
+    }
+
+    public String getFromPackage() {
+        return fromPackage;
+    }
+
+    public void setFromPackage(String fromPackage) {
+        this.fromPackage = fromPackage;
+    }
+
+    public String getResultHandler() {
+        return resultHandler;
+    }
+
+    public void setResultHandler(String resultHandler) {
+        this.resultHandler = resultHandler;
     }
 }

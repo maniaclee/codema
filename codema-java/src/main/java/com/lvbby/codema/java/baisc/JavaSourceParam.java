@@ -8,10 +8,10 @@ import java.util.List;
 /**
  * Created by lipeng on 2016/12/24.
  */
-public class JavaBasicResult {
+public class JavaSourceParam {
     private List<CompilationUnit> compilationUnits = Lists.newArrayList();
 
-    public JavaBasicResult add(CompilationUnit compilationUnit) {
+    public JavaSourceParam add(CompilationUnit compilationUnit) {
         compilationUnits.add(compilationUnit);
         return this;
     }

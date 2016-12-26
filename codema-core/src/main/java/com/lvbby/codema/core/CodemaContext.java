@@ -3,6 +3,7 @@ package com.lvbby.codema.core;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -13,21 +14,22 @@ public class CodemaContext {
      */
     private ConfigLoader configLoader;
 
-    /**
-     * 结果，不同模块之间的结果可以互相共享
-     */
-    Map<Class, Object> resultMap = Maps.newConcurrentMap();
+    Map<Class, Object> paramMap = Maps.newConcurrentMap();
 
-    public <T> T getResult(Class<T> clz) {
-        return (T) resultMap.get(clz);
+    public <T> Optional<T> getParam(Class<T> clz) {
+        return Optional.ofNullable((T) paramMap.get(clz));
     }
 
-    public void storeResult(Object result) {
-        resultMap.put(result.getClass(), result);
+    public void storeParam(Object result) {
+        paramMap.put(result.getClass(), result);
     }
 
     public <T> T getConfig(Class<T> clz) {
         return configLoader.getConfig(clz);
+    }
+
+    public <T> Optional<T> loadConfig(Class<T> clz) {
+        return java.util.Optional.ofNullable((T) configLoader.getConfig(clz));
     }
 
     public boolean hasConfig(Class clz) {
@@ -41,6 +43,5 @@ public class CodemaContext {
     public void setConfigLoader(ConfigLoader configLoader) {
         this.configLoader = configLoader;
     }
-
 
 }

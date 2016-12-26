@@ -20,8 +20,8 @@ public class JavaFileSourceParser extends TypedCodeMachine<CodemaJavaBasicConfig
     public void code(CodemaContext codemaContext, CodemaJavaBasicConfig codemaJavaBasicConfig) throws Exception {
         CoderCommonConfig config = codemaContext.getConfig(CoderCommonConfig.class);
 
-        JavaBasicResult re = new JavaBasicResult();
-        codemaContext.storeResult(re);//store the result
+        JavaSourceParam re = new JavaSourceParam();
+        codemaContext.storeParam(re);//store the result
 
         File file = new File(URI.create(config.getFrom()).getPath());
         if (file.isFile()) {

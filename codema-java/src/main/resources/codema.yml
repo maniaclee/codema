@@ -1,28 +1,33 @@
 common:
   author: maniaclee
   from: 'file://java:src//Users/lipeng/workspace/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CoderCommonConfig.java'
+  result-handler: ''
 
 java:
   basic:
-    pack: '所有的pack都是    dest-package'
-    src-root: ''
+    dest-pack: '所有的pack都是    dest-package'
+    dest-src-root: ''
   testcase:
-    dest-class-suffix: 'Test'
+    from-package: '基于common.from,选取指定package的类产生testcase'
+    dest-class-name: '${from}Test'
     dest-pack: ''
     is-spring: true
   delegate:
-    dest-class-suffix: ''
+    from-package: '就是一个filter'
+    dest-class-name: ''
   entity:
-    pack: ''
+    dest-pack: ''
+    dest-src-root: '如果是sql产生的情况，且区分module模块，那么src-root不一样'
   dto:
-    pack: ''
+    dest-pack: ''
+    dest-src-root: ''
   dao:
-    pack: ''
-    sql: ''
+    dest-pack: ''
+    sqls: ''
   repositoy:
-    convert-to-dto: ''
+    from-package: ''
   service:
-    inteface-pack: ''
+    dest-pack: ''
 
   maven:
     artifact-id: ' '
