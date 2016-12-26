@@ -3,6 +3,7 @@ package com.lvbby.codema.java.testcase;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
+import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
 
 /**
@@ -11,7 +12,7 @@ import com.lvbby.codema.java.baisc.JavaSourceParam;
 public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
     @CodemaRunner
-    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, JavaSourceParam source) {
+    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source) {
         System.out.println("find testcase");
     }
 }
