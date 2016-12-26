@@ -1,7 +1,10 @@
 package com.lvbby.codema.core;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.config.CoderCommonConfig;
+import org.apache.commons.lang3.Validate;
 
+import java.net.URI;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -11,6 +14,7 @@ import java.util.ServiceLoader;
 public class Codema {
     private ConfigLoader configLoader;
     private List<CodemaMachine> codemaMachines;
+    private List<SourceParser> sourceParsers;
 
     public static Codema fromYaml(String yaml) throws Exception {
         ConfigLoader configLoader = new YamlConfigLoader();
@@ -20,33 +24,32 @@ public class Codema {
 
     public Codema(ConfigLoader configLoader) {
         this.configLoader = configLoader;
-        this.codemaMachines = loadCodemaMachines();
+        //加载CodeMachine
+        this.codemaMachines = loadService(CodemaMachine.class);
+        this.sourceParsers = loadService(SourceParser.class);
     }
 
-
-    public <T extends CodemaMachine> T getCodemaMachineByType(Class<T> clz) {
-        return (T) codemaMachines.stream().filter(codemaMachine -> codemaMachine.getClass().equals(clz));
-    }
 
     public void run() throws Exception {
         /** 整个codema生命周期内共用一个context */
         CodemaContext codemaContext = new CodemaContext();
         codemaContext.setConfigLoader(configLoader);
+
+        CoderCommonConfig config = codemaContext.getConfig(CoderCommonConfig.class);
+        Validate.notNull(config, "common config is missing");
+
+        /** 解析输入，注入到context里 */
+        Object source = findSourceParser(config.getFrom()).parse(URI.create(config.getFrom()));
+        codemaContext.setSource(source);
+
+        /** 执行 */
         for (CodemaMachine codemaMachine : codemaMachines) {
-            handleCodemaMachine(codemaContext, codemaMachine);
+            codemaMachine.code(codemaContext);
         }
     }
 
-    private void handleCodemaMachine(CodemaContext codemaContext, CodemaMachine codemaMachine) throws Exception {
-        codemaMachine.code(codemaContext);
-        //        /** 查找resultHandler来处理结果，优先级 CodemaResult.resultHandler, CoderCommonConfig.findResultHandler*/
-        //        if (result != null && result.getResult() != null) {
-        //            ResultHandler resultHandler = codemaContext.loadConfig(CoderCommonConfig.class).map(e -> e.findResultHandler()).orElse(result.getResultHandler());
-        //            if (resultHandler != null) {
-        //                resultHandler.handle(codemaContext, result);
-        //                codemaContext.storeParam(result.getResult());//存储结果给其他模块调用
-        //            }
-        //        }
+    private SourceParser findSourceParser(String from) throws CodemaException {
+        return this.sourceParsers.stream().filter(sourceParser -> from.startsWith(sourceParser.getSupportedUriScheme())).findFirst().orElseThrow(() -> new CodemaException(String.format("can't find source parser for %s", from)));
     }
 
     public Codema addCodemaMachine(CodemaMachine codemaMachine) {
@@ -54,11 +57,17 @@ public class Codema {
         return this;
     }
 
-    /***
-     * 加载CodeMachine，通过CodeMachine的注解ConfigBind来从Yaml进行筛选，减少不必要的执行，不筛选也行，
-     */
-    private List<CodemaMachine> loadCodemaMachines() {
-        return Lists.newArrayList(ServiceLoader.load(CodemaMachine.class));
+    public <T extends CodemaMachine> T getCodemaMachineByType(Class<T> clz) {
+        return (T) codemaMachines.stream().filter(codemaMachine -> codemaMachine.getClass().equals(clz));
+    }
+
+    public Codema addCodemaMachine(SourceParser sourceParser) {
+        this.sourceParsers.add(sourceParser);
+        return this;
+    }
+
+    private <T> List<T> loadService(Class<T> clz) {
+        return Lists.newArrayList(ServiceLoader.load(clz));
     }
 
 }

@@ -13,6 +13,10 @@ public class CodemaContext {
      * 配置
      */
     private ConfigLoader configLoader;
+    /**
+     * 项目的入参，由Common的from字段解析而来，所有模块都以这个参数为入参
+     */
+    private Object source;
 
     Map<Class, Object> paramMap = Maps.newConcurrentMap();
 
@@ -29,7 +33,7 @@ public class CodemaContext {
     }
 
     public <T> Optional<T> loadConfig(Class<T> clz) {
-        return java.util.Optional.ofNullable((T) configLoader.getConfig(clz));
+        return Optional.ofNullable((T) configLoader.getConfig(clz));
     }
 
     public boolean hasConfig(Class clz) {
@@ -44,4 +48,11 @@ public class CodemaContext {
         this.configLoader = configLoader;
     }
 
+    public Object getSource() {
+        return source;
+    }
+
+    public void setSource(Object source) {
+        this.source = source;
+    }
 }
