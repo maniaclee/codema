@@ -5,29 +5,29 @@ common:
 
 java:
   basic:
-    dest-pack: '所有的pack都是    dest-package'
+    dest-package: '所有的pack都是    dest-package'
     dest-src-root: ''
   testcase:
     from-package: '基于common.from,选取指定package的类产生testcase'
     dest-class-name: '${from}Test'
-    dest-pack: ''
+    dest-package: ''
     is-spring: true
   delegate:
     from-package: '就是一个filter'
     dest-class-name: ''
   entity:
-    dest-pack: ''
+    dest-package: ''
     dest-src-root: '如果是sql产生的情况，且区分module模块，那么src-root不一样'
   dto:
-    dest-pack: ''
+    dest-package: ''
     dest-src-root: ''
   dao:
-    dest-pack: ''
+    dest-package: ''
     sqls: ''
   repositoy:
     from-package: ''
   service:
-    dest-pack: ''
+    dest-package: ''
 
   maven:
     artifact-id: ' '

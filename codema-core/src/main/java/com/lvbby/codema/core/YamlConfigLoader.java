@@ -3,10 +3,14 @@ package com.lvbby.codema.core;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dozer.DozerBeanMapper;
 import org.yaml.snakeyaml.Yaml;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class YamlConfigLoader implements ConfigLoader {
 
-    private Map<Class, Object> cache = Maps.newConcurrentMap();
+    private Map<String, Object> cache = Maps.newConcurrentMap();
     Map<String, Object> yamlMap;
 
     private CaseFormat caseFormat = CaseFormat.LOWER_HYPHEN;
@@ -34,15 +38,45 @@ public class YamlConfigLoader implements ConfigLoader {
 
     @Override
     public <T> T getConfig(Class<T> clz) {
-        if (cache.containsKey(clz))
-            return (T) cache.get(clz);
-        Map<String, Object> map = findMap(findConfigKey(clz));
+        if (cache.containsKey(clz.getName()))
+            return (T) cache.get(clz.getName());
+        String configKey = findConfigKey(clz);
+        Map<String, Object> map = findMap(configKey);
         if (map == null)
             return null;
         DozerBeanMapper dozerBeanMapper = new DozerBeanMapper();
         T re = dozerBeanMapper.map(map, clz);
-        cache.put(clz, re);
+        /** 递归把父类的信息一并加载，同时顺便将父类懒惰初始化 */
+        for (Class<?> parent = clz.getSuperclass(); parent != null && parent != Object.class; parent = parent.getSuperclass()) {
+            copy(re, getConfig(parent));
+        }
+        cache.put(clz.getName(), re);
         return re;
+    }
+
+    private void copy(Object dest, Object other) {
+        if (dest == null || other == null)
+            return;
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(dest.getClass(), Object.class);
+            for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
+                Object value = propertyDescriptor.getValue(propertyDescriptor.getName());
+                Object otherValue = getPropertyValue(other, propertyDescriptor.getName());
+                if (value == null && otherValue != null) {
+                    BeanUtils.copyProperty(dest, propertyDescriptor.getName(), otherValue);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Object getPropertyValue(Object obj, String propertyName) {
+        try {
+            return BeanUtils.getProperty(obj, propertyName);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private String findConfigKey(Class<?> clz) {
@@ -54,6 +88,7 @@ public class YamlConfigLoader implements ConfigLoader {
             String suffix = "Config";
             if (clzSimpleName.startsWith(prefix) && clzSimpleName.endsWith(suffix))
                 return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clzSimpleName.substring(prefix.length(), clzSimpleName.length() - suffix.length())).replaceAll("_", ".");
+            throw new IllegalArgumentException("config not found for:" + clz.getName());
         }
         return annotation.value();
     }
