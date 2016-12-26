@@ -12,15 +12,13 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
-import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
-import com.lvbby.codema.java.lexer.JavaLexer;
-import com.lvbby.codema.java.tool.JavaClassUtils;
+import com.lvbby.codema.java.tool.JavaClassTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
@@ -38,18 +36,15 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
     @CodemaRunner
     public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source) {
-        List<CompilationUnit> javaClass = JavaClassUtils.createJavaClasses(codemaContext, config, source);
-        javaClass.forEach(compilationUnit -> {
-            CompilationUnit target = JavaClassUtils.createJavaClasss(codemaContext, config, compilationUnit);
-            genTest(target, JavaLexer.getClass(compilationUnit).orElse(null));
-            System.out.println(target.toString(new PrettyPrinterConfiguration()));
+        JavaClassTemplate.classOrInterfaceTemplate(codemaContext, config, source, (context, conf, target, src) -> {
+            genTest(target, src);
+            System.out.println(target);
         });
     }
 
 
-    public static void genTest(CompilationUnit parent, TypeDeclaration<?> typeDeclaration) {
+    public static void genTest(ClassOrInterfaceDeclaration testClass, ClassOrInterfaceDeclaration typeDeclaration) {
         String beanName = camel(typeDeclaration.getNameAsString());
-        ClassOrInterfaceDeclaration testClass = parent.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().orElse(null);
         if (testClass == null)
             return;
         /** bean field */
@@ -57,6 +52,17 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
         /** methods */
         getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
+    }
+
+    public static void genTest(CompilationUnit parent, ClassOrInterfaceDeclaration typeDeclaration) {
+        String beanName = camel(typeDeclaration.getNameAsString());
+        parent.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
+            /** bean field */
+            testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
+            /** methods */
+            getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
+        });
+
     }
 
 
