@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by lipeng on 2016/12/22.
  */
 @ConfigKey("common")
-public class CoderCommonConfig implements Serializable {
+public class CommonCodemaConfig implements Serializable {
     private String author;
     private String from;
     private String resultHandler;

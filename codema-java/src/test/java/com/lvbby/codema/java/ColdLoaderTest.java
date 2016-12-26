@@ -5,8 +5,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.ConfigLoader;
 import com.lvbby.codema.core.YamlConfigLoader;
-import com.lvbby.codema.core.config.CoderCommonConfig;
-import com.lvbby.codema.java.testcase.CodemaJavaTestcaseConfig;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.java.testcase.JavaTestcaseCodemaConfig;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -50,10 +50,10 @@ public class ColdLoaderTest {
     public void sd() throws Exception {
         ConfigLoader configLoader = new YamlConfigLoader();
         configLoader.load(IOUtils.toString(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codema.yml")));
-        CodemaJavaTestcaseConfig config = configLoader.getConfig(CodemaJavaTestcaseConfig.class);
+        JavaTestcaseCodemaConfig config = configLoader.getConfig(JavaTestcaseCodemaConfig.class);
         System.out.println(JSON.toJSONString(config));
         System.out.println(JSON.toJSONString(config.getFrom()));
-        System.out.println(JSON.toJSONString(configLoader.getConfig(CoderCommonConfig.class)));
+        System.out.println(JSON.toJSONString(configLoader.getConfig(CommonCodemaConfig.class)));
     }
 
 

@@ -84,10 +84,9 @@ public class YamlConfigLoader implements ConfigLoader {
         /** guess using class name , convert class name into a.b.camelCase*/
         if (annotation == null || StringUtils.isBlank(annotation.value())) {
             String clzSimpleName = clz.getSimpleName();
-            String prefix = "Codema";
-            String suffix = "Config";
-            if (clzSimpleName.startsWith(prefix) && clzSimpleName.endsWith(suffix))
-                return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clzSimpleName.substring(prefix.length(), clzSimpleName.length() - suffix.length())).replaceAll("_", ".");
+            String suffix = "CodemaConfig";
+            if (clzSimpleName.endsWith(suffix))
+                return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clzSimpleName.substring(0, clzSimpleName.length() - suffix.length())).replaceAll("_", ".");
             throw new IllegalArgumentException("config not found for:" + clz.getName());
         }
         return annotation.value();

@@ -6,7 +6,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.java.baisc.CodemaJavaBasicConfig;
+import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.lexer.JavaLexer;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Created by lipeng on 2016/12/25.
  */
 public class JavaClassInitUtils {
-    public List<CompilationUnit> process(CodemaContext request, CodemaJavaBasicConfig config) throws Exception {
+    public List<CompilationUnit> process(CodemaContext request, JavaBasicCodemaConfig config) throws Exception {
         return request.getParam(JavaSourceParam.class)
                 .map(e -> e.getCompilationUnits())
                 .map(compilationUnits -> compilationUnits.stream().map(compilationUnit -> {
@@ -38,15 +38,15 @@ public class JavaClassInitUtils {
                 }).collect(Collectors.toList())).orElse(Lists.newLinkedList());
     }
 
-    public static ClassOrInterfaceDeclaration createClass(CodemaContext request, CodemaJavaBasicConfig config, String className) {
+    public static ClassOrInterfaceDeclaration createClass(CodemaContext request, JavaBasicCodemaConfig config, String className) {
         if (StringUtils.isBlank(className))
             className = "Untitled" + UUID.randomUUID();
         else
             className += config.getDestClassName();
 
         ClassOrInterfaceDeclaration re = new ClassOrInterfaceDeclaration(EnumSet.of(Modifier.PUBLIC), false, className).setInterface(config.isToBeInterface());
-        if (request.loadConfig(CodemaJavaBasicConfig.class).isPresent())
-            re.setJavaDocComment(String.format("\n* Created by %s on %s\n", request.loadConfig(CodemaJavaBasicConfig.class), new SimpleDateFormat("yyyy/MM/hh").format(new Date())));
+        if (request.loadConfig(JavaBasicCodemaConfig.class).isPresent())
+            re.setJavaDocComment(String.format("\n* Created by %s on %s\n", request.loadConfig(JavaBasicCodemaConfig.class), new SimpleDateFormat("yyyy/MM/hh").format(new Date())));
         return re;
     }
 }

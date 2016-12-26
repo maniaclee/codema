@@ -1,12 +1,15 @@
 package com.lvbby.codema.core;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.config.CoderCommonConfig;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.inject.CodemaInjectable;
+import com.lvbby.codema.core.inject.CodemaInjector;
 import org.apache.commons.lang3.Validate;
 
 import java.net.URI;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -27,6 +30,7 @@ public class Codema {
         //加载CodeMachine
         this.codemaMachines = loadService(CodemaMachine.class);
         this.sourceParsers = loadService(SourceParser.class);
+        this.codemaMachines.addAll(loadService(CodemaInjectable.class).stream().map(codemaInjectable -> new CodemaInjector().toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
     }
 
 
@@ -35,7 +39,7 @@ public class Codema {
         CodemaContext codemaContext = new CodemaContext();
         codemaContext.setConfigLoader(configLoader);
 
-        CoderCommonConfig config = codemaContext.getConfig(CoderCommonConfig.class);
+        CommonCodemaConfig config = codemaContext.getConfig(CommonCodemaConfig.class);
         Validate.notNull(config, "common config is missing");
 
         /** 解析输入，注入到context里 */
@@ -54,6 +58,11 @@ public class Codema {
 
     public Codema addCodemaMachine(CodemaMachine codemaMachine) {
         this.codemaMachines.add(codemaMachine);
+        return this;
+    }
+
+    public Codema addCodemaMachineInject(Object codemaMachine) {
+        this.codemaMachines.addAll(new CodemaInjector().toCodemaMachine(codemaMachine));
         return this;
     }
 

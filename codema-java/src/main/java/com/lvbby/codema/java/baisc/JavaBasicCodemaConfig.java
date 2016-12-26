@@ -1,7 +1,7 @@
 package com.lvbby.codema.java.baisc;
 
 import com.lvbby.codema.core.ConfigKey;
-import com.lvbby.codema.core.config.CoderCommonConfig;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by lipeng on 2016/12/22.
  */
 @ConfigKey("java.basic")
-public class CodemaJavaBasicConfig extends CoderCommonConfig implements Serializable {
+public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Serializable {
     /**
      * 目标package
      */
