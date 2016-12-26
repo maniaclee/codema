@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.java.lexer.JavaLexer;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,12 +20,11 @@ public class JavaFileSourceParser implements SourceParser<JavaSourceParam> {
         File file = new File(from.getPath());
         if (file.isFile()) {
             re.add(parse(file));
-            return re;
-        }
-
-        if (file.isDirectory())
+        } else if (file.isDirectory()) {
             for (File f : file.listFiles((dir, name) -> name.endsWith(".java")))
                 re.add(parse(f));
+        }
+        Validate.notEmpty(re.getCompilationUnits(), "not source found");
         return re;
     }
 

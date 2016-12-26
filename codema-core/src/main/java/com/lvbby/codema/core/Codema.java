@@ -18,6 +18,7 @@ public class Codema {
     private ConfigLoader configLoader;
     private List<CodemaMachine> codemaMachines;
     private List<SourceParser> sourceParsers;
+    private CodemaInjector codemaInjector = new CodemaInjector();
 
     public static Codema fromYaml(String yaml) throws Exception {
         ConfigLoader configLoader = new YamlConfigLoader();
@@ -30,7 +31,7 @@ public class Codema {
         //加载CodeMachine
         this.codemaMachines = loadService(CodemaMachine.class);
         this.sourceParsers = loadService(SourceParser.class);
-        this.codemaMachines.addAll(loadService(CodemaInjectable.class).stream().map(codemaInjectable -> new CodemaInjector().toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
+        this.codemaMachines.addAll(loadService(CodemaInjectable.class).stream().map(codemaInjectable -> codemaInjector.toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
     }
 
 
@@ -62,7 +63,7 @@ public class Codema {
     }
 
     public Codema addCodemaMachineInject(Object codemaMachine) {
-        this.codemaMachines.addAll(new CodemaInjector().toCodemaMachine(codemaMachine));
+        this.codemaMachines.addAll(codemaInjector.toCodemaMachine(codemaMachine));
         return this;
     }
 
