@@ -1,5 +1,7 @@
 package com.lvbby.codema.core.inject;
 
+import com.lvbby.codema.core.CodemaContext;
+
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -10,6 +12,15 @@ public class CodemaInjectContext {
     private Object target;
     private Method codeRunnerMethod;
     private List<InjectEntry> args;
+    private CodemaContext context;
+
+    public CodemaContext getContext() {
+        return context;
+    }
+
+    public void setContext(CodemaContext context) {
+        this.context = context;
+    }
 
     public Object getTarget() {
         return target;
@@ -33,5 +44,9 @@ public class CodemaInjectContext {
 
     public void setArgs(List<InjectEntry> args) {
         this.args = args;
+    }
+
+    public Object invoke() throws Exception {
+        return codeRunnerMethod.invoke(target, args.stream().map(InjectEntry::getValue).toArray());
     }
 }

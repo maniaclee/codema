@@ -80,4 +80,7 @@ public class Codema {
         return Lists.newArrayList(ServiceLoader.load(clz));
     }
 
+    public CodemaInjector getCodemaInjector() {
+        return codemaInjector;
+    }
 }

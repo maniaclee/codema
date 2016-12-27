@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 /**
@@ -19,7 +20,11 @@ import java.util.stream.Collectors;
  */
 public class CodemaInjector {
 
-    private List<CodemaInjectorProcessor> injectorProcessors = Lists.newArrayList(new ParameterFilterInjectProcessor());
+    private List<CodemaInjectorProcessor> injectorProcessors = Lists.newArrayList();
+
+    public CodemaInjector() {
+        ServiceLoader.load(ParameterFilterInjectProcessor.class).forEach(parameterFilterInjectProcessor -> injectorProcessors.add(parameterFilterInjectProcessor));
+    }
 
     public List<CodemaMachine> toCodemaMachine(Object a) {
         try {
@@ -54,7 +59,8 @@ public class CodemaInjector {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             CodemaContext context = (CodemaContext) args[0];
-            List<InjectEntry> entries = InjectEntry.from(context, method);
+            //从context中找到参数, by type
+            List<InjectEntry> entries = InjectEntry.from(context, codeRunnerMethod);
             //not match
             if (CollectionUtils.isEmpty(entries))
                 return null;
@@ -63,6 +69,7 @@ public class CodemaInjector {
                 con.setArgs(entries);
                 con.setCodeRunnerMethod(codeRunnerMethod);
                 con.setTarget(target);
+                con.setContext(context);
                 try {
                     for (CodemaInjectorProcessor injectorProcessor : injectorProcessors) {
                         injectorProcessor.process(con);
@@ -75,7 +82,12 @@ public class CodemaInjector {
 
             Object[] inject = entries.stream().map(injectEntry -> injectEntry.getValue()).toArray();
             //invoke the delegate method
-            return codeRunnerMethod.invoke(target, inject);
+            try {
+                return codeRunnerMethod.invoke(target, inject);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
         }
     }
 

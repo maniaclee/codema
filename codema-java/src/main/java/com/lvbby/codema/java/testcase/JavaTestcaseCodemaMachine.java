@@ -18,6 +18,7 @@ import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
+import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.tool.JavaClassTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
@@ -35,11 +36,17 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
     private static String newVarNameDefault = "result";
 
     @CodemaRunner
-    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source) {
+    @JavaTemplate
+    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source , CompilationUnit compilationUnit) {
         /** 遍历的模板执行器 */
         JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
                 config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
     }
+//    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source) {
+//        /** 遍历的模板执行器 */
+//        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
+//                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
+//    }
 
     public static CompilationUnit genTest(CompilationUnit parent, ClassOrInterfaceDeclaration typeDeclaration) {
         String beanName = camel(typeDeclaration.getNameAsString());
