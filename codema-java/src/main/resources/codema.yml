@@ -8,14 +8,17 @@ java:
     dest-package: '所有的pack都是    dest-package'
     dest-src-root: ''
   testcase:
-    from-package: '基于common.from,选取指定package的类产生testcase'
+    from-package: 'com.lvbby'
     dest-class-name: 'Test'
     dest-package: ''
     is-spring: true
+  convert:
+    from-package: 'com.lvbby'
   delegate:
     from-package: '就是一个filter'
     dest-class-name: ''
   entity:
+    from-package: '基于common.from,选取指定package的类产生testcase'
     dest-package: ''
     dest-src-root: '如果是sql产生的情况，且区分module模块，那么src-root不一样'
   dto:

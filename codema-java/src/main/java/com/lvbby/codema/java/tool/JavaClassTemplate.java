@@ -7,6 +7,7 @@ import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.lexer.JavaLexer;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lipeng on 2016/12/26.
@@ -22,16 +23,25 @@ public class JavaClassTemplate {
     }
 
     public static <T extends JavaBasicCodemaConfig> void classOrInterfaceTemplate(CodemaContext codemaContext, T config, @NotNull JavaSourceParam source, ClassOrInterfaceTemplate classOrInterfaceTemplate) {
-        source.getCompilationUnits().forEach(compilationUnit -> {
+        source.getCompilationUnits().stream().filter(u -> filterPackage(u, config)).forEach(compilationUnit -> {
             CompilationUnit target = JavaClassUtils.createJavaClasss(codemaContext, config, compilationUnit);
             classOrInterfaceTemplate.handle(codemaContext, config, JavaLexer.getClass(target).orElse(null), JavaLexer.getClass(compilationUnit).orElse(null));
         });
     }
 
     public static <T extends JavaBasicCodemaConfig> void compilationUnitTemplate(CodemaContext codemaContext, T config, @NotNull JavaSourceParam source, CompilationUnitTemplate classOrInterfaceTemplate) {
-        source.getCompilationUnits().forEach(compilationUnit -> {
+        source.getCompilationUnits().stream().filter(u -> filterPackage(u, config)).forEach(compilationUnit -> {
             CompilationUnit target = JavaClassUtils.createJavaClasss(codemaContext, config, compilationUnit);
             classOrInterfaceTemplate.handle(codemaContext, config, target, JavaLexer.getClass(compilationUnit).orElse(null));
         });
+    }
+
+    /***
+     * 过滤package
+     */
+    private static boolean filterPackage(CompilationUnit compilationUnit, JavaBasicCodemaConfig config) {
+        if (StringUtils.isBlank(config.getFromPackage()))
+            return true;
+        return compilationUnit.getPackage().map(p -> p.getPackageName()).map(p -> p.startsWith(config.getFromPackage())).orElse(false);
     }
 }
