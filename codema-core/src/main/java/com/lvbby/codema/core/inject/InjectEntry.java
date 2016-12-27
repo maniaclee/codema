@@ -22,10 +22,6 @@ public class InjectEntry {
     }
 
 
-    public static boolean usable(List<InjectEntry> injectEntries) {
-        return injectEntries.stream().anyMatch(injectEntry -> !(injectEntry.getValue() == null && injectEntry.getParameter().isAnnotationPresent(NotNull.class)));
-    }
-
     public static InjectEntry from(CodemaContext context, Parameter parameter) {
         return new InjectEntry(parameter).value(getInjectValue(context, parameter));
     }
@@ -35,7 +31,6 @@ public class InjectEntry {
     }
 
     private static Object getInjectValue(CodemaContext context, Parameter parameter) {
-        InjectEntry re = new InjectEntry(parameter);
         Class<?> clz = parameter.getType();
         if (CodemaContext.class.equals(clz))
             return context;

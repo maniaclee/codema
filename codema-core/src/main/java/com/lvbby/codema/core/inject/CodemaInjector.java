@@ -3,6 +3,8 @@ package com.lvbby.codema.core.inject;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.inject.processor.ParameterFilterInjectProcessor;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
  */
 public class CodemaInjector {
 
+    private List<CodemaInjectorProcessor> injectorProcessors = Lists.newArrayList(new ParameterFilterInjectProcessor());
+
     public List<CodemaMachine> toCodemaMachine(Object a) {
         try {
             return Lists.newArrayList(Introspector.getBeanInfo(a.getClass(), Object.class).getMethodDescriptors()).stream()
@@ -28,6 +32,11 @@ public class CodemaInjector {
         }
     }
 
+    public CodemaInjector addCodemaInjectorProcessor(CodemaInjectorProcessor codemaInjectorProcessor) {
+        if (codemaInjectorProcessor != null)
+            injectorProcessors.add(codemaInjectorProcessor);
+        return this;
+    }
 
     private CodemaMachine wrap2codemaMachine(Object a, Method m) {
         return (CodemaMachine) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{CodemaMachine.class}, new CodemaRunnerInvocationHandler(a, m));
@@ -45,20 +54,29 @@ public class CodemaInjector {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             CodemaContext context = (CodemaContext) args[0];
-            Object[] inject = inject(context, codeRunnerMethod);
+            List<InjectEntry> entries = InjectEntry.from(context, method);
             //not match
-            if (inject == null)
+            if (CollectionUtils.isEmpty(entries))
                 return null;
+            if (CollectionUtils.isNotEmpty(injectorProcessors)) {
+                CodemaInjectContext con = new CodemaInjectContext();
+                con.setArgs(entries);
+                con.setCodeRunnerMethod(codeRunnerMethod);
+                con.setTarget(target);
+                try {
+                    for (CodemaInjectorProcessor injectorProcessor : injectorProcessors) {
+                        injectorProcessor.process(con);
+                    }
+                } catch (InjectInterruptException e) {
+                    //interrupt detected , skip the rest
+                    return null;
+                }
+            }
+
+            Object[] inject = entries.stream().map(injectEntry -> injectEntry.getValue()).toArray();
             //invoke the delegate method
             return codeRunnerMethod.invoke(target, inject);
         }
-    }
-
-    private Object[] inject(CodemaContext context, Method method) {
-        List<InjectEntry> from = InjectEntry.from(context, method);
-        if (!InjectEntry.usable(from))
-            return null;
-        return from.stream().map(injectEntry -> injectEntry.getValue()).toArray();
     }
 
 }
