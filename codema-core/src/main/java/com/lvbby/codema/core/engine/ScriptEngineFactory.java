@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ScriptEngineFactory {
 
-    public static final ScriptEngineFactory instance = new ScriptEngineFactory(Lists.newArrayList(new JsEngine()));
+    public static final ScriptEngineFactory instance = of(Lists.newArrayList(new JsEngine()));
     private List<IScriptEngine> scriptEngines = Lists.newArrayList();
 
     public static ScriptEngineFactory of(List<IScriptEngine> scriptEngines) {
