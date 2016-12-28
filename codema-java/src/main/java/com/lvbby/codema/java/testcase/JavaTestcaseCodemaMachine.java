@@ -44,9 +44,6 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
         CompilationUnit result = genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null));
         config.findResultHandler().handle(codemaContext, config, result);
-        /** 遍历的模板执行器 */
-        //        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
-        //                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
     }
 
     public static CompilationUnit genTest(CompilationUnit target, ClassOrInterfaceDeclaration typeDeclaration) {
