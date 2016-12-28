@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class Codema {
     private ConfigLoader configLoader;
     private List<CodemaMachine> codemaMachines;
-    private List<SourceParser> sourceParsers;
+    private SourceParserFactory sourceParserFactory;
     private CodemaInjector codemaInjector = new CodemaInjector();
 
     public static Codema fromYaml(String yaml) throws Exception {
@@ -30,7 +30,7 @@ public class Codema {
         this.configLoader = configLoader;
         //加载CodeMachine
         this.codemaMachines = loadService(CodemaMachine.class);
-        this.sourceParsers = loadService(SourceParser.class);
+        this.sourceParserFactory = SourceParserFactory.of(loadService(SourceParser.class));
         this.codemaMachines.addAll(loadService(CodemaInjectable.class).stream().map(codemaInjectable -> codemaInjector.toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
     }
 
@@ -54,7 +54,10 @@ public class Codema {
     }
 
     private SourceParser findSourceParser(String from) throws CodemaException {
-        return this.sourceParsers.stream().filter(sourceParser -> from.startsWith(sourceParser.getSupportedUriScheme())).findFirst().orElseThrow(() -> new CodemaException(String.format("can't find source parser for %s", from)));
+        SourceParser load = sourceParserFactory.load(from);
+        if (load == null)
+            throw new CodemaException(String.format("can't find source parser for %s", from));
+        return load;
     }
 
     public Codema addCodemaMachine(CodemaMachine codemaMachine) {
@@ -72,7 +75,7 @@ public class Codema {
     }
 
     public Codema addCodemaMachine(SourceParser sourceParser) {
-        this.sourceParsers.add(sourceParser);
+        this.sourceParserFactory.getSourceParsers().add(sourceParser);
         return this;
     }
 

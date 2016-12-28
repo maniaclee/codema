@@ -10,6 +10,7 @@ public interface SourceParser<T> {
     /***
      * 定义支持的uri的 scheme和authority ， 如schema://authority/
      * 如果schema下的所有authority都支持，则返回schema://
+     *
      * @return
      */
     String getSupportedUriScheme();
