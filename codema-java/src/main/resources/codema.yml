@@ -14,6 +14,7 @@ java:
     is-spring: true
   convert:
     from-package: 'com.lvbby'
+    target-entity: ''
   delegate:
     from-package: '就是一个filter'
     dest-class-name: ''

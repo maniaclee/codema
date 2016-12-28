@@ -17,7 +17,6 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
-import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjectorProcessor;
 import com.lvbby.codema.java.inject.Parameter;
@@ -39,19 +38,16 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
     @CodemaRunner
     @JavaTemplate
-    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source,
+    public void code(CodemaContext codemaContext, @NotNull JavaTestcaseCodemaConfig config,
                      @Parameter(identifier = JavaTemplateInjectorProcessor.java_source) CompilationUnit compilationUnitSource,
                      @Parameter(identifier = JavaTemplateInjectorProcessor.java_dest) CompilationUnit compilationUnitDest) {
-        config.findResultHandler().handle(codemaContext, config, genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null)));
+
+        CompilationUnit result = genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null));
+        config.findResultHandler().handle(codemaContext, config, result);
         /** 遍历的模板执行器 */
         //        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
         //                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
     }
-    //    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source) {
-    //        /** 遍历的模板执行器 */
-    //        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
-    //                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
-    //    }
 
     public static CompilationUnit genTest(CompilationUnit target, ClassOrInterfaceDeclaration typeDeclaration) {
         String beanName = camel(typeDeclaration.getNameAsString());

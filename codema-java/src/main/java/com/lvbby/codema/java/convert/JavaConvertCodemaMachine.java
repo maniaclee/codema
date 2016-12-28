@@ -1,8 +1,6 @@
 package com.lvbby.codema.java.convert;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -29,9 +27,6 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
     public void code(CodemaContext codemaContext, JavaConvertCodemaConfig config, @NotNull JavaSourceParam source) {
         /** 遍历的模板执行器 */
         JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, null);
-    }
-
-    public static void genTest(CompilationUnit parent, ClassOrInterfaceDeclaration typeDeclaration) {
     }
 
     public static MethodDeclaration genConvertToMethod(TypeDeclaration<?> typeDeclaration, String otherClass) {
