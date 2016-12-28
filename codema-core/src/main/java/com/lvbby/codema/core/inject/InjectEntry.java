@@ -64,4 +64,8 @@ public class InjectEntry {
     public void setParameter(Parameter parameter) {
         this.parameter = parameter;
     }
+
+    public InjectEntry copy() {
+        return new InjectEntry(parameter).value(value);
+    }
 }

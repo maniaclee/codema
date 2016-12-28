@@ -5,11 +5,9 @@ import java.lang.annotation.*;
 /**
  * Created by lipeng on 2016/12/22.
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Parameter {
-    Class type();
-
     String identifier() default "";
 }

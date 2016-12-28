@@ -4,6 +4,7 @@ import com.lvbby.codema.core.CodemaContext;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 16/12/27.
@@ -48,5 +49,13 @@ public class CodemaInjectContext {
 
     public Object invoke() throws Exception {
         return codeRunnerMethod.invoke(target, args.stream().map(InjectEntry::getValue).toArray());
+    }
+
+    public Object invoke(List<InjectEntry> injectEntries) throws Exception {
+        return codeRunnerMethod.invoke(target, injectEntries.stream().map(InjectEntry::getValue).toArray());
+    }
+
+    public List<InjectEntry> cloneEntries() {
+        return args.stream().map(injectEntry -> injectEntry.copy()).collect(Collectors.toList());
     }
 }

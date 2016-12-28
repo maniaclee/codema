@@ -19,7 +19,9 @@ import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.inject.JavaTemplate;
-import com.lvbby.codema.java.tool.JavaClassTemplate;
+import com.lvbby.codema.java.inject.JavaTemplateInjectorProcessor;
+import com.lvbby.codema.java.inject.Parameter;
+import com.lvbby.codema.java.lexer.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
@@ -37,26 +39,29 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
     @CodemaRunner
     @JavaTemplate
-    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source , CompilationUnit compilationUnit) {
+    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source,
+                     @Parameter(identifier = JavaTemplateInjectorProcessor.java_source) CompilationUnit compilationUnitSource,
+                     @Parameter(identifier = JavaTemplateInjectorProcessor.java_dest) CompilationUnit compilationUnitDest) {
+        config.findResultHandler().handle(codemaContext, config, genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null)));
         /** 遍历的模板执行器 */
-        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
-                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
+        //        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
+        //                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
     }
-//    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source) {
-//        /** 遍历的模板执行器 */
-//        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
-//                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
-//    }
+    //    public void code(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, @NotNull JavaSourceParam source) {
+    //        /** 遍历的模板执行器 */
+    //        JavaClassTemplate.compilationUnitTemplate(codemaContext, config, source, (context, conf, target, src) ->
+    //                config.findResultHandler().handle(codemaContext, config, genTest(target, src)));
+    //    }
 
-    public static CompilationUnit genTest(CompilationUnit parent, ClassOrInterfaceDeclaration typeDeclaration) {
+    public static CompilationUnit genTest(CompilationUnit target, ClassOrInterfaceDeclaration typeDeclaration) {
         String beanName = camel(typeDeclaration.getNameAsString());
-        parent.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
+        target.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
             /** bean field */
             testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
             /** methods */
             getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
         });
-        return parent;
+        return target;
     }
 
 

@@ -3,7 +3,6 @@ package com.lvbby.codema.core.inject;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
-import com.lvbby.codema.core.inject.processor.ParameterFilterInjectProcessor;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.beans.IntrospectionException;
@@ -23,7 +22,7 @@ public class CodemaInjector {
     private List<CodemaInjectorProcessor> injectorProcessors = Lists.newArrayList();
 
     public CodemaInjector() {
-        ServiceLoader.load(ParameterFilterInjectProcessor.class).forEach(parameterFilterInjectProcessor -> injectorProcessors.add(parameterFilterInjectProcessor));
+        ServiceLoader.load(CodemaInjectorProcessor.class).forEach(parameterFilterInjectProcessor -> injectorProcessors.add(parameterFilterInjectProcessor));
     }
 
     public List<CodemaMachine> toCodemaMachine(Object a) {
