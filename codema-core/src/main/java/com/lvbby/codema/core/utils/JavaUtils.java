@@ -1,5 +1,10 @@
 package com.lvbby.codema.core.utils;
 
+import com.google.common.collect.Maps;
+
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 
 /**
@@ -21,6 +26,15 @@ public class JavaUtils {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static Map<String, Object> object2map(Object object) throws Exception {
+        Map<String, Object> re = Maps.newHashMap();
+        for (PropertyDescriptor propertyDescriptor : Introspector.getBeanInfo(object.getClass(), Object.class).getPropertyDescriptors()) {
+            if (propertyDescriptor.getReadMethod() != null)
+                re.put(propertyDescriptor.getName(), propertyDescriptor.getReadMethod().invoke(object));
+        }
+        return re;
     }
 
 }

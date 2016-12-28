@@ -14,7 +14,7 @@ java:
     is-spring: true
   convert:
     from-package: 'com.lvbby'
-    target-entity: ''
+    target-entity: "script://js/{match:$className.match(/*DTO/i),result:$src.className.replace(/DTO/i,'Entity')}"
   delegate:
     from-package: '就是一个filter'
     dest-class-name: ''
