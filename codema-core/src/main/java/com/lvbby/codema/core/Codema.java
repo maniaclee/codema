@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaInjector;
+import com.lvbby.codema.core.resource.ResourceLoader;
 import org.apache.commons.lang3.Validate;
 
 import java.net.URI;
@@ -19,6 +20,7 @@ public class Codema {
     private List<CodemaMachine> codemaMachines;
     private SourceParserFactory sourceParserFactory;
     private CodemaInjector codemaInjector = new CodemaInjector();
+    private ResourceLoader resourceLoader;
 
     public static Codema fromYaml(String yaml) throws Exception {
         ConfigLoader configLoader = new YamlConfigLoader();
@@ -39,6 +41,7 @@ public class Codema {
         /** 整个codema生命周期内共用一个context */
         CodemaContext codemaContext = new CodemaContext();
         codemaContext.setConfigLoader(configLoader);
+        codemaContext.setCodema(this);
 
         CommonCodemaConfig config = codemaContext.getConfig(CommonCodemaConfig.class);
         Validate.notNull(config, "common config is missing");
@@ -85,5 +88,9 @@ public class Codema {
 
     public CodemaInjector getCodemaInjector() {
         return codemaInjector;
+    }
+
+    public ResourceLoader getResourceLoader() {
+        return resourceLoader;
     }
 }

@@ -1,12 +1,13 @@
 common:
   author: maniaclee
   from: 'file://java:src//Users/lipeng/workspace/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
-  result-handler: 'com.lvbby.codema.core.PrintResultHandler'
+  result-handler: 'com.lvbby.codema.core.result.PrintResultHandler'
 
 java:
   basic:
     dest-package: '所有的pack都是    dest-package'
     dest-src-root: ''
+    result-handler: 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
   testcase:
     from-package: 'com.lvbby'
     dest-class-name: 'Test'

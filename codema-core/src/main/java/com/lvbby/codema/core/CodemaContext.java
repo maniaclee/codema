@@ -17,8 +17,17 @@ public class CodemaContext {
      * 项目的入参，由Common的from字段解析而来，所有模块都以这个参数为入参
      */
     private Object source;
+    private Codema codema;
 
     Map<Class, Object> paramMap = Maps.newConcurrentMap();
+
+    public Codema getCodema() {
+        return codema;
+    }
+
+    public void setCodema(Codema codema) {
+        this.codema = codema;
+    }
 
     public <T> Optional<T> getParam(Class<T> clz) {
         return Optional.ofNullable((T) paramMap.get(clz));

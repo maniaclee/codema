@@ -1,11 +1,9 @@
 package com.lvbby.codema.core;
 
-import com.lvbby.codema.core.config.CommonCodemaConfig;
-
 /**
  * Created by lipeng on 2016/12/26.
  */
-public interface ResultHandler<T extends CommonCodemaConfig> {
+public interface ResultHandler {
 
-    void handle(CodemaContext codemaContext, T config, Object result);
+    void handle(CodemaContext codemaContext, Object result);
 }

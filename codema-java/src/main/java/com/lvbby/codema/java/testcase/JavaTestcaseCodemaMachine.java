@@ -43,7 +43,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
                      @Parameter(identifier = JavaTemplateInjectorProcessor.java_dest) CompilationUnit compilationUnitDest) {
 
         CompilationUnit result = genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null));
-        config.findResultHandler().handle(codemaContext, config, result);
+        config.findResultHandler().handle(codemaContext, result);
     }
 
     public static CompilationUnit genTest(CompilationUnit target, ClassOrInterfaceDeclaration typeDeclaration) {
