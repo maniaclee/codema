@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaInjector;
+import com.lvbby.codema.core.resource.DefaultResourceLoader;
 import com.lvbby.codema.core.resource.ResourceLoader;
 import org.apache.commons.lang3.Validate;
 
@@ -20,7 +21,7 @@ public class Codema {
     private List<CodemaMachine> codemaMachines;
     private SourceParserFactory sourceParserFactory;
     private CodemaInjector codemaInjector = new CodemaInjector();
-    private ResourceLoader resourceLoader;
+    private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
     public static Codema fromYaml(String yaml) throws Exception {
         ConfigLoader configLoader = new YamlConfigLoader();
