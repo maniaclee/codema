@@ -3,7 +3,7 @@ package com.lvbby.codema.core;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.inject.CodemaInjectable;
-import com.lvbby.codema.core.inject.CodemaInjector;
+import com.lvbby.codema.core.inject.CodemaInject;
 import com.lvbby.codema.core.resource.DefaultResourceLoader;
 import com.lvbby.codema.core.resource.ResourceLoader;
 import org.apache.commons.lang3.Validate;
@@ -20,7 +20,7 @@ public class Codema {
     private ConfigLoader configLoader;
     private List<CodemaMachine> codemaMachines;
     private SourceParserFactory sourceParserFactory;
-    private CodemaInjector codemaInjector = new CodemaInjector();
+    private CodemaInject codemaInject = new CodemaInject();
     private ResourceLoader resourceLoader = new DefaultResourceLoader();
 
     public static Codema fromYaml(String yaml) throws Exception {
@@ -34,7 +34,7 @@ public class Codema {
         //加载CodeMachine
         this.codemaMachines = loadService(CodemaMachine.class);
         this.sourceParserFactory = SourceParserFactory.of(loadService(SourceParser.class));
-        this.codemaMachines.addAll(loadService(CodemaInjectable.class).stream().map(codemaInjectable -> codemaInjector.toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
+        this.codemaMachines.addAll(loadService(CodemaInjectable.class).stream().map(codemaInjectable -> codemaInject.toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
     }
 
 
@@ -70,7 +70,7 @@ public class Codema {
     }
 
     public Codema addCodemaMachineInject(Object codemaMachine) {
-        this.codemaMachines.addAll(codemaInjector.toCodemaMachine(codemaMachine));
+        this.codemaMachines.addAll(codemaInject.toCodemaMachine(codemaMachine));
         return this;
     }
 
@@ -87,8 +87,8 @@ public class Codema {
         return Lists.newArrayList(ServiceLoader.load(clz));
     }
 
-    public CodemaInjector getCodemaInjector() {
-        return codemaInjector;
+    public CodemaInject getCodemaInject() {
+        return codemaInject;
     }
 
     public ResourceLoader getResourceLoader() {

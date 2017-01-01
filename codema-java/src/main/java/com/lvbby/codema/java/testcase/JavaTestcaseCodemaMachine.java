@@ -18,8 +18,8 @@ import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.inject.JavaTemplate;
-import com.lvbby.codema.java.inject.JavaTemplateInjectorProcessor;
-import com.lvbby.codema.java.inject.Parameter;
+import com.lvbby.codema.java.inject.JavaTemplateInjector;
+import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.lexer.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
@@ -39,8 +39,8 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaTestcaseCodemaConfig config,
-                     @Parameter(identifier = JavaTemplateInjectorProcessor.java_source) CompilationUnit compilationUnitSource,
-                     @Parameter(identifier = JavaTemplateInjectorProcessor.java_dest) CompilationUnit compilationUnitDest) {
+                     @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
+                     @JavaTemplateParameter(identifier = JavaTemplateInjector.java_dest) CompilationUnit compilationUnitDest) {
 
         CompilationUnit result = genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null));
         config.handle(codemaContext, result);
@@ -51,6 +51,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
         target.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
             /** bean field */
             testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
+            JavaLexer.addAnnotationWithImport(testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE), Test.class);
             /** methods */
             getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
         });

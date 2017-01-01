@@ -15,12 +15,14 @@ import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
+import com.lvbby.codema.core.inject.Parameter;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.engine.JavaEngineContext;
 import com.lvbby.codema.java.engine.JavaEngineResult;
+import com.lvbby.codema.java.inject.JavaClassParameterFactory;
 import com.lvbby.codema.java.inject.JavaTemplate;
-import com.lvbby.codema.java.inject.JavaTemplateInjectorProcessor;
-import com.lvbby.codema.java.inject.Parameter;
+import com.lvbby.codema.java.inject.JavaTemplateInjector;
+import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.lexer.JavaLexer;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,8 +38,8 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, JavaConvertCodemaConfig config, @NotNull JavaSourceParam source,
-                     @Parameter(identifier = JavaTemplateInjectorProcessor.java_source) CompilationUnit compilationUnitSource,
-                     @Parameter(identifier = JavaTemplateInjectorProcessor.java_dest) CompilationUnit compilationUnitDest) throws Exception {
+                     @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
+                     @Parameter(value = "com.lvbby.utils.BuildUtils", createFactory = JavaClassParameterFactory.class) CompilationUnit compilationUnitDest) throws Exception {
 
         ClassOrInterfaceDeclaration sourceClass = JavaLexer.getClass(compilationUnitSource).orElse(null);
         ClassOrInterfaceDeclaration destCLass = JavaLexer.getClass(compilationUnitDest).orElse(null);

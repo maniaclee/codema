@@ -2,7 +2,7 @@ package com.lvbby.codema.java.inject;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.inject.CodemaInjectContext;
-import com.lvbby.codema.core.inject.CodemaInjectorProcessor;
+import com.lvbby.codema.core.inject.CodemaInjector;
 import com.lvbby.codema.core.inject.InjectEntry;
 import com.lvbby.codema.core.inject.InjectInterruptException;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 2016/12/27.
  */
-public class JavaTemplateInjectorProcessor implements CodemaInjectorProcessor {
+public class JavaTemplateInjector implements CodemaInjector {
     public static final String java_source = "java_source";
     public static final String java_dest = "java_dest";
 
@@ -28,7 +28,7 @@ public class JavaTemplateInjectorProcessor implements CodemaInjectorProcessor {
         if (source == null || !(source instanceof JavaSourceParam))
             return;
         /** 从参数中找到制定的Config */
-        JavaBasicCodemaConfig config = findConfig(context);
+        JavaBasicCodemaConfig config = context.findConfig(JavaBasicCodemaConfig.class);
         if (config == null)
             return;
         /** 根据config来筛选需要处理的source */
@@ -43,10 +43,6 @@ public class JavaTemplateInjectorProcessor implements CodemaInjectorProcessor {
         throw new InjectInterruptException("interrupted by " + getClass().getName());
     }
 
-    private JavaBasicCodemaConfig findConfig(CodemaInjectContext context) {
-        return context.getArgs().stream().filter(injectEntry -> JavaBasicCodemaConfig.class.isAssignableFrom(injectEntry.getParameter().getType())).findFirst().map(injectEntry -> (JavaBasicCodemaConfig) injectEntry.getValue()).orElse(null);
-    }
-
     private static boolean filterPackage(CompilationUnit compilationUnit, JavaBasicCodemaConfig config) {
         if (StringUtils.isBlank(config.getFromPackage()))
             return true;
@@ -55,7 +51,7 @@ public class JavaTemplateInjectorProcessor implements CodemaInjectorProcessor {
 
 
     private static void injectCompilationUnit(CodemaInjectContext context, JavaBasicCodemaConfig config, CompilationUnit compilationUnitSource, InjectEntry injectEntry) {
-        Parameter annotation = injectEntry.getParameter().getAnnotation(Parameter.class);
+        JavaTemplateParameter annotation = injectEntry.getParameter().getAnnotation(JavaTemplateParameter.class);
         if (annotation != null && StringUtils.isNotBlank(annotation.identifier())) {
             switch (annotation.identifier()) {
                 case java_source:

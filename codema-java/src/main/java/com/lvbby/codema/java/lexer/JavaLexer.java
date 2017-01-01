@@ -41,7 +41,7 @@ public class JavaLexer {
     }
 
     public static Optional<ClassOrInterfaceDeclaration> getClass(CompilationUnit cu) {
-        return Optional.ofNullable(cu.getTypes()).filter(typeDeclarations -> typeDeclarations.size() > 0).map(typeDeclarations -> (ClassOrInterfaceDeclaration) typeDeclarations.get(0));
+        return Optional.ofNullable(cu).map(CompilationUnit::getTypes).filter(typeDeclarations -> typeDeclarations.size() > 0).map(typeDeclarations -> (ClassOrInterfaceDeclaration) typeDeclarations.get(0));
     }
 
     public static List<FieldDeclaration> getFields(TypeDeclaration<?> cu) {

@@ -12,18 +12,15 @@ java:
   testcase:
     from-package: 'com.lvbby'
     dest-class-name: 'Test'
-    dest-package: ''
+    dest-package: 'com.lvbby.testcase'
     is-spring: true
   convert:
     from-package: 'com.lvbby'
     convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
+    dest-class-name: 'com.lvbby.utils.BuildUtils'
   delegate:
     from-package: '就是一个filter'
     dest-class-name: ''
-    $refer:
-        java-convert:
-          from-package: 'com.lvbby'
-          convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
   entity:
     from-package: '基于common.from,选取指定package的类产生testcase'
     dest-package: ''

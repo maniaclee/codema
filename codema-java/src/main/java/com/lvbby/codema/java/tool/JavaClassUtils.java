@@ -37,6 +37,31 @@ public class JavaClassUtils {
         return re;
     }
 
+    public static CompilationUnit createJavaClasssUnit(String classFullpath, String author, boolean isInterface) {
+        int i = classFullpath.lastIndexOf('.');
+        String pack = i > 0 ? classFullpath.substring(0, i) : null;
+        String className = i > 0 ? classFullpath.substring(i + 1) : classFullpath;
+        return createJavaClasssUnit(className, pack, author, isInterface);
+    }
+
+    public static CompilationUnit createJavaClasssUnit(String className, String packageName, String author, boolean isInterface) {
+        CompilationUnit re = new CompilationUnit();
+        //package
+        if (StringUtils.isNotBlank(packageName))
+            re.setPackage(packageName);
+        //class
+        re.setTypes(NodeList.nodeList(createJavaClasss(className, author, isInterface)));
+        return re;
+    }
+
+    public static ClassOrInterfaceDeclaration createJavaClasss(String className, String author, boolean isInterface) {
+        //class
+        ClassOrInterfaceDeclaration clz = new ClassOrInterfaceDeclaration(EnumSet.of(Modifier.PUBLIC), false, className).setInterface(isInterface);
+        if (StringUtils.isNotBlank(author))
+            clz.setJavaDocComment(String.format("\n* Created by %s on %s\n", author, new SimpleDateFormat("yyyy/MM/hh").format(new Date())));
+        return clz;
+    }
+
     public static ClassOrInterfaceDeclaration createClass(CodemaContext request, JavaBasicCodemaConfig config, String className) {
         if (StringUtils.isBlank(className))
             className = "Untitled" + UUID.randomUUID();

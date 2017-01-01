@@ -1,6 +1,7 @@
 package com.lvbby.codema.core.inject;
 
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -57,5 +58,9 @@ public class CodemaInjectContext {
 
     public List<InjectEntry> cloneEntries() {
         return args.stream().map(injectEntry -> injectEntry.copy()).collect(Collectors.toList());
+    }
+
+    public <T extends CommonCodemaConfig> T findConfig(Class<T> clz) {
+        return getArgs().stream().filter(injectEntry -> clz.isAssignableFrom(injectEntry.getParameter().getType())).findFirst().map(injectEntry -> (T) injectEntry.getValue()).orElse(null);
     }
 }
