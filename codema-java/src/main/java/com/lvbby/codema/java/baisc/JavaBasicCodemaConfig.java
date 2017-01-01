@@ -24,7 +24,6 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
      * 选取类的package
      */
     private String fromPackage;
-    private String resultHandler;
     private boolean toBeInterface = false;
 
     public boolean isToBeInterface() {
@@ -67,11 +66,4 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         this.fromPackage = fromPackage;
     }
 
-    public String getResultHandler() {
-        return resultHandler;
-    }
-
-    public void setResultHandler(String resultHandler) {
-        this.resultHandler = resultHandler;
-    }
 }

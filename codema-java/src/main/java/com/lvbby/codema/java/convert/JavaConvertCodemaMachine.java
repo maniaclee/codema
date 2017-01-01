@@ -50,7 +50,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
             return;
         MethodDeclaration methodDeclaration = genConvertToMethod(sourceClass, convertToClassName);
         destCLass.addMember(methodDeclaration);
-        config.findResultHandler().handle(codemaContext, destCLass);
+        config.handle(codemaContext, destCLass);
     }
 
     public static MethodDeclaration genConvertToMethod(ClassOrInterfaceDeclaration typeDeclaration, String otherClass) {

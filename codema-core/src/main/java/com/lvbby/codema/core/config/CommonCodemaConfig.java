@@ -1,24 +1,29 @@
 package com.lvbby.codema.core.config;
 
+import com.google.common.collect.Lists;
+import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ConfigKey;
 import com.lvbby.codema.core.ResultHandler;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 2016/12/22.
  */
 @ConfigKey("common")
-public class CommonCodemaConfig implements Serializable {
+public class CommonCodemaConfig implements Serializable, ResultHandler {
     private String author;
     private String from;
-    private String resultHandler;
+    private List<String> resultHandler;
 
-    public String getResultHandler() {
+    public List<String> getResultHandler() {
         return resultHandler;
     }
 
-    public void setResultHandler(String resultHandler) {
+    public void setResultHandler(List<String> resultHandler) {
         this.resultHandler = resultHandler;
     }
 
@@ -38,8 +43,12 @@ public class CommonCodemaConfig implements Serializable {
         this.author = author;
     }
 
-    public ResultHandler findResultHandler() {
-        return findResultHandler(getResultHandler());
+    public List<ResultHandler> findResultHandler() {
+        LinkedList<ResultHandler> re = Lists.newLinkedList();
+        if (resultHandler == null) {
+            return re;
+        }
+        return resultHandler.stream().map(e -> findResultHandler(e)).collect(Collectors.toList());
     }
 
     public static ResultHandler findResultHandler(String handler) {
@@ -48,7 +57,15 @@ public class CommonCodemaConfig implements Serializable {
             if (o instanceof ResultHandler)
                 return (ResultHandler) o;
         } catch (Exception e) {
+            e.printStackTrace();
         }
         throw new IllegalArgumentException("handler not found");
+    }
+
+    @Override
+    public void handle(CodemaContext codemaContext, Object result) {
+        for (ResultHandler handler : findResultHandler()) {
+            handler.handle(codemaContext, result);
+        }
     }
 }
