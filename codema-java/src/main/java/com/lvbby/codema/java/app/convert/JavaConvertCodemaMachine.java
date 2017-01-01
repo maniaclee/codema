@@ -24,7 +24,11 @@ import com.lvbby.codema.java.inject.JavaClassParameterFactory;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
+import com.lvbby.codema.java.template.$GenericTypeArg2_;
+import com.lvbby.codema.java.template.$GenericTypeArg_;
+import com.lvbby.codema.java.template.JavaTemplateEngine;
 import com.lvbby.codema.java.tool.JavaLexer;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -66,26 +70,37 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
     }
 
     public static MethodDeclaration genConvertToMethodBatch(ClassOrInterfaceDeclaration typeDeclaration, String fromClass, String otherClass) {
-        String srcVar = camel(fromClass, "list");
-        String destVar = camel(otherClass, "list");
-        BlockStmt blockStmt = getFields(typeDeclaration).stream()
-                .reduce(
-                        new BlockStmt().addStatement(declareNewVarConstructor(type(otherClass), destVar)),
-                        (blockStmt1, fieldDeclaration) -> blockStmt1.addStatement(convertStatement(destVar, fieldDeclaration, srcVar)),
-                        (blockStmt1, blockStmt2) -> blockStmt1)
-                .addStatement(new ReturnStmt().setExpression(new NameExpr(destVar)));
-        return new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), listType(otherClass), camel("build", otherClass, "batch"))
-                .addParameter(list(fromClass), srcVar)
-                .setBody(blockStmt);
+        //        String srcVar = camel(fromClass, "list");
+        //        String destVar = camel(otherClass, "list");
+        //        BlockStmt blockStmt = getFields(typeDeclaration).stream()
+        //                .reduce(
+        //                        new BlockStmt().addStatement(declareNewVarConstructor(type(otherClass), destVar)),
+        //                        (blockStmt1, fieldDeclaration) -> blockStmt1.addStatement(convertStatement(destVar, fieldDeclaration, srcVar)),
+        //                        (blockStmt1, blockStmt2) -> blockStmt1)
+        //                .addStatement(new ReturnStmt().setExpression(new NameExpr(destVar)));
+        //        return new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), listType(otherClass), camel("build", otherClass, "batch"))
+        //                .addParameter(list(fromClass), srcVar)
+        //                .setBody(blockStmt);
+
+        String methodSrc = JavaSrcLoader.getMethod(JavaConvertCodemaMachine.class, "build$className_Batch").toString();
+        String className = new JavaTemplateEngine(methodSrc)
+                .bind($GenericTypeArg2_.class, fromClass)
+                .bind($GenericTypeArg_.class, otherClass)
+                .bind("className", otherClass).render();
+        return new MethodDeclaration().setBody(new BlockStmt());
     }
 
-    public static List<String> build$_ClassName_Batch(List<String> strings) {
-        List<String> re = Lists.newArrayList();
-        for (String s : strings) {
-            //            re.add(build$_ClassName_Batch(s))
+
+    public String render(String methodDeclaration) {
+        return null;
+    }
+
+    private static List<$GenericTypeArg_> build$className_Batch(List<$GenericTypeArg2_> src) {
+        List<$GenericTypeArg_> re = Lists.newArrayList();
+        for ($GenericTypeArg2_ arg : src) {
+            //re.add(build$className_Batch(arg));
         }
         return re;
-
     }
 
     public static MethodDeclaration genConvertFromMethod(ClassOrInterfaceDeclaration typeDeclaration, String otherClass) {

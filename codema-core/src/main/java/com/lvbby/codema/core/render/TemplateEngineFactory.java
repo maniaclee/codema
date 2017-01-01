@@ -1,6 +1,5 @@
-package com.lvbby.codema.render;
+package com.lvbby.codema.core.render;
 
-import com.lvbby.codema.render.beetl.BeetlTemplateEngine;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

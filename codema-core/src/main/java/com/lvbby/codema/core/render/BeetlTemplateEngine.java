@@ -1,6 +1,5 @@
-package com.lvbby.codema.render.beetl;
+package com.lvbby.codema.core.render;
 
-import com.lvbby.codema.render.TemplateEngine;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
@@ -37,8 +36,9 @@ public class BeetlTemplateEngine implements TemplateEngine {
     }
 
     @Override
-    public void bind(String key, Object obj) {
+    public BeetlTemplateEngine bind(String key, Object obj) {
         t.binding(key, obj);
+        return this;
     }
 
     @Override
