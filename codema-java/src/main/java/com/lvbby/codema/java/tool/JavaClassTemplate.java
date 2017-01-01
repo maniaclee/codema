@@ -4,9 +4,8 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.inject.NotNull;
-import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
-import com.lvbby.codema.java.baisc.JavaSourceParam;
-import com.lvbby.codema.java.lexer.JavaLexer;
+import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import org.apache.commons.lang3.StringUtils;
 
 /**

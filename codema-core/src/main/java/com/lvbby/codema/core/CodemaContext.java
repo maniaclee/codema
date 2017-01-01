@@ -1,6 +1,7 @@
 package com.lvbby.codema.core;
 
 import com.google.common.collect.Maps;
+import com.lvbby.codema.core.config.ConfigLoader;
 
 import java.util.Map;
 import java.util.Optional;

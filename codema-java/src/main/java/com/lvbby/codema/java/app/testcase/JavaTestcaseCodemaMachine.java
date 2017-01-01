@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.testcase;
+package com.lvbby.codema.java.app.testcase;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
@@ -20,7 +20,7 @@ import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
-import com.lvbby.codema.java.lexer.JavaLexer;
+import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 import static com.lvbby.codema.core.utils.JavaUtils.binaryReturnOperator;
-import static com.lvbby.codema.java.lexer.JavaLexer.*;
+import static com.lvbby.codema.java.tool.JavaLexer.*;
 
 /**
  * Created by lipeng on 16/12/23.

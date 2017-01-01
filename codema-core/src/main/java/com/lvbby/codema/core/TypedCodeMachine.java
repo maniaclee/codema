@@ -1,5 +1,7 @@
 package com.lvbby.codema.core;
 
+import com.lvbby.codema.core.utils.TypeCapable;
+
 /**
  * Created by lipeng on 16/12/23.
  */

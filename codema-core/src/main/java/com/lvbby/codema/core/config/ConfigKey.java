@@ -1,4 +1,4 @@
-package com.lvbby.codema.core;
+package com.lvbby.codema.core.config;
 
 import java.lang.annotation.*;
 

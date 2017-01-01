@@ -1,6 +1,6 @@
-package com.lvbby.codema.java.baisc;
+package com.lvbby.codema.java.app.baisc;
 
-import com.lvbby.codema.core.ConfigKey;
+import com.lvbby.codema.core.config.ConfigKey;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 
 import java.io.Serializable;

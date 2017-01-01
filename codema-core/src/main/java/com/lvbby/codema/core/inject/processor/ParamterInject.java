@@ -15,6 +15,7 @@ public class ParamterInject implements CodemaInjector {
 
     @Override
     public void process(CodemaInjectContext context) throws Exception {
+        System.out.println("fuck");
         context.getArgs().stream().filter(injectEntry -> injectEntry.getParameter().isAnnotationPresent(Parameter.class)).forEach(injectEntry -> {
             Parameter annotation = injectEntry.getParameter().getAnnotation(Parameter.class);
             if (StringUtils.isBlank(annotation.value()))

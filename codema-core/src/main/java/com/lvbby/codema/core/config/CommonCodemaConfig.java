@@ -2,7 +2,6 @@ package com.lvbby.codema.core.config;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.ConfigKey;
 import com.lvbby.codema.core.ResultHandler;
 
 import java.io.Serializable;

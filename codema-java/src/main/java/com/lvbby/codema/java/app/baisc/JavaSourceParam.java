@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.baisc;
+package com.lvbby.codema.java.app.baisc;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.google.common.collect.Lists;

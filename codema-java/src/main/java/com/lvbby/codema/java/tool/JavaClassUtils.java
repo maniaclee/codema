@@ -6,9 +6,8 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
-import com.lvbby.codema.java.baisc.JavaSourceParam;
-import com.lvbby.codema.java.lexer.JavaLexer;
+import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;

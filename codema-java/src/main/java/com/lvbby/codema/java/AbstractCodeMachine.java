@@ -6,9 +6,9 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
-import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
-import com.lvbby.codema.java.baisc.JavaSourceParam;
-import com.lvbby.codema.java.lexer.JavaLexer;
+import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.app.baisc.JavaSourceParam;
+import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 
 /**

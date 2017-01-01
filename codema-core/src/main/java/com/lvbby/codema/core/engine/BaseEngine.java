@@ -1,7 +1,7 @@
 package com.lvbby.codema.core.engine;
 
 import com.alibaba.fastjson.JSON;
-import com.lvbby.codema.core.CodemaException;
+import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.utils.JavaUtils;
 
 import javax.script.ScriptEngine;

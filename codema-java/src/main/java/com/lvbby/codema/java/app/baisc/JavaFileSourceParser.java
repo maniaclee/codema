@@ -1,8 +1,8 @@
-package com.lvbby.codema.java.baisc;
+package com.lvbby.codema.java.app.baisc;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.SourceParser;
-import com.lvbby.codema.java.lexer.JavaLexer;
+import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 

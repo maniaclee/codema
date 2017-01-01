@@ -2,7 +2,7 @@ package com.lvbby.codema.core.engine;
 
 import com.google.common.collect.Lists;
 import com.google.common.net.UrlEscapers;
-import com.lvbby.codema.core.CodemaException;
+import com.lvbby.codema.core.error.CodemaException;
 
 import java.net.URI;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.convert;
+package com.lvbby.codema.java.app.convert;
 
 import com.alibaba.fastjson.JSON;
 import com.github.javaparser.ast.CompilationUnit;
@@ -16,20 +16,20 @@ import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.inject.Parameter;
-import com.lvbby.codema.java.baisc.JavaSourceParam;
+import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.engine.JavaEngineContext;
 import com.lvbby.codema.java.engine.JavaEngineResult;
 import com.lvbby.codema.java.inject.JavaClassParameterFactory;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
-import com.lvbby.codema.java.lexer.JavaLexer;
+import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.EnumSet;
 import java.util.Optional;
 
-import static com.lvbby.codema.java.lexer.JavaLexer.*;
+import static com.lvbby.codema.java.tool.JavaLexer.*;
 
 /**
  * Created by lipeng on 16/12/27.
