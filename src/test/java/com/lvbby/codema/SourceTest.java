@@ -7,7 +7,6 @@ import com.lvbby.codema.coder.java.JavaInitCoder;
 import com.lvbby.codema.coder.java.source.JavaSourceCoderRequest;
 import com.lvbby.codema.coder.java.source.handler.JavaSourceClassNameCoder;
 import com.lvbby.codema.coder.java.source.handler.JavaSourceParserCoder;
-import com.lvbby.codema.coder.java.source.handler.JavaSourceSpringBeanTestCoder;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -27,8 +26,7 @@ public class SourceTest {
                 new JavaInitCoder(),
                 new JavaSourceParserCoder(),
                 new JavaSourceClassNameCoder("Test"),
-                new JavaClassCoder(),
-                new JavaSourceSpringBeanTestCoder()
+                new JavaClassCoder()
         );
         System.out.println(request.getResult());
     }

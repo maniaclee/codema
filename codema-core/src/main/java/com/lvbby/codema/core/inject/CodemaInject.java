@@ -1,8 +1,10 @@
 package com.lvbby.codema.core.inject;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.utils.CodemaComparator;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.beans.IntrospectionException;
@@ -12,6 +14,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -19,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public class CodemaInject {
 
-    private List<CodemaInjector> injectorProcessors = Lists.newArrayList();
+    private Set<CodemaInjector> injectorProcessors = Sets.newTreeSet(CodemaComparator.instance);
 
     public CodemaInject() {
         ServiceLoader.load(CodemaInjector.class).forEach(parameterFilterInjectProcessor -> injectorProcessors.add(parameterFilterInjectProcessor));

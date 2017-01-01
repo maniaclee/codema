@@ -2,6 +2,7 @@ package com.lvbby.codema.core.resource;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -30,6 +31,8 @@ public class DefaultResourceLoader implements ResourceLoader {
         if (StringUtils.isBlank(id))
             return null;
         List<CodemaResource> collect = resources.stream().filter(e -> e.match(id)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(collect))
+            return null;
         if (collect.size() != 1)
             throw new IllegalArgumentException("multi resources found for id :" + id);
         return (T) collect.get(0);

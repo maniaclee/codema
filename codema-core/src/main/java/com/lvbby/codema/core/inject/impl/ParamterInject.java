@@ -1,4 +1,4 @@
-package com.lvbby.codema.core.inject.processor;
+package com.lvbby.codema.core.inject.impl;
 
 import com.lvbby.codema.core.inject.CodemaInjectContext;
 import com.lvbby.codema.core.inject.CodemaInjector;
@@ -6,16 +6,17 @@ import com.lvbby.codema.core.inject.InjectParameterFactory;
 import com.lvbby.codema.core.inject.Parameter;
 import com.lvbby.codema.core.resource.CodemaResource;
 import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.core.utils.OrderValue;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by lipeng on 2017/1/1.
  */
+@OrderValue(100)
 public class ParamterInject implements CodemaInjector {
 
     @Override
     public void process(CodemaInjectContext context) throws Exception {
-        System.out.println("fuck");
         context.getArgs().stream().filter(injectEntry -> injectEntry.getParameter().isAnnotationPresent(Parameter.class)).forEach(injectEntry -> {
             Parameter annotation = injectEntry.getParameter().getAnnotation(Parameter.class);
             if (StringUtils.isBlank(annotation.value()))
@@ -34,4 +35,5 @@ public class ParamterInject implements CodemaInjector {
             injectEntry.setValue(bean);
         });
     }
+
 }

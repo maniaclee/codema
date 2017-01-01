@@ -92,8 +92,21 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.7</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>jd</groupId>
+            <artifactId>jd-core</artifactId>
+            <version>0.7.1</version>
+        </dependency>
 
+
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>hengyunabc-maven-repo</id>
+            <!--<url>https://raw.githubusercontent.com/hengyunabc/maven-repo/master/repository</url>-->
+            <url>https://raw.githubusercontent.com/java-decompiler/mvn-repo/master</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>

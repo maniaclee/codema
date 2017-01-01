@@ -5,6 +5,7 @@ import com.lvbby.codema.core.inject.CodemaInjectContext;
 import com.lvbby.codema.core.inject.CodemaInjector;
 import com.lvbby.codema.core.inject.InjectEntry;
 import com.lvbby.codema.core.inject.InjectInterruptException;
+import com.lvbby.codema.core.utils.OrderValue;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.tool.JavaClassUtils;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 2016/12/27.
  */
+@OrderValue(4000)
 public class JavaTemplateInjector implements CodemaInjector {
     public static final String java_source = "java_source";
     public static final String java_dest = "java_dest";

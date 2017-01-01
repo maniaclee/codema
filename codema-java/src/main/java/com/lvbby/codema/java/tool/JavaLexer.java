@@ -88,6 +88,14 @@ public class JavaLexer {
         return new ClassOrInterfaceType(s);
     }
 
+    public static String list(String clz) {
+        return String.format("List<%s>", clz);
+    }
+
+    public static ClassOrInterfaceType listType(String clz) {
+        return new ClassOrInterfaceType(list(clz));
+    }
+
 
     public static VariableDeclarationExpr declareNewVarConstructor(ClassOrInterfaceType type, String var) {
         return declareNewVar(type, var, new ObjectCreationExpr(null, type, new NodeList<>()));
