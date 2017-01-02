@@ -17,7 +17,7 @@ public class JavaSrcLoader {
 
     public static MethodDeclaration getMethod(Class clz, String methodName) {
         CompilationUnit javaSrcCompilationUnit = getJavaSrcCompilationUnit(clz);
-        return JavaLexer.getMethodsFromClassOrInterface(JavaLexer.getClass(javaSrcCompilationUnit).orElseThrow(() -> new IllegalArgumentException("no class found "))).stream()
+        return JavaLexer.getMethods(JavaLexer.getClass(javaSrcCompilationUnit).orElseThrow(() -> new IllegalArgumentException("no class found ")),null).stream()
                 .filter(methodDeclaration -> methodDeclaration.getNameAsString().equals(methodName)).findFirst().orElse(null);
     }
 

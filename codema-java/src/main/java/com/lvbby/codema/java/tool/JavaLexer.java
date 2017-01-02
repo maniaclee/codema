@@ -44,12 +44,17 @@ public class JavaLexer {
         return Optional.ofNullable(cu).map(CompilationUnit::getTypes).filter(typeDeclarations -> typeDeclarations.size() > 0).map(typeDeclarations -> (ClassOrInterfaceDeclaration) typeDeclarations.get(0));
     }
 
+    public static BodyDeclaration parseMethod(String code) {
+        return JavaParser.parseInterfaceBodyDeclaration(code);
+
+    }
+
     public static List<FieldDeclaration> getFields(TypeDeclaration<?> cu) {
         return cu.getFields().stream().filter(f -> isProperty(f)).collect(Collectors.toList());
     }
 
 
-    public static List<MethodDeclaration> getMethodsFromClassOrInterface(TypeDeclaration<?> cu) {
+    public static List<MethodDeclaration> getMethods(TypeDeclaration<?> cu) {
         ClassOrInterfaceDeclaration classOrInterfaceType = (ClassOrInterfaceDeclaration) cu;
         if (classOrInterfaceType.isInterface()) {
             return getMethods(cu);

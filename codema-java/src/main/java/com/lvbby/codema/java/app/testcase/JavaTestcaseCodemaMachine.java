@@ -53,7 +53,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
             testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
             JavaLexer.addAnnotationWithImport(testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE), Test.class);
             /** methods */
-            getMethodsFromClassOrInterface(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
+            JavaLexer.getMethods(typeDeclaration).forEach(m -> testClass.addMember(genTestMethod(new NameExpr(beanName), m, testClass)));
         });
         return target;
     }

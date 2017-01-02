@@ -21,6 +21,8 @@ public class JavaTemplateEngine extends BeetlTemplateEngine {
     }
 
     private static String format(String s) {
-        return s.replace('_', '}').replaceAll("$", "${");
+        System.out.println(s);
+        return s.replace('_', '}').replace("$", "${");
     }
+
 }

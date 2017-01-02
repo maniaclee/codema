@@ -3,6 +3,7 @@ package com.lvbby.codema.java.app.convert;
 import com.alibaba.fastjson.JSON;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -15,9 +16,7 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
-import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.inject.Parameter;
-import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.engine.JavaEngineContext;
 import com.lvbby.codema.java.engine.JavaEngineResult;
 import com.lvbby.codema.java.inject.JavaClassParameterFactory;
@@ -29,11 +28,8 @@ import com.lvbby.codema.java.template.$GenericTypeArg_;
 import com.lvbby.codema.java.template.JavaTemplateEngine;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +42,7 @@ import static com.lvbby.codema.java.tool.JavaLexer.*;
 public class JavaConvertCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
-    public void code(CodemaContext codemaContext, JavaConvertCodemaConfig config, @NotNull JavaSourceParam source,
+    public void code(CodemaContext codemaContext, JavaConvertCodemaConfig config,
                      @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
                      @Parameter(value = "com.lvbby.utils.BuildUtils", createFactory = JavaClassParameterFactory.class) CompilationUnit compilationUnitDest) throws Exception {
 
@@ -61,7 +57,8 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
             return;
         destCLass.addMember(genConvertToMethod(sourceClass, convertToClassName));
         destCLass.addMember(genConvertFromMethod(sourceClass, convertToClassName));
-        destCLass.addMember(genConvertToMethodBatch(sourceClass, sourceClass.getNameAsString(), convertToClassName));
+        destCLass.addMember(genConvertToMethodBatch(sourceClass.getNameAsString(), convertToClassName));
+        destCLass.addMember(genConvertToMethodBatch(convertToClassName, sourceClass.getNameAsString()));
         config.handle(codemaContext, destCLass);
     }
 
@@ -69,36 +66,23 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
         return genConvertMethod(typeDeclaration, typeDeclaration.getNameAsString(), otherClass);
     }
 
-    public static MethodDeclaration genConvertToMethodBatch(ClassOrInterfaceDeclaration typeDeclaration, String fromClass, String otherClass) {
-        //        String srcVar = camel(fromClass, "list");
-        //        String destVar = camel(otherClass, "list");
-        //        BlockStmt blockStmt = getFields(typeDeclaration).stream()
-        //                .reduce(
-        //                        new BlockStmt().addStatement(declareNewVarConstructor(type(otherClass), destVar)),
-        //                        (blockStmt1, fieldDeclaration) -> blockStmt1.addStatement(convertStatement(destVar, fieldDeclaration, srcVar)),
-        //                        (blockStmt1, blockStmt2) -> blockStmt1)
-        //                .addStatement(new ReturnStmt().setExpression(new NameExpr(destVar)));
-        //        return new MethodDeclaration(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC), listType(otherClass), camel("build", otherClass, "batch"))
-        //                .addParameter(list(fromClass), srcVar)
-        //                .setBody(blockStmt);
-
+    /**
+     * 用自定义
+     */
+    public static BodyDeclaration genConvertToMethodBatch(String fromClass, String otherClass) {
         String methodSrc = JavaSrcLoader.getMethod(JavaConvertCodemaMachine.class, "build$className_Batch").toString();
         String className = new JavaTemplateEngine(methodSrc)
                 .bind($GenericTypeArg2_.class, fromClass)
                 .bind($GenericTypeArg_.class, otherClass)
                 .bind("className", otherClass).render();
-        return new MethodDeclaration().setBody(new BlockStmt());
+        MethodDeclaration bodyDeclaration = (MethodDeclaration) JavaLexer.parseMethod(className);
+        return bodyDeclaration;
     }
 
-
-    public String render(String methodDeclaration) {
-        return null;
-    }
-
-    private static List<$GenericTypeArg_> build$className_Batch(List<$GenericTypeArg2_> src) {
+    public static List<$GenericTypeArg_> build$className_Batch(List<$GenericTypeArg2_> src) {
         List<$GenericTypeArg_> re = Lists.newArrayList();
         for ($GenericTypeArg2_ arg : src) {
-            //re.add(build$className_Batch(arg));
+            //re.add(build$className_(arg));
         }
         return re;
     }
@@ -130,17 +114,6 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
         return new MethodCallExpr(a, getFieldSetterName(fieldDeclaration)).addArgument(new MethodCallExpr(b, getFieldGetterName(fieldDeclaration)));
     }
 
-    public static void main(String[] args) throws IOException {
-        System.out.println(JavaConvertCodemaMachine.class.getResource("/").getFile().toString());
-        System.out.println(getJavaSource(JavaConvertCodemaMachine.class));
-    }
-
-    public static String getJavaSource(Class clz) throws IOException {
-        String path = "/" + clz.getName().replace('.', '/') + ".class";
-        System.out.println(path);
-        InputStream resourceAsStream = JavaConvertCodemaMachine.class.getClassLoader().getResourceAsStream(path);
-        return IOUtils.toString(resourceAsStream);
-    }
 }
 
 
