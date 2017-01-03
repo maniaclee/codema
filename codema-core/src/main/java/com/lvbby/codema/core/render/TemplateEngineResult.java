@@ -19,12 +19,13 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
 
     @Override
     public Object getResult() {
-        return null;
+        return arg;
     }
 
     @Override
     public String getString() {
-        return null;
+        TemplateEngine templateEngine = TemplateEngineFactory.create(template);
+        return templateEngine.render();
     }
 
     @Override
