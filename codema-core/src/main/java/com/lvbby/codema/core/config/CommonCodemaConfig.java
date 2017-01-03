@@ -1,7 +1,7 @@
 package com.lvbby.codema.core.config;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 
 import java.io.Serializable;
@@ -62,9 +62,9 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     }
 
     @Override
-    public void handle(CodemaContext codemaContext, Object result) {
+    public void handle(ResultContext resultContext) {
         for (ResultHandler handler : findResultHandler()) {
-            handler.handle(codemaContext, result);
+            handler.handle(resultContext);
         }
     }
 }

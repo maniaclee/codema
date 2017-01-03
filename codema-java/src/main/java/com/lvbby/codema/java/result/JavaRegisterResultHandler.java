@@ -1,7 +1,7 @@
 package com.lvbby.codema.java.result;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.java.resource.JavaCodemaResoure;
 
@@ -11,8 +11,8 @@ import com.lvbby.codema.java.resource.JavaCodemaResoure;
  */
 public class JavaRegisterResultHandler implements ResultHandler {
     @Override
-    public void handle(CodemaContext codemaContext, Object result) {
-        if (result instanceof CompilationUnit)
-            codemaContext.getCodema().getResourceLoader().register(new JavaCodemaResoure((CompilationUnit) result));
+    public void handle(ResultContext resultContext) {
+        if (resultContext.getResult() instanceof CompilationUnit)
+            resultContext.getCodemaContext().getCodema().getResourceLoader().register(new JavaCodemaResoure((CompilationUnit) resultContext.getResult()));
     }
 }

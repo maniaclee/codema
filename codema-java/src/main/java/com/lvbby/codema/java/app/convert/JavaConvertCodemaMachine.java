@@ -13,6 +13,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
@@ -59,7 +60,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
         destCLass.addMember(genConvertFromMethod(sourceClass, convertToClassName));
         destCLass.addMember(genConvertToMethodBatch(sourceClass.getNameAsString(), convertToClassName));
         destCLass.addMember(genConvertToMethodBatch(convertToClassName, sourceClass.getNameAsString()));
-        config.handle(codemaContext, destCLass);
+        config.handle(ResultContext.of(codemaContext , config,destCLass));
     }
 
     public static MethodDeclaration genConvertToMethod(ClassOrInterfaceDeclaration typeDeclaration, String otherClass) {

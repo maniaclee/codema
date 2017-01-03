@@ -14,6 +14,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
@@ -43,7 +44,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
                      @JavaTemplateParameter(identifier = JavaTemplateInjector.java_dest) CompilationUnit compilationUnitDest) {
 
         CompilationUnit result = genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null));
-        config.handle(codemaContext, result);
+        config.handle(ResultContext.of(codemaContext,config,result));
     }
 
     public static CompilationUnit genTest(CompilationUnit target, ClassOrInterfaceDeclaration typeDeclaration) {
