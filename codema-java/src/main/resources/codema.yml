@@ -18,6 +18,10 @@ java:
     from-package: 'com.lvbby'
     convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
     dest-class-name: 'com.lvbby.utils.BuildUtils'
+    dest-src-root: '/Users/psyco'
+    result-handler:
+        - 'com.lvbby.codema.java.result.JavaFileResultHandler'
+
   delegate:
     from-package: '就是一个filter'
     dest-class-name: ''

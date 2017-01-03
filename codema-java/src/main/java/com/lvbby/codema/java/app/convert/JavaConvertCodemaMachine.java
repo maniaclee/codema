@@ -60,7 +60,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
         destCLass.addMember(genConvertFromMethod(sourceClass, convertToClassName));
         destCLass.addMember(genConvertToMethodBatch(sourceClass.getNameAsString(), convertToClassName));
         destCLass.addMember(genConvertToMethodBatch(convertToClassName, sourceClass.getNameAsString()));
-        config.handle(ResultContext.of(codemaContext , config,destCLass));
+        config.handle(ResultContext.of(codemaContext , config,compilationUnitDest));
     }
 
     public static MethodDeclaration genConvertToMethod(ClassOrInterfaceDeclaration typeDeclaration, String otherClass) {
