@@ -1,5 +1,7 @@
-package com.lvbby.codema.core;
+package com.lvbby.codema.core.machine;
 
+import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.utils.TypeCapable;
 
 /**

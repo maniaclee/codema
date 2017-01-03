@@ -1,7 +1,7 @@
 package com.lvbby.codema.java.result;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.lvbby.codema.core.ConfigTypedResultHandler;
+import com.lvbby.codema.core.result.ConfigTypedResultHandler;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;

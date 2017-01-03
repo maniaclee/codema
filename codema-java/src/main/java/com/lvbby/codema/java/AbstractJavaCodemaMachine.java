@@ -1,7 +1,7 @@
 package com.lvbby.codema.java;
 
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.TypedCodeMachine;
+import com.lvbby.codema.core.machine.TypedCodeMachine;
 
 /**
  * Created by lipeng on 2016/12/26.

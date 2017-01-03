@@ -1,5 +1,7 @@
-package com.lvbby.codema.core;
+package com.lvbby.codema.core.result;
 
+import com.lvbby.codema.core.ResultContext;
+import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.utils.TypeCapable;
 

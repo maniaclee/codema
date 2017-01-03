@@ -5,6 +5,17 @@ common:
       - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
       - 'com.lvbby.codema.core.utils.PrintResultHandler'
 
+maven:
+  name: 'project'
+  artifact-id: ' '
+  group-id: ''
+  java-version: '1.8'
+  modules:
+    - name: 'project'
+      artifact-id: ' '
+      group-id: ''
+      java-version: '1.8'
+
 java:
   basic:
     dest-package: '所有的pack都是    dest-package'
@@ -40,6 +51,4 @@ java:
   service:
     dest-package: ''
 
-  maven:
-    artifact-id: ' '
-    group-id: ''
+
