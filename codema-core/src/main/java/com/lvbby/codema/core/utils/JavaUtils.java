@@ -37,4 +37,17 @@ public class JavaUtils {
         return re;
     }
 
+    public static Object getProperty(Object b, String propertyName) {
+        try {
+            for (PropertyDescriptor propertyDescriptor : Introspector.getBeanInfo(b.getClass(), Object.class).getPropertyDescriptors()) {
+                if (propertyDescriptor.getName().equals(propertyName)) {
+                    return propertyDescriptor.getReadMethod().invoke(b);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

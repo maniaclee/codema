@@ -9,6 +9,9 @@ import com.lvbby.codema.core.utils.JavaUtils;
 import com.lvbby.codema.core.utils.OrderValue;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by lipeng on 2017/1/1.
  */
@@ -21,10 +24,11 @@ public class ParamterInject implements CodemaInjector {
             Parameter annotation = injectEntry.getParameter().getAnnotation(Parameter.class);
             if (StringUtils.isBlank(annotation.value()))
                 return;
-            Object bean = context.getContext().getCodema().getResourceLoader().getBean(annotation.value());
+            String beanId = evalBeanId(context, annotation.value());
+            Object bean = context.getContext().getCodema().getResourceLoader().getBean(beanId);
             if (bean == null && annotation.createFactory() != null) {
                 InjectParameterFactory instance = JavaUtils.instance(annotation.createFactory());
-                CodemaResource codemaResource = instance.create(context, annotation.value());
+                CodemaResource codemaResource = instance.create(context, beanId);
                 if (codemaResource != null) {
                     bean = codemaResource.getResource();
                     //注册到容器
@@ -34,6 +38,46 @@ public class ParamterInject implements CodemaInjector {
             //注入参数bean
             injectEntry.setValue(bean);
         });
+    }
+
+    /***
+     * 解析${expr} 表达式,获取最终的beanId
+     */
+    private String evalBeanId(CodemaInjectContext context, String value) {
+        if (value.startsWith("$")) {
+            Matcher matcher = Pattern.compile("\\$\\{([^\\{\\}]+)\\}").matcher(value);
+            if (!matcher.find())
+                throw new IllegalArgumentException(String.format("illegal parameter express [%s] , please use ${expression}", value));
+            value = matcher.group(1);
+        }
+        Matcher matcher = Pattern.compile("[^A-Z]+[A-Z][^\\.]+").matcher(value);
+        if (!matcher.find())
+            throw new IllegalArgumentException(String.format("illegal parameter express [%s] , please use ${expression}", value));
+        int end = matcher.end(0);
+        if (end < value.length() - 1) {
+            String parentBeanId = value.substring(0, end);
+            Object parentBean = null;
+            try {
+                parentBean = context.getContext().getConfig(Class.forName(parentBeanId));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (parentBean == null)
+                throw new IllegalArgumentException(String.format("illegal bean id [%s]", parentBeanId));
+            for (String p : value.substring(end + 1).split("\\.")) {
+                try {
+                    parentBean = JavaUtils.getProperty(parentBean, p);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new IllegalArgumentException(String.format("error parsing bean id express[%s]", parentBeanId), e);
+                }
+            }
+            if (!(parentBean instanceof String))
+                throw new IllegalArgumentException(String.format("error parsing bean id express[%s]", parentBeanId));
+
+            return (String) parentBean;
+        }
+        return value;
     }
 
 }

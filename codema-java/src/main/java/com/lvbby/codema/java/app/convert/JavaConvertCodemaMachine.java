@@ -44,7 +44,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
     @JavaTemplate
     public void code(CodemaContext codemaContext, JavaConvertCodemaConfig config,
                      @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
-                     @Parameter(value = "com.lvbby.utils.BuildUtils", createFactory = JavaClassParameterFactory.class) CompilationUnit compilationUnitDest) throws Exception {
+                     @Parameter(value = "${com.lvbby.codema.java.app.convert.JavaConvertCodemaConfig.destClassName}", createFactory = JavaClassParameterFactory.class) CompilationUnit compilationUnitDest) throws Exception {
 
         ClassOrInterfaceDeclaration sourceClass = JavaLexer.getClass(compilationUnitSource).orElse(null);
         ClassOrInterfaceDeclaration destCLass = JavaLexer.getClass(compilationUnitDest).orElse(null);
