@@ -5,5 +5,5 @@ package com.lvbby.codema.core;
  */
 public interface ResultHandler {
 
-    void handle(ResultContext resultContext);
+    void handle(ResultContext resultContext) throws Exception;
 }

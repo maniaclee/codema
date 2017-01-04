@@ -24,6 +24,7 @@ import com.lvbby.codema.java.inject.JavaClassParameterFactory;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
+import com.lvbby.codema.java.result.JavaResult;
 import com.lvbby.codema.java.template.$GenericTypeArg2_;
 import com.lvbby.codema.java.template.$GenericTypeArg_;
 import com.lvbby.codema.java.template.JavaTemplateEngine;
@@ -60,7 +61,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
         destCLass.addMember(genConvertFromMethod(sourceClass, convertToClassName));
         destCLass.addMember(genConvertToMethodBatch(sourceClass.getNameAsString(), convertToClassName));
         destCLass.addMember(genConvertToMethodBatch(convertToClassName, sourceClass.getNameAsString()));
-        config.handle(ResultContext.of(codemaContext , config,compilationUnitDest));
+        config.handle(ResultContext.of(codemaContext, config, new JavaResult(compilationUnitDest, config)));
     }
 
     public static MethodDeclaration genConvertToMethod(ClassOrInterfaceDeclaration typeDeclaration, String otherClass) {

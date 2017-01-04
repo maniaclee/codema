@@ -21,6 +21,7 @@ import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
+import com.lvbby.codema.java.result.JavaResult;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
@@ -41,10 +42,10 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaTestcaseCodemaConfig config,
                      @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
-                     @JavaTemplateParameter(identifier = JavaTemplateInjector.java_dest) CompilationUnit compilationUnitDest) {
+                     @JavaTemplateParameter(identifier = JavaTemplateInjector.java_dest) CompilationUnit compilationUnitDest) throws Exception {
 
         CompilationUnit result = genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null));
-        config.handle(ResultContext.of(codemaContext,config,result));
+        config.handle(ResultContext.of(codemaContext, config, new JavaResult(result, config)));
     }
 
     public static CompilationUnit genTest(CompilationUnit target, ClassOrInterfaceDeclaration typeDeclaration) {

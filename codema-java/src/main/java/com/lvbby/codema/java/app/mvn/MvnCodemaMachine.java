@@ -15,12 +15,12 @@ public class MvnCodemaMachine implements CodemaInjectable {
     private static String newVarNameDefault = "result";
 
     @CodemaRunner
-    public void code(CodemaContext codemaContext, @NotNull MavenConfig config) {
+    public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
         initConfig(null, config);
         handle(codemaContext, config);
     }
 
-    private void handle(CodemaContext codemaContext, @NotNull MavenConfig config) {
+    private void handle(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
         if (config != null)
             config.handle(ResultContext.of(codemaContext, config, new TemplateEngineResult("", config)));
         if (CollectionUtils.isNotEmpty(config.getModules()))

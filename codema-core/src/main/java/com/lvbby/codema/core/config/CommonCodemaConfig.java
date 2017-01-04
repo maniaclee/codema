@@ -62,7 +62,7 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     }
 
     @Override
-    public void handle(ResultContext resultContext) {
+    public void handle(ResultContext resultContext) throws Exception {
         for (ResultHandler handler : findResultHandler()) {
             handler.handle(resultContext);
         }

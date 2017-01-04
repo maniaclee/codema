@@ -31,7 +31,7 @@ java:
     dest-class-name: 'com.lvbby.utils.BuildUtils'
     dest-src-root: '/Users/psyco'
     result-handler:
-        - 'com.lvbby.codema.java.result.JavaFileResultHandler'
+        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 
   delegate:
     from-package: '就是一个filter'
