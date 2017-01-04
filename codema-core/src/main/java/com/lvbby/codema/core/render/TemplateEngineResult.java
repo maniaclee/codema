@@ -11,10 +11,13 @@ import java.io.File;
 public class TemplateEngineResult implements PrintableResult, FileResult {
     private String template;
     private Object arg;
+    private String result;
 
     public TemplateEngineResult(String template, Object arg) {
         this.template = template;
         this.arg = arg;
+        TemplateEngine templateEngine = TemplateEngineFactory.create(template);
+        result = templateEngine.render();
     }
 
     @Override
@@ -24,8 +27,7 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
 
     @Override
     public String getString() {
-        TemplateEngine templateEngine = TemplateEngineFactory.create(template);
-        return templateEngine.render();
+        return result;
     }
 
     @Override

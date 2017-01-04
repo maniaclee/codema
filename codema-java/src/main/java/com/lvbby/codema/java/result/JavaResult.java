@@ -39,8 +39,6 @@ public class JavaResult implements PrintableResult, FileResult {
         String pack = unit.getPackage().map(e -> e.getPackageName()).orElse("");
         if (StringUtils.isNotBlank(pack)) {
             file = new File(file, pack.replace('.', '/'));
-            if (!file.mkdirs())
-                throw new CodemaRuntimeException("error mkdir : " + file.getAbsolutePath());
         }
         return new File(file, JavaLexer.getClass(unit).map(clz -> clz.getNameAsString() + ".java").orElseThrow(() -> new CodemaRuntimeException("class not found.")));
     }

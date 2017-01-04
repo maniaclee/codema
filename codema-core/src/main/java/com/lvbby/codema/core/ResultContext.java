@@ -1,6 +1,7 @@
 package com.lvbby.codema.core;
 
 import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.result.Result;
 
 /**
  * Created by lipeng on 17/1/3.
@@ -8,9 +9,9 @@ import com.lvbby.codema.core.config.CommonCodemaConfig;
 public class ResultContext {
     private CodemaContext codemaContext;
     private CommonCodemaConfig config;
-    private Object result;
+    private Result result;
 
-    public static ResultContext of(CodemaContext codemaContext, CommonCodemaConfig config, Object result) {
+    public static ResultContext of(CodemaContext codemaContext, CommonCodemaConfig config, Result result) {
         ResultContext resultContext = new ResultContext();
         resultContext.setCodemaContext(codemaContext);
         resultContext.setConfig(config);
@@ -34,11 +35,11 @@ public class ResultContext {
         this.config = config;
     }
 
-    public Object getResult() {
+    public Result getResult() {
         return result;
     }
 
-    public void setResult(Object result) {
+    public void setResult(Result result) {
         this.result = result;
     }
 }

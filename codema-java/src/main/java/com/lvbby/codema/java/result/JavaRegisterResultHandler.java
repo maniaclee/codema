@@ -12,7 +12,7 @@ import com.lvbby.codema.java.resource.JavaCodemaResoure;
 public class JavaRegisterResultHandler implements ResultHandler {
     @Override
     public void handle(ResultContext resultContext) {
-        if (resultContext.getResult() instanceof CompilationUnit)
-            resultContext.getCodemaContext().getCodema().getResourceLoader().register(new JavaCodemaResoure((CompilationUnit) resultContext.getResult()));
+        if (resultContext.getResult().getResult() instanceof CompilationUnit)
+            resultContext.getCodemaContext().getCodema().getResourceLoader().register(new JavaCodemaResoure((CompilationUnit) resultContext.getResult().getResult()));
     }
 }

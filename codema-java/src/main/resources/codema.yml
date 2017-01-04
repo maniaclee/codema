@@ -3,7 +3,7 @@ common:
   from: 'file://java:src//Users/psyco/workspace/github/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
   result-handler:
       - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
-      - 'com.lvbby.codema.core.utils.PrintResultHandler'
+      - 'com.lvbby.codema.core.result.handler.PrintResultHandler'
 
 maven:
   name: 'project'
