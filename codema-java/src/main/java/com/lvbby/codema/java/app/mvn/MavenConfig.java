@@ -2,7 +2,9 @@ package com.lvbby.codema.java.app.mvn;
 
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigKey;
+import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -16,8 +18,27 @@ public class MavenConfig extends CommonCodemaConfig {
     private String groupId;
     private String javaVersion;
     private List<MavenConfig> modules;
+    private String baseDir;
 
     private transient MavenConfig parent;
+
+    public File findRootDir() {
+        if (StringUtils.isNotBlank(baseDir))
+            return new File(baseDir, name);
+        if (getParent() != null) {
+
+        }
+
+        return null;//TODO
+    }
+
+    public String getBaseDir() {
+        return baseDir;
+    }
+
+    public void setBaseDir(String baseDir) {
+        this.baseDir = baseDir;
+    }
 
     public MavenConfig getParent() {
         return parent;

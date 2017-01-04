@@ -8,6 +8,8 @@ import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.io.File;
+
 /**
  * Created by lipeng on 16/12/23.
  */
@@ -22,7 +24,7 @@ public class MvnCodemaMachine implements CodemaInjectable {
 
     private void handle(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
         if (config != null)
-            config.handle(ResultContext.of(codemaContext, config, new TemplateEngineResult("", config)));
+            doHandle(codemaContext, config);
         if (CollectionUtils.isNotEmpty(config.getModules()))
             for (MavenConfig mavenConfig : config.getModules())
                 handle(codemaContext, mavenConfig);
@@ -34,4 +36,7 @@ public class MvnCodemaMachine implements CodemaInjectable {
             initConfig(child, mavenConfig);
     }
 
+    private void doHandle(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
+        config.handle(ResultContext.of(codemaContext, config, new TemplateEngineResult("", config, new File(""))));
+    }
 }
