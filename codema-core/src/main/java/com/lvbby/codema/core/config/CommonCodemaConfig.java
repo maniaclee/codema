@@ -1,8 +1,10 @@
 package com.lvbby.codema.core.config;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
+import com.lvbby.codema.core.render.TemplateEngineResult;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -66,5 +68,9 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         for (ResultHandler handler : findResultHandler()) {
             handler.handle(resultContext);
         }
+    }
+
+    public void handle(CodemaContext codemaContext, CommonCodemaConfig config, TemplateEngineResult templateEngineResult) throws Exception {
+        handle(ResultContext.of(codemaContext, config, templateEngineResult));
     }
 }

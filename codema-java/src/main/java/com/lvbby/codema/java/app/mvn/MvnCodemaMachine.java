@@ -1,7 +1,6 @@
 package com.lvbby.codema.java.app.mvn;
 
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
@@ -14,8 +13,6 @@ import java.io.File;
  * Created by lipeng on 16/12/23.
  */
 public class MvnCodemaMachine implements CodemaInjectable {
-    private static String newVarNameDefault = "result";
-
     @CodemaRunner
     public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
         initConfig(null, config);
@@ -37,6 +34,6 @@ public class MvnCodemaMachine implements CodemaInjectable {
     }
 
     private void doHandle(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
-        config.handle(ResultContext.of(codemaContext, config, new TemplateEngineResult("", config, new File(""))));
+        config.handle(codemaContext, config, new TemplateEngineResult("classpath://template/pom.xml", config, new File(config.findRootDir(),"pom.xml")));
     }
 }

@@ -41,8 +41,8 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaTestcaseCodemaConfig config,
-                     @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
-                     @JavaTemplateParameter(identifier = JavaTemplateInjector.java_dest) CompilationUnit compilationUnitDest) throws Exception {
+                    @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
+                     @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_dest) CompilationUnit compilationUnitDest) throws Exception {
 
         CompilationUnit result = genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null));
         config.handle(ResultContext.of(codemaContext, config, new JavaResult(result, config)));

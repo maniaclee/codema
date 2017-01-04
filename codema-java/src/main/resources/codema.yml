@@ -10,46 +10,48 @@ maven:
   artifact-id: ' '
   group-id: ''
   java-version: '1.8'
-  base-dir: ''
+  base-dir: '/Users/psyco/tmp'
+  result-handler:
+    - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
   modules:
-    - name: 'project'
+    - name: 'sub'
       artifact-id: ' '
       group-id: ''
       java-version: '1.8'
-
-java:
-  basic:
-    dest-package: '所有的pack都是    dest-package'
-    dest-src-root: ''
-  testcase:
-    from-package: 'com.lvbby'
-    dest-class-name: 'Test'
-    dest-package: 'com.lvbby.testcase'
-    is-spring: true
-  convert:
-    from-package: 'com.lvbby'
-    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
-    dest-class-name: 'com.lvbby.utils.BuildUtils'
-    dest-src-root: '/Users/psyco'
-    result-handler:
-        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
-
-  delegate:
-    from-package: '就是一个filter'
-    dest-class-name: ''
-  entity:
-    from-package: '基于common.from,选取指定package的类产生testcase'
-    dest-package: ''
-    dest-src-root: '如果是sql产生的情况，且区分module模块，那么src-root不一样'
-  dto:
-    dest-package: ''
-    dest-src-root: ''
-  dao:
-    dest-package: ''
-    sqls: ''
-  repositoy:
-    from-package: ''
-  service:
-    dest-package: ''
-
+#
+#java:
+#  basic:
+#    dest-package: '所有的pack都是    dest-package'
+#    dest-src-root: ''
+#  testcase:
+#    from-package: 'com.lvbby'
+#    dest-class-name: 'Test'
+#    dest-package: 'com.lvbby.testcase'
+#    is-spring: true
+#  convert:
+#    from-package: 'com.lvbby'
+#    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
+#    dest-class-name: 'com.lvbby.utils.BuildUtils'
+#    dest-src-root: '/Users/psyco'
+#    result-handler:
+#        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
+#
+#  delegate:
+#    from-package: '就是一个filter'
+#    dest-class-name: ''
+#  entity:
+#    from-package: '基于common.from,选取指定package的类产生testcase'
+#    dest-package: ''
+#    dest-src-root: '如果是sql产生的情况，且区分module模块，那么src-root不一样'
+#  dto:
+#    dest-package: ''
+#    dest-src-root: ''
+#  dao:
+#    dest-package: ''
+#    sqls: ''
+#  repositoy:
+#    from-package: ''
+#  service:
+#    dest-package: ''
+#
 

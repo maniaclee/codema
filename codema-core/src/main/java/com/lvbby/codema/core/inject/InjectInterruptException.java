@@ -7,4 +7,8 @@ public class InjectInterruptException extends RuntimeException {
     public InjectInterruptException(String message) {
         super(message);
     }
+
+    public InjectInterruptException(Throwable cause) {
+        super(cause);
+    }
 }
