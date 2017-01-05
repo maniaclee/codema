@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by lipeng on 17/1/5.
+ * 将Java源文件转换成模板引擎template
  */
 public class JavaTemplateParser {
     private List<JavaTemplateAnnotationHandler> handlers = Lists.newArrayList(new $IfHandler(), new $ForeachHandler(), new $ExprHandler());
@@ -27,28 +28,26 @@ public class JavaTemplateParser {
     public String parse(Class templateClass) {
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
         filterImport(cu);
-        ClassOrInterfaceDeclaration clz = JavaLexer.getClass(cu).orElseThrow(() -> new IllegalArgumentException("class not found : " + templateClass.getName()));
         return eval(cu.toString());
     }
 
     private String eval(String s) {
-        return s.replaceAll("//", "").replace("$", "${").replace("__", ".").replace('_', '}');
+        String re = s.replaceAll("//", "").replace("$", "${").replace("__", ".").replace('_', '}');
+        re = filterBlockComment(re);
+        return re;
     }
 
-    private static String evals(String s) {
+    private static String filterBlockComment(String s) {
         StringBuilder re = new StringBuilder();
         int last = 0;
-        Matcher matcher = Pattern.compile("/\\*#([^*/]+)\\*/").matcher(s);
+        Matcher matcher = Pattern.compile("/\\*{1,2}#([^*/]+)\\*/").matcher(s);
         while (matcher.find()) {
             re.append(s.substring(last, matcher.start()));
             re.append(matcher.group(1));
             last = matcher.end();
         }
+        re.append(s.substring(last));
         return re.toString();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(evals("  asdfa   /*# sdf */ xxxxxxxx"));
     }
 
 

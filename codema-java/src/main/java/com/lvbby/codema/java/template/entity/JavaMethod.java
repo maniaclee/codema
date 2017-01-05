@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
  * Created by lipeng on 17/1/5.
  */
 public class JavaMethod {
-    private String name;
-    private String returnType;
-    private List<JavaArg> args;
+    public String name;
+    public String returnType;
+    public List<JavaArg> args;
 
     public String loadParameterSignature() {
         return args == null ? "" : args.stream().map(javaArg -> javaArg.getType() + " " + javaArg.getName()).collect(Collectors.joining(","));
