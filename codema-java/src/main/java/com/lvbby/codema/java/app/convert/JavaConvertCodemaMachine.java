@@ -25,7 +25,7 @@ import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaResult;
-import com.lvbby.codema.java.template.$GenericTypeArg2_;
+import com.lvbby.codema.java.template.$GenericTypeArg1_;
 import com.lvbby.codema.java.template.$GenericTypeArg_;
 import com.lvbby.codema.java.template.JavaTemplateEngine;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -74,16 +74,16 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
     public static BodyDeclaration genConvertToMethodBatch(String fromClass, String otherClass) {
         String methodSrc = JavaSrcLoader.getMethod(JavaConvertCodemaMachine.class, "build$className_Batch").toString();
         String className = new JavaTemplateEngine(methodSrc)
-                .bind($GenericTypeArg2_.class, fromClass)
+                .bind($GenericTypeArg1_.class, fromClass)
                 .bind($GenericTypeArg_.class, otherClass)
                 .bind("className", otherClass).render();
         MethodDeclaration bodyDeclaration = (MethodDeclaration) JavaLexer.parseMethod(className);
         return bodyDeclaration;
     }
 
-    public static List<$GenericTypeArg_> build$className_Batch(List<$GenericTypeArg2_> src) {
+    public static List<$GenericTypeArg_> build$className_Batch(List<$GenericTypeArg1_> src) {
         List<$GenericTypeArg_> re = Lists.newArrayList();
-        for ($GenericTypeArg2_ arg : src) {
+        for ($GenericTypeArg1_ arg : src) {
             //re.add(build$className_(arg));
         }
         return re;
