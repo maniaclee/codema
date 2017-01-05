@@ -67,6 +67,14 @@ public class JavaLexer {
         return cu.getMethods().stream().filter(m -> ms == null || m.getModifiers().containsAll(ms)).collect(Collectors.toList());
     }
 
+    public static List<MethodDeclaration> getMethodByName(TypeDeclaration<?> cu, String methodName) {
+        return getMethods(cu).stream().filter(methodDeclaration -> methodDeclaration.getNameAsString().equals(methodName)).collect(Collectors.toList());
+    }
+
+    public static MethodDeclaration getMethodByNameSingle(TypeDeclaration<?> cu, String methodName) {
+        return getMethods(cu).stream().filter(methodDeclaration -> methodDeclaration.getNameAsString().equals(methodName)).findFirst().orElse(null);
+    }
+
     public static boolean isProperty(FieldDeclaration n) {
         return !n.isStatic() && !n.isTransient();
     }

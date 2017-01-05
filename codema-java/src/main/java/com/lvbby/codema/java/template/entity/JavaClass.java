@@ -7,8 +7,17 @@ import java.util.List;
  */
 public class JavaClass {
     private String name;
+    private String nameCamel;
     private List<JavaField> fields;
     private List<JavaMethod> methods;
+
+    public String getNameCamel() {
+        return nameCamel;
+    }
+
+    public void setNameCamel(String nameCamel) {
+        this.nameCamel = nameCamel;
+    }
 
     public String getName() {
         return name;

@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.template.entity;
+package com.lvbby.codema.java.template;
 
 import java.lang.annotation.Annotation;
 
@@ -9,6 +9,6 @@ public interface JavaTemplateAnnotationHandler {
 
     boolean annotation(Annotation annotation);
 
-    String getString();
+    String getString(Annotation annotation);
 
 }

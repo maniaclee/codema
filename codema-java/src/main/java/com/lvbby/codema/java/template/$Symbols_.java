@@ -8,4 +8,5 @@ public class $Symbols_ {
 
     public static $GenericTypeArg_ $Var_ = new $GenericTypeArg_();
     public static $GenericTypeArg1_ $Var1_ = new $GenericTypeArg1_();
+    public static String re = "";
 }
