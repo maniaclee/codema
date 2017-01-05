@@ -2,12 +2,18 @@ package com.lvbby.codema.java.template.entity;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.imports.ImportDeclaration;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.MethodDescriptor;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,9 +26,23 @@ public class JavaTemplateParser {
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
         filterImport(cu);
         ClassOrInterfaceDeclaration clz = JavaLexer.getClass(cu).orElseThrow(() -> new IllegalArgumentException("class not found : " + templateClass.getName()));
-        clz.setJavaDocComment("");
         return cu.toString();
     }
+
+    private static void handleMethods(ClassOrInterfaceDeclaration clzCu, Class templateClass) {
+        try {
+            for (MethodDescriptor methodDescriptor : Introspector.getBeanInfo(templateClass, Object.class).getMethodDescriptors()) {
+                Annotation[] annotations = methodDescriptor.getMethod().getAnnotations();
+            }
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        List<MethodDeclaration> methods = JavaLexer.getMethods(clzCu);
+        for (MethodDeclaration methodDec : methods) {
+            methodDec.setLineComment(null);
+        }
+    }
+
 
     public static void filterImport(CompilationUnit cu) {
         ArrayList<ImportDeclaration> imports = Lists.newArrayList(cu.getImports());

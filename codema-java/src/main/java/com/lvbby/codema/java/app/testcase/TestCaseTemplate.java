@@ -29,7 +29,7 @@ public class TestCaseTemplate {
     // if(m.returnType !=null){
     @$Foreach("for(m in c.methods)")
     @Test
-    public void $m_(/*# m.loadParameterSignature()  */) {
+    public void $m_(/* m.loadParameterSignature()  */) {
         // if m.isVoid
         // m.returnType re = m.name(m.loadParameter());
         // return re;
