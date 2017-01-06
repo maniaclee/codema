@@ -15,6 +15,7 @@ import com.github.javaparser.ast.type.VoidType;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
+import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
@@ -38,6 +39,7 @@ import static com.lvbby.codema.java.tool.JavaLexer.*;
 public class JavaTestcaseCodemaMachine implements CodemaInjectable {
     private static String newVarNameDefault = "result";
 
+    @ConfigBind(JavaTestcaseCodemaConfig.class)
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaTestcaseCodemaConfig config,

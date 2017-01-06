@@ -14,7 +14,7 @@ import com.lvbby.codema.core.utils.OrderValue;
 public class ParameterFilterInject implements CodemaInjector {
     @Override
     public void process(CodemaInjectContext context) {
-        if (context.getArgs().stream().anyMatch(injectEntry -> !(injectEntry.getValue() == null && injectEntry.getParameter().isAnnotationPresent(NotNull.class))))
+        if (context.getArgs().stream().anyMatch(injectEntry -> (injectEntry.getValue() == null && injectEntry.getParameter().isAnnotationPresent(NotNull.class))))
             throw new InjectInterruptException("required not null parameters");
     }
 

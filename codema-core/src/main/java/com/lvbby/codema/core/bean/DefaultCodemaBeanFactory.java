@@ -1,4 +1,4 @@
-package com.lvbby.codema.core.resource;
+package com.lvbby.codema.core.bean;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 2016/12/31.
  */
-public class DefaultResourceLoader implements ResourceLoader {
-    List<CodemaResource> resources = Lists.newArrayList();
+public class DefaultCodemaBeanFactory implements CodemaBeanFactory {
+    List<CodemaBean> resources = Lists.newArrayList();
 
     @Override
-    public void register(CodemaResource resource) {
+    public void register(CodemaBean resource) {
         if (resource != null)
             return;
         if (!resource.isValid())
@@ -30,7 +30,7 @@ public class DefaultResourceLoader implements ResourceLoader {
     public <T> T getBean(String id) {
         if (StringUtils.isBlank(id))
             return null;
-        List<CodemaResource> collect = resources.stream().filter(e -> e.match(id)).collect(Collectors.toList());
+        List<CodemaBean> collect = resources.stream().filter(e -> e.match(id)).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(collect))
             return null;
         if (collect.size() != 1)

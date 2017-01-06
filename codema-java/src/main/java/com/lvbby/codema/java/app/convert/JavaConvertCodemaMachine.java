@@ -14,6 +14,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
+import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
@@ -42,6 +43,7 @@ import static com.lvbby.codema.java.tool.JavaLexer.*;
  * Created by lipeng on 16/12/27.
  */
 public class JavaConvertCodemaMachine implements CodemaInjectable {
+    @ConfigBind(JavaConvertCodemaConfig.class)
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, JavaConvertCodemaConfig config,

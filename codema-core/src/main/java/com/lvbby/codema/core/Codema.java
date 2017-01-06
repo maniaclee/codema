@@ -7,8 +7,8 @@ import com.lvbby.codema.core.config.YamlConfigLoader;
 import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaInject;
-import com.lvbby.codema.core.resource.DefaultResourceLoader;
-import com.lvbby.codema.core.resource.ResourceLoader;
+import com.lvbby.codema.core.bean.DefaultCodemaBeanFactory;
+import com.lvbby.codema.core.bean.CodemaBeanFactory;
 import org.apache.commons.lang3.Validate;
 
 import java.net.URI;
@@ -24,7 +24,7 @@ public class Codema {
     private List<CodemaMachine> codemaMachines;
     private SourceParserFactory sourceParserFactory;
     private CodemaInject codemaInject = new CodemaInject();
-    private ResourceLoader resourceLoader = new DefaultResourceLoader();
+    private CodemaBeanFactory codemaBeanFactory = new DefaultCodemaBeanFactory();
 
     public static Codema fromYaml(String yaml) throws Exception {
         ConfigLoader configLoader = new YamlConfigLoader();
@@ -56,7 +56,9 @@ public class Codema {
 
         /** 执行 */
         for (CodemaMachine codemaMachine : codemaMachines) {
-            codemaMachine.code(codemaContext);
+            //没有找到配置的不执行，filter
+            if (codemaContext.getConfig(codemaMachine.getConfigType()) != null)
+                codemaMachine.code(codemaContext);
         }
     }
 
@@ -65,6 +67,10 @@ public class Codema {
         if (load == null)
             throw new CodemaException(String.format("can't find source parser for %s", from));
         return load;
+    }
+
+    public Object parseSource(String url) throws Exception {
+        return findSourceParser(url).parse(URI.create(url));
     }
 
     public Codema addCodemaMachine(CodemaMachine codemaMachine) {
@@ -94,7 +100,7 @@ public class Codema {
         return codemaInject;
     }
 
-    public ResourceLoader getResourceLoader() {
-        return resourceLoader;
+    public CodemaBeanFactory getCodemaBeanFactory() {
+        return codemaBeanFactory;
     }
 }

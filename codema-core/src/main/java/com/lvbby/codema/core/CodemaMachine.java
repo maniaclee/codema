@@ -7,4 +7,6 @@ package com.lvbby.codema.core;
 public interface CodemaMachine {
 
     void code(CodemaContext codemaContext) throws Exception;
+
+    Class<?>  getConfigType();
 }

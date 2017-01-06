@@ -13,6 +13,6 @@ public class JavaRegisterResultHandler implements ResultHandler {
     @Override
     public void handle(ResultContext resultContext) {
         if (resultContext.getResult().getResult() instanceof CompilationUnit)
-            resultContext.getCodemaContext().getCodema().getResourceLoader().register(new JavaCodemaResoure((CompilationUnit) resultContext.getResult().getResult()));
+            resultContext.getCodemaContext().getCodema().getCodemaBeanFactory().register(new JavaCodemaResoure((CompilationUnit) resultContext.getResult().getResult()));
     }
 }

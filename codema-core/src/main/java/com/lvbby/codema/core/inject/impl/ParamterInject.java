@@ -1,7 +1,7 @@
 package com.lvbby.codema.core.inject.impl;
 
 import com.lvbby.codema.core.inject.*;
-import com.lvbby.codema.core.resource.CodemaResource;
+import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.utils.JavaUtils;
 import com.lvbby.codema.core.utils.OrderValue;
 import org.apache.commons.lang3.StringUtils;
@@ -27,14 +27,14 @@ public class ParamterInject implements CodemaInjector {
             } catch (Exception e) {
                 throw new InjectInterruptException(e);
             }
-            Object bean = context.getContext().getCodema().getResourceLoader().getBean(beanId);
+            Object bean = context.getContext().getCodema().getCodemaBeanFactory().getBean(beanId);
             if (bean == null && annotation.createFactory() != null) {
                 InjectParameterFactory instance = JavaUtils.instance(annotation.createFactory());
-                CodemaResource codemaResource = instance.create(context, beanId);
-                if (codemaResource != null) {
-                    bean = codemaResource.getResource();
+                CodemaBean codemaBean = instance.create(context, beanId);
+                if (codemaBean != null) {
+                    bean = codemaBean.getResource();
                     //注册到容器
-                    context.getContext().getCodema().getResourceLoader().register(codemaResource);
+                    context.getContext().getCodema().getCodemaBeanFactory().register(codemaBean);
                 }
             }
             //注入参数bean

@@ -1,6 +1,7 @@
 package com.lvbby.codema.java.app.mvn;
 
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
@@ -14,12 +15,13 @@ import java.io.File;
  */
 public class MvnCodemaMachine implements CodemaInjectable {
     @CodemaRunner
+    @ConfigBind(MavenConfig.class)
     public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
         initConfig(null, config);
         handle(codemaContext, config);
     }
 
-    private void handle(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
+    private void handle(CodemaContext codemaContext, MavenConfig config) throws Exception {
         if (config != null)
             doHandle(codemaContext, config);
         if (CollectionUtils.isNotEmpty(config.getModules()))
@@ -29,11 +31,13 @@ public class MvnCodemaMachine implements CodemaInjectable {
 
     private void initConfig(MavenConfig parent, MavenConfig child) {
         child.setParent(parent);
-        for (MavenConfig mavenConfig : child.getModules())
-            initConfig(child, mavenConfig);
+        if (CollectionUtils.isNotEmpty(child.getModules()))
+            for (MavenConfig mavenConfig : child.getModules())
+                initConfig(child, mavenConfig);
     }
 
-    private void doHandle(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
-        config.handle(codemaContext, config, new TemplateEngineResult("classpath://template/pom.xml", config, new File(config.findRootDir(),"pom.xml")));
+    private void doHandle(CodemaContext codemaContext, MavenConfig config) throws Exception {
+        String template = codemaContext.getCodema().parseSource("classpath://template/pom.xml").toString();
+        config.handle(codemaContext, config, new TemplateEngineResult(template, config, new File(config.findRootDir(), "pom.xml")));
     }
 }

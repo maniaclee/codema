@@ -4,15 +4,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.config.ConfigBind;
+import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.utils.CodemaComparator;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ public class CodemaInject {
     private Set<CodemaInjector> injectorProcessors = Sets.newTreeSet(CodemaComparator.instance);
 
     public CodemaInject() {
-        ServiceLoader.load(CodemaInjector.class).forEach(parameterFilterInjectProcessor -> injectorProcessors.add(parameterFilterInjectProcessor));
+        ServiceLoader.load(CodemaInjector.class).forEach(parameterFilterInjectProcessor -> addCodemaInjectorProcessor(parameterFilterInjectProcessor));
     }
 
     public List<CodemaMachine> toCodemaMachine(Object a) {
@@ -34,7 +36,7 @@ public class CodemaInject {
                     .filter(m -> m.getMethod().isAnnotationPresent(CodemaRunner.class))
                     .map(methodDescriptor -> wrap2codemaMachine(a, methodDescriptor.getMethod()))
                     .collect(Collectors.toList());
-        } catch (IntrospectionException e) {
+        } catch (Exception e) {
             throw new RuntimeException("failed to convert to codemaMachine");
         }
     }
@@ -60,6 +62,8 @@ public class CodemaInject {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (method.getName().equals("getConfigType"))
+                return Optional.ofNullable(codeRunnerMethod.getAnnotation(ConfigBind.class)).map(ConfigBind::value).orElseThrow(() -> new CodemaRuntimeException("config not found "));
             CodemaContext context = (CodemaContext) args[0];
             //从context中找到参数, by type
             List<InjectEntry> entries = InjectEntry.from(context, codeRunnerMethod);
@@ -78,6 +82,7 @@ public class CodemaInject {
                     }
                 } catch (InjectInterruptException e) {
                     //interrupt detected , skip the rest
+                    e.printStackTrace();
                     return null;
                 } catch (Exception e) {
                     e.printStackTrace();

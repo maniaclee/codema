@@ -1,4 +1,4 @@
-package com.lvbby.codema.core.resource;
+package com.lvbby.codema.core.bean;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,12 +12,12 @@ import java.util.Objects;
 /**
  * Created by lipeng on 2016/12/31.
  */
-public class CodemaResource {
+public class CodemaBean {
     private String id;
     private Object resource;
     private List<Class> types;
 
-    public CodemaResource(Object obj) {
+    public CodemaBean(Object obj) {
         setResource(obj);
     }
 
