@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.app.testcase;
+package com.lvbby.codema.java.template;
 
 /**
  * Created by lipeng on 2017/1/5.
@@ -15,7 +15,7 @@ public class $TemplateClass_ {
         return null;
     }
 
-    public String $invoke_(String arg) {
+    public $Class1_ $invoke_($Class_ arg) {
         return null;
     }
 

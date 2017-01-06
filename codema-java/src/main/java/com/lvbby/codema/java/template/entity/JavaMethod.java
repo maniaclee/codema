@@ -1,6 +1,8 @@
 package com.lvbby.codema.java.template.entity;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -10,6 +12,35 @@ public class JavaMethod {
     public String name;
     public String returnType;
     public List<JavaArg> args;
+    public String argsDefaultValue;
+    public String argsSignature;
+
+    public boolean isVoid() {
+        return Objects.equals("void", returnType);
+    }
+
+    /**
+     * (arg1,arg2)  -->  arg1,arg2
+     */
+    public String getArgsInvoke() {
+        return Optional.ofNullable(args).map(args -> args.stream().map(JavaArg::getName).collect(Collectors.joining(","))).orElse("");
+    }
+
+    public String getArgsSignature() {
+        return argsSignature;
+    }
+
+    public void setArgsSignature(String argsSignature) {
+        this.argsSignature = argsSignature;
+    }
+
+    public String getArgsDefaultValue() {
+        return argsDefaultValue;
+    }
+
+    public void setArgsDefaultValue(String argsDefaultValue) {
+        this.argsDefaultValue = argsDefaultValue;
+    }
 
     public String loadParameterSignature() {
         return args == null ? "" : args.stream().map(javaArg -> javaArg.getType() + " " + javaArg.getName()).collect(Collectors.joining(","));

@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * Created by lipeng on 17/1/5.
  * 将Java源文件转换成模板引擎template
  */
-public class JavaTemplateParser {
+public class JavaSrcTemplateParser {
     private List<JavaTemplateAnnotationHandler> handlers = Lists.newArrayList(new $IfHandler(), new $ForeachHandler(), new $ExprHandler());
 
     public String parse(Class templateClass) {

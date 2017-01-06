@@ -8,6 +8,7 @@ import com.lvbby.codema.java.template.entity.JavaClass;
 import com.lvbby.codema.java.template.entity.JavaField;
 import com.lvbby.codema.java.template.entity.JavaMethod;
 import com.lvbby.codema.java.tool.JavaLexer;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -35,14 +36,15 @@ public class JavaClassParser {
             JavaMethod re = new JavaMethod();
             re.setName(m.getNameAsString());
             re.setReturnType(m.getType().toString());
-            if (re.getReturnType().equals("void"))
-                re.setReturnType(null);
             re.setArgs(m.getParameters().stream().map(p -> {
                 JavaArg arg = new JavaArg();
                 arg.setName(p.getNameAsString());
                 arg.setType(StringUtils.trimToNull(p.getType().toString()));
+                arg.setDefaultValue(JavaLexer.newInstanceForDefaultValue(arg.getType()).toString());
                 return arg;
             }).collect(Collectors.toList()));
+            re.setArgsDefaultValue(re.getArgs().stream().map(JavaArg::getDefaultValue).collect(Collectors.joining(",")));
+            re.setArgsSignature(CollectionUtils.isEmpty(re.getArgs()) ? "" : re.getArgs().stream().map(javaArg -> javaArg.getType() + " " + javaArg.getName()).collect(Collectors.joining(",")));
             return re;
         }).collect(Collectors.toList());
     }
