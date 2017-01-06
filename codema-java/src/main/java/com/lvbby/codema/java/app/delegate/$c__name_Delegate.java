@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.app.testcase;
+package com.lvbby.codema.java.app.delegate;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.render.TemplateEngine;

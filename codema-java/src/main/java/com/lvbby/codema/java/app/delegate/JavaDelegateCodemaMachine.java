@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.app.testcase;
+package com.lvbby.codema.java.app.delegate;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.CodemaContext;
@@ -6,6 +6,7 @@ import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
+import com.lvbby.codema.java.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
