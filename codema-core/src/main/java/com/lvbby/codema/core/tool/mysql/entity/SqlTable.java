@@ -1,4 +1,4 @@
-package com.lvbby.codema.core.tool.mysql;
+package com.lvbby.codema.core.tool.mysql.entity;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
