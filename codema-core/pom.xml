@@ -58,5 +58,10 @@
             <artifactId>dozer</artifactId>
             <version>5.5.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.0.17</version>
+        </dependency>
     </dependencies>
 </project>

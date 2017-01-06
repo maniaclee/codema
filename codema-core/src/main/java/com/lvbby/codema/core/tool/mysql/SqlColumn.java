@@ -1,0 +1,68 @@
+package com.lvbby.codema.core.tool.mysql;
+
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
+/**
+ * Created by peng on 16/7/27.
+ */
+public class SqlColumn {
+    private String name;
+    private String nameInDb;
+    private String appType;
+    private String dbType;
+    private String dbTypeName;
+    private String comment;
+
+    public String getNameInDb() {
+        return nameInDb;
+    }
+
+    public void setNameInDb(String nameInDb) {
+        this.nameInDb = nameInDb;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAppType() {
+        return appType;
+    }
+
+    public void setAppType(String appType) {
+        this.appType = appType;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
+
+    public String getDbTypeName() {
+        return dbTypeName;
+    }
+
+    public void setDbTypeName(String dbTypeName) {
+        this.dbTypeName = dbTypeName;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
+}
