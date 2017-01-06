@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
-import com.lvbby.codema.core.render.TemplateEngineResult;
+import com.lvbby.codema.core.result.Result;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -70,7 +70,7 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         }
     }
 
-    public void handle(CodemaContext codemaContext, CommonCodemaConfig config, TemplateEngineResult templateEngineResult) throws Exception {
-        handle(ResultContext.of(codemaContext, config, templateEngineResult));
+    public void handle(CodemaContext codemaContext, CommonCodemaConfig config, Result result) throws Exception {
+        handle(ResultContext.of(codemaContext, config, result));
     }
 }

@@ -18,10 +18,23 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
     private String result;
     private File file;
 
-    public TemplateEngineResult(String template, Object arg, File file) {
-        this.template = template;
-        this.arg = arg;
-        this.file = file;
+    public static TemplateEngineResult of(String template, Object arg, File file) {
+        TemplateEngineResult re = new TemplateEngineResult();
+        re.template = template;
+        re.arg = arg;
+        re.file = file;
+        return re;
+    }
+
+    @Override
+    public Object getResult() {
+        return arg;
+    }
+
+    @Override
+    public String getString() {
+        if (result != null)
+            return result;
         if (!(arg instanceof Map)) {
             try {
                 arg = JavaUtils.object2map(arg);
@@ -34,15 +47,6 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
         TemplateEngine templateEngine = TemplateEngineFactory.create(template);
         map.keySet().forEach(o -> templateEngine.bind(o.toString(), map.get(o)));
         result = templateEngine.render();
-    }
-
-    @Override
-    public Object getResult() {
-        return arg;
-    }
-
-    @Override
-    public String getString() {
         return result;
     }
 

@@ -1,20 +1,18 @@
 package com.lvbby.codema.java.template;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.imports.ImportDeclaration;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.lvbby.codema.core.render.TemplateEngine;
+import com.lvbby.codema.core.render.TemplateEngineFactory;
+import com.lvbby.codema.java.template.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.MethodDescriptor;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +21,28 @@ import java.util.regex.Pattern;
  * 将Java源文件转换成模板引擎template
  */
 public class JavaSrcTemplateParser {
-    private List<JavaTemplateAnnotationHandler> handlers = Lists.newArrayList(new $IfHandler(), new $ForeachHandler(), new $ExprHandler());
+    public static JavaSrcTemplateParser instance = new JavaSrcTemplateParser();
+
+    public TemplateEngine loadJavaSrcTemplateEngine(CompilationUnit cu, Class<?> javaSrcTemplate) {
+        String template = parse(javaSrcTemplate);
+        JavaClass src = new JavaClassParser().parse(cu);
+        TemplateEngine templateEngine = TemplateEngineFactory.create(template);
+        return templateEngine
+                .bind("c", src)
+                .bind("TemplateClass", src.getName())
+                .bind("templateClass", JavaLexer.camel(src.getName()))
+                .bind("Null", "");
+    }
+
+    public Map getArgs4te(CompilationUnit cu) {
+        JavaClass src = new JavaClassParser().parse(cu);
+        HashMap<Object, Object> map = Maps.newHashMap();
+        map.put("c", src);
+        map.put("TemplateClass", src.getName());
+        map.put("templateClass", JavaLexer.camel(src.getName()));
+        map.put("Null", "");
+        return map;
+    }
 
     public String parse(Class templateClass) {
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
@@ -51,10 +70,6 @@ public class JavaSrcTemplateParser {
     }
 
 
-    private Optional<JavaTemplateAnnotationHandler> getAnnotationHandler(Annotation annotation) {
-        return handlers.stream().filter(javaTemplateAnnotationHandler -> javaTemplateAnnotationHandler.annotation(annotation)).findFirst();
-    }
-
     public static void filterImport(CompilationUnit cu) {
         ArrayList<ImportDeclaration> imports = Lists.newArrayList(cu.getImports());
         for (int i = 0; i < imports.size(); i++) {
@@ -70,23 +85,4 @@ public class JavaSrcTemplateParser {
         return true;
     }
 
-    private void handleMethods(ClassOrInterfaceDeclaration clzCu, Class templateClass) {
-        try {
-            for (MethodDescriptor methodDescriptor : Introspector.getBeanInfo(templateClass, Object.class).getMethodDescriptors()) {
-                List<String> result = Lists.newArrayList();
-                Annotation[] annotations = methodDescriptor.getMethod().getAnnotations();
-                if (annotations != null) {
-                    for (Annotation annotation : annotations) {
-                        getAnnotationHandler(annotation).ifPresent(javaTemplateAnnotationHandler -> javaTemplateAnnotationHandler.getString(annotation));
-                    }
-                }
-            }
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        }
-        List<MethodDeclaration> methods = JavaLexer.getMethods(clzCu);
-        for (MethodDeclaration methodDec : methods) {
-            methodDec.setLineComment(null);
-        }
-    }
 }

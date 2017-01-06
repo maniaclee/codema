@@ -52,4 +52,15 @@ public class $c__name_Delegate {
                 .render();
         System.err.println(result);
     }
+
+    public static TemplateEngine getJavaSrcTemplateEngine(CompilationUnit cu, Class<?> javaSrcTemplate) {
+        String template = new JavaSrcTemplateParser().parse(javaSrcTemplate);
+        JavaClass src = new JavaClassParser().parse(cu);
+        TemplateEngine templateEngine = TemplateEngineFactory.create(template);
+        return templateEngine
+                .bind("c", src)
+                .bind("TemplateClass", src.getName())
+                .bind("templateClass", JavaLexer.camel(src.getName()))
+                .bind("Null", "");
+    }
 }

@@ -38,6 +38,6 @@ public class MvnCodemaMachine implements CodemaInjectable {
 
     private void doHandle(CodemaContext codemaContext, MavenConfig config) throws Exception {
         String template = codemaContext.getCodema().parseSource("classpath://template/pom.xml").toString();
-        config.handle(codemaContext, config, new TemplateEngineResult(template, config, new File(config.findRootDir(), "pom.xml")));
+        config.handle(codemaContext, config, TemplateEngineResult.of(template, config, new File(config.findRootDir(), "pom.xml")));
     }
 }
