@@ -1,4 +1,6 @@
-package com.lvbby.codema.java.template.entity;
+package com.lvbby.codema.java.entity;
+
+import com.lvbby.codema.core.utils.JavaUtils;
 
 import java.util.List;
 
@@ -6,17 +8,21 @@ import java.util.List;
  * Created by lipeng on 17/1/5.
  */
 public class JavaClass {
+    private String pack;
     private String name;
-    private String nameCamel;
     private List<JavaField> fields;
     private List<JavaMethod> methods;
 
     public String getNameCamel() {
-        return nameCamel;
+        return JavaUtils.camel(name);
     }
 
-    public void setNameCamel(String nameCamel) {
-        this.nameCamel = nameCamel;
+    public String getPack() {
+        return pack;
+    }
+
+    public void setPack(String pack) {
+        this.pack = pack;
     }
 
     public String getName() {

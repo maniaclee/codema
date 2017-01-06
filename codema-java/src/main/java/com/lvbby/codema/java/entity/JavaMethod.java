@@ -1,4 +1,6 @@
-package com.lvbby.codema.java.template.entity;
+package com.lvbby.codema.java.entity;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -12,8 +14,6 @@ public class JavaMethod {
     public String name;
     public String returnType;
     public List<JavaArg> args;
-    public String argsDefaultValue;
-    public String argsSignature;
 
     public boolean isVoid() {
         return Objects.equals("void", returnType);
@@ -27,19 +27,11 @@ public class JavaMethod {
     }
 
     public String getArgsSignature() {
-        return argsSignature;
-    }
-
-    public void setArgsSignature(String argsSignature) {
-        this.argsSignature = argsSignature;
+        return CollectionUtils.isEmpty(getArgs()) ? "" : getArgs().stream().map(javaArg -> javaArg.getType() + " " + javaArg.getName()).collect(Collectors.joining(","));
     }
 
     public String getArgsDefaultValue() {
-        return argsDefaultValue;
-    }
-
-    public void setArgsDefaultValue(String argsDefaultValue) {
-        this.argsDefaultValue = argsDefaultValue;
+        return getArgs().stream().map(JavaArg::getDefaultValue).collect(Collectors.joining(","));
     }
 
     public String loadParameterSignature() {

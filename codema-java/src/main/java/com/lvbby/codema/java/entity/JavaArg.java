@@ -1,4 +1,6 @@
-package com.lvbby.codema.java.template.entity;
+package com.lvbby.codema.java.entity;
+
+import com.lvbby.codema.java.tool.JavaLexer;
 
 /**
  * Created by lipeng on 17/1/5.
@@ -6,14 +8,9 @@ package com.lvbby.codema.java.template.entity;
 public class JavaArg {
     private String name;
     private String type;
-    private String defaultValue;
 
     public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
+        return JavaLexer.newInstanceForDefaultValue(type).toString();
     }
 
     public String getName() {

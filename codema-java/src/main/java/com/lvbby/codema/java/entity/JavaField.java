@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.template.entity;
+package com.lvbby.codema.java.entity;
 
 /**
  * Created by lipeng on 17/1/5.

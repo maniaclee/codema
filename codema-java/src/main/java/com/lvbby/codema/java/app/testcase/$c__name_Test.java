@@ -9,7 +9,7 @@ import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$TemplateClass_;
 import com.lvbby.codema.java.template.JavaClassParser;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
-import com.lvbby.codema.java.template.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class $c__name_Test {
     // for( m in c.methods){
     //var invoke = m.name;
     //var Class1 = m.returnType;
-    //var class = m.argsDefaultValue;
+    //var class = @m.getArgsDefaultValue();
     // %>
     @Test
     public void $invoke_Test() throws Exception {

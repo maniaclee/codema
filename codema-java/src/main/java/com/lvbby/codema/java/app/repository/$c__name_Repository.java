@@ -5,7 +5,7 @@ import com.lvbby.codema.core.render.TemplateEngine;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.java.app.mvn.MavenConfig;
 import com.lvbby.codema.java.template.*;
-import com.lvbby.codema.java.template.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Test;

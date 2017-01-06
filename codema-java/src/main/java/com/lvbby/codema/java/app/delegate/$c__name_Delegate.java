@@ -5,7 +5,7 @@ import com.lvbby.codema.core.render.TemplateEngine;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.java.app.mvn.MavenConfig;
 import com.lvbby.codema.java.template.*;
-import com.lvbby.codema.java.template.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class $c__name_Delegate {
     //var invoke = m.name;
     //var Class1 = m.returnType;
     //var class = @m.getArgsInvoke();
-    //var signature = m.argsSignature;
+    //var signature = @m.getArgsSignature;
     // %>
     @Test
     public $Class1_ $invoke_($Null_ $signature_) throws Exception {

@@ -3,12 +3,11 @@ package com.lvbby.codema.java.template;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.lvbby.codema.java.template.entity.JavaArg;
-import com.lvbby.codema.java.template.entity.JavaClass;
-import com.lvbby.codema.java.template.entity.JavaField;
-import com.lvbby.codema.java.template.entity.JavaMethod;
+import com.lvbby.codema.java.entity.JavaArg;
+import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaField;
+import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.tool.JavaLexer;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -25,7 +24,6 @@ public class JavaClassParser {
         if (c == null)
             return null;
         clz.setName(c.getNameAsString());
-        clz.setNameCamel(JavaLexer.camel(clz.getName()));
         clz.setFields(parseFields(c));
         clz.setMethods(parseMethods(c));
         return clz;
@@ -40,11 +38,8 @@ public class JavaClassParser {
                 JavaArg arg = new JavaArg();
                 arg.setName(p.getNameAsString());
                 arg.setType(StringUtils.trimToNull(p.getType().toString()));
-                arg.setDefaultValue(JavaLexer.newInstanceForDefaultValue(arg.getType()).toString());
                 return arg;
             }).collect(Collectors.toList()));
-            re.setArgsDefaultValue(re.getArgs().stream().map(JavaArg::getDefaultValue).collect(Collectors.joining(",")));
-            re.setArgsSignature(CollectionUtils.isEmpty(re.getArgs()) ? "" : re.getArgs().stream().map(javaArg -> javaArg.getType() + " " + javaArg.getName()).collect(Collectors.joining(",")));
             return re;
         }).collect(Collectors.toList());
     }
