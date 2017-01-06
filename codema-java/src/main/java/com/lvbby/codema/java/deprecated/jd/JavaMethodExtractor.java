@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.tool.jd;
+package com.lvbby.codema.java.deprecated.jd;
 
 /**
  * Created by lipeng on 2017/1/1.

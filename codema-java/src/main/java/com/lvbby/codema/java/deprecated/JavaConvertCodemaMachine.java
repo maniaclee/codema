@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.app.convert;
+package com.lvbby.codema.java.deprecated;
 
 import com.alibaba.fastjson.JSON;
 import com.github.javaparser.ast.CompilationUnit;
@@ -19,6 +19,7 @@ import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.Parameter;
+import com.lvbby.codema.java.app.convert.JavaConvertCodemaConfig;
 import com.lvbby.codema.java.engine.JavaEngineContext;
 import com.lvbby.codema.java.engine.JavaEngineResult;
 import com.lvbby.codema.java.inject.JavaClassParameterFactory;

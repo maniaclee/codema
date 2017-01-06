@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.tool.jd;
+package com.lvbby.codema.java.deprecated.jd;
 
 import com.lvbby.codema.java.tool.JavaLexer;
 import jd.core.loader.Loader;

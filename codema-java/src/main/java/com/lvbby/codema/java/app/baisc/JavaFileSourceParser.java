@@ -2,6 +2,7 @@ package com.lvbby.codema.java.app.baisc;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.SourceParser;
+import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
@@ -19,13 +20,17 @@ public class JavaFileSourceParser implements SourceParser<JavaSourceParam> {
         JavaSourceParam re = new JavaSourceParam();
         File file = new File(from.getPath());
         if (file.isFile()) {
-            re.add(parse(file));
+            re.add(convert(parse(file)));
         } else if (file.isDirectory()) {
             for (File f : file.listFiles((dir, name) -> name.endsWith(".java")))
-                re.add(parse(f));
+                re.add(convert(parse(f)));
         }
-        Validate.notEmpty(re.getCompilationUnits(), "not source found");
+        Validate.notEmpty(re.getClasses(), "not source found");
         return re;
+    }
+
+    private JavaClass convert(CompilationUnit cu) {
+        return new JavaClass();//TODO
     }
 
 

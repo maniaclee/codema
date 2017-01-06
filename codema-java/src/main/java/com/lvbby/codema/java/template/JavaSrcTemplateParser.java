@@ -44,6 +44,15 @@ public class JavaSrcTemplateParser {
         return map;
     }
 
+    public Map getArgs4te(JavaClass src) {
+        HashMap<Object, Object> map = Maps.newHashMap();
+        map.put("c", src);
+        map.put("TemplateClass", src.getName());
+        map.put("templateClass", JavaLexer.camel(src.getName()));
+        map.put("Null", "");
+        return map;
+    }
+
     public String parse(Class templateClass) {
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
         filterImport(cu);

@@ -1,7 +1,7 @@
 package com.lvbby.codema.java.app.baisc;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.google.common.collect.Lists;
+import com.lvbby.codema.java.entity.JavaClass;
 
 import java.util.List;
 
@@ -9,18 +9,18 @@ import java.util.List;
  * Created by lipeng on 2016/12/24.
  */
 public class JavaSourceParam {
-    private List<CompilationUnit> compilationUnits = Lists.newArrayList();
+    private List<JavaClass> classes = Lists.newArrayList();
 
-    public JavaSourceParam add(CompilationUnit compilationUnit) {
-        compilationUnits.add(compilationUnit);
+    public JavaSourceParam add(JavaClass compilationUnit) {
+        classes.add(compilationUnit);
         return this;
     }
 
-    public List<CompilationUnit> getCompilationUnits() {
-        return compilationUnits;
+    public List<JavaClass> getClasses() {
+        return classes;
     }
 
-    public void setCompilationUnits(List<CompilationUnit> compilationUnits) {
-        this.compilationUnits = compilationUnits;
+    public void setClasses(List<JavaClass> classes) {
+        this.classes = classes;
     }
 }
