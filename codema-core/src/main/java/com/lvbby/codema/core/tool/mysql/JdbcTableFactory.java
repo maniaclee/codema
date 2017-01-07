@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 
+import java.net.URI;
 import java.sql.*;
 import java.util.List;
 
@@ -15,6 +16,20 @@ public class JdbcTableFactory {
     private String jdbcUrl;
     private String user;
     private String password;
+
+    public static JdbcTableFactory of(String jdbcUrl, String user, String password) {
+        JdbcTableFactory re = new JdbcTableFactory();
+        re.setJdbcUrl(jdbcUrl);
+        re.setUser(user);
+        re.setPassword(password);
+        return re;
+    }
+
+    public static JdbcTableFactory of(URI uri) {
+        JdbcTableFactory re = new JdbcTableFactory();
+        re.setJdbcUrl(uri.toString());
+        return re;
+    }
 
 
     public List<SqlTable> getTables() throws Exception {

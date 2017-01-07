@@ -11,8 +11,14 @@ import java.util.List;
 public class JavaSourceParam {
     private List<JavaClass> classes = Lists.newArrayList();
 
-    public JavaSourceParam add(JavaClass compilationUnit) {
-        classes.add(compilationUnit);
+    public JavaSourceParam(List<JavaClass> classes) {
+        this.classes = classes;
+        if (classes == null)
+            this.classes = Lists.newLinkedList();
+    }
+
+    public JavaSourceParam add(JavaClass javaClass) {
+        classes.add(javaClass);
         return this;
     }
 
