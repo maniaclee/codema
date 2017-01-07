@@ -26,6 +26,7 @@ public class JavaClassParser {
         clz.setName(c.getNameAsString());
         clz.setFields(parseFields(c));
         clz.setMethods(parseMethods(c));
+        clz.setPack(cu.getPackage().map(packageDeclaration -> packageDeclaration.getNameAsString()).orElse(""));
         return clz;
     }
 

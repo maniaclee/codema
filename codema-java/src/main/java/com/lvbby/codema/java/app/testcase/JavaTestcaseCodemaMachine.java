@@ -1,6 +1,5 @@
 package com.lvbby.codema.java.app.testcase;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;

@@ -82,7 +82,7 @@ public class CodemaInject {
                     }
                 } catch (InjectInterruptException e) {
                     //interrupt detected , skip the rest
-                    e.printStackTrace();
+                    //                    e.printStackTrace();
                     return null;
                 } catch (Exception e) {
                     e.printStackTrace();
