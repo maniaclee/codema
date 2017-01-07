@@ -20,9 +20,9 @@ common:
 #      java-version: '1.8'
 #
 java:
-#  basic:
-#    dest-package: '所有的pack都是    dest-package'
-#    dest-src-root: ''
+  basic:
+    dest-package: 'com.lvbby'
+    dest-src-root: ''
   testcase:
     from-package: 'com.lvbby'
     dest-class-name: 'Test'
@@ -36,9 +36,7 @@ java:
 #    result-handler:
 #        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 #
-#  delegate:
-#    from-package: '就是一个filter'
-#    dest-class-name: ''
+  delegate: {}
 #  entity:
 #    from-package: '基于common.from,选取指定package的类产生testcase'
 #    dest-package: ''

@@ -11,6 +11,9 @@ import java.util.List;
 public class JavaSourceParam {
     private List<JavaClass> classes = Lists.newArrayList();
 
+    public JavaSourceParam() {
+    }
+
     public JavaSourceParam(List<JavaClass> classes) {
         this.classes = classes;
         if (classes == null)

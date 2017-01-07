@@ -12,13 +12,13 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
  * Created by lipeng on 2016/12/24.
  * 朕心甚慰！！！！
  */
-public class $c__name_Test {
+public class $src__name_Test {
 
     @Autowired
     private $TemplateClass_ $templateClass_;
 
     // <%
-    // for( m in c.methods){
+    // for( m in src.methods){
     //var invoke = m.name;
     //var Class1 = m.returnType;
     //var class = @m.getArgsDefaultValue();

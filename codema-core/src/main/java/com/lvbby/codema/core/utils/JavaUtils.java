@@ -8,6 +8,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.Map;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -57,6 +60,19 @@ public class JavaUtils {
         if (ss == null || ss.length == 0)
             return StringUtils.uncapitalize(s);
         return s.toLowerCase() + Lists.newArrayList(ss).stream().map(e -> StringUtils.capitalize(e)).collect(Collectors.joining());
+    }
+
+    public static String replace(String s, String regx, Function<Matcher, String> function) {
+        StringBuilder re = new StringBuilder();
+        int last = 0;
+        Matcher matcher = Pattern.compile(regx).matcher(s);
+        while (matcher.find()) {
+            re.append(s.substring(last, matcher.start()));
+            re.append(function.apply(matcher));
+            last = matcher.end();
+        }
+        re.append(s.substring(last));
+        return re.toString();
     }
 
 }

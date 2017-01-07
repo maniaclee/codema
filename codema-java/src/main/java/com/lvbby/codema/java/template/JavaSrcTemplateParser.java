@@ -6,11 +6,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.render.TemplateEngine;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
+import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -44,11 +48,12 @@ public class JavaSrcTemplateParser {
         return map;
     }
 
-    public Map getArgs4te(JavaClass src) {
+    public Map getArgs4te(JavaClass src, JavaBasicCodemaConfig config) {
         HashMap<Object, Object> map = Maps.newHashMap();
-        map.put("c", src);
+        map.put("src", src);
         map.put("TemplateClass", src.getName());
         map.put("templateClass", JavaLexer.camel(src.getName()));
+        map.put("config", config);
         map.put("Null", "");
         return map;
     }
@@ -56,28 +61,40 @@ public class JavaSrcTemplateParser {
     public String parse(Class templateClass) {
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
         filterImport(cu);
-        return eval(cu.toString());
+        return render(cu.toString());
     }
 
-    private String eval(String s) {
-        String re = s.replaceAll("//", "").replace("$", "${").replace("__", ".").replace('_', '}');
+    public String parse(Class templateClass, JavaBasicCodemaConfig javaBasicCodemaConfig) {
+        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
+        filterImport(cu);
+        cu.setPackage(javaBasicCodemaConfig.getDestPackage());
+        JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
+            classOrInterfaceDeclaration.setJavaDocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
+        });
+        return render(cu.toString());
+    }
+
+    private String render(String s) {
+        String re = s.replaceAll("//", "");
         re = filterBlockComment(re);
+        re = expr(re);
         return re;
     }
 
     private static String filterBlockComment(String s) {
-        StringBuilder re = new StringBuilder();
-        int last = 0;
-        Matcher matcher = Pattern.compile("/\\*{1,2}#([^*/]+)\\*/").matcher(s);
-        while (matcher.find()) {
-            re.append(s.substring(last, matcher.start()));
-            re.append(matcher.group(1));
-            last = matcher.end();
-        }
-        re.append(s.substring(last));
-        return re.toString();
+        return JavaUtils.replace(s, "/\\*{1,2}#([^*/]+)\\*/", matcher -> matcher.group(1));
     }
 
+    /**
+     * 处理变量表达式
+     * ${expr}不处理
+     * $abc_   --> ${abc}
+     * $abc__xyz_ ---> ${abc.xyz}
+     * $abc__xyz_ffff ---> ${abc.xyz}ffff
+     */
+    private static String expr(String s) {
+        return JavaUtils.replace(s, "\\$([a-zA-Z0-9]+__)*[a-zA-Z0-9]+_", matcher -> matcher.group().replace("$", "${").replace("__", ".").replace('_', '}'));
+    }
 
     public static void filterImport(CompilationUnit cu) {
         ArrayList<ImportDeclaration> imports = Lists.newArrayList(cu.getImports());

@@ -19,7 +19,7 @@ public class JavaDelegateCodemaMachine implements CodemaInjectable {
     @ConfigBind(JavaDelegateCodemaConfig.class)
     @CodemaRunner
     @JavaTemplate
-    public void code(CodemaContext codemaContext, @NotNull JavaDelegateCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $c__name_Delegate.class, cu));
+    public void code(CodemaContext codemaContext, @NotNull JavaDelegateCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass javaClass) throws Exception {
+        config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_Delegate.class, javaClass));
     }
 }

@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class JavaTemplateResult implements PrintableResult, FileResult {
 
-    private final String stringContent;
+    private String stringContent;
     private JavaBasicCodemaConfig config;
     private JavaClass javaClass;
     /**
@@ -36,15 +36,16 @@ public class JavaTemplateResult implements PrintableResult, FileResult {
         this.config = config;
         this.javaClass = javaClass;
 
-        String template = JavaSrcTemplateParser.instance.parse(javaSrcTemplate);
+        String template = JavaSrcTemplateParser.instance.parse(javaSrcTemplate, config);
         if (map == null)
             map = Maps.newHashMap();
-        map.putAll(JavaSrcTemplateParser.instance.getArgs4te(javaClass));
+        map.putAll(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
 
         TemplateEngine te = TemplateEngineFactory.create(template);
         Map finalMap = map;
         map.keySet().forEach(o -> te.bind(o.toString(), finalMap.get(o)));
         stringContent = te.render();
+        stringContent = stringContent.replaceAll("\\(\\s+", "("); //format (
     }
 
     @Override
