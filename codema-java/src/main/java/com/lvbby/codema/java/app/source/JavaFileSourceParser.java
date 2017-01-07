@@ -1,10 +1,11 @@
-package com.lvbby.codema.java.app.baisc;
+package com.lvbby.codema.java.app.source;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
+import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
