@@ -4,14 +4,21 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.entity.JavaArg;
+import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaField;
+import com.lvbby.codema.java.entity.JavaMethod;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 2016/12/25.
@@ -68,6 +75,35 @@ public class JavaClassUtils {
 
         ClassOrInterfaceDeclaration re = new ClassOrInterfaceDeclaration(EnumSet.of(Modifier.PUBLIC), false, className).setInterface(config.isToBeInterface());
         re.setJavaDocComment(String.format("\n* Created by %s on %s\n", config.getAuthor(), new SimpleDateFormat("yyyy/MM/hh").format(new Date())));
+        return re;
+    }
+
+    public static JavaClass convert(CompilationUnit cu) {
+        JavaClass re = new JavaClass();
+        re.setPack(cu.getPackage().map(packageDeclaration -> packageDeclaration.getNameAsString()).orElse(""));
+        ClassOrInterfaceDeclaration clz = JavaLexer.getClass(cu).orElseThrow(() -> new CodemaRuntimeException("no class found"));
+        re.setName(clz.getNameAsString());
+        re.setFields(JavaLexer.getFields(cu).stream().map(fieldDeclaration -> {
+            VariableDeclarator variable = fieldDeclaration.getVariable(0);
+            JavaField javaField = new JavaField();
+            javaField.setName(variable.getNameAsString());
+            javaField.setType(variable.getType().toString());
+            javaField.setPrimitive(false);//TODO
+            return javaField;
+        }).collect(Collectors.toList()));
+        re.setMethods(JavaLexer.getMethods(clz).stream().map(methodDeclaration -> {
+            JavaMethod javaMethod = new JavaMethod();
+            javaMethod.setName(methodDeclaration.getNameAsString());
+            javaMethod.setReturnType(methodDeclaration.getType().toString());
+            javaMethod.setArgs(methodDeclaration.getParameters().stream().map(parameter -> {
+                JavaArg javaArg = new JavaArg();
+                javaArg.setName(parameter.getNameAsString());
+                javaArg.setType(parameter.getType().toString());
+                return javaArg;
+            }).collect(Collectors.toList()));
+            return javaMethod;
+        }).collect(Collectors.toList()));
+        re.setFrom(cu);
         return re;
     }
 }

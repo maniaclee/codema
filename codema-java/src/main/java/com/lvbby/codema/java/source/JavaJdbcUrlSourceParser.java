@@ -1,7 +1,5 @@
 package com.lvbby.codema.java.source;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.tool.mysql.JdbcTableFactory;
@@ -42,7 +40,6 @@ public class JavaJdbcUrlSourceParser implements SourceParser<JavaSourceParam> {
                 return javaField;
             }).collect(Collectors.toList()));
             javaClass.setFrom(sqlTable);
-            System.out.println(JSON.toJSONString(javaClass, SerializerFeature.PrettyFormat));
             return javaClass;
         }).collect(Collectors.toList());
     }

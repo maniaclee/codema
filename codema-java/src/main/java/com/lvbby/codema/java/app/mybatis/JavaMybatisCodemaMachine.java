@@ -15,6 +15,7 @@ import org.apache.commons.lang3.Validate;
 
 /**
  * Created by lipeng on 16/12/23.
+ * 产生dao和mapper.xml
  */
 public class JavaMybatisCodemaMachine implements CodemaInjectable {
 
@@ -23,7 +24,10 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaMybatisCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
         validate(cu);
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_Dao.class, cu));
+        JavaTemplateResult daoTemplateResult = new JavaTemplateResult(config, $src__name_Dao.class, cu).registerResult();//register the dao result
+        config.handle(codemaContext, config, daoTemplateResult);
+
+        //xml TODO
     }
 
     private void validate(JavaClass cu) {

@@ -20,8 +20,8 @@ public interface $src__name_Dao {
 
     void inserts(List<$Class_> $class_s);
 
-    $Class_ queryById($Class_ id);
+    $Class_ queryById($Class1_ id);
 
-    List<$Class_> queryByIds(List<$Class1_> id);
+    List<$Class_> queryByIds(List<$Class1_> ids);
     //<%%>
 }

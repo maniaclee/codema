@@ -4,6 +4,7 @@ import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Null_;
 import com.lvbby.codema.java.template.$TemplateClass_;
 import org.junit.Test;
+import org.springframework.stereotype.Component;
 
 import static com.lvbby.codema.java.template.$Symbols_.$class_;
 
@@ -11,6 +12,7 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
  * Created by lipeng on 2016/12/24.
  * 朕心甚慰！！！！
  */
+@Component
 public class $src__name_Repository {
 
     private $TemplateClass_ $templateClass_;

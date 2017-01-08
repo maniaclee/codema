@@ -3,10 +3,13 @@ package com.lvbby.codema.core.tool.mysql;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.net.URI;
 import java.sql.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by peng on 16/7/27.
@@ -16,6 +19,7 @@ public class JdbcTableFactory {
     private String jdbcUrl;
     private String user;
     private String password;
+    private List<String> tableFilters = Lists.newArrayList();
 
     public static JdbcTableFactory of(String jdbcUrl, String user, String password) {
         JdbcTableFactory re = new JdbcTableFactory();
@@ -28,6 +32,8 @@ public class JdbcTableFactory {
     public static JdbcTableFactory of(URI uri) {
         JdbcTableFactory re = new JdbcTableFactory();
         re.setJdbcUrl(uri.toString());
+        for (Matcher m = Pattern.compile("table=([^&]+)").matcher(uri.toString()); m.find(); )
+            re.tableFilters.add(m.group(1));
         return re;
     }
 
@@ -62,9 +68,10 @@ public class JdbcTableFactory {
         ResultSet rs = md.getTables(null, null, "%", null);
         List<String> re = Lists.newLinkedList();
         while (rs.next()) re.add(rs.getString(3));
+        if (!CollectionUtils.isEmpty(tableFilters))
+            re = Lists.newArrayList(CollectionUtils.intersection(re, tableFilters));
         return re;
     }
-
 
     private List<SqlColumn> getFields(SqlTable SqlTable) throws SQLException {
         List<SqlColumn> re = Lists.newArrayList();

@@ -9,6 +9,8 @@ import com.lvbby.codema.core.result.PrintableResult;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
+import com.lvbby.codema.java.tool.JavaClassUtils;
+import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -46,6 +48,14 @@ public class JavaTemplateResult implements PrintableResult, FileResult {
         map.keySet().forEach(o -> te.bind(o.toString(), finalMap.get(o)));
         stringContent = te.render();
         stringContent = stringContent.replaceAll("\\(\\s+", "("); //format (
+    }
+
+    /**
+     * register the generated result to the container , so that other module can make use of
+     */
+    public JavaTemplateResult registerResult() {
+        result = JavaClassUtils.convert(JavaLexer.read(stringContent));
+        return this;
     }
 
     @Override
