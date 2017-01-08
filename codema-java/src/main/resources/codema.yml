@@ -1,6 +1,7 @@
 common:
   author: maniaclee
-  from: 'file://java:src//Users/lipeng/workspace/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
+#  from: 'file://java:src//Users/lipeng/workspace/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
+  from: 'jdbc:mysql://localhost:3306/user?user=root'
   result-handler:
       - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
       - 'com.lvbby.codema.core.result.handler.PrintResultHandler'
@@ -23,11 +24,11 @@ java:
   basic:
     dest-package: 'com.lvbby'
     dest-src-root: ''
-  testcase:
-    from-package: 'com.lvbby'
-    dest-class-name: 'Test'
-    dest-package: 'com.lvbby.testcase'
-    is-spring: true
+#  testcase:
+#    from-package: 'com.lvbby'
+#    dest-class-name: 'Test'
+#    dest-package: 'com.lvbby.testcase'
+#    is-spring: true
 #  convert:
 #    from-package: 'com.lvbby'
 #    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
@@ -36,8 +37,9 @@ java:
 #    result-handler:
 #        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 #
-  bean: {}
-  delegate: {}
+#  bean: {}
+#  delegate: {}
+  mybatis: {}
 #  entity:
 #    from-package: '基于common.from,选取指定package的类产生testcase'
 #    dest-package: ''

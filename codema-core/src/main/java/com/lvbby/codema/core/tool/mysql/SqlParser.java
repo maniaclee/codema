@@ -28,10 +28,9 @@ public class SqlParser {
             return Lists.newArrayList();
         return stmtList.stream().filter(s -> s instanceof MySqlCreateTableStatement).map(sqlStatement -> {
             MySqlCreateTableStatement create = (MySqlCreateTableStatement) sqlStatement;
-            SqlTable t = new SqlTable();
-            t.setNameInDb(create.getTableSource().toString());
-            t.setName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, t.getNameInDb()));
+            SqlTable t = SqlTable.instance(create.getTableSource().toString());
             t.setFields(create.getTableElementList().stream().filter(s -> s instanceof MySqlSQLColumnDefinition).map(sqlTableElement -> buildColumn((MySqlSQLColumnDefinition) sqlTableElement)).collect(Collectors.toList()));
+            t.setPrimaryKeyField(t.getFields().stream().filter(sqlColumn -> sqlColumn.isPrimaryKey()).findAny().orElse(null));
             return t;
         }).collect(Collectors.toList());
     }

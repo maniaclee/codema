@@ -1,5 +1,7 @@
-package com.lvbby.codema.java.app.source;
+package com.lvbby.codema.java.source;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.tool.mysql.JdbcTableFactory;
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 public class JavaJdbcUrlSourceParser implements SourceParser<JavaSourceParam> {
     @Override
     public String getSupportedUriScheme() {
-        return "jdbc://";
+        return "jdbc:mysql://";
     }
 
     @Override
@@ -39,6 +41,8 @@ public class JavaJdbcUrlSourceParser implements SourceParser<JavaSourceParam> {
                 javaField.setType(sqlColumn.getJavaType().getSimpleName());
                 return javaField;
             }).collect(Collectors.toList()));
+            javaClass.setFrom(sqlTable);
+            System.out.println(JSON.toJSONString(javaClass, SerializerFeature.PrettyFormat));
             return javaClass;
         }).collect(Collectors.toList());
     }

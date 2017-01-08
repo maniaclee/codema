@@ -12,6 +12,10 @@ public class JavaClass {
     private String name;
     private List<JavaField> fields;
     private List<JavaMethod> methods;
+    /**
+     * 来源于什么对象
+     */
+    private Object from;
 
     public String getNameCamel() {
         return JavaUtils.camel(name);
@@ -47,5 +51,13 @@ public class JavaClass {
 
     public void setMethods(List<JavaMethod> methods) {
         this.methods = methods;
+    }
+
+    public Object getFrom() {
+        return from;
+    }
+
+    public void setFrom(Object from) {
+        this.from = from;
     }
 }

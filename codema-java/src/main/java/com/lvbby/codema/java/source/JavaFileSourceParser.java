@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.app.source;
+package com.lvbby.codema.java.source;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -62,6 +62,7 @@ public class JavaFileSourceParser implements SourceParser<JavaSourceParam> {
             }).collect(Collectors.toList()));
             return javaMethod;
         }).collect(Collectors.toList()));
+        re.setFrom(cu);
         return re;
     }
 

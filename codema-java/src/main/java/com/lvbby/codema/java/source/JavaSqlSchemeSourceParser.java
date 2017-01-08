@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.app.source;
+package com.lvbby.codema.java.source;
 
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.tool.mysql.SqlParser;

@@ -1,5 +1,6 @@
 package com.lvbby.codema.core.tool.mysql.entity;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -23,6 +24,7 @@ public class SqlTable {
     public static SqlTable instance(String table) {
         SqlTable sqlTable = new SqlTable();
         sqlTable.setNameInDb(table);
+        sqlTable.setName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,table));
         return sqlTable;
     }
 

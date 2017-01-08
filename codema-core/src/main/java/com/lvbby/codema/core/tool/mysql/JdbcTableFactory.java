@@ -73,8 +73,9 @@ public class JdbcTableFactory {
         while (rs.next()) {
             SqlColumn f = new SqlColumn();
             f.setNameInDb(rs.getString(4));
-            f.setDbType(rs.getString(5));
-            //                f.setJavaType(rs.getString(6)); TODO
+            //            f.setDbType(rs.getString(5));
+            f.setDbType(rs.getString(6));
+            f.setJavaType(SqlType.getJavaType(f.getDbType()));
             f.setComment(rs.getString(12));
             // f.setNameInDb(rs.getString("COLUMN_NAME"));
             // f.setDbType(rs.getString("TYPE_NAME"));

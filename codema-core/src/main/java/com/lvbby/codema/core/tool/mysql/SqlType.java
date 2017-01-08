@@ -23,6 +23,7 @@ public class SqlType {
         map.put("SMALLINT", Integer.class);
         map.put("MEDIUMINT", Integer.class);
         map.put("INTEGER", Integer.class);
+        map.put("INT", Integer.class);
         map.put("BIGINT", Long.class);
         map.put("FLOAT", Float.class);
         map.put("DOUBLE", Double.class);

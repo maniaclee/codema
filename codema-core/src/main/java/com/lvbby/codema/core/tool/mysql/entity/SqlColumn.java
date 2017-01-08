@@ -1,5 +1,7 @@
 package com.lvbby.codema.core.tool.mysql.entity;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
@@ -15,6 +17,10 @@ public class SqlColumn {
     private boolean nullable = true;
     private boolean hasIndex = false;
     private boolean unique = false;
+
+    public String getJavaTypeString() {
+        return javaType.getSimpleName();
+    }
 
     public boolean isUnique() {
         return unique;
@@ -45,6 +51,9 @@ public class SqlColumn {
     }
 
     public void setDbType(String dbType) {
+        dbType = StringUtils.trimToNull(dbType);
+        Validate.notNull(dbType, "invalid db type ");
+        dbType = dbType.replaceAll("\\s+\\S+", "");
         this.dbType = dbType;
     }
 
