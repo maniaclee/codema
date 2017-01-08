@@ -36,6 +36,7 @@ java:
 #    result-handler:
 #        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 #
+  bean: {}
   delegate: {}
 #  entity:
 #    from-package: '基于common.from,选取指定package的类产生testcase'

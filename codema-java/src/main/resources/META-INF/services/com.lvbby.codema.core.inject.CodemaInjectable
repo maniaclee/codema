@@ -1,3 +1,4 @@
 com.lvbby.codema.java.app.mvn.MvnCodemaMachine
 com.lvbby.codema.java.app.testcase.JavaTestcaseCodemaMachine
 com.lvbby.codema.java.app.delegate.JavaDelegateCodemaMachine
+com.lvbby.codema.java.app.bean.JavaBeanCodemaMachine
