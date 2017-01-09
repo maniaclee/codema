@@ -2,7 +2,7 @@ package com.lvbby.codema.core.engine;
 
 import com.alibaba.fastjson.JSON;
 import com.lvbby.codema.core.error.CodemaException;
-import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -26,7 +26,7 @@ public abstract class BaseEngine implements IScriptEngine {
         if (parameter instanceof Map) {
             bind(formatVars((Map<? extends String, ? extends Object>) parameter));
         } else {
-            bind(formatVars(JavaUtils.object2map(parameter)));
+            bind(formatVars(ReflectionUtils.object2map(parameter)));
         }
         Object result = engine.eval(src);
         if (!result.getClass().isPrimitive())

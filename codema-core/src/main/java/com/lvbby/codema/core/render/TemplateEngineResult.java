@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.PrintableResult;
-import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 
 import java.io.File;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
             return result;
         if (!(arg instanceof Map)) {
             try {
-                arg = JavaUtils.object2map(arg);
+                arg = ReflectionUtils.object2map(arg);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new CodemaRuntimeException("failed to convert arg to map: " + JSON.toJSONString(arg), e);

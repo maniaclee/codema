@@ -2,18 +2,22 @@ package com.lvbby.codema.java.source;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.SourceParser;
+import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.utils.CodemaUtils;
-import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
-import java.lang.reflect.*;
+import java.lang.reflect.Modifier;
 import java.net.URI;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.lvbby.codema.java.tool.JavaTypeUtils.getClassType;
@@ -29,8 +33,13 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
 
     @Override
     public JavaSourceParam parse(URI from) throws Exception {
-        Class<?> clz = Class.forName(CodemaUtils.getPathPart(from));
-        return new JavaSourceParam(Lists.newArrayList(toJavaClass(clz)));
+        List<JavaClass> re = Lists.newLinkedList();
+        Collection<Class<?>> allClasses = ReflectionUtils.loadClasses(CodemaUtils.getPathPart(from));
+        if (CollectionUtils.isEmpty(allClasses))
+            throw new CodemaException("no class found in " + from);
+        for (Class<?> clz : allClasses)
+            re.add(toJavaClass(clz));
+        return new JavaSourceParam(re);
     }
 
     public static JavaClass toJavaClass(Class clz) throws Exception {
@@ -42,7 +51,7 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
         re.setFields(Lists.newArrayList(beanInfo.getPropertyDescriptors()).stream().map(p -> {
             JavaField javaField = new JavaField();
             javaField.setName(p.getName());
-            javaField.setType(getClassType(JavaUtils.getField(clz, p.getName())));
+            javaField.setType(getClassType(ReflectionUtils.getField(clz, p.getName())));
             javaField.setPrimitive(p.getPropertyType().isPrimitive());
             return javaField;
         }).collect(Collectors.toList()));

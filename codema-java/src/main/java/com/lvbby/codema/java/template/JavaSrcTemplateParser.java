@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.render.TemplateEngine;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
-import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -83,7 +83,7 @@ public class JavaSrcTemplateParser {
     }
 
     private static String filterBlockComment(String s) {
-        return JavaUtils.replace(s, "/\\*{1,2}#([^*/]+)\\*/", matcher -> matcher.group(1));
+        return ReflectionUtils.replace(s, "/\\*{1,2}#([^*/]+)\\*/", matcher -> matcher.group(1));
     }
 
     /**
@@ -94,7 +94,7 @@ public class JavaSrcTemplateParser {
      * $abc__xyz_ffff ---> ${abc.xyz}ffff
      */
     private static String expr(String s) {
-        return JavaUtils.replace(s, "\\$([a-zA-Z0-9]+__)*[a-zA-Z0-9]+_", matcher -> matcher.group().replace("$", "${").replace("__", ".").replace('_', '}'));
+        return ReflectionUtils.replace(s, "\\$([a-zA-Z0-9]+__)*[a-zA-Z0-9]+_", matcher -> matcher.group().replace("$", "${").replace("__", ".").replace('_', '}'));
     }
 
     public static void filterImport(CompilationUnit cu) {

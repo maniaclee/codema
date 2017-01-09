@@ -1,7 +1,7 @@
 package com.lvbby.codema.java.tool;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 
 import java.lang.reflect.*;
 
@@ -37,6 +37,6 @@ public class JavaTypeUtils {
     }
 
     private static String getTypeNameForShort(String s) {
-        return JavaUtils.replace(s, "[^<>]+", m -> JavaUtils.findFirst(m.group(), "([^.]+\\.)*([^.]+)$", matcher -> matcher.group(2)));
+        return ReflectionUtils.replace(s, "[^<>]+", m -> ReflectionUtils.findFirst(m.group(), "([^.]+\\.)*([^.]+)$", matcher -> matcher.group(2)));
     }
 }

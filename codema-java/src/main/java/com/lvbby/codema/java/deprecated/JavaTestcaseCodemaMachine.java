@@ -31,7 +31,7 @@ import org.junit.Test;
 import java.util.EnumSet;
 import java.util.List;
 
-import static com.lvbby.codema.core.utils.JavaUtils.binaryReturnOperator;
+import static com.lvbby.codema.core.utils.ReflectionUtils.binaryReturnOperator;
 import static com.lvbby.codema.java.tool.JavaLexer.*;
 
 /**

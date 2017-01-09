@@ -2,7 +2,7 @@ package com.lvbby.codema.core.inject.impl;
 
 import com.lvbby.codema.core.inject.*;
 import com.lvbby.codema.core.bean.CodemaBean;
-import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.core.utils.OrderValue;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,7 +29,7 @@ public class ParamterInject implements CodemaInjector {
             }
             Object bean = context.getContext().getCodema().getCodemaBeanFactory().getBean(beanId);
             if (bean == null && annotation.createFactory() != null) {
-                InjectParameterFactory instance = JavaUtils.instance(annotation.createFactory());
+                InjectParameterFactory instance = ReflectionUtils.instance(annotation.createFactory());
                 CodemaBean codemaBean = instance.create(context, beanId);
                 if (codemaBean != null) {
                     bean = codemaBean.getResource();
@@ -68,7 +68,7 @@ public class ParamterInject implements CodemaInjector {
                 throw new IllegalArgumentException(String.format("illegal bean id [%s]", parentBeanId));
             for (String p : value.substring(end + 1).split("\\.")) {
                 try {
-                    parentBean = JavaUtils.getProperty(parentBean, p);
+                    parentBean = ReflectionUtils.getProperty(parentBean, p);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new IllegalArgumentException(String.format("error parsing bean id express[%s]", parentBeanId), e);

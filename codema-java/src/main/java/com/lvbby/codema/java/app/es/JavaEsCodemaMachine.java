@@ -6,7 +6,7 @@ import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.result.BasicResult;
-import com.lvbby.codema.core.utils.JavaUtils;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.core.utils.JsonBuilder;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.inject.JavaTemplate;
@@ -46,7 +46,7 @@ public class JavaEsCodemaMachine implements CodemaInjectable {
 
     private static Object convertType(String type) {
         type = StringUtils.trimToEmpty(type);
-        type = JavaUtils.replace(type, "[^<>]+<([^<>]+)>", matcher -> matcher.group(1));
+        type = ReflectionUtils.replace(type, "[^<>]+<([^<>]+)>", matcher -> matcher.group(1));
         return type.toLowerCase();
     }
 
