@@ -31,17 +31,18 @@ java:
 #    dest-class-name: 'Test'
 #    dest-package: 'com.lvbby.testcase'
 #    is-spring: true
-#  convert:
-#    from-package: 'com.lvbby'
-#    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
-#    dest-class-name: 'com.lvbby.utils.BuildUtils'
-#    dest-src-root: '/Users/psyco'
-#    result-handler:
-#        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
+  convert:
+    from-package: 'com.lvbby'
+    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
+    dest-class-name: 'com.lvbby.utils.BuildUtils'
+    dest-src-root: '/Users/psyco'
+    result-handler:
+        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 #
   bean: {}
   delegate: {}
-  mybatis: {}
+  mybatis:
+    dest-package: 'com.lvbby.dao'
   es: {}
 #  entity:
 #    from-package: '基于common.from,选取指定package的类产生testcase'
@@ -53,8 +54,11 @@ java:
 #  dao:
 #    dest-package: ''
 #    sqls: ''
-#  repositoy:
-#    from-package: ''
+  repositoy:
+    from-package: 'com.lvbby.dao'
+    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
+    convert-utils-class: 'com.lvbby.utils.BuildUtils'
+
 #  service:
 #    dest-package: ''
 #
