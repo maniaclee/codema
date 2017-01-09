@@ -1,3 +1,4 @@
 com.lvbby.codema.java.source.JavaFileSourceParser
 com.lvbby.codema.java.source.JavaJdbcUrlSourceParser
 com.lvbby.codema.java.source.JavaSqlSchemeSourceParser
+com.lvbby.codema.java.source.JavaClassSourceParser

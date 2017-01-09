@@ -1,7 +1,8 @@
 common:
   author: maniaclee
-#  from: 'file://java:src//Users/lipeng/workspace/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
-  from: 'jdbc:mysql://localhost:3306/user?user=root&table=User'
+  from: 'java://class/com.lvbby.codema.core.config.CommonCodemaConfig'
+#  from: 'file://java:src//Users/psyco/workspace/github/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
+#  from: 'jdbc:mysql://localhost:3306/user?user=root&table=User'
   result-handler:
       - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
       - 'com.lvbby.codema.core.result.handler.PrintResultHandler'
@@ -37,9 +38,10 @@ java:
 #    result-handler:
 #        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 #
-#  bean: {}
-#  delegate: {}
+  bean: {}
+  delegate: {}
   mybatis: {}
+  es: {}
 #  entity:
 #    from-package: '基于common.from,选取指定package的类产生testcase'
 #    dest-package: ''

@@ -14,4 +14,13 @@ public class CodemaUtils {
             path = uri.getAuthority() + path;
         return path;
     }
+
+    /***
+     * 去掉path 开头的 /
+     * @param uri
+     * @return
+     */
+    public static String getPathPart(URI uri) {
+        return uri.getPath().replaceFirst("/", "");
+    }
 }

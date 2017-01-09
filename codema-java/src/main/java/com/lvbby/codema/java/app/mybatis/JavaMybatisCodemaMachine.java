@@ -23,6 +23,8 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaMybatisCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
+        if (!(cu.getFrom() != null && cu.getFrom() instanceof SqlTable))
+            return;
         validate(cu);
         JavaTemplateResult daoTemplateResult = new JavaTemplateResult(config, $src__name_Dao.class, cu).registerResult();//register the dao result
         config.handle(codemaContext, config, daoTemplateResult);
@@ -31,7 +33,6 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
     }
 
     private void validate(JavaClass cu) {
-        Validate.isTrue(cu.getFrom() instanceof SqlTable, "no sql table found.");
         SqlTable sqlTable = (SqlTable) cu.getFrom();
         Validate.notNull(sqlTable.getPrimaryKeyField(), "no primary key found for table : " + sqlTable.getNameInDb());
     }
