@@ -4,6 +4,7 @@ import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Null_;
 import com.lvbby.codema.java.template.$TemplateClass_;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.lvbby.codema.java.template.$Symbols_.$class_;
@@ -15,6 +16,7 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
 @Component
 public class $src__name_Repository {
 
+    @Autowired
     private $TemplateClass_ $templateClass_;
 
     // <%
