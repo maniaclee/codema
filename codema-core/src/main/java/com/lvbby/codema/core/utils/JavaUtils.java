@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -73,6 +74,20 @@ public class JavaUtils {
         }
         re.append(s.substring(last));
         return re.toString();
+    }
+
+    public static String findFirst(String src, String regx, Function<Matcher, String> function) {
+        for (Matcher matcher = Pattern.compile(regx).matcher(src); matcher.find(); )
+            return function.apply(matcher);
+        return null;
+    }
+
+    public static Field getField(Class clz, String property) {
+        try {
+            return clz.getDeclaredField(property);
+        } catch (NoSuchFieldException e) {
+            return null;
+        }
     }
 
 }

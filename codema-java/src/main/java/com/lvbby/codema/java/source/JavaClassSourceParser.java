@@ -3,6 +3,7 @@ package com.lvbby.codema.java.source;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.utils.CodemaUtils;
+import com.lvbby.codema.core.utils.JavaUtils;
 import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -11,11 +12,11 @@ import com.lvbby.codema.java.entity.JavaMethod;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.net.URI;
 import java.util.stream.Collectors;
+
+import static com.lvbby.codema.java.tool.JavaTypeUtils.getClassType;
 
 /**
  * Created by lipeng on 17/1/9.
@@ -41,7 +42,7 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
         re.setFields(Lists.newArrayList(beanInfo.getPropertyDescriptors()).stream().map(p -> {
             JavaField javaField = new JavaField();
             javaField.setName(p.getName());
-            javaField.setType(p.getShortDescription());//TODO like List<ResultHandler>
+            javaField.setType(getClassType(JavaUtils.getField(clz, p.getName())));
             javaField.setPrimitive(p.getPropertyType().isPrimitive());
             return javaField;
         }).collect(Collectors.toList()));
@@ -50,11 +51,11 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
                 .map(m -> {
                     JavaMethod javaMethod = new JavaMethod();
                     javaMethod.setName(m.getName());
-                    javaMethod.setReturnType(getClassType(m.getMethod().getReturnType(), m.getMethod().getGenericReturnType()));
+                    javaMethod.setReturnType(getClassType(m.getMethod()));
                     javaMethod.setArgs(Lists.newArrayList(m.getMethod().getParameters()).stream().map(parameterDescriptor -> {
                         JavaArg javaArg = new JavaArg();
                         javaArg.setName(parameterDescriptor.getName());
-                        javaArg.setType(getClassType(parameterDescriptor.getType()));
+                        javaArg.setType(getClassType(parameterDescriptor));
                         return javaArg;
                     }).collect(Collectors.toList()));
                     return javaMethod;
@@ -62,23 +63,4 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
         return re;
     }
 
-    private static String getClassType(Type... clz) {
-        String re = null;
-        if (clz != null && clz.length > 0) {
-            for (Type type : clz) {
-                if (type instanceof ParameterizedType) {
-                    return getGenericType((ParameterizedType) type);
-                }
-                if (type instanceof Class)
-                    re = ((Class) type).getSimpleName();
-            }
-        }
-        return re;
-    }
-
-    private static String getGenericType(ParameterizedType type) {
-        String simpleName = ((Class) type.getRawType()).getSimpleName();
-        String types = Lists.newArrayList(type.getActualTypeArguments()).stream().map(t -> (Class) t).map(Class::getSimpleName).collect(Collectors.joining(","));
-        return String.format("%s<%s>", simpleName, types);
-    }
 }
