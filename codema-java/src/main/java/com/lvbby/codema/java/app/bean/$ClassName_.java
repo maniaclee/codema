@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by lipeng on 2016/12/24.
  */
-public class $src__name_ implements Serializable {
+public class $ClassName_ implements Serializable {
 
 
     // <% for( f in src.fields){

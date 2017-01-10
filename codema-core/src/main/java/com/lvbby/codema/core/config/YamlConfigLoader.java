@@ -1,5 +1,6 @@
 package com.lvbby.codema.core.config;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -41,14 +42,21 @@ public class YamlConfigLoader implements ConfigLoader {
         Map<String, Object> map = findMap(configKey);
         if (map == null)
             return null;
-        DozerBeanMapper dozerBeanMapper = new DozerBeanMapper();
-        T re = dozerBeanMapper.map(map, clz);
+        T re = convert(map, clz);
         /** 递归把父类的信息一并加载，同时顺便将父类懒惰初始化 */
         for (Class<?> parent = clz.getSuperclass(); parent != null && parent != Object.class; parent = parent.getSuperclass()) {
             ReflectionUtils.copyIfNull(re, getConfig(parent));
         }
         cache.put(clz.getName(), re);
         return re;
+    }
+
+    public static <T> T convert(Map map, Class<T> clz) {
+        return JSON.parseObject(JSON.toJSONString(map), clz);
+    }
+
+    public static <T> T convert2(Map map, Class<T> clz) {
+        return new DozerBeanMapper().map(map, clz);
     }
 
     private String findConfigKey(Class<?> clz) {

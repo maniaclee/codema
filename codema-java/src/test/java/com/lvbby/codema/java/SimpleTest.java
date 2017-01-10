@@ -12,9 +12,11 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
+import com.lvbby.codema.java.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.java.engine.JavaEngineContext;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.io.IOUtils;
+import org.joor.Reflect;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -171,6 +173,15 @@ public class SimpleTest {
             System.out.println("fields : " + visitor.getColumns());
         }
 
+
+    }
+
+    @Test
+    public void reflection() throws Exception {
+        JavaBeanCodemaConfig javaBeanCodemaConfig = new JavaBeanCodemaConfig();
+        javaBeanCodemaConfig.setAuthor("sdf");
+        Object destSrcRoot = Reflect.on(javaBeanCodemaConfig).field("author").get();
+        System.out.println(destSrcRoot);
 
     }
 }

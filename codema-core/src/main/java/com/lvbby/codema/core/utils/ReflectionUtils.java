@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
 import org.apache.commons.lang3.StringUtils;
+import org.joor.Reflect;
+import org.joor.ReflectException;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -139,7 +141,8 @@ public class ReflectionUtils {
                 if (!isValidPropertyToCopy(propertyDescriptor, dest))
                     continue;
                 Object value = propertyDescriptor.getReadMethod().invoke(dest);
-                Object otherValue = getPropertyValue(other, propertyName);
+                Object otherValue = null;
+                otherValue = getPropertyValue(other, propertyName);
                 if (value == null && otherValue != null) {
                     propertyDescriptor.getWriteMethod().invoke(dest, otherValue);
                 }
@@ -169,19 +172,24 @@ public class ReflectionUtils {
 
     private static Object getPropertyValue(Object obj, String propertyName) {
         try {
-            for (Field field : obj.getClass().getDeclaredFields()) {
-                if (field.getName().equals(propertyName)) {
-                    field.setAccessible(true);
-                    return field.get(obj);
-
-                }
-            }
-            /** apache's BeanUtils.getProperty 会把List<String> 转为String，妹的 */
-            //            return BeanUtils.getProperty(obj, propertyName);
-        } catch (Exception e) {
-            e.printStackTrace();
+            return Reflect.on(obj).field(propertyName).get();
+        } catch (ReflectException e) {
+            return null;
         }
-        return null;
+        //        try {
+        //            for (Field field : obj.getClass().getDeclaredFields()) {
+        //                if (field.getName().equals(propertyName)) {
+        //                    field.setAccessible(true);
+        //                    return field.get(obj);
+        //                }
+        //            }
+        //            /** apache's BeanUtils.getProperty 会把List<String> 转为String，妹的 */
+        //            //            return BeanUtils.getProperty(obj, propertyName);
+        //        } catch (Exception e) {
+        //            e.printStackTrace();
+        //        }
+        //        return null;
     }
+
 
 }

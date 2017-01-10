@@ -3,6 +3,7 @@ package com.lvbby.codema.core.engine;
 import com.google.common.collect.Lists;
 import com.google.common.net.UrlEscapers;
 import com.lvbby.codema.core.error.CodemaException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
 import java.util.List;
@@ -25,6 +26,8 @@ public class ScriptEngineFactory {
     }
 
     public String eval(String uri, Object parameter) throws Exception {
+        if (StringUtils.isEmpty(uri))
+            return null;
         URI u = URI.create(UrlEscapers.urlFragmentEscaper().escape(uri));
         return eval(u, parameter);
     }
