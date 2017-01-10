@@ -7,10 +7,10 @@ import com.lvbby.codema.java.tool.JavaLexer;
  */
 public class JavaArg {
     private String name;
-    private String type;
+    private JavaType type;
 
     public String getDefaultValue() {
-        return JavaLexer.newInstanceForDefaultValue(type).toString();
+        return JavaLexer.newInstanceForDefaultValue(type.getName()).toString();
     }
 
     public String getName() {
@@ -21,11 +21,11 @@ public class JavaArg {
         this.name = name;
     }
 
-    public String getType() {
+    public JavaType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(JavaType type) {
         this.type = type;
     }
 }

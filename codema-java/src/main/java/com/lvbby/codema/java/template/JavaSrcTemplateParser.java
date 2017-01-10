@@ -4,8 +4,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.imports.ImportDeclaration;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.lvbby.codema.core.render.TemplateEngine;
-import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -26,27 +24,6 @@ import java.util.regex.Pattern;
  */
 public class JavaSrcTemplateParser {
     public static JavaSrcTemplateParser instance = new JavaSrcTemplateParser();
-
-    public TemplateEngine loadJavaSrcTemplateEngine(CompilationUnit cu, Class<?> javaSrcTemplate) {
-        String template = parse(javaSrcTemplate);
-        JavaClass src = new JavaClassParser().parse(cu);
-        TemplateEngine templateEngine = TemplateEngineFactory.create(template);
-        return templateEngine
-                .bind("c", src)
-                .bind("TemplateClass", src.getName())
-                .bind("templateClass", JavaLexer.camel(src.getName()))
-                .bind("Null", "");
-    }
-
-    public Map getArgs4te(CompilationUnit cu) {
-        JavaClass src = new JavaClassParser().parse(cu);
-        HashMap<Object, Object> map = Maps.newHashMap();
-        map.put("c", src);
-        map.put("TemplateClass", src.getName());
-        map.put("templateClass", JavaLexer.camel(src.getName()));
-        map.put("Null", "");
-        return map;
-    }
 
     public Map getArgs4te(JavaClass src, JavaBasicCodemaConfig config) {
         HashMap<Object, Object> map = Maps.newHashMap();

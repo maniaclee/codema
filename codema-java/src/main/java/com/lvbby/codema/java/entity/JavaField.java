@@ -5,7 +5,7 @@ package com.lvbby.codema.java.entity;
  */
 public class JavaField {
     private String name;
-    private String type;
+    private JavaType type;
     private boolean isPrimitive;
 
     public String getName() {
@@ -16,11 +16,11 @@ public class JavaField {
         this.name = name;
     }
 
-    public String getType() {
+    public JavaType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(JavaType type) {
         this.type = type;
     }
 

@@ -7,6 +7,7 @@ import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
+import com.lvbby.codema.java.entity.JavaType;
 
 import java.net.URI;
 import java.util.List;
@@ -36,7 +37,7 @@ public class JavaJdbcUrlSourceParser implements SourceParser<JavaSourceParam> {
             javaClass.setFields(sqlTable.getFields().stream().map(sqlColumn -> {
                 JavaField javaField = new JavaField();
                 javaField.setName(sqlColumn.getNameCamel());
-                javaField.setType(sqlColumn.getJavaType().getSimpleName());
+                javaField.setType(JavaType.ofClass(sqlColumn.getJavaType() ));
                 return javaField;
             }).collect(Collectors.toList()));
             javaClass.setFrom(sqlTable);

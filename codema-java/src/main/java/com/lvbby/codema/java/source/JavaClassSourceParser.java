@@ -6,10 +6,7 @@ import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.utils.CodemaUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.app.baisc.JavaSourceParam;
-import com.lvbby.codema.java.entity.JavaArg;
-import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.entity.JavaField;
-import com.lvbby.codema.java.entity.JavaMethod;
+import com.lvbby.codema.java.entity.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.beans.BeanInfo;
@@ -19,8 +16,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.lvbby.codema.java.tool.JavaTypeUtils.getClassType;
 
 /**
  * Created by lipeng on 17/1/9.
@@ -51,7 +46,7 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
         re.setFields(Lists.newArrayList(beanInfo.getPropertyDescriptors()).stream().map(p -> {
             JavaField javaField = new JavaField();
             javaField.setName(p.getName());
-            javaField.setType(getClassType(ReflectionUtils.getField(clz, p.getName())));
+            javaField.setType(JavaType.ofField(ReflectionUtils.getField(clz, p.getName())));
             javaField.setPrimitive(p.getPropertyType().isPrimitive());
             return javaField;
         }).collect(Collectors.toList()));
@@ -60,11 +55,11 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
                 .map(m -> {
                     JavaMethod javaMethod = new JavaMethod();
                     javaMethod.setName(m.getName());
-                    javaMethod.setReturnType(getClassType(m.getMethod()));
+                    javaMethod.setReturnType(JavaType.ofMethodReturnType(m.getMethod()));
                     javaMethod.setArgs(Lists.newArrayList(m.getMethod().getParameters()).stream().map(parameterDescriptor -> {
                         JavaArg javaArg = new JavaArg();
                         javaArg.setName(parameterDescriptor.getName());
-                        javaArg.setType(getClassType(parameterDescriptor));
+                        javaArg.setType(JavaType.ofMethodParameter(parameterDescriptor));
                         return javaArg;
                     }).collect(Collectors.toList()));
                     return javaMethod;

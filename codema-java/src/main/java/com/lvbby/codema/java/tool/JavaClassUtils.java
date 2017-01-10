@@ -8,10 +8,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
-import com.lvbby.codema.java.entity.JavaArg;
-import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.entity.JavaField;
-import com.lvbby.codema.java.entity.JavaMethod;
+import com.lvbby.codema.java.entity.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -24,23 +21,23 @@ import java.util.stream.Collectors;
  * Created by lipeng on 2016/12/25.
  */
 public class JavaClassUtils {
-//    public static List<CompilationUnit> createJavaClasses(CodemaContext request, JavaBasicCodemaConfig config, JavaSourceParam javaSourceParam) {
-//        return Optional.ofNullable(javaSourceParam)
-//                .map(e -> e.getClasses())
-//                .map(compilationUnits -> compilationUnits.stream().map(compilationUnit -> createJavaClasss(request, config, compilationUnit)).collect(Collectors.toList())).orElse(Lists.newLinkedList());
-//    }
+    //    public static List<CompilationUnit> createJavaClasses(CodemaContext request, JavaBasicCodemaConfig config, JavaSourceParam javaSourceParam) {
+    //        return Optional.ofNullable(javaSourceParam)
+    //                .map(e -> e.getClasses())
+    //                .map(compilationUnits -> compilationUnits.stream().map(compilationUnit -> createJavaClasss(request, config, compilationUnit)).collect(Collectors.toList())).orElse(Lists.newLinkedList());
+    //    }
 
-//    public static CompilationUnit createJavaClasss(CodemaContext request, JavaBasicCodemaConfig config, CompilationUnit compilationUnit) {
-//        CompilationUnit re = new CompilationUnit();
-//        //package
-//        if (StringUtils.isNotBlank(config.getDestPackage()))
-//            re.setPackage(config.getDestPackage());
-//        //class
-//        ClassOrInterfaceDeclaration clz = createClass(request, config, JavaLexer.getClass(compilationUnit).map(cu -> cu.getNameAsString()).orElse(null));
-//        clz.setParentNode(re);
-//        re.setTypes(NodeList.nodeList(clz));
-//        return re;
-//    }
+    //    public static CompilationUnit createJavaClasss(CodemaContext request, JavaBasicCodemaConfig config, CompilationUnit compilationUnit) {
+    //        CompilationUnit re = new CompilationUnit();
+    //        //package
+    //        if (StringUtils.isNotBlank(config.getDestPackage()))
+    //            re.setPackage(config.getDestPackage());
+    //        //class
+    //        ClassOrInterfaceDeclaration clz = createClass(request, config, JavaLexer.getClass(compilationUnit).map(cu -> cu.getNameAsString()).orElse(null));
+    //        clz.setParentNode(re);
+    //        re.setTypes(NodeList.nodeList(clz));
+    //        return re;
+    //    }
 
     public static CompilationUnit createJavaClasssUnit(String classFullpath, String author, boolean isInterface) {
         int i = classFullpath.lastIndexOf('.');
@@ -87,18 +84,18 @@ public class JavaClassUtils {
             VariableDeclarator variable = fieldDeclaration.getVariable(0);
             JavaField javaField = new JavaField();
             javaField.setName(variable.getNameAsString());
-            javaField.setType(variable.getType().toString());
+            javaField.setType(JavaType.ofClassName(variable.getType().toString()));
             javaField.setPrimitive(false);//TODO
             return javaField;
         }).collect(Collectors.toList()));
         re.setMethods(JavaLexer.getMethods(clz).stream().map(methodDeclaration -> {
             JavaMethod javaMethod = new JavaMethod();
             javaMethod.setName(methodDeclaration.getNameAsString());
-            javaMethod.setReturnType(methodDeclaration.getType().toString());
+            javaMethod.setReturnType(JavaType.ofClassName(methodDeclaration.getType().toString()));
             javaMethod.setArgs(methodDeclaration.getParameters().stream().map(parameter -> {
                 JavaArg javaArg = new JavaArg();
                 javaArg.setName(parameter.getNameAsString());
-                javaArg.setType(parameter.getType().toString());
+                javaArg.setType(JavaType.ofClassName(parameter.getType().toString()));
                 return javaArg;
             }).collect(Collectors.toList()));
             return javaMethod;

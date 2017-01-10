@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class JavaMethod {
     public String name;
-    public String returnType;
+    public JavaType returnType;
     public List<JavaArg> args;
 
     public boolean isVoid() {
@@ -50,13 +50,6 @@ public class JavaMethod {
         this.name = name;
     }
 
-    public String getReturnType() {
-        return returnType;
-    }
-
-    public void setReturnType(String returnType) {
-        this.returnType = returnType;
-    }
 
     public List<JavaArg> getArgs() {
         return args;
@@ -64,5 +57,13 @@ public class JavaMethod {
 
     public void setArgs(List<JavaArg> args) {
         this.args = args;
+    }
+
+    public JavaType getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(JavaType returnType) {
+        this.returnType = returnType;
     }
 }

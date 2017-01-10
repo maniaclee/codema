@@ -39,7 +39,7 @@ public class JavaEsCodemaMachine implements CodemaInjectable {
     private static JsonBuilder _mapping(JavaClass javaClass) {
         JsonBuilder node = node();
         javaClass.getFields().stream().forEach(javaField -> {
-            node.child(javaField.getName(), node().child("type", convertType(javaField.getType())));
+            node.child(javaField.getName(), node().child("type", javaField.getType().getSpecificType()));
         });
         return node;
     }
