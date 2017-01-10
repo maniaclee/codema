@@ -3,14 +3,11 @@ package com.lvbby.codema.core.config;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dozer.DozerBeanMapper;
 import org.yaml.snakeyaml.Yaml;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,45 +45,10 @@ public class YamlConfigLoader implements ConfigLoader {
         T re = dozerBeanMapper.map(map, clz);
         /** 递归把父类的信息一并加载，同时顺便将父类懒惰初始化 */
         for (Class<?> parent = clz.getSuperclass(); parent != null && parent != Object.class; parent = parent.getSuperclass()) {
-            copy(re, getConfig(parent));
+            ReflectionUtils.copyIfNull(re, getConfig(parent));
         }
         cache.put(clz.getName(), re);
         return re;
-    }
-
-    private void copy(Object dest, Object other) {
-        if (dest == null || other == null)
-            return;
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(dest.getClass(), Object.class);
-            for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
-                String propertyName = propertyDescriptor.getName();
-                Object value = propertyDescriptor.getReadMethod().invoke(dest);
-                Object otherValue = getPropertyValue(other, propertyName);
-                if (value == null && otherValue != null) {
-                    propertyDescriptor.getWriteMethod().invoke(dest, otherValue);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Object getPropertyValue(Object obj, String propertyName) {
-        try {
-            for (Field field : obj.getClass().getDeclaredFields()) {
-                if (field.getName().equals(propertyName)) {
-                    field.setAccessible(true);
-                    return field.get(obj);
-
-                }
-            }
-            /** apache's BeanUtils.getProperty 会把List<String> 转为String，妹的 */
-            //            return BeanUtils.getProperty(obj, propertyName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private String findConfigKey(Class<?> clz) {

@@ -5,6 +5,7 @@ import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
+import com.lvbby.codema.core.utils.CodemaUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
@@ -20,6 +21,9 @@ public class JavaBeanCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaBeanCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass javaClass) throws Exception {
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_.class, javaClass));
+        for (JavaBeanCodemaConfig javaBeanCodemaConfig : CodemaUtils.getAllConfig(config, JavaBeanCodemaConfig::getList))
+            config.handle(codemaContext, javaBeanCodemaConfig, new JavaTemplateResult(javaBeanCodemaConfig, $src__name_.class, javaClass));
     }
+
+
 }

@@ -5,9 +5,12 @@ import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
 import org.apache.commons.lang3.StringUtils;
 
+import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BinaryOperator;
@@ -88,6 +91,8 @@ public class ReflectionUtils {
         try {
             return clz.getDeclaredField(property);
         } catch (NoSuchFieldException e) {
+            if (clz.getSuperclass() != null && !clz.getSuperclass().equals(Object.class))
+                return getField(clz.getSuperclass(), property);
             return null;
         }
     }
@@ -115,6 +120,68 @@ public class ReflectionUtils {
         while (clz.getSuperclass() != null)
             clz = clz.getSuperclass();
         return clz.equals(Object.class);
+    }
+
+    /**
+     * copy other ==> dest,当dest的属性为空时，常用于继承父类的值
+     *
+     * @param dest  被copy的对象
+     * @param other
+     */
+    public static void copyIfNull(Object dest, Object other) {
+        if (dest == null || other == null)
+            return;
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(dest.getClass(), Object.class);
+            for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
+                String propertyName = propertyDescriptor.getName();
+                //过滤引用类型
+                if (!isValidPropertyToCopy(propertyDescriptor, dest))
+                    continue;
+                Object value = propertyDescriptor.getReadMethod().invoke(dest);
+                Object otherValue = getPropertyValue(other, propertyName);
+                if (value == null && otherValue != null) {
+                    propertyDescriptor.getWriteMethod().invoke(dest, otherValue);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static boolean isValidPropertyToCopy(PropertyDescriptor propertyDescriptor, Object arg) {
+        try {
+            if (!propertyDescriptor.getPropertyType().getName().startsWith("java"))
+                return false;
+            if (Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
+                ParameterizedType genericType = (ParameterizedType) ReflectionUtils.getField(arg.getClass(), propertyDescriptor.getName()).getGenericType();
+                for (Type type : genericType.getActualTypeArguments()) {
+                    if (type instanceof Class && !((Class) type).getName().startsWith("java"))
+                        return false;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(propertyDescriptor);
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private static Object getPropertyValue(Object obj, String propertyName) {
+        try {
+            for (Field field : obj.getClass().getDeclaredFields()) {
+                if (field.getName().equals(propertyName)) {
+                    field.setAccessible(true);
+                    return field.get(obj);
+
+                }
+            }
+            /** apache's BeanUtils.getProperty 会把List<String> 转为String，妹的 */
+            //            return BeanUtils.getProperty(obj, propertyName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

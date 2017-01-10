@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ScriptEngineFactory {
 
-    public static final ScriptEngineFactory instance = of(Lists.newArrayList(new JsEngine()));
+    public static final ScriptEngineFactory instance = of(Lists.newArrayList(new JsEngine(), new FunctionEngine(), new DefaultScriptEngine()));
     private List<IScriptEngine> scriptEngines = Lists.newArrayList();
 
     public static ScriptEngineFactory of(List<IScriptEngine> scriptEngines) {
@@ -32,6 +32,6 @@ public class ScriptEngineFactory {
     public String eval(URI uri, Object parameter) throws Exception {
         return scriptEngines.stream().filter(iScriptEngine -> uri.toString().startsWith(iScriptEngine.getSupportedScheme())).findFirst()
                 .orElseThrow(() -> new CodemaException("no script engine found for" + uri.toString()))
-                .eval(uri.getPath().substring(1), parameter);
+                .eval(uri, parameter);
     }
 }

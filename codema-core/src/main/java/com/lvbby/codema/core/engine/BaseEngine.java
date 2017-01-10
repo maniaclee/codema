@@ -2,10 +2,12 @@ package com.lvbby.codema.core.engine;
 
 import com.alibaba.fastjson.JSON;
 import com.lvbby.codema.core.error.CodemaException;
+import com.lvbby.codema.core.utils.CodemaUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.net.URI;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,7 +22,7 @@ public abstract class BaseEngine implements IScriptEngine {
     }
 
     @Override
-    public String eval(String src, Object parameter) throws Exception {
+    public String eval(URI src, Object parameter) throws Exception {
         if (parameter == null || parameter.getClass().isPrimitive())
             throw new CodemaException("parameter can't be null or primitive");
         if (parameter instanceof Map) {
@@ -28,7 +30,7 @@ public abstract class BaseEngine implements IScriptEngine {
         } else {
             bind(formatVars(ReflectionUtils.object2map(parameter)));
         }
-        Object result = engine.eval(src);
+        Object result = engine.eval(CodemaUtils.getPathPart(src));
         if (!result.getClass().isPrimitive())
             return JSON.toJSONString(result);
         return result == null ? null : result.toString();

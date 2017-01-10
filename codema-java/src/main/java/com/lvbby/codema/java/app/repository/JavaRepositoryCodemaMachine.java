@@ -24,4 +24,9 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
     ) throws Exception {
         config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_DTO.class, javaClass));
     }
+
+
+    private static JavaClass findEntityFromDao(JavaClass javaClass) {
+        return null;
+    }
 }

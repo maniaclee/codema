@@ -92,6 +92,7 @@
             <artifactId>jd-core</artifactId>
             <version>0.7.1</version>
         </dependency>
+
         <dependency>
             <groupId>org.atteo.classindex</groupId>
             <artifactId>classindex</artifactId>
