@@ -28,9 +28,7 @@ public class $src__name_Repository {
     // %>
     @Test
     public $Class1_ $invoke_($Null_ $signature_) throws Exception {
-        // <% if (@m.isVoid()){ %>
-        $templateClass_.$invoke_($class_);
-        //<%}else{%>
+
         $Class1_ re = $templateClass_.$invoke_($class_);
         return re;
         //<%}%>

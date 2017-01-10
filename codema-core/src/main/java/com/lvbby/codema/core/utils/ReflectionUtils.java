@@ -1,5 +1,6 @@
 package com.lvbby.codema.core.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
@@ -164,7 +165,6 @@ public class ReflectionUtils {
                 }
             }
         } catch (Exception e) {
-            System.out.println(propertyDescriptor);
             e.printStackTrace();
         }
         return true;
@@ -189,6 +189,10 @@ public class ReflectionUtils {
         //            e.printStackTrace();
         //        }
         //        return null;
+    }
+
+    public static <T> T copy(T obj, Class<T> clz) {
+        return JSON.parseObject(JSON.toJSONString(obj), clz);
     }
 
 

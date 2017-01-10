@@ -40,6 +40,8 @@ java:
 #        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 #
   bean:
+    dest-package: 'com.lvbby.entity'
+    dest-class-name: 'script://function:suffix/Entity'
     list:
       - {dest-package: 'com.lvbby.dto',dest-class-name: 'script://function:suffix/DTO' }
 #  delegate: {}
@@ -53,10 +55,10 @@ java:
 #  dto:
 #    dest-package: ''
 #    dest-src-root: ''
-#  repositoy:
-#    from-package: 'com.lvbby.dao'
-#    dest-package: 'com.lvbby.repository'
-#    convert-utils-class: 'com.lvbby.utils.BuildUtils'
+  repositoy:
+    from-package: 'com.lvbby.dao'
+    dest-package: 'com.lvbby.repository'
+    convert-utils-class: 'com.lvbby.utils.BuildUtils'
 
 #  service:
 #    dest-package: ''

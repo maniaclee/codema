@@ -27,7 +27,7 @@ public class JavaBeanCodemaMachine implements CodemaInjectable {
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaBeanCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass javaClass) throws Exception {
         for (JavaBeanCodemaConfig javaBeanCodemaConfig : CodemaUtils.getAllConfig(config, JavaBeanCodemaConfig::getList))
-            config.handle(codemaContext, javaBeanCodemaConfig, new JavaTemplateResult(javaBeanCodemaConfig, $ClassName_.class, javaClass, getArgs(config, javaClass)));
+            config.handle(codemaContext, javaBeanCodemaConfig, new JavaTemplateResult(javaBeanCodemaConfig, $ClassName_.class, javaClass, getArgs(javaBeanCodemaConfig, javaClass)));
     }
 
     private String getBeanName(JavaBeanCodemaConfig codemaConfig, JavaClass javaClass) throws Exception {

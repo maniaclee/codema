@@ -1,6 +1,5 @@
 package com.lvbby.codema.java.deprecated.jd;
 
-import com.lvbby.codema.java.tool.JavaLexer;
 import jd.core.loader.Loader;
 import jd.core.loader.LoaderException;
 import jd.core.preferences.Preferences;
@@ -48,9 +47,4 @@ public class JavaClassDecompiler {
         return null;
     }
 
-    public static void main(String[] args) throws LoaderException {
-        String methods = new JavaClassDecompiler().getMethods(JavaLexer.class);
-        System.out.println(methods);
-        System.out.println(methods.length());
-    }
 }
