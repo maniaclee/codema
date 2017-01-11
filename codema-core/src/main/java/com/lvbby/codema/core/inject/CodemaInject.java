@@ -62,6 +62,8 @@ public class CodemaInject {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if(method.getName().equals("toString"))
+                return String.format("%s.%s",target,codeRunnerMethod.getName());
             if (method.getName().equals("getConfigType"))
                 return Optional.ofNullable(codeRunnerMethod.getAnnotation(ConfigBind.class)).map(ConfigBind::value).orElseThrow(() -> new CodemaRuntimeException("config not found "));
             CodemaContext context = (CodemaContext) args[0];

@@ -55,7 +55,8 @@ public class JavaTemplateResult implements PrintableResult, FileResult {
      * register the generated result to the container , so that other module can make use of
      */
     public JavaTemplateResult registerResult() {
-        result = JavaClassUtils.convert(JavaLexer.read(stringContent));
+        if (result == null)
+            result = JavaClassUtils.convert(JavaLexer.read(stringContent));
         return this;
     }
 

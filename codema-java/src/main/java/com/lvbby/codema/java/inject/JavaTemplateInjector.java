@@ -30,11 +30,7 @@ public class JavaTemplateInjector implements CodemaInjector {
         JavaBasicCodemaConfig config = context.findConfig(JavaBasicCodemaConfig.class);
         if (config == null)
             return;
-        /** 根据config来筛选需要处理的source */
-        List<JavaClass> sources = ((JavaSourceParam) source).getJavaClass(config.getFromPackage());
-
-        /** 从容器里找 */
-        sources.addAll(context.getContext().getCodema().getCodemaBeanFactory().getBeans(codemaBean -> codemaBean.getId().startsWith(config.getFromPackage()), JavaClass.class));
+        List<JavaClass> sources = ((JavaSourceParam) source).getJavaClasses(context.getContext(),config);
 
         for (JavaClass javaClass : sources) {
             /** 对每个source，分别调用改方法，自动把foreach干掉 */

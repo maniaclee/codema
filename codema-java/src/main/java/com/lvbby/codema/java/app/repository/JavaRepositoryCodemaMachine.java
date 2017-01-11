@@ -8,7 +8,6 @@ import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.app.dto.$src__name_DTO;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
@@ -35,7 +34,7 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
         JavaClass buildUtil = codemaContext.getCodema().getCodemaBeanFactory().getBean(config.getConvertUtilsClass());
         Validate.notNull(buildUtil, "buildClass not found");
         List<JavaMethod> collect = javaClass.getMethods().stream().map(javaMethod -> wrap(javaMethod, buildUtil)).collect(Collectors.toList());
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_DTO.class, javaClass, ImmutableMap.of("methods", collect)));
+        config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_Repository.class, javaClass, ImmutableMap.of("methods", collect)));
     }
 
     public static JavaMethod findBuildFromMethod(JavaClass clz, JavaType javaType) {

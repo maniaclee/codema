@@ -68,7 +68,7 @@ public class JavaSrcTemplateParser {
     }
 
     private static String filterBlockComment(String s) {
-        return ReflectionUtils.replace(s, "/\\*{1,2}#([^*/]+)\\*/", matcher -> matcher.group(1));
+        return ReflectionUtils.replace(s, "/\\*{1,2}#\\s*([^*/]+)\\s*\\*{1,2}/", matcher -> matcher.group(1));
     }
 
     /**

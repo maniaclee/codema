@@ -47,20 +47,14 @@ java:
 #    result-handler:
 #        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 #  delegate: {}
-#  mybatis:
-#    dest-package: 'com.lvbby.dao'
+  mybatis:
+    from-package: 'com.lvbby.entity'
+    dest-package: 'com.lvbby.dao'
 #  es: {}
-#  entity:
-#    from-package: '基于common.from,选取指定package的类产生testcase'
-#    dest-package: ''
-#    dest-src-root: '如果是sql产生的情况，且区分module模块，那么src-root不一样'
-#  dto:
-#    dest-package: ''
-#    dest-src-root: ''
-#  repositoy:
-#    from-package: 'com.lvbby.dao'
-#    dest-package: 'com.lvbby.repository'
-#    convert-utils-class: 'com.lvbby.utils.BuildUtils'
+  repository:
+    from-package: 'com.lvbby.dao'
+    dest-package: 'com.lvbby.repository'
+    convert-utils-class: 'com.lvbby.utils.BuildUtils'
 
 #  service:
 #    dest-package: ''

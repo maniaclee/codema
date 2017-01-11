@@ -201,4 +201,8 @@ public class ReflectionUtils {
         return map;
     }
 
+    public static String getSimpleClassName(String className) {
+        return className.replaceAll("[^.]+\\.", "");
+    }
+
 }

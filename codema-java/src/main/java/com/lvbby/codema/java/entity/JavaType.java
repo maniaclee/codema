@@ -68,7 +68,7 @@ public class JavaType {
     public static JavaType ofClassName(String className) {
         if (StringUtils.isBlank(className) || "void".equalsIgnoreCase(className))
             return new JavaType();
-        return new JavaType(className.replaceAll("[^.]+\\.", ""));
+        return new JavaType(ReflectionUtils.getSimpleClassName(className));
     }
 
     public static JavaType ofClass(Class clz) {

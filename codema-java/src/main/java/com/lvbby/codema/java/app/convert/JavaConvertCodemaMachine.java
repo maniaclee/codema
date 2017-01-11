@@ -1,7 +1,5 @@
 package com.lvbby.codema.java.app.convert;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.ImmutableMap;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigBind;
@@ -10,6 +8,7 @@ import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.result.JavaTemplateResult;
@@ -30,8 +29,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
     public void code(CodemaContext codemaContext, @NotNull JavaConvertCodemaConfig config, @NotNull JavaSourceParam javaSourceParam) throws Exception {
         Validate.notBlank(config.getConvertToClassName(), "convert-to-class-name can't be blank");
 
-        List<JavaClass> javaClasses = codemaContext.getCodema().getCodemaBeanFactory().getBeans(codemaBean -> codemaBean.getId().startsWith(config.getFromPackage()), JavaClass.class);
-        javaClasses.addAll(javaSourceParam.getJavaClass(config.getFromPackage()));
+        List<JavaClass> javaClasses = javaSourceParam.getJavaClasses(codemaContext,config);
         if (CollectionUtils.isEmpty(javaClasses))
             return;
 
@@ -41,13 +39,12 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
                 "cs", javaClasses,
                 "map", map
         );
-        System.err.println(JSON.toJSONString(args, SerializerFeature.PrettyFormat));
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $Convert_.class, null, args));
+        config.handle(codemaContext, config, new JavaTemplateResult(config, $Convert_.class, null, args).registerResult());
     }
 
     private String getTargetClassName(JavaConvertCodemaConfig config, JavaClass javaClass) {
         try {
-            return ScriptEngineFactory.instance.eval(config.getConvertToClassName(), javaClass.getName());
+            return ReflectionUtils.getSimpleClassName(ScriptEngineFactory.instance.eval(config.getConvertToClassName(), javaClass.getName()));
         } catch (Exception e) {
             throw new CodemaRuntimeException("failed to eval expr", e);
         }

@@ -92,6 +92,7 @@ public class Codema {
         return this;
     }
 
+
     private <T> List<T> loadService(Class<T> clz) {
         return Lists.newArrayList(ServiceLoader.load(clz));
     }
