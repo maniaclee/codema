@@ -2,6 +2,8 @@ package com.lvbby.codema.core.engine;
 
 import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.utils.CodemaUtils;
+import com.lvbby.codema.core.utils.UriUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.net.URI;
 import java.util.regex.Matcher;
@@ -19,6 +21,8 @@ public class FunctionEngine implements IScriptEngine {
         switch (fun) {
             case "suffix":
                 return v + args;
+            case "replace":
+                return replaceFunction(src, parameter);
         }
         throw new CodemaException("unsupported function:" + fun);
     }
@@ -34,4 +38,10 @@ public class FunctionEngine implements IScriptEngine {
         throw new CodemaException("unsupported function:" + src);
     }
 
+    private String replaceFunction(URI src, Object parameter) {
+        String regx = UriUtils.getQueryParameter(src, "regx");
+        Validate.notBlank(regx, "regx can't be blank : " + src);
+        String replacement = UriUtils.getQueryParameter(src, "replacement");
+        return UriUtils.getQueryParameter(src, "prefix") + parameter.toString().replaceAll(regx, replacement) + UriUtils.getQueryParameter(src, "suffix");
+    }
 }

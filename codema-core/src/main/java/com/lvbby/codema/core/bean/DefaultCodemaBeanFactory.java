@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +18,7 @@ public class DefaultCodemaBeanFactory implements CodemaBeanFactory {
 
     @Override
     public void register(CodemaBean resource) {
-        if (resource != null)
+        if (resource == null)
             return;
         if (!resource.isValid())
             throw new IllegalArgumentException("invalid bean " + JSON.toJSONString(resource));
@@ -36,6 +37,11 @@ public class DefaultCodemaBeanFactory implements CodemaBeanFactory {
         if (collect.size() != 1)
             throw new IllegalArgumentException("multi resources found for id :" + id);
         return (T) collect.get(0);
+    }
+
+    @Override
+    public <T> List<T> getBeans(Predicate<CodemaBean> predicate , Class<T> clz){
+        return resources.stream().filter(predicate).filter(codemaBean -> clz.isAssignableFrom(codemaBean.getResource().getClass())).map(codemaBean -> (T)codemaBean.getResource()).collect(Collectors.toList());
     }
 
     @Override

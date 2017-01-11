@@ -3,6 +3,7 @@ package com.lvbby.codema.core.utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
@@ -31,7 +32,7 @@ public class UriUtils {
         Collection<String> strings = getQueryParameterMap(uri).get(parameter);
         if (strings.size() > 1)
             throw new CodemaRuntimeException(String.format("multi value found for parameter % in url : %s", parameter, uri));
-        return strings.iterator().next();
+        return CollectionUtils.isEmpty(strings) ? "" : strings.iterator().next();
     }
 
     public static Collection<String> getQueryParameters(URI uri, String parameter) {

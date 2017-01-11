@@ -1,7 +1,7 @@
 common:
   author: maniaclee
 #  from: 'java://class/com.lvbby.codema.core.config.CommonCodemaConfig'
-  from: 'java://class/com.lvbby.codema.core.config'
+  from: 'java://class/com.lvbby.codema.core.config.CommonCodemaConfig'
 #  from: 'file://java:src//Users/psyco/workspace/github/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
 #  from: 'jdbc:mysql://localhost:3306/user?user=root&table=User'
   result-handler:
@@ -31,19 +31,21 @@ java:
 #    dest-class-name: 'Test'
 #    dest-package: 'com.lvbby.testcase'
 #    is-spring: true
-#  convert:
-#    from-package: 'com.lvbby'
-#    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
-#    dest-class-name: 'com.lvbby.utils.BuildUtils'
-#    dest-src-root: '/Users/psyco'
-#    result-handler:
-#        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
-#
   bean:
     dest-package: 'com.lvbby.entity'
     dest-class-name: 'script://function:suffix/Entity'
     list:
       - {dest-package: 'com.lvbby.dto',dest-class-name: 'script://function:suffix/DTO' }
+
+  convert:
+    from-package: 'com.lvbby.entity'
+    convert-to-class-name: 'script://function:replace/?regx=Entity&replacement=DTO&prefix=com.lvbby.dto.'
+#    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
+    dest-package: 'com.lvbby'
+    dest-class-name: 'BuildUtils'
+    dest-src-root: '/Users/psyco'
+#    result-handler:
+#        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 #  delegate: {}
 #  mybatis:
 #    dest-package: 'com.lvbby.dao'
@@ -55,10 +57,10 @@ java:
 #  dto:
 #    dest-package: ''
 #    dest-src-root: ''
-  repositoy:
-    from-package: 'com.lvbby.dao'
-    dest-package: 'com.lvbby.repository'
-    convert-utils-class: 'com.lvbby.utils.BuildUtils'
+#  repositoy:
+#    from-package: 'com.lvbby.dao'
+#    dest-package: 'com.lvbby.repository'
+#    convert-utils-class: 'com.lvbby.utils.BuildUtils'
 
 #  service:
 #    dest-package: ''

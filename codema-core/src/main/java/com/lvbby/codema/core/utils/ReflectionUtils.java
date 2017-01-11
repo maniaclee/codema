@@ -195,5 +195,10 @@ public class ReflectionUtils {
         return JSON.parseObject(JSON.toJSONString(obj), clz);
     }
 
+    public static <K, V> Map<K, V> map(K k, V v) {
+        Map<K, V> map = Maps.newHashMap();
+        map.put(k, v);
+        return map;
+    }
 
 }

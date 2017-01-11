@@ -20,15 +20,23 @@ public class $src__name_Repository {
     private $TemplateClass_ $templateClass_;
 
     // <%
-    // for( m in src.methods){
+    // for( wm in  methods){
+    //var m = wm.javaMethod;
     //var invoke = m.name;
-    //var Class1 = m.returnType;
     //var class = @m.getArgsInvoke();
     //var signature = m.argsSignature;
+    //var Class1 = m.returnType;
+
+    //var returnMethod = wm.buildReturnMethod;
+    //var parameterMethod = wm.buildParameterMethod;
+
+    // if (returnMethod!=null){
+    //  Class1 = returnMethod.returnType
+    // }
     // %>
     @Test
     public $Class1_ $invoke_($Null_ $signature_) throws Exception {
-
+        $templateClass_.$invoke_($class_);
         $Class1_ re = $templateClass_.$invoke_($class_);
         return re;
         //<%}%>

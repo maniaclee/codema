@@ -11,7 +11,6 @@ import com.lvbby.codema.java.entity.JavaClass;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 2016/12/27.
@@ -32,7 +31,11 @@ public class JavaTemplateInjector implements CodemaInjector {
         if (config == null)
             return;
         /** 根据config来筛选需要处理的source */
-        List<JavaClass> sources = ((JavaSourceParam) source).getClasses().stream().filter(u -> filterPackage(u, config)).collect(Collectors.toList());
+        List<JavaClass> sources = ((JavaSourceParam) source).getJavaClass(config.getFromPackage());
+
+        /** 从容器里找 */
+        sources.addAll(context.getContext().getCodema().getCodemaBeanFactory().getBeans(codemaBean -> codemaBean.getId().startsWith(config.getFromPackage()), JavaClass.class));
+
         for (JavaClass javaClass : sources) {
             /** 对每个source，分别调用改方法，自动把foreach干掉 */
             List<InjectEntry> cloneEntries = context.cloneEntries();
@@ -41,12 +44,6 @@ public class JavaTemplateInjector implements CodemaInjector {
             context.invoke(cloneEntries);//出错直接抛出去
         }
         throw new InjectInterruptException("interrupted by " + getClass().getName());
-    }
-
-    private static boolean filterPackage(JavaClass javaClass, JavaBasicCodemaConfig config) {
-        if (StringUtils.isBlank(config.getFromPackage()))
-            return true;
-        return javaClass.getPack().startsWith(config.getFromPackage());
     }
 
 

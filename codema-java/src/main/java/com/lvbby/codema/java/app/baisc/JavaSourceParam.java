@@ -2,8 +2,10 @@ package com.lvbby.codema.java.app.baisc;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.java.entity.JavaClass;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 2016/12/24.
@@ -12,6 +14,12 @@ public class JavaSourceParam {
     private List<JavaClass> classes = Lists.newArrayList();
 
     public JavaSourceParam() {
+    }
+
+    public List<JavaClass> getJavaClass(String pack) {
+        if (StringUtils.isBlank(pack))
+            return Lists.newArrayList(classes);
+        return classes.stream().filter(javaClass -> javaClass.getPack().startsWith(pack)).collect(Collectors.toList());
     }
 
     public JavaSourceParam(List<JavaClass> classes) {

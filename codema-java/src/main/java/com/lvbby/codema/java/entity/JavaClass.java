@@ -60,4 +60,22 @@ public class JavaClass {
     public void setFrom(Object from) {
         this.from = from;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JavaClass javaClass = (JavaClass) o;
+
+        if (!pack.equals(javaClass.pack)) return false;
+        return name.equals(javaClass.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pack.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
 }

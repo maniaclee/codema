@@ -38,10 +38,11 @@ public class JavaTemplateResult implements PrintableResult, FileResult {
         this.config = config;
         this.javaClass = javaClass;
 
-        String template = JavaSrcTemplateParser.instance.parse(javaSrcTemplate, config);
+        String template = JavaSrcTemplateParser.instance.loadSrcTemplate(javaSrcTemplate, config);
         if (map == null)
             map = Maps.newHashMap();
-        map.putAll(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
+        if (javaClass != null)
+            map.putAll(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
 
         TemplateEngine te = TemplateEngineFactory.create(template);
         Map finalMap = map;

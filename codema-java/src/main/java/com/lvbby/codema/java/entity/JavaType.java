@@ -29,6 +29,18 @@ public class JavaType {
         return name;
     }
 
+    /***
+     * 如果是void 返回void
+     * @return
+     */
+    public String getNameDisplay() {
+        return isVoid() ? "void" : name;
+    }
+
+    public boolean isVoid() {
+        return StringUtils.isBlank(name);
+    }
+
     public boolean isGenericType() {
         if (javaType != null)
             return javaType instanceof ParameterizedType;
@@ -83,6 +95,21 @@ public class JavaType {
 
     public static JavaType ofMethodParameter(Parameter parameter) {
         return ofType(ObjectUtils.firstNonNull(parameter.getParameterizedType(), parameter.getType()));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JavaType javaType = (JavaType) o;
+
+        return name != null ? name.equals(javaType.name) : javaType.name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 
     @Override
