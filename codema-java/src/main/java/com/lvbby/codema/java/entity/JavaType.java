@@ -29,6 +29,14 @@ public class JavaType {
         return name;
     }
 
+    public Class getJavaType() {
+        if (isVoid())
+            return null;
+        if (isGenericType())
+            return (Class) ((ParameterizedType) javaType).getRawType();
+        return (Class) javaType;
+    }
+
     /***
      * 如果是void 返回void
      * @return

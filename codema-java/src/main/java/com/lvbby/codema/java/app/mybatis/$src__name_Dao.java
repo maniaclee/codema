@@ -11,7 +11,7 @@ import java.util.List;
 public interface $src__name_Dao {
 
     //<%
-    // var id = from.primaryKeyField;
+    // var id = table.primaryKeyField;
     // var Class = src.name;
     // var class=lee.unCapital(src.name);
     // var Class1=@id.getJavaTypeString();

@@ -41,6 +41,8 @@ public class JavaTemplateResult implements PrintableResult, FileResult {
         String template = JavaSrcTemplateParser.instance.loadSrcTemplate(javaSrcTemplate, config);
         if (map == null)
             map = Maps.newHashMap();
+        else
+            map =Maps.newHashMap(map);
         if (javaClass != null)
             map.putAll(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
 
