@@ -52,6 +52,7 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
             sqlColumn.setNameCamel(javaField.getName());
             System.out.println("=============" +javaField.getType().getJavaType() + "-------" + javaField.getType().getName());
             sqlColumn.setJavaType(javaField.getType().getJavaType());
+            sqlColumn.setJavaTypeName(javaField.getType().getName());
             sqlColumn.setPrimaryKey(javaField.getName().equalsIgnoreCase("id"));
             sqlColumn.setPrimaryKey(javaField.getName().equalsIgnoreCase("from"));//TODO test
             return sqlColumn;

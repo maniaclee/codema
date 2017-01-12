@@ -30,7 +30,7 @@ public class JavaType {
     }
 
     public Class getJavaType() {
-        if (isVoid())
+        if (javaType == null || isVoid())
             return null;
         if (isGenericType())
             return (Class) ((ParameterizedType) javaType).getRawType();
@@ -70,7 +70,7 @@ public class JavaType {
             return null;
         if (javaType != null)
             return ((ParameterizedType) javaType).getActualTypeArguments()[0].getTypeName();
-        return ReflectionUtils.findFirst(name, "<([^[]]+)>", matcher -> matcher.group(1));
+        return ReflectionUtils.findFirst(name, "<([^\\[\\]]+)>", matcher -> matcher.group(1));
     }
 
     public static JavaType ofClassName(String className) {

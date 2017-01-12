@@ -12,6 +12,7 @@ public class SqlColumn {
     private String nameInDb;
     private String dbType;
     private Class<?> javaType;
+    private String javaTypeName;
     private String comment;
     private boolean primaryKey = false;
     private boolean nullable = true;
@@ -63,6 +64,8 @@ public class SqlColumn {
 
     public void setJavaType(Class<?> javaType) {
         this.javaType = javaType;
+        if (javaType != null)
+            javaTypeName = javaType.getSimpleName();
     }
 
     public String getComment() {
@@ -95,6 +98,14 @@ public class SqlColumn {
 
     public void setHasIndex(boolean hasIndex) {
         this.hasIndex = hasIndex;
+    }
+
+    public String getJavaTypeName() {
+        return javaTypeName;
+    }
+
+    public void setJavaTypeName(String javaTypeName) {
+        this.javaTypeName = javaTypeName;
     }
 
     @Override

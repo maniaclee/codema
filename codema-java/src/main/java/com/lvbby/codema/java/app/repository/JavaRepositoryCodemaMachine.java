@@ -7,7 +7,6 @@ import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
-import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
@@ -33,7 +32,7 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
     public void code(CodemaContext codemaContext, @NotNull JavaRepositoryCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass javaClass) throws Exception {
         JavaClass buildUtil = codemaContext.getCodema().getCodemaBeanFactory().getBean(config.getConvertUtilsClass());
         Validate.notNull(buildUtil, "buildClass not found");
-        List<JavaMethod> collect = javaClass.getMethods().stream().map(javaMethod -> wrap(javaMethod, buildUtil)).collect(Collectors.toList());
+        List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> wrap(javaMethod, buildUtil)).collect(Collectors.toList());
         config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_Repository.class, javaClass, ImmutableMap.of("methods", collect)));
     }
 
@@ -49,13 +48,12 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
      * @param buildUtil
      * @return
      */
-    private static JavaMethod wrap(JavaMethod m, JavaClass buildUtil) {
-        JavaMethod javaMethod = ReflectionUtils.copy(m, JavaMethod.class);
+    private static RepositoryMethod wrap(JavaMethod m, JavaClass buildUtil) {
         RepositoryMethod re = new RepositoryMethod(m, buildUtil);
         if (CollectionUtils.isNotEmpty(m.getArgs()))
             re.buildParameterMethod = findBuildFromMethod(buildUtil, m.getArgs().get(0).getType());//目前只考虑一个参数的情况
         re.buildReturnMethod = findBuildFromMethod(buildUtil, m.getReturnType());
-        return javaMethod;
+        return re;
     }
 
     public static class RepositoryMethod {

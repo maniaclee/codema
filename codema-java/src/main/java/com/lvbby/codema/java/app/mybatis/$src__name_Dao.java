@@ -14,7 +14,7 @@ public interface $src__name_Dao {
     // var id = table.primaryKeyField;
     // var Class = src.name;
     // var class=lee.unCapital(src.name);
-    // var Class1=@id.getJavaTypeString();
+    // var Class1=id.javaTypeName;
     // %>
     void insert($Class_ $class_);
 

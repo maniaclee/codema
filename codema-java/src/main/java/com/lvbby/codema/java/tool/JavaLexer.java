@@ -57,7 +57,7 @@ public class JavaLexer {
     public static List<MethodDeclaration> getMethods(TypeDeclaration<?> cu) {
         ClassOrInterfaceDeclaration classOrInterfaceType = (ClassOrInterfaceDeclaration) cu;
         if (classOrInterfaceType.isInterface()) {
-            return getMethods(cu);
+            return getMethods(cu,null);
         }
         return getMethods(cu, Modifier.PUBLIC);
     }

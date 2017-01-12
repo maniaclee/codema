@@ -36,7 +36,7 @@ public class DefaultCodemaBeanFactory implements CodemaBeanFactory {
             return null;
         if (collect.size() != 1)
             throw new IllegalArgumentException("multi resources found for id :" + id);
-        return (T) collect.get(0);
+        return (T) collect.get(0).getResource();
     }
 
     @Override
