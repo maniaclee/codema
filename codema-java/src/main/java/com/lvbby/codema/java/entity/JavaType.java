@@ -10,14 +10,16 @@ import java.lang.reflect.*;
  * Created by lipeng on 2017/1/10.
  */
 public class JavaType {
-    private String name;
+    public static final String VOID = "void";
+    private String name = VOID;
     private Type javaType;
 
     private JavaType() {
     }
 
     private JavaType(String name) {
-        this.name = name;
+        if (StringUtils.isNotBlank(name))
+            this.name = name.trim();
     }
 
     private JavaType javaType(Type clz) {
@@ -37,16 +39,9 @@ public class JavaType {
         return (Class) javaType;
     }
 
-    /***
-     * 如果是void 返回void
-     * @return
-     */
-    public String getNameDisplay() {
-        return isVoid() ? "void" : name;
-    }
 
     public boolean isVoid() {
-        return StringUtils.isBlank(name);
+        return VOID.equalsIgnoreCase(name);
     }
 
     public boolean isGenericType() {
@@ -74,7 +69,7 @@ public class JavaType {
     }
 
     public static JavaType ofClassName(String className) {
-        if (StringUtils.isBlank(className) || "void".equalsIgnoreCase(className))
+        if (StringUtils.isBlank(className) || VOID.equalsIgnoreCase(className))
             return new JavaType();
         return new JavaType(ReflectionUtils.getSimpleClassName(className));
     }

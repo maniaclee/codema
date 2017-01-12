@@ -19,13 +19,23 @@ public class $src__name_Repository {
 
 
     // <%
-    // for( m in src.methods){
+    // for( rm in  methods){
+    // var m = rm.javaMethod;
     //var invoke = m.name;
-    //var Class1 = m.returnType;
+    //var Class1 = m.returnType.name;
     //var class = @m.getArgsInvoke();
     //var signature = @m.getArgsSignature();
+    // var pm = @rm.getBuildParameterMethods().isEmpty()?null:@rm.getBuildParameterMethods().get(0);
+
     // %>
     public $Class1_ $invoke_($Null_ $signature_) throws Exception {
+
+        // <% if (pm !=null){
+        // class="from";
+        // %>
+        // ${pm.returnType} from = BuildUtils.${pm.name}(src);
+        // <%}%>
+
         // <% if (@m.isVoid()){ %>
         $templateClass_.$invoke_($class_);
         //<%}else{%>
