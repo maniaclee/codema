@@ -17,20 +17,14 @@ public class $src__name_Repository {
     @Autowired
     private $TemplateClass_ $templateClass_;
 
-    // <%
-    // for( wm in  methods){
-    //var m = wm.javaMethod;
-    //var invoke = m.name;
-    //var class = @m.getArgsInvoke();
-    //var signature = m.argsSignature;
-    //var Class1 = @m.returnType.getNameDisplay();
 
-    //var returnMethod = wm.buildReturnMethod;
-    //var parameterMethod = wm.buildParameterMethod;
-    // if (parameterMethod !=null){
-    // Null=parameterMethod.args[0];
-    // signature="src";
-    //  %>
+    // <%
+    // for( m in src.methods){
+    //var invoke = m.name;
+    //var Class1 = m.returnType;
+    //var class = @m.getArgsInvoke();
+    //var signature = @m.getArgsSignature();
+    // %>
     public $Class1_ $invoke_($Null_ $signature_) throws Exception {
         // <% if (@m.isVoid()){ %>
         $templateClass_.$invoke_($class_);
@@ -39,18 +33,6 @@ public class $src__name_Repository {
         return re;
         //<%}%>
     }
-
-    //<%}else{ var invokeNormal = invoke; %>
-    public $Class1_ $invokeNormal_($Null_ $signature_) throws Exception {
-        // <% if (@m.isVoid()){ %>
-        $templateClass_.$invoke_($class_);
-        //<%}else{%>
-        $Class1_ re = $templateClass_.$invoke_($class_);
-        return re;
-        //<%}%>
-    }
-    // <% }%>
-
     // <% }%>
 
 }
