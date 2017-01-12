@@ -27,17 +27,30 @@ public class $src__name_Repository {
 
     //var returnMethod = wm.buildReturnMethod;
     //var parameterMethod = wm.buildParameterMethod;
-
-    //  if (returnMethod!=null){
-    //    Class1 = @returnMethod.returnType.getNameDisplay();
-    // }
-    // %>
+    // if (parameterMethod !=null){
+    // Null=parameterMethod.args[0];
+    // signature="src";
+    //  %>
     public $Class1_ $invoke_($Null_ $signature_) throws Exception {
-        //<% if (parameterMethod != null){
-        // }%>
+        // <% if (@m.isVoid()){ %>
         $templateClass_.$invoke_($class_);
-        return $templateClass_.$invoke_($class_);
+        //<%}else{%>
+        $Class1_ re = $templateClass_.$invoke_($class_);
+        return re;
+        //<%}%>
     }
+
+    //<%}else{ var invokeNormal = invoke; %>
+    public $Class1_ $invokeNormal_($Null_ $signature_) throws Exception {
+        // <% if (@m.isVoid()){ %>
+        $templateClass_.$invoke_($class_);
+        //<%}else{%>
+        $Class1_ re = $templateClass_.$invoke_($class_);
+        return re;
+        //<%}%>
+    }
+    // <% }%>
+
     // <% }%>
 
 }
