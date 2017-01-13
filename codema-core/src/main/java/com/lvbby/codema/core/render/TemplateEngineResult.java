@@ -19,13 +19,25 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
     private File file;
 
     public static TemplateEngineResult of(String template, Object arg, File file) {
-        TemplateEngineResult re = new TemplateEngineResult();
-        re.template = template;
-        re.arg = arg;
-        re.file = file;
+        return of(TemplateEngineResult.class,template,arg,file);
+    }
+
+    public static <T extends TemplateEngineResult> T of(Class<T> t, String template, Object arg, File file) {
+        T re = null;
+        try {
+            re = t.newInstance();
+        } catch (Exception e) {
+            throw new CodemaRuntimeException("error create template result for class : " + t.getName());
+        }
+        re.setTemplate(template);
+        re.setArg(arg);
+        re.setFile(file);
         return re;
     }
 
+    protected String processTemplate(String template, Object arg){
+        return template;
+    }
     @Override
     public Object getResult() {
         return arg;
@@ -53,5 +65,17 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
     @Override
     public File getFile() {
         return file;
+    }
+
+    protected void setTemplate(String template) {
+        this.template = template;
+    }
+
+    protected void setArg(Object arg) {
+        this.arg = arg;
+    }
+
+    protected void setFile(File file) {
+        this.file = file;
     }
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigBind;
+import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
@@ -16,6 +17,7 @@ import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -37,7 +39,10 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
         Validate.notNull(buildUtil, "buildClass not found");
 
         List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> new RepositoryMethod(javaMethod, buildUtil)).collect(Collectors.toList());
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_Repository.class, javaClass, ImmutableMap.of("methods", collect)));
+        config.handle(codemaContext, config, new JavaTemplateResult(config, $Repository_.class, javaClass, ImmutableMap.of(
+                "methods", collect,
+                "Repository",ObjectUtils.firstNonNull(ScriptEngineFactory.instance.eval(config.getDestClassName(), javaClass.getName()), javaClass.getName()+"Repository")
+        )));
     }
 
 

@@ -54,7 +54,7 @@ java:
   repository:
     from-package: 'com.lvbby.dao'
     dest-package: 'com.lvbby.repository'
-    dest-class-name: 'script://function:replace/?regx=Entity&replacement=Repository'
+    dest-class-name: 'script://function:replace/?regx=EntityDao&replacement=Repository'
     convert-utils-class: 'com.lvbby.utils.BuildUtils'
 
 #  service:

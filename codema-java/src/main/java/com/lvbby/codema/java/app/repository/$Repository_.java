@@ -12,7 +12,7 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
  * Created by lipeng on 2016/12/24.
  */
 @Component
-public class $src__name_Repository {
+public class $Repository_ {
 
     @Autowired
     private $TemplateClass_ $templateClass_;

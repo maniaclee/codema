@@ -2,6 +2,8 @@ package com.lvbby.codema.java.app.mybatis;
 
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Class_;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -20,7 +22,8 @@ public interface $src__name_Dao {
 
     void inserts(List<$Class_> $class_s);
 
-    $Class_ queryById($Class1_ id);
+    @Select("select * from ${table.nameInDb} where ${id.nameInDb} = #{id}")
+    $Class_ queryById(@Param("id")$Class1_ id);
 
     List<$Class_> queryByIds(List<$Class1_> ids);
     //<%%>
