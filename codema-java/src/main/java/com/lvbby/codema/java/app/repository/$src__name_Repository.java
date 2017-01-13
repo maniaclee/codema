@@ -26,7 +26,9 @@ public class $src__name_Repository {
     //var class = @m.getArgsInvoke();
     //var signature = @m.getArgsSignature();
     // var pm = @rm.getBuildParameterMethods().isEmpty()?null:@rm.getBuildParameterMethods().get(0);
-
+    // if (rm.buildReturnMethod !=null){
+    // Class1=rm.buildReturnMethod.returnType.name;
+    // }
     // %>
     public $Class1_ $invoke_($Null_ $signature_) throws Exception {
 
@@ -36,8 +38,11 @@ public class $src__name_Repository {
         // ${pm.returnType} from = BuildUtils.${pm.name}(src);
         // <%}%>
 
-        // <% if (@m.isVoid()){ %>
+        // <% if (@m.returnVoid()){ %>
         $templateClass_.$invoke_($class_);
+        //<%}else if(rm.buildReturnMethod !=null){%>
+        //$Class1_ re = buildClass.${rm.buildReturnMethod.name}($templateClass_.$invoke_($class_));
+        //return re;
         //<%}else{%>
         $Class1_ re = $templateClass_.$invoke_($class_);
         return re;

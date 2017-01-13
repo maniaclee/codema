@@ -25,7 +25,7 @@ public class $src__name_Test {
     // %>
     @Test
     public void $invoke_() throws Exception {
-        // <% if (!@m.isVoid()){ %>
+        // <% if (!@m.returnVoid()){ %>
         $Class1_ re = $templateClass_.$invoke_($class_);
         assert re != null;
         System.out.println(JSON.toJSONString(re));

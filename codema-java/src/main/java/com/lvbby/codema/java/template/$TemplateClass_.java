@@ -18,5 +18,8 @@ public class $TemplateClass_ {
     public $Class1_ $invoke_($Class_ arg) {
         return null;
     }
+    public $Class1_ $invoke1_($Class1_ arg) {
+        return null;
+    }
 
 }

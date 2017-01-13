@@ -1,10 +1,8 @@
 package com.lvbby.codema.java.entity;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,8 +14,8 @@ public class JavaMethod {
     public JavaType returnType;
     public List<JavaArg> args;
 
-    public boolean isVoid() {
-        return StringUtils.isBlank(returnType.toString()) || Objects.equals("void", returnType);
+    public boolean returnVoid() {
+        return returnType.beVoid();
     }
 
     /**

@@ -21,7 +21,7 @@ public class $src__name_Delegate {
     //var signature = @m.getArgsSignature();
     // %>
     public $Class1_ $invoke_($Null_ $signature_) throws Exception {
-        // <% if (@m.isVoid()){ %>
+        // <% if (@m.returnVoid()){ %>
         $templateClass_.$invoke_($class_);
         //<%}else{%>
         $Class1_ re = $templateClass_.$invoke_($class_);

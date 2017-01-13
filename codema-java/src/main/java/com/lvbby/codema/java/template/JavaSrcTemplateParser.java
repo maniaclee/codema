@@ -61,7 +61,7 @@ public class JavaSrcTemplateParser {
     }
 
     private String render(String s) {
-        String re = s.replaceAll("//", "");
+        String re = s.replaceAll("//\\s*", "");
         re = filterBlockComment(re);
         re = expr(re);
         return re;

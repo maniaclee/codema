@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joor.Reflect;
 import org.joor.ReflectException;
@@ -192,6 +193,13 @@ public class ReflectionUtils {
     }
 
     public static <T> T copy(T obj, Class<T> clz) {
+        try {
+            T t = clz.newInstance();
+            BeanUtils.copyProperties(t,obj);
+            return t;
+        } catch ( Exception e) {
+            e.printStackTrace();
+        }
         return JSON.parseObject(JSON.toJSONString(obj), clz);
     }
 

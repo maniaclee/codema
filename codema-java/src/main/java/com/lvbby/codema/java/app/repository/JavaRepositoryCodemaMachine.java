@@ -8,6 +8,7 @@ import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
@@ -16,6 +17,8 @@ import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.List;
 import java.util.Map;
@@ -51,20 +54,20 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
             this.javaMethod = ReflectionUtils.copy(javaMethod,JavaMethod.class);
             this.buildClass = buildClass;
             //收集build类里的信息
-            Map<JavaType, JavaMethod> buildTargets = buildClass.getMethods().stream().collect(Collectors.toMap(m -> m.getArgs().get(0).getType(), m -> m));
-            Map<JavaType, JavaMethod> returnTargets = buildClass.getMethods().stream().collect(Collectors.toMap(m -> m.getReturnType(), m -> m));
+            Map<JavaType, JavaMethod> byParameter = buildClass.getMethods().stream().collect(Collectors.toMap(m -> m.getArgs().get(0).getType(), m -> m));
+            Map<JavaType, JavaMethod> byReturnType = buildClass.getMethods().stream().collect(Collectors.toMap(m -> m.getReturnType(), m -> m));
             //处理parameter
             javaMethod.getArgs().forEach(javaArg -> {
                 JavaType argType = javaArg.getType();
-                if (returnTargets.containsKey(argType)) {
-                    JavaMethod buildMethod = returnTargets.get(argType);
+                if (byReturnType.containsKey(argType)) {
+                    JavaMethod buildMethod = byReturnType.get(argType);
                     javaArg.setName("src");
                     javaArg.setType(buildMethod.getArgs().get(0).getType());
-                    buildParameterMethods.add(returnTargets.get(argType));
+                    buildParameterMethods.add(byReturnType.get(argType));
                 }
             });
             //处理returnType
-            buildReturnMethod = buildTargets.get(javaMethod.getReturnType());
+            buildReturnMethod = byParameter.get(javaMethod.getReturnType());
         }
 
         public JavaMethod getJavaMethod() {
@@ -98,5 +101,15 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
         public void setBuildParameterMethods(List<JavaMethod> buildParameterMethods) {
             this.buildParameterMethods = buildParameterMethods;
         }
+    }
+
+    public static void main(String[] args) {
+        JavaMethod javaMethod = new JavaMethod();
+        JavaArg javaArg = new JavaArg();
+        javaArg.setName("Sdfdfdf");
+        javaArg.setType(JavaType.ofClass(String.class));
+        javaMethod.setArgs(Lists.newArrayList(javaArg));
+        System.out.println(ReflectionToStringBuilder.toString(javaMethod, ToStringStyle.JSON_STYLE));
+        System.out.println(ReflectionToStringBuilder.toString(ReflectionUtils.copy(javaMethod,JavaMethod.class), ToStringStyle.JSON_STYLE));
     }
 }

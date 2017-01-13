@@ -32,7 +32,7 @@ public class JavaType {
     }
 
     public Class getJavaType() {
-        if (javaType == null || isVoid())
+        if (javaType == null || beVoid())
             return null;
         if (isGenericType())
             return (Class) ((ParameterizedType) javaType).getRawType();
@@ -40,7 +40,7 @@ public class JavaType {
     }
 
 
-    public boolean isVoid() {
+    public boolean beVoid() {
         return VOID.equalsIgnoreCase(name);
     }
 
