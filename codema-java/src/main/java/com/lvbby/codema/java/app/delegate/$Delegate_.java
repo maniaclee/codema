@@ -9,7 +9,7 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
 /**
  * Created by lipeng on 2016/12/24.
  */
-public class $src__name_Delegate {
+public class $Delegate_ {
 
     private $TemplateClass_ $templateClass_;
 

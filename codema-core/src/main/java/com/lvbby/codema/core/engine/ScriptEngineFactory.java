@@ -3,6 +3,7 @@ package com.lvbby.codema.core.engine;
 import com.google.common.collect.Lists;
 import com.google.common.net.UrlEscapers;
 import com.lvbby.codema.core.error.CodemaException;
+import com.lvbby.codema.core.error.CodemaRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
@@ -25,11 +26,15 @@ public class ScriptEngineFactory {
             this.scriptEngines = scriptEngines;
     }
 
-    public String eval(String uri, Object parameter) throws Exception {
-        if (StringUtils.isEmpty(uri))
-            return null;
-        URI u = URI.create(UrlEscapers.urlFragmentEscaper().escape(uri));
-        return eval(u, parameter);
+    public String eval(String uri, Object parameter) {
+        try {
+            if (StringUtils.isEmpty(uri))
+                return null;
+            URI u = URI.create(UrlEscapers.urlFragmentEscaper().escape(uri));
+            return eval(u, parameter);
+        } catch (Exception e) {
+            throw new CodemaRuntimeException("failed to eval expr : " + uri);
+        }
     }
 
     public String eval(URI uri, Object parameter) throws Exception {

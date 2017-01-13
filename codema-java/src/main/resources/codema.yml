@@ -46,18 +46,20 @@ java:
     dest-src-root: '/Users/psyco'
 #    result-handler:
 #        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
-#  delegate: {}
   mybatis:
     from-package: 'com.lvbby.entity'
     dest-package: 'com.lvbby.dao'
-#  es: {}
   repository:
     from-package: 'com.lvbby.dao'
     dest-package: 'com.lvbby.repository'
     dest-class-name: 'script://function:replace/?regx=EntityDao&replacement=Repository'
     convert-utils-class: 'com.lvbby.utils.BuildUtils'
+  delegate:
+    from-package: 'com.lvbby.repository'
+    dest-package: 'com.lvbby.service'
+    dest-class-name: 'script://function:replace/?regx=Repository&replacement=ServiceImpl'
 
-#  service:
-#    dest-package: ''
-#
+
+
+#  es: {}
 

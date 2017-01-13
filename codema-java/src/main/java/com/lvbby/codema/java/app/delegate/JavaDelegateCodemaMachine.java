@@ -20,6 +20,8 @@ public class JavaDelegateCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaDelegateCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass javaClass) throws Exception {
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_Delegate.class, javaClass));
+        config.handle(codemaContext, config, JavaTemplateResult.ofJavaClass(config, $Delegate_.class, javaClass)
+                .bind("Delegate", config.evalDestClassName(javaClass, javaClass.getName() + "Delegate"))
+                .registerResult());
     }
 }

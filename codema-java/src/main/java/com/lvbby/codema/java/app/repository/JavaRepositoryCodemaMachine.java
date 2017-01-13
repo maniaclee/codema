@@ -1,15 +1,12 @@
 package com.lvbby.codema.java.app.repository;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
@@ -17,10 +14,7 @@ import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaTemplateResult;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.List;
 import java.util.Map;
@@ -39,10 +33,10 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
         Validate.notNull(buildUtil, "buildClass not found");
 
         List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> new RepositoryMethod(javaMethod, buildUtil)).collect(Collectors.toList());
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $Repository_.class, javaClass, ImmutableMap.of(
-                "methods", collect,
-                "Repository",ObjectUtils.firstNonNull(ScriptEngineFactory.instance.eval(config.getDestClassName(), javaClass.getName()), javaClass.getName()+"Repository")
-        )));
+        config.handle(codemaContext, config, JavaTemplateResult.ofJavaClass(config, $Repository_.class, javaClass)
+                .bind("methods", collect)
+                .bind("Repository", config.evalDestClassName(javaClass, javaClass.getName() + "Repository"))
+                .registerResult());
     }
 
 
@@ -56,7 +50,7 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
         private JavaClass buildClass;
 
         public RepositoryMethod(JavaMethod javaMethod, JavaClass buildClass) {
-            this.javaMethod = ReflectionUtils.copy(javaMethod,JavaMethod.class);
+            this.javaMethod = ReflectionUtils.copy(javaMethod, JavaMethod.class);
             this.buildClass = buildClass;
             //收集build类里的信息
             Map<JavaType, JavaMethod> byParameter = buildClass.getMethods().stream().collect(Collectors.toMap(m -> m.getArgs().get(0).getType(), m -> m));
@@ -108,13 +102,4 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
         }
     }
 
-    public static void main(String[] args) {
-        JavaMethod javaMethod = new JavaMethod();
-        JavaArg javaArg = new JavaArg();
-        javaArg.setName("Sdfdfdf");
-        javaArg.setType(JavaType.ofClass(String.class));
-        javaMethod.setArgs(Lists.newArrayList(javaArg));
-        System.out.println(ReflectionToStringBuilder.toString(javaMethod, ToStringStyle.JSON_STYLE));
-        System.out.println(ReflectionToStringBuilder.toString(ReflectionUtils.copy(javaMethod,JavaMethod.class), ToStringStyle.JSON_STYLE));
-    }
 }

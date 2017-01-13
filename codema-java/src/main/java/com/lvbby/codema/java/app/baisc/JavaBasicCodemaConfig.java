@@ -1,7 +1,11 @@
 package com.lvbby.codema.java.app.baisc;
 
-import com.lvbby.codema.core.config.ConfigKey;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.config.ConfigKey;
+import com.lvbby.codema.core.engine.ScriptEngineFactory;
+import com.lvbby.codema.core.error.CodemaRuntimeException;
+import com.lvbby.codema.java.entity.JavaClass;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serializable;
 
@@ -66,4 +70,14 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         this.fromPackage = fromPackage;
     }
 
+    public String evalDestClassName(JavaClass javaClass, String defaultValue) {
+        return eval(getDestClassName(), javaClass.getName(), defaultValue);
+    }
+
+    public String eval(String src, String param, String defaultValue) {
+        String s = ObjectUtils.firstNonNull(ScriptEngineFactory.instance.eval(src, param), defaultValue);
+        if (s == null)
+            throw new CodemaRuntimeException(String.format("eval %s return null !", src));
+        return s;
+    }
 }

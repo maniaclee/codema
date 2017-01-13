@@ -1,10 +1,9 @@
 package com.lvbby.codema.core.render;
 
-import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.PrintableResult;
-import com.lvbby.codema.core.utils.ReflectionUtils;
 
 import java.io.File;
 import java.util.Map;
@@ -14,52 +13,83 @@ import java.util.Map;
  */
 public class TemplateEngineResult implements PrintableResult, FileResult {
     private String template;
-    private Object arg;
-    private String result;
+    /**
+     * the object that the template result is holding , not required
+     */
+    private Object obj;
+    /* rendered result */
+    private String string;
     private File file;
+    private Map parameters = Maps.newHashMap();
 
-    public static TemplateEngineResult of(String template, Object arg, File file) {
-        return of(TemplateEngineResult.class,template,arg,file);
+    public TemplateEngineResult() {
     }
 
-    public static <T extends TemplateEngineResult> T of(Class<T> t, String template, Object arg, File file) {
-        T re = null;
+    public static TemplateEngineResult of(String template) {
+        return of(TemplateEngineResult.class, template);
+    }
+
+    public static <T extends TemplateEngineResult> T of(Class<T> t, String template) {
         try {
-            re = t.newInstance();
+            T re = t.newInstance();
+            re.setTemplate(template);
+            return re;
         } catch (Exception e) {
-            throw new CodemaRuntimeException("error create template result for class : " + t.getName());
+            throw new CodemaRuntimeException("error create template string for class : " + t.getName());
         }
-        re.setTemplate(template);
-        re.setArg(arg);
-        re.setFile(file);
-        return re;
     }
 
-    protected String processTemplate(String template, Object arg){
-        return template;
+    public TemplateEngineResult bind(Map map) {
+        if (map != null)
+            parameters.putAll(map);
+        return this;
     }
+
+    public TemplateEngineResult bind(String key, Object value) {
+        parameters.put(key, value);
+        return this;
+    }
+
+    protected void beforeRender(Map bindingParameters) {
+    }
+
+    protected void afterRender() {
+    }
+
     @Override
     public Object getResult() {
-        return arg;
+        return obj;
     }
 
     @Override
     public String getString() {
-        if (result != null)
-            return result;
-        if (!(arg instanceof Map)) {
-            try {
-                arg = ReflectionUtils.object2map(arg);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new CodemaRuntimeException("failed to convert arg to map: " + JSON.toJSONString(arg), e);
-            }
-        }
-        Map map = (Map) arg;
+        if (string == null)
+            render();
+        return string;
+    }
+
+    public TemplateEngineResult render() {
+        if (string != null)
+            return this;
+        //convert args to map binding with the template engine
+        //        if (!(obj instanceof Map)) {
+        //            try {
+        //                map.putAll(ReflectionUtils.object2map(obj));
+        //            } catch (Exception e) {
+        //                e.printStackTrace();
+        //                throw new CodemaRuntimeException("failed to convert arg to map: " + JSON.toJSONString(obj), e);
+        //            }
+        //        } else {
+        //            map.putAll((Map) obj);
+        //        }
+        beforeRender(parameters);
         TemplateEngine templateEngine = TemplateEngineFactory.create(template);
-        map.keySet().forEach(o -> templateEngine.bind(o.toString(), map.get(o)));
-        result = templateEngine.render();
-        return result;
+        for (Object o : parameters.keySet()) {
+            templateEngine.bind(o.toString(), parameters.get(o));
+        }
+        string = templateEngine.render();
+        afterRender();
+        return this;
     }
 
     @Override
@@ -71,11 +101,27 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
         this.template = template;
     }
 
-    protected void setArg(Object arg) {
-        this.arg = arg;
+    public TemplateEngineResult obj(Object arg) {
+        this.obj = arg;
+        return this;
     }
 
-    protected void setFile(File file) {
+    public Object getObj() {
+        return obj;
+    }
+
+    public TemplateEngineResult setFile(File file) {
         this.file = file;
+        return this;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+
+    public TemplateEngineResult setParameters(Map parameters) {
+        this.parameters = parameters;
+        return this;
     }
 }

@@ -1,12 +1,12 @@
 package com.lvbby.codema.java.app.mybatis;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.ImmutableMap;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
+import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -30,7 +30,9 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
     public void code(CodemaContext codemaContext, @NotNull JavaMybatisCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
         SqlTable sqlTable = getSqlTable(cu);
         validate(sqlTable);
-        JavaTemplateResult daoTemplateResult = new JavaTemplateResult(config, $src__name_Dao.class, cu, ImmutableMap.of("table", sqlTable)).registerResult();//register the dao result
+        TemplateEngineResult daoTemplateResult = JavaTemplateResult.ofJavaClass(config, $src__name_Dao.class, cu)
+                .bind("table", sqlTable)
+                .registerResult();
         config.handle(codemaContext, config, daoTemplateResult);
 
         //xml TODO
