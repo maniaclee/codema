@@ -4,6 +4,7 @@ import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
+import com.lvbby.codema.java.template.TemplateContext;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class JavaTemplateResult extends TemplateEngineResult {
 
     public static JavaTemplateResult ofJavaClass(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate, JavaClass javaClass) {
-        String template = JavaSrcTemplateParser.instance.loadSrcTemplate(javaSrcTemplate, config);
+        String template = JavaSrcTemplateParser.instance.loadSrcTemplate(new TemplateContext(javaSrcTemplate, config, javaClass));
         template = template.replaceAll("\\(\\s+", "("); //format (
 
         JavaTemplateResult re = TemplateEngineResult.of(JavaTemplateResult.class, template);

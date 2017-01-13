@@ -11,9 +11,14 @@ import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,23 +46,39 @@ public class JavaSrcTemplateParser {
         return render(cu.toString());
     }
 
-    public String loadSrcTemplateByMethod(Class templateClass, JavaBasicCodemaConfig javaBasicCodemaConfig, String methodName) {
-        MethodDeclaration methodByName = JavaLexer.getMethodByNameSingle(JavaLexer.getClass(loadSrcTemplateRaw(templateClass, javaBasicCodemaConfig)).orElseThrow(() -> new CodemaRuntimeException("no class found")), methodName);
+    public String loadSrcTemplateByMethod(TemplateContext context, String methodName) {
+        MethodDeclaration methodByName = JavaLexer.getMethodByNameSingle(JavaLexer.getClass(loadSrcTemplateRaw(context)).orElseThrow(() -> new CodemaRuntimeException("no class found")), methodName);
         return render(methodName.toString());
     }
 
-    public String loadSrcTemplate(Class templateClass, JavaBasicCodemaConfig javaBasicCodemaConfig) {
-        return render(loadSrcTemplateRaw(templateClass, javaBasicCodemaConfig).toString());
+    public String loadSrcTemplate(TemplateContext context) {
+        return render(loadSrcTemplateRaw(context).toString());
     }
 
-    public CompilationUnit loadSrcTemplateRaw(Class templateClass, JavaBasicCodemaConfig javaBasicCodemaConfig) {
-        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
+    public CompilationUnit loadSrcTemplateRaw(TemplateContext context) {
+        JavaBasicCodemaConfig javaBasicCodemaConfig = context.getJavaBasicCodemaConfig();
+        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(context.getTemplateClass());
         filterImport(cu);
         cu.setPackage(javaBasicCodemaConfig.getDestPackage());
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
             classOrInterfaceDeclaration.setJavaDocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
+            if (context.getSource() != null) {
+                //parent class
+                if (StringUtils.isNotBlank(javaBasicCodemaConfig.getParentClass()))
+                    classOrInterfaceDeclaration.addExtends(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(javaBasicCodemaConfig.getParentClass(), context.getSource().getName())));
+                //interfaces
+                if (CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())) {
+                    javaBasicCodemaConfig.getImplementInterfaces().forEach(e -> classOrInterfaceDeclaration.addImplements(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(e, context.getSource().getName()))));
+                }
+            }
         });
         return cu;
+    }
+
+    private String importAndReturnSimpleClassName(CompilationUnit cu, String className) {
+        if (className.contains("."))
+            cu.addImport(className);
+        return ReflectionUtils.getSimpleClassName(className);
     }
 
     private String render(String s) {

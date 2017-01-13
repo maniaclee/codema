@@ -56,9 +56,10 @@ java:
     convert-utils-class: 'com.lvbby.utils.BuildUtils'
   delegate:
     from-package: 'com.lvbby.repository'
-    dest-package: 'com.lvbby.service'
+    dest-package: 'com.lvbby.service.imp'
     dest-class-name: 'script://function:replace/?regx=Repository&replacement=ServiceImpl'
-
+    implement-interfaces:
+        - 'script://function:replace/?regx=Repository&replacement=Service&prefix=com.lvbby.service.'
 
 
 #  es: {}

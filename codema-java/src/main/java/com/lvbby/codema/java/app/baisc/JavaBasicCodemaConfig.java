@@ -8,6 +8,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by lipeng on 2016/12/22.
@@ -29,6 +30,8 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
      */
     private String fromPackage;
     private boolean toBeInterface = false;
+    private List<String> implementInterfaces;
+    private String parentClass;
 
     public boolean isToBeInterface() {
         return toBeInterface;
@@ -70,8 +73,28 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         this.fromPackage = fromPackage;
     }
 
+    public List<String> getImplementInterfaces() {
+        return implementInterfaces;
+    }
+
+    public void setImplementInterfaces(List<String> implementInterfaces) {
+        this.implementInterfaces = implementInterfaces;
+    }
+
+    public String getParentClass() {
+        return parentClass;
+    }
+
+    public void setParentClass(String parentClass) {
+        this.parentClass = parentClass;
+    }
+
     public String evalDestClassName(JavaClass javaClass, String defaultValue) {
         return eval(getDestClassName(), javaClass.getName(), defaultValue);
+    }
+
+    public String eval(String src, String param) {
+        return eval(src, param, null);
     }
 
     public String eval(String src, String param, String defaultValue) {
