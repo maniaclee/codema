@@ -89,6 +89,7 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         this.parentClass = parentClass;
     }
 
+
     public String evalDestClassName(JavaClass javaClass, String defaultValue) {
         return eval(getDestClassName(), javaClass.getName(), defaultValue);
     }

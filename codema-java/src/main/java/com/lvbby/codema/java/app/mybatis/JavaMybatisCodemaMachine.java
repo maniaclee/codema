@@ -14,8 +14,10 @@ import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 /**
@@ -64,5 +66,10 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
 
     private void validate(SqlTable sqlTable) {
         Validate.notNull(sqlTable.getPrimaryKeyField(), "no primary key found for table : " + sqlTable.getNameInDb());
+    }
+
+    public static void main(String[] args) throws IOException {
+        System.out.println(IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("/"+JavaMybatisCodemaMachine.class.getPackage().getName().replace('.', '/') + "/" + "mybatis_dao.xml")));
+        System.out.println(IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml")));
     }
 }

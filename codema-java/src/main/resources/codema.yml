@@ -54,6 +54,10 @@ java:
     dest-package: 'com.lvbby.repository'
     dest-class-name: 'script://function:replace/?regx=EntityDao&replacement=Repository'
     convert-utils-class: 'com.lvbby.utils.BuildUtils'
+  interfaces:
+    from-package: 'com.lvbby.repository'
+    dest-package: 'com.lvbby.service'
+    dest-class-name: 'script://function:replace/?regx=Repository&replacement=Service'
   delegate:
     from-package: 'com.lvbby.repository'
     dest-package: 'com.lvbby.service.imp'
