@@ -23,6 +23,7 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
      * 目标src路径
      */
     private String destSrcRoot;
+    private String destResourceRoot;
 
     private String destClassName;
     /**
@@ -89,6 +90,13 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         this.parentClass = parentClass;
     }
 
+    public String getDestResourceRoot() {
+        return destResourceRoot;
+    }
+
+    public void setDestResourceRoot(String destResourceRoot) {
+        this.destResourceRoot = destResourceRoot;
+    }
 
     public String evalDestClassName(JavaClass javaClass, String defaultValue) {
         return eval(getDestClassName(), javaClass.getName(), defaultValue);

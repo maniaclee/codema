@@ -1,7 +1,5 @@
 package com.lvbby.codema.core.render;
 
-import com.lvbby.codema.core.utils.ReflectionUtils;
-
 import java.util.Map;
 
 /**
@@ -11,6 +9,8 @@ public class XmlTemplateResult extends TemplateEngineResult {
 
     @Override
     protected void beforeRender(Map bindingParameters) {
-        setTemplate(ReflectionUtils.replace(getTemplate(), "<--(.*)-->", matcher -> matcher.group(1)));
+//        setTemplate(ReflectionUtils.replace(getTemplate(), "<!--(.*)-->", matcher -> matcher.group(1)));
+        setTemplate(getTemplate().replaceAll("<!--\\s*", "").replaceAll("\\s*-->",""));
     }
+
 }

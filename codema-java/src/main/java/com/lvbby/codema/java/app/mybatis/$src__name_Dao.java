@@ -18,12 +18,12 @@ public interface $src__name_Dao {
     // var class=lee.unCapital(src.name);
     // var Class1=id.javaTypeName;
     // %>
-    void insert($Class_ $class_);
+    long insert(@Param("entity") $Class_ $class_);
 
-    void inserts(List<$Class_> $class_s);
+    void inserts(@Param("entity") List<$Class_> $class_s);
 
     @Select("select * from ${table.nameInDb} where ${id.nameInDb} = #{id}")
-    $Class_ queryById(@Param("id")$Class1_ id);
+    $Class_ queryById(@Param("id") $Class1_ id);
 
     List<$Class_> queryByIds(List<$Class1_> ids);
     //<%%>

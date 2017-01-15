@@ -20,7 +20,11 @@ public class JavaTemplateResult extends TemplateEngineResult {
     public static JavaTemplateResult ofJavaClass(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate, JavaClass javaClass) {
         String template = JavaSrcTemplateParser.instance.loadSrcTemplate(new TemplateContext(javaSrcTemplate, config, javaClass));
         template = template.replaceAll("\\(\\s+", "("); //format (
+        return ofTemplate(config, template, javaClass);
+    }
 
+
+    public static JavaTemplateResult ofTemplate(JavaBasicCodemaConfig config, String template, JavaClass javaClass) {
         JavaTemplateResult re = TemplateEngineResult.of(JavaTemplateResult.class, template);
         if (javaClass != null)
             re.bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));

@@ -19,6 +19,7 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     private String author;
     private String from;
     private List<String> resultHandler;
+    private String destFile;
 
     public List<String> getResultHandler() {
         return resultHandler;
@@ -42,6 +43,14 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getDestFile() {
+        return destFile;
+    }
+
+    public void setDestFile(String destFile) {
+        this.destFile = destFile;
     }
 
     public List<ResultHandler> findResultHandler() {
@@ -73,4 +82,5 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     public void handle(CodemaContext codemaContext, CommonCodemaConfig config, Result result) throws Exception {
         handle(ResultContext.of(codemaContext, config, result));
     }
+
 }

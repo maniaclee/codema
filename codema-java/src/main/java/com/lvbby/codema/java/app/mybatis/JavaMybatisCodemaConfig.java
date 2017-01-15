@@ -8,4 +8,13 @@ import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
  */
 @ConfigKey("java.mybatis")
 public class JavaMybatisCodemaConfig extends JavaBasicCodemaConfig {
+    private String mapperDir;
+
+    public String getMapperDir() {
+        return mapperDir;
+    }
+
+    public void setMapperDir(String mapperDir) {
+        this.mapperDir = mapperDir;
+    }
 }

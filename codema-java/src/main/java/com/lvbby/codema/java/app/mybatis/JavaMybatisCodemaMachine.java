@@ -7,6 +7,7 @@ import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.render.TemplateEngineResult;
+import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -14,10 +15,11 @@ import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import com.lvbby.codema.java.result.JavaXmlTemplateResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +39,17 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
                 .registerResult();
         config.handle(codemaContext, config, daoTemplateResult);
 
-        //xml TODO
+        String xml = IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
+        config.handle(codemaContext, config, JavaXmlTemplateResult.ofResource(config, xml, cu, new File(config.getMapperDir(), String.format("%sMapper.xml", cu.getName())))
+                .bind("table", sqlTable)
+                .bind("dao", daoTemplateResult.getResult()));
+
+        /**mybatis config*/
+        config.handle(codemaContext, config, BasicResult.ofResource(JavaMybatisCodemaMachine.class, "mybatis.xml", config.getDestResourceRoot()));
+
+        /** dal config */
+        config.handle(codemaContext, config, JavaTemplateResult.ofJavaClass(config, DalConfig.class, cu));
+
     }
 
     private SqlTable getSqlTable(JavaClass cu) {
@@ -68,8 +80,4 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
         Validate.notNull(sqlTable.getPrimaryKeyField(), "no primary key found for table : " + sqlTable.getNameInDb());
     }
 
-    public static void main(String[] args) throws IOException {
-        System.out.println(IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("/"+JavaMybatisCodemaMachine.class.getPackage().getName().replace('.', '/') + "/" + "mybatis_dao.xml")));
-        System.out.println(IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml")));
-    }
 }

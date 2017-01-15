@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joor.Reflect;
 import org.joor.ReflectException;
@@ -12,6 +13,7 @@ import org.joor.ReflectException;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -195,9 +197,9 @@ public class ReflectionUtils {
     public static <T> T copy(T obj, Class<T> clz) {
         try {
             T t = clz.newInstance();
-            BeanUtils.copyProperties(t,obj);
+            BeanUtils.copyProperties(t, obj);
             return t;
-        } catch ( Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return JSON.parseObject(JSON.toJSONString(obj), clz);
@@ -213,4 +215,8 @@ public class ReflectionUtils {
         return className.replaceAll("[^.]+\\.", "");
     }
 
+
+    public static String loadResource(Class clz, String resourceName) throws IOException {
+        return IOUtils.toString(clz.getResourceAsStream(resourceName));
+    }
 }

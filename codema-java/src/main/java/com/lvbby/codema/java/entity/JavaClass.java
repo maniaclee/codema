@@ -1,6 +1,7 @@
 package com.lvbby.codema.java.entity;
 
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class JavaClass {
      * 来源于什么对象
      */
     private Object from;
+
+    public String classFullName() {
+        return StringUtils.isBlank(pack) ? name : (pack + "." + name);
+    }
 
     public String getNameCamel() {
         return ReflectionUtils.camel(name);

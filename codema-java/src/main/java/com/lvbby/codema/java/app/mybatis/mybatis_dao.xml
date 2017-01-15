@@ -1,29 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="${lee.getDaoPackage(config.pack)}.${lee.getDaoClassName(table)}">
-    <resultMap id="resultMap" type="${lee.getEntityPackage(config.pack)}.${lee.getEntityClassName(table)}">
+<mapper namespace="${@dao.classFullName()}">
+    <resultMap id="resultMap" type="${@src.classFullName()}">
         <!--
         <% for(f in table.fields){ %>
-        <result column="${f.nameInDb}" property="${f.name}"/>
+        <result column="${f.nameInDb}" property="${f.nameCamel}"/>
         <%}%>
         -->
     </resultMap>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="${table.primaryKeyField.name}">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="${table.primaryKeyField.nameCamel}">
+    INSERT INTO ${table.nameInDb}
+    (
+    <!--
+    <% for(f in table.fields){ if(!f.primaryKey){%>
+    ${f.nameInDb}${fLP.last?"":","}
+    <%}}%>
+    -->
+    )
+    values(
+    <!--
+    <% for(f in table.fields){ if(!f.primaryKey){%>
+    #{entity.${f.nameCamel}}${fLP.last?"":","}
+    <%}}%>
+    -->
+    )
+    <insert id="inserts" useGeneratedKeys="true">
         INSERT INTO ${table.nameInDb}
         (
         <!--
-        <% for(f in table.fields){ if(!lee.eq(f.nameInDb,table.primaryKeyField.nameInDb)){%>
+        <% for(f in table.fields){ if(!f.primaryKey){%>
         ${f.nameInDb}${fLP.last?"":","}
         <%}}%>
         -->
         )
         values(
         <!--
-        <% for(f in table.fields){ if(!lee.eq(f.name,table.primaryKeyField.name)){%>
-        #{${f.name}}${fLP.last?"":","}
+        <% for(f in table.fields){ if(!f.primaryKey){%>
+        #{entity.${f.nameCamel}}${fLP.last?"":","}
         <%}}%>
         -->
         )
     </insert>
+    <select id="queryByIds" resultMap="resultMap">
+        select * from ${table.nameInDb}
+        WHERE ${table.primaryKeyField.nameInDb}
+        IN
+        <foreach item="item" collection="list" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
 </mapper>
