@@ -5,10 +5,8 @@ import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
-import com.lvbby.codema.core.render.TemplateEngineResult;
+import com.lvbby.codema.core.result.BasicResult;
 import org.apache.commons.collections.CollectionUtils;
-
-import java.io.File;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -22,8 +20,9 @@ public class MvnCodemaMachine implements CodemaInjectable {
     }
 
     private void handle(CodemaContext codemaContext, MavenConfig config) throws Exception {
-        if (config != null)
-            doHandle(codemaContext, config);
+        if (config == null)
+            return;
+        doHandle(codemaContext, config);
         if (CollectionUtils.isNotEmpty(config.getModules()))
             for (MavenConfig mavenConfig : config.getModules())
                 handle(codemaContext, mavenConfig);
@@ -37,8 +36,6 @@ public class MvnCodemaMachine implements CodemaInjectable {
     }
 
     private void doHandle(CodemaContext codemaContext, MavenConfig config) throws Exception {
-        String template = codemaContext.getCodema().parseSource("classpath://template/pom.xml").toString();
-        config.handle(codemaContext, config, TemplateEngineResult.of(template)
-                .setFile(new File(config.findRootDir(), "pom.xml")));
+        config.handle(codemaContext, config, BasicResult.ofResource(MvnCodemaMachine.class, "pom.xml", config.findRootDir().getAbsolutePath()));
     }
 }

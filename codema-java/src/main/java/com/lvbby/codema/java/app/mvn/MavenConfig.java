@@ -2,6 +2,7 @@ package com.lvbby.codema.java.app.mvn;
 
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigKey;
+import com.lvbby.codema.core.error.CodemaRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -26,10 +27,9 @@ public class MavenConfig extends CommonCodemaConfig {
         if (StringUtils.isNotBlank(baseDir))
             return new File(baseDir, name);
         if (getParent() != null) {
-
+            return new File(getParent().findRootDir(), name);
         }
-
-        return null;//TODO
+        throw new CodemaRuntimeException("maven dir is not found");
     }
 
     public String getBaseDir() {

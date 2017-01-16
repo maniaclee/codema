@@ -23,6 +23,12 @@ public class JavaTemplateResult extends TemplateEngineResult {
         return ofTemplate(config, template, javaClass);
     }
 
+    public static JavaTemplateResult ofTemplateContext(TemplateContext templateContext) {
+        String template = JavaSrcTemplateParser.instance.loadSrcTemplate(templateContext);
+        template = template.replaceAll("\\(\\s+", "("); //format (
+        return ofTemplate(templateContext.getJavaBasicCodemaConfig(), template, templateContext.getSource());
+    }
+
 
     public static JavaTemplateResult ofTemplate(JavaBasicCodemaConfig config, String template, JavaClass javaClass) {
         JavaTemplateResult re = TemplateEngineResult.of(JavaTemplateResult.class, template);

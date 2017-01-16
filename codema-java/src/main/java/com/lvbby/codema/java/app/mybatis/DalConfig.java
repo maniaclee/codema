@@ -56,7 +56,7 @@ public class DalConfig {
         druidDataSource.setPassword(password);
         druidDataSource.setMaxActive(60);
         druidDataSource.setInitialSize(1);
-        druidDataSource.setMaxWait(60000);//60s
+        druidDataSource.setMaxWait(60000);
         druidDataSource.setMinIdle(1);
         druidDataSource.setTimeBetweenEvictionRunsMillis(3000);
         druidDataSource.setMinEvictableIdleTimeMillis(300000);
@@ -71,7 +71,7 @@ public class DalConfig {
         druidDataSource.setConnectProperties(properties);
 
         StatFilter statFilter = new StatFilter();
-        statFilter.setSlowSqlMillis(10000);//10s。。慢
+        statFilter.setSlowSqlMillis(10000);
         statFilter.setMergeSql(true);
         statFilter.setLogSlowSql(true);
 

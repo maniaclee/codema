@@ -10,6 +10,7 @@ public class TemplateContext {
     private JavaClass source;
     private Class templateClass;
     private JavaBasicCodemaConfig javaBasicCodemaConfig;
+    private String pack;
 
     public TemplateContext(Class templateClass, JavaBasicCodemaConfig javaBasicCodemaConfig) {
         this(templateClass, javaBasicCodemaConfig, null);
@@ -19,6 +20,11 @@ public class TemplateContext {
         this.source = source;
         this.templateClass = templateClass;
         this.javaBasicCodemaConfig = javaBasicCodemaConfig;
+    }
+
+    public TemplateContext pack(String pack) {
+        setPack(pack);
+        return this;
     }
 
     public Class getTemplateClass() {
@@ -43,5 +49,13 @@ public class TemplateContext {
 
     public void setSource(JavaClass source) {
         this.source = source;
+    }
+
+    public String getPack() {
+        return pack;
+    }
+
+    public void setPack(String pack) {
+        this.pack = pack;
     }
 }

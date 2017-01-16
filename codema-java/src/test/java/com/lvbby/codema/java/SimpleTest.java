@@ -12,6 +12,7 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
+import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.java.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.java.engine.JavaEngineContext;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -182,6 +183,12 @@ public class SimpleTest {
         javaBeanCodemaConfig.setAuthor("sdf");
         Object destSrcRoot = Reflect.on(javaBeanCodemaConfig).field("author").get();
         System.out.println(destSrcRoot);
+
+    }
+
+    @Test
+    public void template() throws Exception {
+        System.out.println(TemplateEngineFactory.create("\\${abc}").render());
 
     }
 }

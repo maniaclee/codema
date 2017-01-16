@@ -16,6 +16,7 @@ import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.result.JavaXmlTemplateResult;
+import com.lvbby.codema.java.template.TemplateContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -49,6 +50,7 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
 
         /** dal config */
         config.handle(codemaContext, config, JavaTemplateResult.ofJavaClass(config, DalConfig.class, cu));
+        config.handle(codemaContext, config, JavaTemplateResult.ofTemplateContext(new TemplateContext(DalConfig.class, config, cu).pack(config.getConfigPackage())));
 
     }
 
