@@ -4,19 +4,30 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <!--
     <%
-        if(parent！=null){
+        if(config.parent!=null){
+     %>
     -->
     <parent>
-        <artifactId>${parent.artifactId}</artifactId>
-        <groupId>${parent.groupId}</groupId>
-        <version>${parent.version}</version>
+        <artifactId>${config.parent.artifactId}</artifactId>
+        <groupId>${config.parent.groupId}</groupId>
+        <version>${config.parent.version}</version>
     </parent>
-
+    <packaging>jar</packaging>
     <!--
-    }%>
+    <%}%>
     -->
+    <!--<% if(config.modules!=null){%>-->
+    <modules>
+        <!--<% for (child in config.modules){ %>-->
+        <module>${child.name}</module>
+        <!--<%}%>-->
+    </modules>
+    <packaging>pom</packaging>
+    <!--<%}%>-->
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>${artifactId}</artifactId>
+    <artifactId>${config.artifactId}</artifactId>
+    <groupId>${config.groupId}</groupId>
+    <version>${config.version}</version>
 
     <dependencies>
         <dependency>
@@ -47,8 +58,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>${javaVersion}</source>
-                    <target>${javaVersion}</target>
+                    <source>${config.javaVersion}</source>
+                    <target>${config.javaVersion}</target>
                 </configuration>
             </plugin>
             <plugin>

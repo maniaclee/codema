@@ -12,59 +12,59 @@ maven:
   name: 'project'
   artifact-id: 'project'
   group-id: 'lvbby'
-  java-version: '1.8'
-  base-dir: '/Users/psyco/tmp'
+  java-version: '1.6'
+  base-dir: '/Users/lipeng/tmp'
   result-handler:
     - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
   modules:
     - name: 'sub'
-      artifact-id: ' sub-api'
+      artifact-id: 'sub-api'
       group-id: 'lvbby'
-#
 java:
   basic:
-    dest-package: 'com.lvbby'
-    dest-src-root: ''
-#  testcase:
-#    from-package: 'com.lvbby'
-#    dest-class-name: 'Test'
-#    dest-package: 'com.lvbby.testcase'
-#    is-spring: true
-  bean:
-    dest-package: 'com.lvbby.entity'
-    dest-class-name: 'script://function:suffix/Entity'
-    list:
-      - {dest-package: 'com.lvbby.dto',dest-class-name: 'script://function:suffix/DTO' }
-
-  convert:
-    from-package: 'com.lvbby.entity'
-    convert-to-class-name: 'script://function:replace/?regx=Entity&replacement=DTO&prefix=com.lvbby.dto.'
-#    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
-    dest-package: 'com.lvbby.utils'
-    dest-class-name: 'BuildUtils'
-    dest-src-root: '/Users/psyco'
-#    result-handler:
-#        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
-  mybatis:
-    from-package: 'com.lvbby.entity'
-    dest-package: 'com.lvbby.dao'
-    mapper-dir: ''
-    config-package: 'com.lvbby.config'
-  repository:
-    from-package: 'com.lvbby.dao'
-    dest-package: 'com.lvbby.repository'
-    dest-class-name: 'script://function:replace/?regx=EntityDao&replacement=Repository'
-    convert-utils-class: 'com.lvbby.utils.BuildUtils'
-  interfaces:
-    from-package: 'com.lvbby.repository'
-    dest-package: 'com.lvbby.service'
-    dest-class-name: 'script://function:replace/?regx=Repository&replacement=Service'
-  delegate:
-    from-package: 'com.lvbby.repository'
-    dest-package: 'com.lvbby.service.imp'
-    dest-class-name: 'script://function:replace/?regx=Repository&replacement=ServiceImpl'
-    implement-interfaces:
-        - 'script://function:replace/?regx=Repository&replacement=Service&prefix=com.lvbby.service.'
+    dest-src-root: '/Users/lipeng/tmp/project/src/main/java'
+  testcase:
+    from-package: 'com.lvbby'
+    dest-class-name: 'Test'
+    dest-package: 'com.lvbby.testcase'
+    is-spring: true
+    result-handler:
+        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
+#  bean:
+#    dest-package: 'com.lvbby.entity'
+#    dest-class-name: 'script://function:suffix/Entity'
+#    list:
+#      - {dest-package: 'com.lvbby.dto',dest-class-name: 'script://function:suffix/DTO' }
+#
+#  convert:
+#    from-package: 'com.lvbby.entity'
+#    convert-to-class-name: 'script://function:replace/?regx=Entity&replacement=DTO&prefix=com.lvbby.dto.'
+##    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
+#    dest-package: 'com.lvbby.utils'
+#    dest-class-name: 'BuildUtils'
+#    dest-src-root: '/Users/psyco'
+##    result-handler:
+##        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
+#  mybatis:
+#    from-package: 'com.lvbby.entity'
+#    dest-package: 'com.lvbby.dao'
+#    mapper-dir: ''
+#    config-package: 'com.lvbby.config'
+#  repository:
+#    from-package: 'com.lvbby.dao'
+#    dest-package: 'com.lvbby.repository'
+#    dest-class-name: 'script://function:replace/?regx=EntityDao&replacement=Repository'
+#    convert-utils-class: 'com.lvbby.utils.BuildUtils'
+#  interfaces:
+#    from-package: 'com.lvbby.repository'
+#    dest-package: 'com.lvbby.service'
+#    dest-class-name: 'script://function:replace/?regx=Repository&replacement=Service'
+#  delegate:
+#    from-package: 'com.lvbby.repository'
+#    dest-package: 'com.lvbby.service.imp'
+#    dest-class-name: 'script://function:replace/?regx=Repository&replacement=ServiceImpl'
+#    implement-interfaces:
+#        - 'script://function:replace/?regx=Repository&replacement=Service&prefix=com.lvbby.service.'
 
 
 #  es: {}

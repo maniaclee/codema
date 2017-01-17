@@ -77,17 +77,6 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
     public TemplateEngineResult render() {
         if (string != null)
             return this;
-        //convert args to map binding with the template engine
-        //        if (!(obj instanceof Map)) {
-        //            try {
-        //                map.putAll(ReflectionUtils.object2map(obj));
-        //            } catch (Exception e) {
-        //                e.printStackTrace();
-        //                throw new CodemaRuntimeException("failed to convert arg to map: " + JSON.toJSONString(obj), e);
-        //            }
-        //        } else {
-        //            map.putAll((Map) obj);
-        //        }
         beforeRender(parameters);
         TemplateEngine templateEngine = TemplateEngineFactory.create(template);
         for (Object o : parameters.keySet()) {

@@ -7,8 +7,8 @@ import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.render.XmlTemplateResult;
+import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.utils.CodemaUtils;
-import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -17,16 +17,13 @@ public class MavenCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @ConfigBind(MavenConfig.class)
     public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
-        initConfig(null, config);
+        config.init();
         for (MavenConfig c : CodemaUtils.getAllConfigWithAnnotation(config)) {
-            config.handle(codemaContext, c, TemplateEngineResult.ofResource(XmlTemplateResult.class, MavenCodemaMachine.class, "pom.xml", c.findRootDir().getAbsolutePath()));
+            config.handle(codemaContext, c, TemplateEngineResult.ofResource(XmlTemplateResult.class, MavenCodemaMachine.class, "pom.xml", c.findRootDir().getAbsolutePath()).bind("config", c));
         }
+
+        /** .git ignore */
+        config.handle(codemaContext, config, BasicResult.ofResource(getClass(), ".gitignore", config.findRootDir().getAbsolutePath()));
     }
 
-    private void initConfig(MavenConfig parent, MavenConfig child) {
-        child.setParent(parent);
-        if (CollectionUtils.isNotEmpty(child.getModules()))
-            for (MavenConfig mavenConfig : child.getModules())
-                initConfig(child, mavenConfig);
-    }
 }

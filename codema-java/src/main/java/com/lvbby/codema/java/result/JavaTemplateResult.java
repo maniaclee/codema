@@ -16,10 +16,12 @@ import java.util.Map;
  * Created by lipeng on 17/1/6.
  */
 public class JavaTemplateResult extends TemplateEngineResult {
+    private JavaBasicCodemaConfig config;
 
     public static JavaTemplateResult ofJavaClass(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate) {
-        return ofJavaClass(config,javaSrcTemplate,null);
+        return ofJavaClass(config, javaSrcTemplate, null);
     }
+
     public static JavaTemplateResult ofJavaClass(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate, JavaClass javaClass) {
         String template = JavaSrcTemplateParser.instance.loadSrcTemplate(new TemplateContext(javaSrcTemplate, config, javaClass));
         template = template.replaceAll("\\(\\s+", "("); //format (
@@ -35,11 +37,15 @@ public class JavaTemplateResult extends TemplateEngineResult {
 
     public static JavaTemplateResult ofTemplate(JavaBasicCodemaConfig config, String template, JavaClass javaClass) {
         JavaTemplateResult re = TemplateEngineResult.of(JavaTemplateResult.class, template);
+        re.setConfig(config);
         re.bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
-        re.setFile(buildFile(config, javaClass));
         return re;
     }
 
+    @Override
+    protected void afterRender() {
+        setFile(buildFile(config, (JavaClass) getObj()));
+    }
 
     /***
      * to achieve stream api
@@ -58,7 +64,8 @@ public class JavaTemplateResult extends TemplateEngineResult {
      * register the generated result to the container , so that other module can make use of
      */
     public JavaTemplateResult registerResult() {
-        obj(JavaClassUtils.convert(JavaLexer.read(getString())));
+        JavaClass javaClass = JavaClassUtils.convert(JavaLexer.read(getString()));
+        obj(javaClass);
         return this;
     }
 
@@ -70,7 +77,7 @@ public class JavaTemplateResult extends TemplateEngineResult {
         File file = new File(destSrcRoot);
         if (!file.isDirectory() || !file.exists())
             return null;
-        if(javaClass==null){
+        if (javaClass == null) {
             System.out.println("----------------------- error TODO ------------------");
             return null;//TODO
         }
@@ -80,4 +87,11 @@ public class JavaTemplateResult extends TemplateEngineResult {
         return new File(file, javaClass.getName() + ".java");
     }
 
+    public JavaBasicCodemaConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(JavaBasicCodemaConfig config) {
+        this.config = config;
+    }
 }

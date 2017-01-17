@@ -3,6 +3,7 @@ package com.lvbby.codema.java.app.mvn;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigKey;
 import com.lvbby.codema.core.config.RecursiveConfigField;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.io.File;
 import java.util.List;
@@ -16,7 +17,8 @@ public class MavenConfig extends CommonCodemaConfig {
     private String name;
     private String artifactId;
     private String groupId;
-    private String javaVersion;
+    private String version;
+    private String javaVersion = "1.8";
     @RecursiveConfigField
     private List<MavenConfig> modules;
     private String baseDir;
@@ -28,6 +30,18 @@ public class MavenConfig extends CommonCodemaConfig {
             return new File(getParent().findRootDir(), name);
         }
         return new File(baseDir, name);
+    }
+
+    /***
+     * 递归将children的parent设为自己
+     */
+    public void init() {
+        if (CollectionUtils.isNotEmpty(getModules())) {
+            getModules().forEach(child -> {
+                child.setParent(this);
+                child.init();
+            });
+        }
     }
 
     public String getBaseDir() {
@@ -84,5 +98,13 @@ public class MavenConfig extends CommonCodemaConfig {
 
     public void setModules(List<MavenConfig> modules) {
         this.modules = modules;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

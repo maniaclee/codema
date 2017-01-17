@@ -20,6 +20,8 @@ public class FileWriterResultHandler implements ResultHandler {
         Object result = resultContext.getResult();
         if (result instanceof PrintableResult && result instanceof FileResult) {
             File file = ((FileResult) result).getFile();
+            if (file == null)
+                return;
             if (!file.getParentFile().exists() && !file.getParentFile().mkdirs())
                 throw new CodemaRuntimeException("error mkdir : " + file.getAbsolutePath());
             IOUtils.write(((PrintableResult) result).getString(), new FileOutputStream(file));
