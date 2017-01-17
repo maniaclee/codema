@@ -5,7 +5,8 @@ import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
-import com.lvbby.codema.core.result.BasicResult;
+import com.lvbby.codema.core.render.TemplateEngineResult;
+import com.lvbby.codema.core.render.XmlTemplateResult;
 import com.lvbby.codema.core.utils.CodemaUtils;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -18,22 +19,8 @@ public class MavenCodemaMachine implements CodemaInjectable {
     public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
         initConfig(null, config);
         for (MavenConfig c : CodemaUtils.getAllConfigWithAnnotation(config)) {
-            doHandle(codemaContext, c);
+            config.handle(codemaContext, c, TemplateEngineResult.ofResource(XmlTemplateResult.class, MavenCodemaMachine.class, "pom.xml", c.findRootDir().getAbsolutePath()));
         }
-    }
-
-    private void handle(CodemaContext codemaContext, MavenConfig config) throws Exception {
-        if (config == null)
-            return;
-        doHandle(codemaContext, config);
-        if (CollectionUtils.isNotEmpty(config.getModules()))
-            for (MavenConfig mavenConfig : config.getModules())
-                handle(codemaContext, mavenConfig);
-    }
-
-    private void doHandle(CodemaContext codemaContext, MavenConfig config) throws Exception {
-        System.err.println("---------->  " + config.getName());
-        config.handle(codemaContext, config, BasicResult.ofResource(MavenCodemaMachine.class, "pom.xml", config.findRootDir().getAbsolutePath()));
     }
 
     private void initConfig(MavenConfig parent, MavenConfig child) {

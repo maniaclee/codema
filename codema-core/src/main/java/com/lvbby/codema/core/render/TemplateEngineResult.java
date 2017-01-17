@@ -4,8 +4,10 @@ import com.google.common.collect.Maps;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.PrintableResult;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -27,6 +29,10 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
 
     public static TemplateEngineResult of(String template) {
         return of(TemplateEngineResult.class, template);
+    }
+
+    public static TemplateEngineResult ofResource(Class templateClass, Class clz, String resourceName, String destDir) throws IOException {
+        return of(templateClass, ReflectionUtils.loadResource(clz, resourceName)).setFile(new File(destDir, resourceName));
     }
 
     public static <T extends TemplateEngineResult> T of(Class<T> t, String template) {

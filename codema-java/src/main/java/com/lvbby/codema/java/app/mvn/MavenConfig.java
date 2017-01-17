@@ -24,12 +24,10 @@ public class MavenConfig extends CommonCodemaConfig {
     private transient MavenConfig parent;
 
     public File findRootDir() {
-        //        if (StringUtils.isNotBlank(baseDir))
         if (getParent() != null) {
             return new File(getParent().findRootDir(), name);
         }
         return new File(baseDir, name);
-        //        throw new CodemaRuntimeException("maven dir is not found");
     }
 
     public String getBaseDir() {
