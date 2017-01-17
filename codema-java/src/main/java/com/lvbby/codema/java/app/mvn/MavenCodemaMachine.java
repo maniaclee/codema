@@ -6,6 +6,7 @@ import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.result.BasicResult;
+import com.lvbby.codema.core.utils.CodemaUtils;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -15,7 +16,9 @@ public class MavenCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @ConfigBind(MavenConfig.class)
     public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
-        initConfig(null, config);
+        for (MavenConfig c : CodemaUtils.getAllConfig(config, MavenConfig::getModules)) {
+        }
+            initConfig(null, config);
         handle(codemaContext, config);
     }
 

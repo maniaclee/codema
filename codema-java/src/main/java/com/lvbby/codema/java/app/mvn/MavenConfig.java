@@ -2,6 +2,7 @@ package com.lvbby.codema.java.app.mvn;
 
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigKey;
+import com.lvbby.codema.core.config.RecursiveConfigField;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +19,7 @@ public class MavenConfig extends CommonCodemaConfig {
     private String artifactId;
     private String groupId;
     private String javaVersion;
+    @RecursiveConfigField
     private List<MavenConfig> modules;
     private String baseDir;
 
