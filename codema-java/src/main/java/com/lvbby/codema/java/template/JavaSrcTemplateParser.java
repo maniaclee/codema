@@ -31,10 +31,12 @@ public class JavaSrcTemplateParser {
 
     public Map getArgs4te(JavaClass src, JavaBasicCodemaConfig config) {
         HashMap<Object, Object> map = Maps.newHashMap();
-        map.put("src", src);
-        map.put("from", src.getFrom());
-        map.put("TemplateClass", src.getName());
-        map.put("templateClass", JavaLexer.camel(src.getName()));
+        if (src != null) {
+            map.put("src", src);
+            map.put("from", src.getFrom());
+            map.put("TemplateClass", src.getName());
+            map.put("templateClass", JavaLexer.camel(src.getName()));
+        }
         map.put("config", config);
         map.put("Null", "");
         return map;

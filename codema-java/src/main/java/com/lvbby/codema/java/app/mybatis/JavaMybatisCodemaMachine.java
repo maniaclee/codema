@@ -16,7 +16,6 @@ import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.result.JavaXmlTemplateResult;
-import com.lvbby.codema.java.template.TemplateContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -44,14 +43,16 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
         config.handle(codemaContext, config, JavaXmlTemplateResult.ofResource(config, xml, cu, new File(config.getMapperDir(), String.format("%sMapper.xml", cu.getName())))
                 .bind("table", sqlTable)
                 .bind("dao", daoTemplateResult.getResult()));
+    }
 
+    @ConfigBind(JavaMybatisCodemaConfig.class)
+    @CodemaRunner
+    public void global(CodemaContext codemaContext, @NotNull JavaMybatisCodemaConfig config) throws Exception {
         /**mybatis config*/
         config.handle(codemaContext, config, BasicResult.ofResource(JavaMybatisCodemaMachine.class, "mybatis.xml", config.getDestResourceRoot()));
 
         /** dal config */
-        config.handle(codemaContext, config, JavaTemplateResult.ofJavaClass(config, DalConfig.class, cu));
-        config.handle(codemaContext, config, JavaTemplateResult.ofTemplateContext(new TemplateContext(DalConfig.class, config, cu).pack(config.getConfigPackage())));
-
+        config.handle(codemaContext, config, JavaTemplateResult.ofJavaClass(config, DalConfig.class));
     }
 
     private SqlTable getSqlTable(JavaClass cu) {

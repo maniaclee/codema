@@ -17,6 +17,9 @@ import java.util.Map;
  */
 public class JavaTemplateResult extends TemplateEngineResult {
 
+    public static JavaTemplateResult ofJavaClass(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate) {
+        return ofJavaClass(config,javaSrcTemplate,null);
+    }
     public static JavaTemplateResult ofJavaClass(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate, JavaClass javaClass) {
         String template = JavaSrcTemplateParser.instance.loadSrcTemplate(new TemplateContext(javaSrcTemplate, config, javaClass));
         template = template.replaceAll("\\(\\s+", "("); //format (
@@ -32,8 +35,7 @@ public class JavaTemplateResult extends TemplateEngineResult {
 
     public static JavaTemplateResult ofTemplate(JavaBasicCodemaConfig config, String template, JavaClass javaClass) {
         JavaTemplateResult re = TemplateEngineResult.of(JavaTemplateResult.class, template);
-        if (javaClass != null)
-            re.bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
+        re.bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
         re.setFile(buildFile(config, javaClass));
         return re;
     }
@@ -68,6 +70,10 @@ public class JavaTemplateResult extends TemplateEngineResult {
         File file = new File(destSrcRoot);
         if (!file.isDirectory() || !file.exists())
             return null;
+        if(javaClass==null){
+            System.out.println("----------------------- error TODO ------------------");
+            return null;//TODO
+        }
         if (StringUtils.isNotBlank(javaClass.getPack())) {
             file = new File(file, javaClass.getPack().replace('.', '/'));
         }

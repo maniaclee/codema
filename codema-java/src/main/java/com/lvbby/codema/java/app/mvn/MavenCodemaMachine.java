@@ -11,7 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 /**
  * Created by lipeng on 16/12/23.
  */
-public class MvnCodemaMachine implements CodemaInjectable {
+public class MavenCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @ConfigBind(MavenConfig.class)
     public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
@@ -28,14 +28,15 @@ public class MvnCodemaMachine implements CodemaInjectable {
                 handle(codemaContext, mavenConfig);
     }
 
+    private void doHandle(CodemaContext codemaContext, MavenConfig config) throws Exception {
+        System.err.println("---------->  "+config.getName());
+        config.handle(codemaContext, config, BasicResult.ofResource(MavenCodemaMachine.class, "pom.xml", config.findRootDir().getAbsolutePath()));
+    }
+
     private void initConfig(MavenConfig parent, MavenConfig child) {
         child.setParent(parent);
         if (CollectionUtils.isNotEmpty(child.getModules()))
             for (MavenConfig mavenConfig : child.getModules())
                 initConfig(child, mavenConfig);
-    }
-
-    private void doHandle(CodemaContext codemaContext, MavenConfig config) throws Exception {
-        config.handle(codemaContext, config, BasicResult.ofResource(MvnCodemaMachine.class, "pom.xml", config.findRootDir().getAbsolutePath()));
     }
 }

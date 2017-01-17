@@ -141,7 +141,7 @@ public class ReflectionUtils {
             BeanInfo beanInfo = Introspector.getBeanInfo(dest.getClass(), Object.class);
             for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
                 String propertyName = propertyDescriptor.getName();
-                //过滤引用类型
+//                //过滤引用类型
                 if (!isValidPropertyToCopy(propertyDescriptor, dest))
                     continue;
                 Object value = propertyDescriptor.getReadMethod().invoke(dest);

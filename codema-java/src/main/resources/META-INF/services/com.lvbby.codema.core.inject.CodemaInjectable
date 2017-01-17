@@ -9,5 +9,5 @@ com.lvbby.codema.java.app.delegate.JavaDelegateCodemaMachine
 
 
 
-com.lvbby.codema.java.app.mvn.MvnCodemaMachine
+com.lvbby.codema.java.app.mvn.MavenCodemaMachine
 com.lvbby.codema.java.app.es.JavaEsCodemaMachine

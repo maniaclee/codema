@@ -5,9 +5,9 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.Result;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,15 +53,7 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         this.destFile = destFile;
     }
 
-    public List<ResultHandler> findResultHandler() {
-        LinkedList<ResultHandler> re = Lists.newLinkedList();
-        if (resultHandler == null) {
-            return re;
-        }
-        return resultHandler.stream().map(e -> findResultHandler(e)).collect(Collectors.toList());
-    }
-
-    public static ResultHandler findResultHandler(String handler) {
+    private static ResultHandler instanceResultHandler(String handler) {
         try {
             Object o = Class.forName(handler).newInstance();
             if (o instanceof ResultHandler)
@@ -74,9 +66,28 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
 
     @Override
     public void handle(ResultContext resultContext) throws Exception {
-        for (ResultHandler handler : findResultHandler()) {
+        for (ResultHandler handler : findHandlers(resultContext)) {
             handler.handle(resultContext);
         }
+    }
+
+    public List<ResultHandler> findHandlers(ResultContext resultContext) {
+        return _findHandler(this, resultContext).stream().map(hName -> instanceResultHandler(hName)).collect(Collectors.toList());
+    }
+
+    private static List<String> _findHandler(CommonCodemaConfig config, ResultContext resultContext) {
+        List<String> re = Lists.newLinkedList();
+        if (CollectionUtils.isNotEmpty(config.getResultHandler()))
+            return config.getResultHandler();
+        Class<?> superclass = config.getClass().getSuperclass();
+        while (superclass != null && CommonCodemaConfig.class.isAssignableFrom(superclass)) {
+            Class<? extends CommonCodemaConfig> clz = (Class<? extends CommonCodemaConfig>) superclass;
+            CommonCodemaConfig superConfig = resultContext.getCodemaContext().getConfig(clz);
+            if (superConfig != null) {
+                return _findHandler(superConfig, resultContext);
+            }
+        }
+        return re;
     }
 
     public void handle(CodemaContext codemaContext, CommonCodemaConfig config, Result result) throws Exception {
