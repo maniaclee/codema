@@ -16,10 +16,10 @@ public class MavenCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @ConfigBind(MavenConfig.class)
     public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
-        for (MavenConfig c : CodemaUtils.getAllConfig(config, MavenConfig::getModules)) {
+        initConfig(null, config);
+        for (MavenConfig c : CodemaUtils.getAllConfigWithAnnotation(config)) {
+            doHandle(codemaContext, c);
         }
-            initConfig(null, config);
-        handle(codemaContext, config);
     }
 
     private void handle(CodemaContext codemaContext, MavenConfig config) throws Exception {
@@ -32,7 +32,7 @@ public class MavenCodemaMachine implements CodemaInjectable {
     }
 
     private void doHandle(CodemaContext codemaContext, MavenConfig config) throws Exception {
-        System.err.println("---------->  "+config.getName());
+        System.err.println("---------->  " + config.getName());
         config.handle(codemaContext, config, BasicResult.ofResource(MavenCodemaMachine.class, "pom.xml", config.findRootDir().getAbsolutePath()));
     }
 

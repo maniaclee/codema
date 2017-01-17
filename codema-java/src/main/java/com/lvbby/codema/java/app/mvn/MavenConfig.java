@@ -3,8 +3,6 @@ package com.lvbby.codema.java.app.mvn;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigKey;
 import com.lvbby.codema.core.config.RecursiveConfigField;
-import com.lvbby.codema.core.error.CodemaRuntimeException;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -26,12 +24,12 @@ public class MavenConfig extends CommonCodemaConfig {
     private transient MavenConfig parent;
 
     public File findRootDir() {
-        if (StringUtils.isNotBlank(baseDir))
-            return new File(baseDir, name);
+        //        if (StringUtils.isNotBlank(baseDir))
         if (getParent() != null) {
             return new File(getParent().findRootDir(), name);
         }
-        throw new CodemaRuntimeException("maven dir is not found");
+        return new File(baseDir, name);
+        //        throw new CodemaRuntimeException("maven dir is not found");
     }
 
     public String getBaseDir() {

@@ -2,6 +2,7 @@ package com.lvbby.codema.core.utils;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.config.RecursiveConfigField;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,8 +32,14 @@ public class CodemaUtils {
     }
 
 
-    public static <T extends CommonCodemaConfig> Collection<T> getAllConfig(T config) {
-        return getAllConfig(config, null);
+    /***
+     * 当配置是递归结构时，先序返回所有config
+     * @param config
+     * @param <T>
+     * @return
+     */
+    public static <T extends CommonCodemaConfig> Collection<T> getAllConfigWithAnnotation(T config) {
+        return getAllConfig(config, t -> ReflectionUtils.getFieldWithAnnotation(t, RecursiveConfigField.class));
     }
 
     public static <T extends CommonCodemaConfig> Collection<T> getAllConfig(T config, Function<T, Collection<T>> function) {

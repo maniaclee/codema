@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.ClassPath;
+import com.lvbby.codema.core.error.CodemaRuntimeException;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.joor.Reflect;
 import org.joor.ReflectException;
 
@@ -14,6 +16,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -141,7 +144,7 @@ public class ReflectionUtils {
             BeanInfo beanInfo = Introspector.getBeanInfo(dest.getClass(), Object.class);
             for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
                 String propertyName = propertyDescriptor.getName();
-//                //过滤引用类型
+                //                //过滤引用类型
                 if (!isValidPropertyToCopy(propertyDescriptor, dest))
                     continue;
                 Object value = propertyDescriptor.getReadMethod().invoke(dest);
@@ -218,5 +221,22 @@ public class ReflectionUtils {
 
     public static String loadResource(Class clz, String resourceName) throws IOException {
         return IOUtils.toString(clz.getResourceAsStream(resourceName));
+    }
+
+    public static <T> T getFieldWithAnnotation(Object obj, Class<? extends Annotation> anno) {
+        Class<?> clz = obj.getClass();
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Field field : clz.getDeclaredFields()) {
+                field.setAccessible(true);
+                if (field.isAnnotationPresent(anno))
+                    try {
+                        return (T) field.get(obj);
+                    } catch (Exception e) {
+                        throw new CodemaRuntimeException("failed to getFieldWithAnnotation from " + ReflectionToStringBuilder.toString(obj));
+                    }
+            }
+            clz = clz.getSuperclass();
+        }
+        return null;
     }
 }
