@@ -25,6 +25,7 @@ maven:
 java:
   basic:
     dest-src-root: '/Users/psyco/tmp/project/src/main/java'
+    dest-resource-root: '/Users/psyco/tmp/project/src/main/resources'
     result-handler:
         - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
         - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
