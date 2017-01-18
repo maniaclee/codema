@@ -40,7 +40,7 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
         config.handle(codemaContext, config, daoTemplateResult);
 
         String xml = IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
-        config.handle(codemaContext, config, JavaXmlTemplateResult.ofResource(config, xml, cu, new File(config.getMapperDir(), String.format("%sMapper.xml", cu.getName())))
+        config.handle(codemaContext, config, JavaXmlTemplateResult.ofResource(config, xml, cu, new File(new File(config.getDestResourceRoot(),config.getMapperDir()), String.format("%sMapper.xml", cu.getName())))
                 .bind("table", sqlTable)
                 .bind("dao", daoTemplateResult.getResult()));
     }

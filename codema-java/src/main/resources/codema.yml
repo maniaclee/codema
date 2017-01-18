@@ -48,7 +48,7 @@ java:
   mybatis:
     from-package: 'com.lvbby.entity'
     dest-package: 'com.lvbby.dao'
-    mapper-dir: ''
+    mapper-dir: 'mapper'
     config-package: 'com.lvbby.config'
   repository:
     from-package: 'com.lvbby.dao'
