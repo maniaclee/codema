@@ -17,7 +17,6 @@ public class MavenCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @ConfigBind(MavenConfig.class)
     public void code(CodemaContext codemaContext, @NotNull MavenConfig config) throws Exception {
-        config.init();
         for (MavenConfig c : CodemaUtils.getAllConfigWithAnnotation(config)) {
             config.handle(codemaContext, c, TemplateEngineResult.ofResource(XmlTemplateResult.class, MavenCodemaMachine.class, "pom.xml", c.findRootDir().getAbsolutePath()).bind("config", c));
         }

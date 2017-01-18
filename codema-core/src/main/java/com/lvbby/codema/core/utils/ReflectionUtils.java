@@ -18,9 +18,11 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -238,5 +240,24 @@ public class ReflectionUtils {
             clz = clz.getSuperclass();
         }
         return null;
+    }
+
+    public static List<Method> getMethodsWithAnnotation(Class<?> clz, Class<? extends Annotation> anno, boolean includeParent) {
+        List<Method> re = Lists.newLinkedList();
+        while (clz != null && !clz.equals(Object.class)) {
+            for (Method m : clz.getMethods()) {
+                m.setAccessible(true);
+                if (m.isAnnotationPresent(anno))
+                    try {
+                        re.add(m);
+                    } catch (Exception e) {
+                        throw new CodemaRuntimeException("failed to getMethodsWithAnnotation from " + clz.getName());
+                    }
+            }
+            if (!includeParent)
+                return re;
+            clz = clz.getSuperclass();
+        }
+        return re;
     }
 }

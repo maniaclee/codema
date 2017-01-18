@@ -13,7 +13,7 @@ maven:
   artifact-id: 'project'
   group-id: 'lvbby'
   java-version: '1.6'
-  base-dir: '/Users/lipeng/tmp'
+  base-dir: '/Users/psyco/tmp'
   result-handler:
     - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
   modules:

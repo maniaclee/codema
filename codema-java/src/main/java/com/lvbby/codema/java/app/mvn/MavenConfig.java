@@ -2,6 +2,7 @@ package com.lvbby.codema.java.app.mvn;
 
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigKey;
+import com.lvbby.codema.core.config.PostProcess;
 import com.lvbby.codema.core.config.RecursiveConfigField;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -35,6 +36,7 @@ public class MavenConfig extends CommonCodemaConfig {
     /***
      * 递归将children的parent设为自己
      */
+    @PostProcess
     public void init() {
         if (CollectionUtils.isNotEmpty(getModules())) {
             getModules().forEach(child -> {

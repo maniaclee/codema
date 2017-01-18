@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dozer.DozerBeanMapper;
 import org.yaml.snakeyaml.Yaml;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,14 @@ public class YamlConfigLoader implements ConfigLoader {
             ReflectionUtils.copyIfNull(re, getConfig(parent));
         }
         cache.put(clz.getName(), re);
+        /** 后置处理器 */
+        for (Method method : ReflectionUtils.getMethodsWithAnnotation(clz, PostProcess.class, false)) {
+            try {
+                method.invoke(re);
+            } catch (Exception e) {
+                throw new CodemaRuntimeException(String.format("failed to invoke post process %s.%s", clz.getName(), method.getName()));
+            }
+        }
         return re;
     }
 
