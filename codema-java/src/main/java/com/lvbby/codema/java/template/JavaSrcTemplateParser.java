@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.imports.ImportDeclaration;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
@@ -61,6 +62,7 @@ public class JavaSrcTemplateParser {
         JavaBasicCodemaConfig javaBasicCodemaConfig = context.getJavaBasicCodemaConfig();
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(context.getTemplateClass());
         filterImport(cu);
+        addImport(cu, context);
         cu.setPackage(StringUtils.isNotBlank(context.getPack()) ? context.getPack() : javaBasicCodemaConfig.getDestPackage());
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
             classOrInterfaceDeclaration.setJavaDocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
@@ -75,6 +77,14 @@ public class JavaSrcTemplateParser {
             }
         });
         return cu;
+    }
+
+    private void addImport(CompilationUnit cu, TemplateContext templateContext) {
+        JavaClass javaClassSrc = templateContext.getSource();
+        //检查javaClass是否在容器里
+        if (javaClassSrc != null && CodemaContextHolder.getCodemaContext().getCodema().getCodemaBeanFactory().getBean(javaClassSrc.classFullName()) != null) {
+            cu.addImport(javaClassSrc.classFullName());
+        }
     }
 
     private String importAndReturnSimpleClassName(CompilationUnit cu, String className) {

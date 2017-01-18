@@ -32,7 +32,6 @@ public class JavaSrcLoader {
 
     public static InputStream getJavaSrc(Class clz) {
         try {
-            //            URL resource = getClass().getResource("");
             URL resource = JavaSrcLoader.class.getProtectionDomain().getCodeSource().getLocation();
             if (resource.getProtocol().equalsIgnoreCase("file")) {
                 //  ~/target/classes/

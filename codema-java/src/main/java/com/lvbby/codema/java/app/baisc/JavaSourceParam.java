@@ -1,7 +1,6 @@
 package com.lvbby.codema.java.app.baisc;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.java.entity.JavaClass;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,32 +25,6 @@ public class JavaSourceParam {
         if (StringUtils.isBlank(pack))
             return Lists.newArrayList(classes);
         return classes.stream().filter(javaClass -> javaClass.getPack().startsWith(pack)).collect(Collectors.toList());
-    }
-
-    /***
-     * 从上下文中加载资源
-     * @param codemaContext
-     * @param config
-     * @return
-     */
-    public List<JavaClass> getJavaClasses(CodemaContext codemaContext, JavaBasicCodemaConfig config) {
-        return getJavaClasses(codemaContext, config.getFromPackage());
-    }
-
-    /***
-     * 从上下文中加载指定package的资源
-     * @param codemaContext
-     * @param pack
-     * @return
-     */
-    public List<JavaClass> getJavaClasses(CodemaContext codemaContext, String pack) {
-
-        /** 根据config来筛选需要处理的source */
-        List<JavaClass> sources = getJavaClass(pack);
-
-        /** 从容器里找 */
-        sources.addAll(codemaContext.getCodema().getCodemaBeanFactory().getBeans(codemaBean -> StringUtils.isBlank(pack) || codemaBean.getId().startsWith(pack), JavaClass.class));
-        return sources;
     }
 
     public JavaSourceParam(List<JavaClass> classes) {

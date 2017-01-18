@@ -8,6 +8,7 @@ import com.lvbby.codema.core.utils.OrderValue;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.tool.JavaCodemaUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -30,13 +31,13 @@ public class JavaTemplateInjector implements CodemaInjector {
         JavaBasicCodemaConfig config = context.findConfig(JavaBasicCodemaConfig.class);
         if (config == null)
             return;
-        List<JavaClass> sources = ((JavaSourceParam) source).getJavaClasses(context.getContext(),config);
+
+        List<JavaClass> sources = JavaCodemaUtils.findBeansByPackage(context.getContext(), config);
 
         for (JavaClass javaClass : sources) {
             /** 对每个source，分别调用改方法，自动把foreach干掉 */
             List<InjectEntry> cloneEntries = context.cloneEntries();
-            cloneEntries.stream()
-                    .forEach(injectEntry -> injectCompilationUnit(context, config, javaClass, injectEntry));
+            cloneEntries.stream().forEach(injectEntry -> injectCompilationUnit(context, config, javaClass, injectEntry));
             context.invoke(cloneEntries);//出错直接抛出去
         }
         throw new InjectInterruptException("interrupted by " + getClass().getName());

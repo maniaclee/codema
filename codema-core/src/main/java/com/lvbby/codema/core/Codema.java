@@ -1,14 +1,15 @@
 package com.lvbby.codema.core;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.bean.CodemaBeanFactory;
+import com.lvbby.codema.core.bean.DefaultCodemaBeanFactory;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigLoader;
 import com.lvbby.codema.core.config.YamlConfigLoader;
 import com.lvbby.codema.core.error.CodemaException;
-import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaInject;
-import com.lvbby.codema.core.bean.DefaultCodemaBeanFactory;
-import com.lvbby.codema.core.bean.CodemaBeanFactory;
+import com.lvbby.codema.core.inject.CodemaInjectable;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.net.URI;
@@ -54,12 +55,25 @@ public class Codema {
         Object source = findSourceParser(config.getFrom()).parse(URI.create(config.getFrom()));
         codemaContext.setSource(source);
 
+        /** 设置上下文holder */
+        CodemaContextHolder.setCodemaContext(codemaContext);
         /** 执行 */
-        for (CodemaMachine codemaMachine : codemaMachines) {
-            //没有找到配置的不执行，filter
-            if (codemaContext.getConfig(codemaMachine.getConfigType()) != null)
-                codemaMachine.code(codemaContext);
+        try {
+            for (CodemaMachine codemaMachine : codemaMachines) {
+                //没有找到配置的不执行，filter
+                if (codemaContext.getConfig(codemaMachine.getConfigType()) != null)
+                    codemaMachine.code(codemaContext);
+            }
+        } finally {
+            CodemaContextHolder.clear();
         }
+    }
+
+    /***
+     *  查找id以pack开头的beans
+     */
+    public <T> List<T> findBeans(String pack, Class<T> clz) {
+        return getCodemaBeanFactory().getBeans(codemaBean -> StringUtils.isBlank(pack) || codemaBean.getId().startsWith(pack), clz);
     }
 
     private SourceParser findSourceParser(String from) throws CodemaException {
