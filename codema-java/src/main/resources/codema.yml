@@ -7,12 +7,14 @@ common:
   result-handler:
       - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
       - 'com.lvbby.codema.core.result.handler.PrintResultHandler'
+      - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
 
 maven:
   name: 'project'
   artifact-id: 'project'
   group-id: 'lvbby'
   java-version: '1.6'
+  version: '0.1-SNAPSHOT'
   base-dir: '/Users/psyco/tmp'
   result-handler:
     - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
@@ -22,49 +24,46 @@ maven:
       group-id: 'lvbby'
 java:
   basic:
-    dest-src-root: '/Users/lipeng/tmp/project/src/main/java'
+    dest-src-root: '/Users/psyco/tmp/project/src/main/java'
+    result-handler:
+        - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
+        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
+        - 'com.lvbby.codema.core.result.handler.PrintResultHandler'
   testcase:
     from-package: 'com.lvbby'
-    dest-class-name: 'Test'
     dest-package: 'com.lvbby.testcase'
     is-spring: true
-    result-handler:
-        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
-#  bean:
-#    dest-package: 'com.lvbby.entity'
-#    dest-class-name: 'script://function:suffix/Entity'
-#    list:
-#      - {dest-package: 'com.lvbby.dto',dest-class-name: 'script://function:suffix/DTO' }
-#
-#  convert:
-#    from-package: 'com.lvbby.entity'
-#    convert-to-class-name: 'script://function:replace/?regx=Entity&replacement=DTO&prefix=com.lvbby.dto.'
-##    convert-to-class-name: "script://js/(function(){return {match: /.*config/i.test($fromClassName), result: $fromClassName.replace(/config/i, 'Entity')}})()"
-#    dest-package: 'com.lvbby.utils'
-#    dest-class-name: 'BuildUtils'
-#    dest-src-root: '/Users/psyco'
-##    result-handler:
-##        - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
-#  mybatis:
-#    from-package: 'com.lvbby.entity'
-#    dest-package: 'com.lvbby.dao'
-#    mapper-dir: ''
-#    config-package: 'com.lvbby.config'
-#  repository:
-#    from-package: 'com.lvbby.dao'
-#    dest-package: 'com.lvbby.repository'
-#    dest-class-name: 'script://function:replace/?regx=EntityDao&replacement=Repository'
-#    convert-utils-class: 'com.lvbby.utils.BuildUtils'
-#  interfaces:
-#    from-package: 'com.lvbby.repository'
-#    dest-package: 'com.lvbby.service'
-#    dest-class-name: 'script://function:replace/?regx=Repository&replacement=Service'
-#  delegate:
-#    from-package: 'com.lvbby.repository'
-#    dest-package: 'com.lvbby.service.imp'
-#    dest-class-name: 'script://function:replace/?regx=Repository&replacement=ServiceImpl'
-#    implement-interfaces:
-#        - 'script://function:replace/?regx=Repository&replacement=Service&prefix=com.lvbby.service.'
+
+  bean:
+    dest-package: 'com.lvbby.entity'
+    dest-class-name: 'script://function:suffix/Entity'
+    list:
+      - {dest-package: 'com.lvbby.dto',dest-class-name: 'script://function:suffix/DTO' }
+  convert:
+    from-package: 'com.lvbby.entity'
+    convert-to-class-name: 'script://function:replace/?regx=Entity&replacement=DTO&prefix=com.lvbby.dto.'
+    dest-package: 'com.lvbby.utils'
+    dest-class-name: 'BuildUtils'
+  mybatis:
+    from-package: 'com.lvbby.entity'
+    dest-package: 'com.lvbby.dao'
+    mapper-dir: ''
+    config-package: 'com.lvbby.config'
+  repository:
+    from-package: 'com.lvbby.dao'
+    dest-package: 'com.lvbby.repository'
+    dest-class-name: 'script://function:replace/?regx=EntityDao&replacement=Repository'
+    convert-utils-class: 'com.lvbby.utils.BuildUtils'
+  interfaces:
+    from-package: 'com.lvbby.repository'
+    dest-package: 'com.lvbby.service'
+    dest-class-name: 'script://function:replace/?regx=Repository&replacement=Service'
+  delegate:
+    from-package: 'com.lvbby.repository'
+    dest-package: 'com.lvbby.service.imp'
+    dest-class-name: 'script://function:replace/?regx=Repository&replacement=ServiceImpl'
+    implement-interfaces:
+        - 'script://function:replace/?regx=Repository&replacement=Service&prefix=com.lvbby.service.'
 
 
 #  es: {}

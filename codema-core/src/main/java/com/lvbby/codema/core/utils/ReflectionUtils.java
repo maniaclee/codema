@@ -8,6 +8,7 @@ import com.lvbby.codema.core.error.CodemaRuntimeException;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.joor.Reflect;
 import org.joor.ReflectException;
@@ -15,6 +16,7 @@ import org.joor.ReflectException;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -259,5 +261,14 @@ public class ReflectionUtils {
             clz = clz.getSuperclass();
         }
         return re;
+    }
+
+    public static File makeSureDir(File file) {
+        if (file.exists()) {
+            Validate.isTrue(file.isDirectory(), String.format("%s is not directory", file));
+        } else {
+            Validate.isTrue(file.mkdirs(), String.format("%s can't be created", file));
+        }
+        return file;
     }
 }

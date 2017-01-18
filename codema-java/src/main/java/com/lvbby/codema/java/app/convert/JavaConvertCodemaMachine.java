@@ -29,7 +29,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
         if (CollectionUtils.isEmpty(javaClasses))
             return;
 
-        config.handle(codemaContext, config, JavaTemplateResult.ofJavaClass(config, $Convert_.class, null)
+        config.handle(codemaContext, config, new JavaTemplateResult(config, $Convert_.class)
                 .bind("Convert", config.getDestClassName())
                 .bind("cs", javaClasses)
                 .bind("map", javaClasses.stream().collect(Collectors.toMap(o -> o, javaClass -> getTargetClassName(config, javaClass))))

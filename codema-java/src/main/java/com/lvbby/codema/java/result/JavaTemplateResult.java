@@ -16,35 +16,62 @@ import java.util.Map;
  * Created by lipeng on 17/1/6.
  */
 public class JavaTemplateResult extends TemplateEngineResult {
-    private JavaBasicCodemaConfig config;
+    private TemplateContext templateContext;
 
-    public static JavaTemplateResult ofJavaClass(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate) {
-        return ofJavaClass(config, javaSrcTemplate, null);
+    public JavaTemplateResult(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate) {
+        this(config, javaSrcTemplate, null);
     }
 
-    public static JavaTemplateResult ofJavaClass(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate, JavaClass javaClass) {
-        String template = JavaSrcTemplateParser.instance.loadSrcTemplate(new TemplateContext(javaSrcTemplate, config, javaClass));
-        template = template.replaceAll("\\(\\s+", "("); //format (
-        return ofTemplate(config, template, javaClass);
+    public JavaTemplateResult(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate, JavaClass javaClass) {
+        this(new TemplateContext(javaSrcTemplate, config, javaClass));
     }
 
-    public static JavaTemplateResult ofTemplateContext(TemplateContext templateContext) {
-        String template = JavaSrcTemplateParser.instance.loadSrcTemplate(templateContext);
-        template = template.replaceAll("\\(\\s+", "("); //format (
-        return ofTemplate(templateContext.getJavaBasicCodemaConfig(), template, templateContext.getSource());
+    public JavaTemplateResult(TemplateContext templateContext) {
+        super(JavaSrcTemplateParser.instance.loadSrcTemplate(templateContext).replaceAll("\\(\\s+", "("));
+        this.templateContext = templateContext;
+        bind("config", templateContext.getJavaBasicCodemaConfig());
+        if (templateContext.getSource() != null) {
+            bind(JavaSrcTemplateParser.instance.getArgs4te(templateContext.getSource(), templateContext.getJavaBasicCodemaConfig()));
+        }
     }
 
-
-    public static JavaTemplateResult ofTemplate(JavaBasicCodemaConfig config, String template, JavaClass javaClass) {
-        JavaTemplateResult re = TemplateEngineResult.of(JavaTemplateResult.class, template);
-        re.setConfig(config);
-        re.bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
-        return re;
-    }
 
     @Override
     protected void afterRender() {
-        setFile(buildFile(config, (JavaClass) getObj()));
+        registerResult();
+        File file = buildJavaFile(templateContext.getJavaBasicCodemaConfig());
+        if (file != null)
+            setFile(file);
+    }
+
+    /**
+     * register the generated result to the container , so that other module can make use of
+     */
+    public JavaTemplateResult registerResult() {
+        if (getObj() != null)
+            return this;
+        JavaClass javaClass = JavaClassUtils.convert(JavaLexer.read(getString()));
+        obj(javaClass);
+        return this;
+    }
+
+
+    private File buildJavaFile(JavaBasicCodemaConfig config) {
+        String destSrcRoot = config.getDestSrcRoot();
+        if (StringUtils.isBlank(destSrcRoot))
+            return null;
+        File file = new File(destSrcRoot);
+        /** file 以生成的为主 */
+        JavaClass javaClass = (JavaClass) getObj();
+        if (javaClass != null) {
+            return _javaFile(file, javaClass.getPack(), javaClass.getName());
+        }
+        return null;
+    }
+
+    private File _javaFile(File file, String pack, String name) {
+        file = new File(file, pack.replace('.', '/'));
+        return new File(file, name + ".java");
     }
 
     /***
@@ -60,38 +87,4 @@ public class JavaTemplateResult extends TemplateEngineResult {
         return (JavaTemplateResult) super.bind(key, value);
     }
 
-    /**
-     * register the generated result to the container , so that other module can make use of
-     */
-    public JavaTemplateResult registerResult() {
-        JavaClass javaClass = JavaClassUtils.convert(JavaLexer.read(getString()));
-        obj(javaClass);
-        return this;
-    }
-
-
-    public static File buildFile(JavaBasicCodemaConfig config, JavaClass javaClass) {
-        String destSrcRoot = config.getDestSrcRoot();
-        if (StringUtils.isBlank(destSrcRoot))
-            return null;
-        File file = new File(destSrcRoot);
-        if (!file.isDirectory() || !file.exists())
-            return null;
-        if (javaClass == null) {
-            System.out.println("----------------------- error TODO ------------------");
-            return null;//TODO
-        }
-        if (StringUtils.isNotBlank(javaClass.getPack())) {
-            file = new File(file, javaClass.getPack().replace('.', '/'));
-        }
-        return new File(file, javaClass.getName() + ".java");
-    }
-
-    public JavaBasicCodemaConfig getConfig() {
-        return config;
-    }
-
-    public void setConfig(JavaBasicCodemaConfig config) {
-        this.config = config;
-    }
 }

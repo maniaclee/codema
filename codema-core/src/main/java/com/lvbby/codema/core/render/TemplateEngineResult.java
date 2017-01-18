@@ -27,8 +27,13 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
     public TemplateEngineResult() {
     }
 
-    public static TemplateEngineResult of(String template) {
-        return of(TemplateEngineResult.class, template);
+    public TemplateEngineResult(String template) {
+        this.template = template;
+    }
+
+    public TemplateEngineResult(Class clz, String resourceName, String destDir) throws IOException {
+        this(ReflectionUtils.loadResource(clz, resourceName));
+        setFile(new File(destDir, resourceName));
     }
 
     public static TemplateEngineResult ofResource(Class templateClass, Class clz, String resourceName, String destDir) throws IOException {

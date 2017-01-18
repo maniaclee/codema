@@ -2,10 +2,11 @@ package com.lvbby.codema.core.result.handler;
 
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
-import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.PrintableResult;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,8 +23,8 @@ public class FileWriterResultHandler implements ResultHandler {
             File file = ((FileResult) result).getFile();
             if (file == null)
                 return;
-            if (!file.getParentFile().exists() && !file.getParentFile().mkdirs())
-                throw new CodemaRuntimeException("error mkdir : " + file.getAbsolutePath());
+            if (StringUtils.isNotBlank(file.getParent()))
+                ReflectionUtils.makeSureDir(new File(file.getParent()));
             IOUtils.write(((PrintableResult) result).getString(), new FileOutputStream(file));
         }
     }

@@ -34,7 +34,7 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
     public void code(CodemaContext codemaContext, @NotNull JavaMybatisCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
         SqlTable sqlTable = getSqlTable(cu);
         validate(sqlTable);
-        TemplateEngineResult daoTemplateResult = JavaTemplateResult.ofJavaClass(config, $src__name_Dao.class, cu)
+        TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $src__name_Dao.class, cu)
                 .bind("table", sqlTable)
                 .registerResult();
         config.handle(codemaContext, config, daoTemplateResult);
@@ -52,7 +52,7 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
         config.handle(codemaContext, config, BasicResult.ofResource(JavaMybatisCodemaMachine.class, "mybatis.xml", config.getDestResourceRoot()));
 
         /** dal config */
-        config.handle(codemaContext, config, JavaTemplateResult.ofJavaClass(config, DalConfig.class));
+        config.handle(codemaContext, config, new JavaTemplateResult(config, DalConfig.class));
     }
 
     private SqlTable getSqlTable(JavaClass cu) {
