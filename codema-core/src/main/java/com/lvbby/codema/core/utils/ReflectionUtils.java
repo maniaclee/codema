@@ -276,4 +276,14 @@ public class ReflectionUtils {
         }
         return file;
     }
+
+
+    /***
+     * 是否是全类名(包含package)
+     * @param s
+     * @return
+     */
+    public static boolean isFullClassName(String s) {
+        return s.contains(".");
+    }
 }

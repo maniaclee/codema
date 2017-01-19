@@ -33,10 +33,13 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
         Validate.notNull(buildUtil, "buildClass not found");
 
         List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> new RepositoryMethod(javaMethod, buildUtil)).collect(Collectors.toList());
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $Repository_.class, javaClass)
+        JavaTemplateResult result = new JavaTemplateResult(config, $Repository_.class, javaClass)
                 .bind("methods", collect)
+                .bind("buildUtilClass", buildUtil)
                 .bind("Repository", config.evalDestClassName(javaClass, javaClass.getName() + "Repository"))
-                .registerResult());
+                .addImport(buildUtil);
+        collect.stream().filter(r -> r.getBuildReturnMethod() != null).forEach(r -> result.addImport(r.getBuildReturnMethod().getReturnType(), codemaContext));
+        config.handle(codemaContext, config, result.registerResult());
     }
 
 

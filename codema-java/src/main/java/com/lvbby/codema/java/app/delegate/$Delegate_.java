@@ -20,7 +20,7 @@ public class $Delegate_ {
     //var class = @m.getArgsInvoke();
     //var signature = @m.getArgsSignature();
     // %>
-    public $Class1_ $invoke_($Null_ $signature_) throws Exception {
+    public $Class1_ $invoke_($Null_ $signature_) {
         // <% if (@m.returnVoid()){ %>
         $templateClass_.$invoke_($class_);
         //<%}else{%>

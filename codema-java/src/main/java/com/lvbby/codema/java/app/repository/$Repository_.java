@@ -30,18 +30,18 @@ public class $Repository_ {
     // Class1=rm.buildReturnMethod.returnType.name;
     // }
     // %>
-    public $Class1_ $invoke_($Null_ $signature_) throws Exception {
+    public $Class1_ $invoke_($Null_ $signature_) {
 
         // <% if (pm !=null){
         // class="from";
         // %>
-        // ${pm.returnType} from = BuildUtils.${pm.name}(src);
+        // ${pm.returnType} from = ${buildUtilClass.name}.${pm.name}(src);
         // <%}%>
 
         // <% if (@m.returnVoid()){ %>
         $templateClass_.$invoke_($class_);
         //<%}else if(rm.buildReturnMethod !=null){%>
-        //$Class1_ re = buildClass.${rm.buildReturnMethod.name}($templateClass_.$invoke_($class_));
+        //$Class1_ re = ${buildUtilClass.name}.${rm.buildReturnMethod.name}($templateClass_.$invoke_($class_));
         //return re;
         //<%}else{%>
         $Class1_ re = $templateClass_.$invoke_($class_);

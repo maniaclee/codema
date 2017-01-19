@@ -16,6 +16,6 @@ public class JavaClassParameterFactory implements InjectParameterFactory {
         JavaBasicCodemaConfig config = codemaInjectContext.findConfig(JavaBasicCodemaConfig.class);
         if (config == null)
             throw new IllegalArgumentException(String.format("%s not found in codemaInjectContext", config.getClass().getName()));
-        return new JavaCodemaResoure(JavaClassUtils.createJavaClasssUnit(id, config.getAuthor(), config.isToBeInterface()));
+        return new JavaCodemaResoure(JavaClassUtils.createJavaClassUnit(id, config.getAuthor(), config.isToBeInterface()));
     }
 }

@@ -16,10 +16,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,16 +43,16 @@ public class JavaSrcTemplateParser {
     public String loadSrcTemplate(Class templateClass) {
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
         filterImport(cu);
-        return render(cu.toString());
+        return prepareTemplate(cu.toString());
     }
 
     public String loadSrcTemplateByMethod(TemplateContext context, String methodName) {
         MethodDeclaration methodByName = JavaLexer.getMethodByNameSingle(JavaLexer.getClass(loadSrcTemplateRaw(context)).orElseThrow(() -> new CodemaRuntimeException("no class found")), methodName);
-        return render(methodName.toString());
+        return prepareTemplate(methodName.toString());
     }
 
     public String loadSrcTemplate(TemplateContext context) {
-        return render(loadSrcTemplateRaw(context).toString());
+        return prepareTemplate(loadSrcTemplateRaw(context).toString());
     }
 
     public CompilationUnit loadSrcTemplateRaw(TemplateContext context) {
@@ -82,9 +79,14 @@ public class JavaSrcTemplateParser {
     private void addImport(CompilationUnit cu, TemplateContext templateContext) {
         JavaClass javaClassSrc = templateContext.getSource();
         //检查javaClass是否在容器里
-        if (javaClassSrc != null && CodemaContextHolder.getCodemaContext().getCodema().getCodemaBeanFactory().getBean(javaClassSrc.classFullName()) != null) {
-            cu.addImport(javaClassSrc.classFullName());
+        if (javaClassSrc != null) {
+            if (CodemaContextHolder.getCodemaContext().getCodema().getCodemaBeanFactory().getBean(javaClassSrc.classFullName()) != null)
+                cu.addImport(javaClassSrc.classFullName());
+            if (CollectionUtils.isNotEmpty(javaClassSrc.getImports()))
+                javaClassSrc.getImports().forEach(i -> cu.addImport(i));
         }
+        /** 常用的引用 */
+        cu.addImport(List.class);
     }
 
     private String importAndReturnSimpleClassName(CompilationUnit cu, String className) {
@@ -93,8 +95,14 @@ public class JavaSrcTemplateParser {
         return ReflectionUtils.getSimpleClassName(className);
     }
 
-    private String render(String s) {
+    /***
+     * 对模板进行预处理
+     * @param s
+     * @return
+     */
+    public static String prepareTemplate(String s) {
         String re = s.replaceAll("//\\s*", "");
+        re = re.replaceAll("\\(\\s+", "(");
         re = filterBlockComment(re);
         re = expr(re);
         return re;

@@ -5,6 +5,7 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.app.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.JavaClass;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -27,6 +28,11 @@ public class JavaCodemaUtils {
         /** 从容器里找 */
         sources.addAll(codemaContext.getCodema().getCodemaBeanFactory().getBeans(codemaBean -> StringUtils.isBlank(pack) || codemaBean.getId().startsWith(pack), JavaClass.class));
         return sources;
+    }
+
+    public static JavaClass findBeanByJavaClassName(CodemaContext context, String className) {
+        List<JavaClass> beans = context.getCodema().getCodemaBeanFactory().getBeans(codemaBean -> codemaBean.getId().endsWith(className), JavaClass.class);
+        return CollectionUtils.isNotEmpty(beans) ? beans.get(0) : null;
     }
 
 }

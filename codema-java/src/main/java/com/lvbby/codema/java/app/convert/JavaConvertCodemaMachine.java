@@ -29,15 +29,18 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
         if (CollectionUtils.isEmpty(javaClasses))
             return;
 
+
         config.handle(codemaContext, config, new JavaTemplateResult(config, $Convert_.class)
                 .bind("Convert", config.getDestClassName())
                 .bind("cs", javaClasses)
-                .bind("map", javaClasses.stream().collect(Collectors.toMap(o -> o, javaClass -> getTargetClassName(config, javaClass))))
+                .bind("map", javaClasses.stream().collect(Collectors.toMap(o -> o, javaClass -> ReflectionUtils.getSimpleClassName(getTargetClassName(config, javaClass)))))
+                .addImportJavaClasses(javaClasses)
+                .addImportClassFullName(javaClasses.stream().map(javaClass -> getTargetClassName(config, javaClass)).collect(Collectors.toList()))
                 .registerResult());
     }
 
     private String getTargetClassName(JavaConvertCodemaConfig config, JavaClass javaClass) {
-        return ReflectionUtils.getSimpleClassName(config.eval(config.getConvertToClassName(), javaClass.getName(), null));
+        return config.eval(config.getConvertToClassName(), javaClass.getName());
     }
 
 
