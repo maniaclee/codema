@@ -13,6 +13,7 @@ public class JavaClass {
     private String name;
     private List<JavaField> fields;
     private List<JavaMethod> methods;
+    private List<String> imports;
     /**
      * 来源于什么对象
      */
@@ -64,6 +65,14 @@ public class JavaClass {
 
     public void setFrom(Object from) {
         this.from = from;
+    }
+
+    public List<String> getImports() {
+        return imports;
+    }
+
+    public void setImports(List<String> imports) {
+        this.imports = imports;
     }
 
     @Override

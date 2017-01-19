@@ -2,7 +2,7 @@ common:
   author: maniaclee
 #  from: 'java://class/com.lvbby.codema.core.config.CommonCodemaConfig'
   from: 'java://class/com.lvbby.codema.core.config.CommonCodemaConfig'
-#  from: 'file://java:src//Users/lipeng/workspace/github/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
+#  from: 'file://java:src//Users/psyco/workspace/github/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
 #  from: 'jdbc:mysql://localhost:3306/user?user=root&table=User'
   result-handler:
       - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
@@ -15,7 +15,7 @@ maven:
   group-id: 'lvbby'
   java-version: '1.6'
   version: '0.1-SNAPSHOT'
-  base-dir: '/Users/lipeng/tmp'
+  base-dir: '/Users/psyco/tmp'
   result-handler:
     - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
   modules:
@@ -24,8 +24,8 @@ maven:
       group-id: 'lvbby'
 java:
   basic:
-    dest-src-root: '/Users/lipeng/tmp/project/src/main/java'
-    dest-resource-root: '/Users/lipeng/tmp/project/src/main/resources'
+    dest-src-root: '/Users/psyco/tmp/project/src/main/java'
+    dest-resource-root: '/Users/psyco/tmp/project/src/main/resources'
     result-handler:
         - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
         - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'

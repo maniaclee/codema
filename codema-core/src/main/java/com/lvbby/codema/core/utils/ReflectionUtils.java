@@ -218,8 +218,13 @@ public class ReflectionUtils {
         return map;
     }
 
+    /***
+     * java.util.List<java.lang.String>  ==> List<String>
+     * @param className
+     * @return
+     */
     public static String getSimpleClassName(String className) {
-        return className.replaceAll("[^.]+\\.", "");
+        return className.replaceAll("[^.<>]+\\.", "");
     }
 
 

@@ -57,7 +57,7 @@ public class JavaLexer {
     public static List<MethodDeclaration> getMethods(TypeDeclaration<?> cu) {
         ClassOrInterfaceDeclaration classOrInterfaceType = (ClassOrInterfaceDeclaration) cu;
         if (classOrInterfaceType.isInterface()) {
-            return getMethods(cu,null);
+            return getMethods(cu, null);
         }
         return getMethods(cu, Modifier.PUBLIC);
     }
@@ -197,4 +197,7 @@ public class JavaLexer {
         return null;
     }
 
+    public static List<String> getImports(CompilationUnit compilationUnit) {
+        return compilationUnit.getImports().stream().map(i -> i.toString().replaceAll("import", "").trim()).collect(Collectors.toList());
+    }
 }

@@ -80,6 +80,7 @@ public class JavaClassUtils {
         re.setPack(cu.getPackage().map(packageDeclaration -> packageDeclaration.getNameAsString()).orElse(""));
         ClassOrInterfaceDeclaration clz = JavaLexer.getClass(cu).orElseThrow(() -> new CodemaRuntimeException("no class found"));
         re.setName(clz.getNameAsString());
+        re.setImports(JavaLexer.getImports(cu));
         re.setFields(JavaLexer.getFields(cu).stream().map(fieldDeclaration -> {
             VariableDeclarator variable = fieldDeclaration.getVariable(0);
             JavaField javaField = new JavaField();
