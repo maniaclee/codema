@@ -17,7 +17,7 @@ public class JavaSrcLoader {
 
     public static MethodDeclaration getMethod(Class clz, String methodName) {
         CompilationUnit javaSrcCompilationUnit = getJavaSrcCompilationUnit(clz);
-        return JavaLexer.getMethods(JavaLexer.getClass(javaSrcCompilationUnit).orElseThrow(() -> new IllegalArgumentException("no class found ")),null).stream()
+        return JavaLexer.getMethods(JavaLexer.getClass(javaSrcCompilationUnit).orElseThrow(() -> new IllegalArgumentException("no class found ")), null).stream()
                 .filter(methodDeclaration -> methodDeclaration.getNameAsString().equals(methodName)).findFirst().orElse(null);
     }
 
@@ -31,6 +31,7 @@ public class JavaSrcLoader {
     }
 
     public static InputStream getJavaSrc(Class clz) {
+
         try {
             URL resource = JavaSrcLoader.class.getProtectionDomain().getCodeSource().getLocation();
             if (resource.getProtocol().equalsIgnoreCase("file")) {
@@ -43,6 +44,10 @@ public class JavaSrcLoader {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void main(String[] args) throws IOException {
+        System.out.println(IOUtils.toString(JavaSrcLoader.class.getResourceAsStream(String.format("%s.java", JavaLexer.class.getName().replace('.', '/')))));
     }
 
 }

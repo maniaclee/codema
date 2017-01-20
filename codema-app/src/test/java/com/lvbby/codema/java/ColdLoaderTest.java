@@ -16,7 +16,6 @@ import java.util.ServiceLoader;
  */
 public class ColdLoaderTest {
 
-
     private void print(Object a) {
         System.out.println(JSON.toJSONString(a, SerializerFeature.PrettyFormat));
     }
@@ -24,7 +23,7 @@ public class ColdLoaderTest {
 
     @Test
     public void codema() throws Exception {
-        Codema.fromYaml(IOUtils.toString(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codema.yml"))).setClassLoader(ColdLoaderTest.class.getClassLoader()).run();
+        Codema.fromYaml(IOUtils.toString(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codema.yml"))).run();
     }
 
     @Test

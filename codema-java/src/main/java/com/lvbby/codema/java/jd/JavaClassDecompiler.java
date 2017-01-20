@@ -1,4 +1,4 @@
-package com.lvbby.codema.app.deprecated.jd;
+package com.lvbby.codema.java.jd;
 
 import jd.core.loader.Loader;
 import jd.core.loader.LoaderException;
