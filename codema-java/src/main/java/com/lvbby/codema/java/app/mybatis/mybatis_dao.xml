@@ -1,31 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${@dao.classFullName()}">
-    <resultMap id="resultMap" type="${@src.classFullName()}">
+    <sql id="sqlSelect">
+        select
         <!--
         <% for(f in table.fields){ %>
-        <result column="${f.nameInDb}" property="${f.nameCamel}"/>
+        ${f.nameInDb} as ${f.nameCamel}${fLP.last?"":","}
         <%}%>
         -->
-    </resultMap>
+        from ${table.nameInDb}
+    </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="${table.primaryKeyField.nameCamel}">
-    INSERT INTO ${table.nameInDb}
-    (
-    <!--
-    <% for(f in table.fields){ if(!f.primaryKey){%>
-    ${f.nameInDb}${fLP.last?"":","}
-    <%}}%>
-    -->
-    )
-    values(
-    <!--
-    <% for(f in table.fields){ if(!f.primaryKey){%>
-    #{entity.${f.nameCamel}}${fLP.last?"":","}
-    <%}}%>
-    -->
-    )
-    <insert id="inserts" useGeneratedKeys="true">
         INSERT INTO ${table.nameInDb}
         (
         <!--
@@ -42,8 +28,28 @@
         -->
         )
     </insert>
-    <select id="queryByIds" resultMap="resultMap">
-        select * from ${table.nameInDb}
+    <insert id="inserts" useGeneratedKeys="true">
+        INSERT INTO ${table.nameInDb}
+        (
+        <!--
+        <% for(f in table.fields){ if(!f.primaryKey){%>
+        ${f.nameInDb}${fLP.last?"":","}
+        <%}}%>
+        -->
+        )
+        values
+        <foreach item="item" collection="list"  separator=",">
+        (
+        <!--
+        <% for(f in table.fields){ if(!f.primaryKey){%>
+        #{item.${f.nameCamel}}${fLP.last?"":","}
+        <%}}%>
+        -->
+        )
+        </foreach>
+    </insert>
+    <select id="queryByIds" resultMap="resultMap" resultType="${@src.classFullName()}">
+        <include refid="sqlSelect"/>
         WHERE ${table.primaryKeyField.nameInDb}
         IN
         <foreach item="item" collection="list" open="(" close=")" separator=",">

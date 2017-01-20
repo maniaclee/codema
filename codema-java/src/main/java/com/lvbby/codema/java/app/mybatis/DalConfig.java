@@ -1,8 +1,8 @@
 package com.lvbby.codema.java.app.mybatis;
 
+import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.google.common.collect.Lists;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -25,7 +27,7 @@ import java.util.Properties;
 @PropertySource("application.properties")
 public class DalConfig {
 
-    @Value(value = "classpath:mapper/*.xml")
+    @Value(value = "classpath:${config.mapperDir}/*.xml")
     Resource[] resources;
     @Value(value = "classpath:mybatis.xml")
     Resource mybatisConfig;
@@ -75,7 +77,9 @@ public class DalConfig {
         statFilter.setMergeSql(true);
         statFilter.setLogSlowSql(true);
 
-        druidDataSource.setProxyFilters(Lists.newArrayList(statFilter));
+        List<Filter> re = new ArrayList<Filter>();
+        re.add(statFilter);
+        druidDataSource.setProxyFilters(re);
 
         return druidDataSource;
     }

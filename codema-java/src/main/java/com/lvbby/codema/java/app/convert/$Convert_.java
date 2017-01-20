@@ -32,7 +32,7 @@ public class $Convert_ {
     }
 
     public static List<$Class1_> build$Class1_s(List<$Class_> from) {
-        List<$Class1_> re = new ArrayList<>();
+        List<$Class1_> re = new ArrayList<$Class1_>();
         if (from == null)
             return re;
         for ($Class_ e : from) {
@@ -57,7 +57,7 @@ public class $Convert_ {
     }
 
     public static List<$Class_> build$Class_s(List<$Class1_> from) {
-        List<$Class_> re = new ArrayList<>();
+        List<$Class_> re = new ArrayList<$Class_>();
         if (from == null)
             return re;
         for ($Class1_ e : from) {
