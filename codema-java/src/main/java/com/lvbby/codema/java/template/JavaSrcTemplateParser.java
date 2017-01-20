@@ -8,7 +8,7 @@ import com.google.common.collect.Maps;
 import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;

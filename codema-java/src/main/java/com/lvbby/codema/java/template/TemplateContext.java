@@ -1,6 +1,6 @@
 package com.lvbby.codema.java.template;
 
-import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 
 /**

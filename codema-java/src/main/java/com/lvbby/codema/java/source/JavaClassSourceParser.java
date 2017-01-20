@@ -5,7 +5,7 @@ import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.utils.CodemaUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.app.baisc.JavaSourceParam;
+import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.*;
 import org.apache.commons.collections.CollectionUtils;
 

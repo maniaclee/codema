@@ -2,7 +2,7 @@ package com.lvbby.codema.java.source;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.SourceParser;
-import com.lvbby.codema.java.app.baisc.JavaSourceParam;
+import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.io.IOUtils;

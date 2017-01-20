@@ -4,7 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.PrintableResult;
-import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.lang3.StringUtils;
 

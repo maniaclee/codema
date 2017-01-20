@@ -4,7 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;

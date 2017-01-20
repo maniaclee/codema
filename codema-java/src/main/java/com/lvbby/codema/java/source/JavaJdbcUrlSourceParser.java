@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.tool.mysql.JdbcTableFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
-import com.lvbby.codema.java.app.baisc.JavaSourceParam;
+import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaType;

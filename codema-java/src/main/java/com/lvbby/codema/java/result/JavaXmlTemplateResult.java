@@ -2,7 +2,7 @@ package com.lvbby.codema.java.result;
 
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.render.XmlTemplateResult;
-import com.lvbby.codema.java.app.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 

@@ -2,7 +2,7 @@ package com.lvbby.codema.java.source;
 
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.tool.mysql.SqlParser;
-import com.lvbby.codema.java.app.baisc.JavaSourceParam;
+import com.lvbby.codema.java.baisc.JavaSourceParam;
 import org.apache.commons.io.IOUtils;
 
 import java.io.FileInputStream;
