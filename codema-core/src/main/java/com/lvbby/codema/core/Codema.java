@@ -26,6 +26,7 @@ public class Codema {
     private SourceParserFactory sourceParserFactory;
     private CodemaInject codemaInject = new CodemaInject();
     private CodemaBeanFactory codemaBeanFactory = new DefaultCodemaBeanFactory();
+    private ClassLoader classLoader;
 
     public static Codema fromYaml(String yaml) throws Exception {
         ConfigLoader configLoader = new YamlConfigLoader();
@@ -35,12 +36,20 @@ public class Codema {
 
     public Codema(ConfigLoader configLoader) {
         this.configLoader = configLoader;
+        init();
+    }
+
+    private void init() {
         //加载CodeMachine
-        this.codemaMachines = loadService(CodemaMachine.class);
-        this.sourceParserFactory = SourceParserFactory.of(loadService(SourceParser.class));
+        this.codemaMachines = loadService(CodemaMachine.class, classLoader);
+        this.sourceParserFactory = SourceParserFactory.of(loadService(SourceParser.class, classLoader));
         this.codemaMachines.addAll(loadService(CodemaInjectable.class).stream().map(codemaInjectable -> codemaInject.toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
     }
 
+    public Codema setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        return this;
+    }
 
     public void run() throws Exception {
         /** 整个codema生命周期内共用一个context */
@@ -108,7 +117,11 @@ public class Codema {
 
 
     private <T> List<T> loadService(Class<T> clz) {
-        return Lists.newArrayList(ServiceLoader.load(clz));
+        return Lists.newArrayList(ServiceLoader.load(clz, Thread.currentThread().getContextClassLoader()));
+    }
+
+    private <T> List<T> loadService(Class<T> clz, ClassLoader classLoader) {
+        return Lists.newArrayList(ServiceLoader.load(clz, classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader));
     }
 
     public CodemaInject getCodemaInject() {
