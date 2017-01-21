@@ -30,7 +30,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
             return;
 
 
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $Convert_.class)
+        config.handle(codemaContext, config, new JavaTemplateResult(config, "templates/$Convert_.java")
                 .bind("Convert", config.getDestClassName())
                 .bind("cs", javaClasses)
                 .bind("map", javaClasses.stream().collect(Collectors.toMap(o -> o, javaClass -> ReflectionUtils.getSimpleClassName(getTargetClassName(config, javaClass)))))

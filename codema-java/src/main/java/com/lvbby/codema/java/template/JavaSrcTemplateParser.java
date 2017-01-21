@@ -11,7 +11,6 @@ import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
-import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,11 +39,6 @@ public class JavaSrcTemplateParser {
         return map;
     }
 
-    public String loadSrcTemplate(Class templateClass) {
-        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
-        filterImport(cu);
-        return prepareTemplate(cu.toString());
-    }
 
     public String loadSrcTemplateByMethod(TemplateContext context, String methodName) {
         MethodDeclaration methodByName = JavaLexer.getMethodByNameSingle(JavaLexer.getClass(loadSrcTemplateRaw(context)).orElseThrow(() -> new CodemaRuntimeException("no class found")), methodName);
@@ -57,7 +51,8 @@ public class JavaSrcTemplateParser {
 
     public CompilationUnit loadSrcTemplateRaw(TemplateContext context) {
         JavaBasicCodemaConfig javaBasicCodemaConfig = context.getJavaBasicCodemaConfig();
-        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(context.getTemplateClass());
+        //        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(context.getTemplateClass());
+        CompilationUnit cu = JavaLexer.read(context.findTemplate());
         filterImport(cu);
         addImport(cu, context);
         cu.setPackage(StringUtils.isNotBlank(context.getPack()) ? context.getPack() : javaBasicCodemaConfig.getDestPackage());

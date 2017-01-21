@@ -1,16 +1,22 @@
 package com.lvbby.codema.java.template;
 
+import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
 
 /**
  * Created by lipeng on 2017/1/14.
  */
 public class TemplateContext {
     private JavaClass source;
+    @Deprecated
     private Class templateClass;
     private JavaBasicCodemaConfig javaBasicCodemaConfig;
     private String pack;
+    private String template;
 
     public TemplateContext(Class templateClass, JavaBasicCodemaConfig javaBasicCodemaConfig) {
         this(templateClass, javaBasicCodemaConfig, null);
@@ -22,17 +28,31 @@ public class TemplateContext {
         this.javaBasicCodemaConfig = javaBasicCodemaConfig;
     }
 
+    public TemplateContext(JavaBasicCodemaConfig javaBasicCodemaConfig, String templateClassResource) {
+        this(javaBasicCodemaConfig,templateClassResource,null);
+    }
+    public TemplateContext(JavaBasicCodemaConfig javaBasicCodemaConfig, String templateClassResource, JavaClass source) {
+        this.source = source;
+        this.javaBasicCodemaConfig = javaBasicCodemaConfig;
+        try {
+            this.template = IOUtils.toString(javaBasicCodemaConfig.getClass().getClassLoader().getResourceAsStream(templateClassResource));
+        } catch (IOException e) {
+            throw new CodemaRuntimeException("failed to read template", e);
+        }
+    }
+
     public TemplateContext pack(String pack) {
         setPack(pack);
         return this;
     }
 
-    public Class getTemplateClass() {
-        return templateClass;
+    public String findTemplate() {
+        return template;
     }
 
-    public void setTemplateClass(Class templateClass) {
-        this.templateClass = templateClass;
+
+    public Class getTemplateClass() {
+        return templateClass;
     }
 
     public JavaBasicCodemaConfig getJavaBasicCodemaConfig() {
@@ -45,10 +65,6 @@ public class TemplateContext {
 
     public JavaClass getSource() {
         return source;
-    }
-
-    public void setSource(JavaClass source) {
-        this.source = source;
     }
 
     public String getPack() {

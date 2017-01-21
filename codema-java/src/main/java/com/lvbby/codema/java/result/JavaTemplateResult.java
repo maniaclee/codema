@@ -26,12 +26,12 @@ public class JavaTemplateResult extends TemplateEngineResult {
     private TemplateContext templateContext;
     private CompilationUnit compilationUnit;
 
-    public JavaTemplateResult(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate) {
-        this(config, javaSrcTemplate, null);
+    public JavaTemplateResult(JavaBasicCodemaConfig config, String javaSrcTemplate, JavaClass javaClass) {
+        this(new TemplateContext(config, javaSrcTemplate, javaClass));
     }
 
-    public JavaTemplateResult(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate, JavaClass javaClass) {
-        this(new TemplateContext(javaSrcTemplate, config, javaClass));
+    public JavaTemplateResult(JavaBasicCodemaConfig config, String javaSrcTemplate) {
+        this(new TemplateContext(config, javaSrcTemplate, null));
     }
 
     public JavaTemplateResult(TemplateContext templateContext) {

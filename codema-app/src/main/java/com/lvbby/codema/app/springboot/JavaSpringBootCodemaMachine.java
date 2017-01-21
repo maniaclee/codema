@@ -14,7 +14,7 @@ public class JavaSpringBootCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @ConfigBind(JavaSpringBootConfig.class)
     public void code(CodemaContext codemaContext, @NotNull JavaSpringBootConfig config) throws Exception {
-        config.handle(codemaContext, config, new JavaTemplateResult(config, MainApp.class)
+        config.handle(codemaContext, config, new JavaTemplateResult(config, "templates/MainApp.java")
                 .registerResult());
     }
 

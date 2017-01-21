@@ -20,7 +20,7 @@ public class JavaInterfaceCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaInterfaceCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass javaClass) throws Exception {
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $Interface_.class, javaClass)
+        config.handle(codemaContext, config, new JavaTemplateResult(config, "templates/$Interface_.java", javaClass)
                 .bind("Interface", config.evalDestClassName(javaClass, javaClass.getName() + "Service"))
                 .registerResult());
     }
