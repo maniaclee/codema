@@ -4,11 +4,8 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 /**
  * Created by lipeng on 2017/1/1.
@@ -30,24 +27,13 @@ public class JavaSrcLoader {
         }
     }
 
+    /***
+     * maven 将所有源文件打包到target/classes/下，然后获取resources的方式获取源文件
+     * @param clz
+     * @return
+     */
     public static InputStream getJavaSrc(Class clz) {
-
-        try {
-            URL resource = JavaSrcLoader.class.getProtectionDomain().getCodeSource().getLocation();
-            if (resource.getProtocol().equalsIgnoreCase("file")) {
-                //  ~/target/classes/
-                File root = new File(JavaSrcLoader.class.getProtectionDomain().getCodeSource().getLocation().getPath().replace("target/classes", "src/main/java"));
-                File file = new File(root, clz.getName().replace('.', '/') + ".java");
-                return new FileInputStream(file);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void main(String[] args) throws IOException {
-        System.out.println(IOUtils.toString(JavaSrcLoader.class.getResourceAsStream(String.format("%s.java", JavaLexer.class.getName().replace('.', '/')))));
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(String.format("%s.java", clz.getName().replace('.', '/')));
     }
 
 }

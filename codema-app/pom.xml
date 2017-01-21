@@ -55,18 +55,19 @@
     </dependencies>
     <build>
         <resources>
+            <!--打包所有源文件-->
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
-                    <include>**/*.xml</include>
-                    <include>**/.gitignore</include>
+                    <include>**/*</include>
                 </includes>
                 <filtering>false</filtering>
+                <targetPath>${basedir}/target/classes/</targetPath>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>**/*.java</include>
+                    <include>**/*</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
@@ -112,11 +113,6 @@
                 <configuration>
                     <skip>true</skip>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
             </plugin>
         </plugins>
     </build>

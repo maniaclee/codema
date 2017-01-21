@@ -11,11 +11,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinitio
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.google.common.collect.Lists;
+import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
+import com.lvbby.codema.app.mybatis.$src__name_Dao;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
-import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.java.engine.JavaEngineContext;
 import com.lvbby.codema.java.tool.JavaLexer;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
 import org.joor.Reflect;
 import org.junit.Test;
@@ -189,6 +191,12 @@ public class SimpleTest {
     @Test
     public void template() throws Exception {
         System.out.println(TemplateEngineFactory.create("\\${abc}").render());
+    }
 
+    @Test
+    public void templateSrc() throws Exception {
+        String format = String.format("templates/%s.java", $src__name_Dao.class.getName().replace('.', '/'));
+        System.out.println(format);
+        System.out.println(IOUtils.toString(JavaSrcLoader.getJavaSrc($src__name_Dao.class)));
     }
 }
