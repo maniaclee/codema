@@ -63,8 +63,6 @@
                 </includes>
                 <filtering>false</filtering>
             </resource>
-<<<<<<< HEAD
-<<<<<<< HEAD
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
@@ -72,10 +70,6 @@
                 </includes>
                 <filtering>false</filtering>
             </resource>
-=======
->>>>>>> parent of 361e49a... put java src into resource !
-=======
->>>>>>> parent of 361e49a... put java src into resource !
         </resources>
         <plugins>
             <plugin>
