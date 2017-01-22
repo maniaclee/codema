@@ -10,6 +10,7 @@ import java.lang.reflect.*;
  * Created by lipeng on 2017/1/10.
  */
 public class JavaType {
+    public static final JavaType VOID_TYPE=new JavaType();
     public static final String VOID = "void";
     private String name = VOID;
     private Type javaType;
@@ -71,7 +72,9 @@ public class JavaType {
     public static JavaType ofClassName(String className) {
         if (StringUtils.isBlank(className) || VOID.equalsIgnoreCase(className))
             return new JavaType();
-        return new JavaType(ReflectionUtils.getSimpleClassName(className));
+        JavaType javaType = new JavaType(ReflectionUtils.getSimpleClassName(className));
+        javaType.javaType=tryGuessType(className);
+        return javaType;
     }
 
     public static JavaType ofClass(Class clz) {
@@ -98,6 +101,59 @@ public class JavaType {
 
     public static JavaType ofMethodParameter(Parameter parameter) {
         return ofType(ObjectUtils.firstNonNull(parameter.getParameterizedType(), parameter.getType()));
+    }
+
+    private static Class<?> tryGuessType(String name) {
+        try {
+            return Class.forName(name);
+        } catch (Exception e) {
+        }
+        String clzName = ReflectionUtils.getSimpleClassName(name);
+        switch (clzName) {
+            case "Integer":
+                return Integer.class;
+            case "int":
+                return int.class;
+
+            case "Byte":
+                return Byte.class;
+            case "byte":
+                return byte.class;
+
+            case "Long":
+                return Long.class;
+            case "long":
+                return long.class;
+
+            case "Float":
+                return Float.class;
+            case "float":
+                return float.class;
+
+            case "Double":
+                return Double.class;
+            case "double":
+                return double.class;
+
+            case "Short":
+                return Short.class;
+            case "short":
+                return short.class;
+
+            case "Character":
+                return Character.class;
+            case "char":
+                return char.class;
+
+            case "Boolean":
+                return Boolean.class;
+            case "boolean":
+                return boolean.class;
+
+            case "String":
+                return String.class;
+        }
+        return null;
     }
 
     @Override

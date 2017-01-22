@@ -199,4 +199,11 @@ public class SimpleTest {
         System.out.println(format);
         System.out.println(IOUtils.toString(JavaSrcLoader.getJavaSrc($src__name_Dao.class)));
     }
+
+    @Test
+    public void env() throws Exception {
+        System.out.println(System.getProperty("user.home"));
+        System.out.println(System.getProperty("user.name"));
+
+    }
 }
