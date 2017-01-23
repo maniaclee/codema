@@ -226,8 +226,9 @@ public class ReflectionUtils {
     public static String getSimpleClassName(String className) {
         return className.replaceAll("[^.<>]+\\.", "");
     }
+
     public static String getPackage(String className) {
-        return className.replaceAll("(\\.[^.<>]+)$", "");
+        return className.replaceAll("(\\.[^.]+)$", "");
     }
 
 

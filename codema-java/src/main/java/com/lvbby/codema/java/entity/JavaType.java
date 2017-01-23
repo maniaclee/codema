@@ -1,6 +1,5 @@
 package com.lvbby.codema.java.entity;
 
-import com.google.common.collect.Lists;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,15 +37,6 @@ public abstract class JavaType {
     public abstract String getSpecificType();
 
 
-    public static void main(String[] args) {
-        System.out.println(ofClass(String.class));
-        System.out.println(ofClass(int.class));
-        System.out.println(ofClass(Lists.newArrayList("").getClass()));
-        System.out.println(ofClassName("String"));
-        System.out.println(ofClassName("java.lang.String"));
-        System.out.println(ofClassName("List<String>"));
-        System.out.println(ofClassName("java.util.List<String>"));
-    }
     public static JavaType ofClassName(String className) {
         if (StringUtils.isBlank(className) || VOID.equalsIgnoreCase(className))
             return VOID_TYPE;

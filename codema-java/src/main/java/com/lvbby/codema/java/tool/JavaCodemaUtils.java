@@ -31,6 +31,8 @@ public class JavaCodemaUtils {
     }
 
     public static JavaClass findBeanByJavaClassName(CodemaContext context, String className) {
+        if (StringUtils.isBlank(className))
+            return null;
         List<JavaClass> beans = context.getCodema().getCodemaBeanFactory().getBeans(codemaBean -> codemaBean.getId().endsWith(className), JavaClass.class);
         return CollectionUtils.isNotEmpty(beans) ? beans.get(0) : null;
     }
