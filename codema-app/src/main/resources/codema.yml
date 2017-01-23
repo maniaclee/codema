@@ -35,10 +35,10 @@ java:
     dest-class-name: 'script://function:suffix/Entity'
     list:
       - {dest-package: 'com.lvbby.dto',dest-class-name: 'script://function:suffix/DTO' }
-
   testcase:
-    from-package: 'com.lvbby.dto'
+    from-package: 'com.lvbby.service'
     dest-package: 'com.lvbby.testcase'
+    dest-src-root: '/Users/psyco/tmp/project/src/test/java'
     is-spring: true
   convert:
     from-package: 'com.lvbby.entity'

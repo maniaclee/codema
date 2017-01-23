@@ -1,6 +1,7 @@
 package com.lvbby.codema.java.template;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.imports.ImportDeclaration;
 import com.google.common.collect.Lists;
@@ -36,8 +37,14 @@ public class JavaSrcTemplateParser {
             map.put("templateClass", JavaLexer.camel(src.getName()));
         }
         map.put("config", config);
-        map.put("Null", "");
+        map.put(_getInnerTemplateClassVar($Null_.class), "");
+        map.put(_getInnerTemplateClassVar($NullAnnotation_.class), "");
         return map;
+    }
+
+
+    private String _getInnerTemplateClassVar(Class clz) {
+        return clz.getSimpleName().replaceAll("[$_]", "");
     }
 
     public String loadSrcTemplate(Class templateClass) {
@@ -62,6 +69,7 @@ public class JavaSrcTemplateParser {
         addImport(cu, context);
         cu.setPackage(StringUtils.isNotBlank(context.getPack()) ? context.getPack() : javaBasicCodemaConfig.getDestPackage());
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
+            filterAnnotation(classOrInterfaceDeclaration);
             classOrInterfaceDeclaration.setJavaDocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
             if (context.getSource() != null) {
                 //parent class
@@ -74,6 +82,11 @@ public class JavaSrcTemplateParser {
             }
         });
         return cu;
+    }
+
+    private void filterAnnotation(ClassOrInterfaceDeclaration clz) {
+        //        Lists.newArrayList(clz.getAnnotations()).stream().filter(an -> an.getNameAsString().startsWith("$"))
+        //                .forEach(annotationExpr -> clz.getAnnotations().remove(annotationExpr));
     }
 
     private void addImport(CompilationUnit cu, TemplateContext templateContext) {

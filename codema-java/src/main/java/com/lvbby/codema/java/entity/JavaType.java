@@ -3,6 +3,7 @@ package com.lvbby.codema.java.entity;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.*;
 
@@ -10,7 +11,7 @@ import java.lang.reflect.*;
  * Created by lipeng on 2017/1/10.
  */
 public class JavaType {
-    public static final JavaType VOID_TYPE=new JavaType();
+    public static final JavaType VOID_TYPE = new JavaType();
     public static final String VOID = "void";
     private String name = VOID;
     private Type javaType;
@@ -19,13 +20,21 @@ public class JavaType {
     }
 
     private JavaType(String name) {
-        if (StringUtils.isNotBlank(name))
-            this.name = name.trim();
+        Validate.notBlank(name);
+        this.name = name.trim();
     }
 
     private JavaType javaType(Type clz) {
         this.javaType = clz;
         return this;
+    }
+
+
+    public boolean bePrimitive() {
+        if (beVoid())
+            return false;
+        char c = name.charAt(0);
+        return c >= 'a' && c <= 'z';
     }
 
     public String getName() {
@@ -71,21 +80,21 @@ public class JavaType {
 
     public static JavaType ofClassName(String className) {
         if (StringUtils.isBlank(className) || VOID.equalsIgnoreCase(className))
-            return new JavaType();
+            return VOID_TYPE;
         JavaType javaType = new JavaType(ReflectionUtils.getSimpleClassName(className));
-        javaType.javaType=tryGuessType(className);
+        javaType.javaType = tryGuessType(className);
         return javaType;
     }
 
     public static JavaType ofClass(Class clz) {
         if (clz == null)
-            return new JavaType();
+            return VOID_TYPE;
         return new JavaType(clz.getSimpleName()).javaType(clz);
     }
 
     public static JavaType ofType(Type type) {
         if (type == null)
-            return new JavaType();
+            return VOID_TYPE;
         if (type instanceof Class)
             return ofClass((Class) type);
         return new JavaType(type.getTypeName()).javaType(type);
