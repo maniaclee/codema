@@ -226,6 +226,9 @@ public class ReflectionUtils {
     public static String getSimpleClassName(String className) {
         return className.replaceAll("[^.<>]+\\.", "");
     }
+    public static String getPackage(String className) {
+        return className.replaceAll("(\\.[^.<>]+)$", "");
+    }
 
 
     public static String loadResource(Class clz, String resourceName) throws IOException {
@@ -285,5 +288,58 @@ public class ReflectionUtils {
      */
     public static boolean isFullClassName(String s) {
         return s.contains(".");
+    }
+
+    public static Class<?> tryGuessType(String name) {
+        try {
+            return Class.forName(name);
+        } catch (Exception e) {
+        }
+        String clzName = ReflectionUtils.getSimpleClassName(name);
+        switch (clzName) {
+            case "Integer":
+                return Integer.class;
+            case "int":
+                return int.class;
+
+            case "Byte":
+                return Byte.class;
+            case "byte":
+                return byte.class;
+
+            case "Long":
+                return Long.class;
+            case "long":
+                return long.class;
+
+            case "Float":
+                return Float.class;
+            case "float":
+                return float.class;
+
+            case "Double":
+                return Double.class;
+            case "double":
+                return double.class;
+
+            case "Short":
+                return Short.class;
+            case "short":
+                return short.class;
+
+            case "Character":
+                return Character.class;
+            case "char":
+                return char.class;
+
+            case "Boolean":
+                return Boolean.class;
+            case "boolean":
+                return boolean.class;
+
+            case "String":
+                return String.class;
+        }
+        return null;
     }
 }

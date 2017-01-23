@@ -1,95 +1,62 @@
 package com.lvbby.codema.java.entity;
 
+import com.google.common.collect.Lists;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.*;
 
 /**
  * Created by lipeng on 2017/1/10.
  */
-public class JavaType {
-    public static final JavaType VOID_TYPE = new JavaType();
+public abstract class JavaType {
+    public static final JavaType VOID_TYPE = new VoidClass();
     public static final String VOID = "void";
-    private String name = VOID;
-    private Type javaType;
-
-    private JavaType() {
-    }
-
-    private JavaType(String name) {
-        Validate.notBlank(name);
-        this.name = name.trim();
-    }
-
-    private JavaType javaType(Type clz) {
-        this.javaType = clz;
-        return this;
-    }
-
 
     public boolean bePrimitive() {
-        if (beVoid())
-            return false;
-        char c = name.charAt(0);
-        return c >= 'a' && c <= 'z';
+        return false;
     }
 
-    public String getName() {
-        return name;
-    }
+    public abstract String getName();
 
-    public Class getJavaType() {
-        if (javaType == null || beVoid())
-            return null;
-        if (isGenericType())
-            return (Class) ((ParameterizedType) javaType).getRawType();
-        return (Class) javaType;
-    }
+    public abstract Class getJavaType();
 
 
     public boolean beVoid() {
-        return VOID.equalsIgnoreCase(name);
+        return false;
     }
 
     public boolean isGenericType() {
-        if (javaType != null)
-            return javaType instanceof ParameterizedType;
-        return StringUtils.isNotBlank(name) && name.contains("<");
+        return false;
     }
 
     /***
      * 如果是泛型，返回泛型里的具体类
      * @return
      */
-    public String getSpecificType() {
-        if (!isGenericType())
-            return name;
-        return getGenericRealType();
-    }
+    public abstract String getSpecificType();
 
-    public String getGenericRealType() {
-        if (!isGenericType())
-            return null;
-        if (javaType != null)
-            return ((ParameterizedType) javaType).getActualTypeArguments()[0].getTypeName();
-        return ReflectionUtils.findFirst(name, "<([^\\[\\]]+)>", matcher -> matcher.group(1));
-    }
 
+    public static void main(String[] args) {
+        System.out.println(ofClass(String.class));
+        System.out.println(ofClass(int.class));
+        System.out.println(ofClass(Lists.newArrayList("").getClass()));
+        System.out.println(ofClassName("String"));
+        System.out.println(ofClassName("java.lang.String"));
+        System.out.println(ofClassName("List<String>"));
+        System.out.println(ofClassName("java.util.List<String>"));
+    }
     public static JavaType ofClassName(String className) {
         if (StringUtils.isBlank(className) || VOID.equalsIgnoreCase(className))
             return VOID_TYPE;
-        JavaType javaType = new JavaType(ReflectionUtils.getSimpleClassName(className));
-        javaType.javaType = tryGuessType(className);
-        return javaType;
+        return new JavaTypeByName(className);
     }
 
     public static JavaType ofClass(Class clz) {
         if (clz == null)
             return VOID_TYPE;
-        return new JavaType(clz.getSimpleName()).javaType(clz);
+        return new JavaTypeByClass(clz);
     }
 
     public static JavaType ofType(Type type) {
@@ -97,7 +64,7 @@ public class JavaType {
             return VOID_TYPE;
         if (type instanceof Class)
             return ofClass((Class) type);
-        return new JavaType(type.getTypeName()).javaType(type);
+        return new JavaTypeByType(type);
     }
 
     public static JavaType ofMethodReturnType(Method method) {
@@ -112,57 +79,136 @@ public class JavaType {
         return ofType(ObjectUtils.firstNonNull(parameter.getParameterizedType(), parameter.getType()));
     }
 
-    private static Class<?> tryGuessType(String name) {
-        try {
-            return Class.forName(name);
-        } catch (Exception e) {
+    public abstract String getFullName();
+
+
+    private static class VoidClass extends JavaType {
+
+        @Override
+        public boolean beVoid() {
+            return true;
         }
-        String clzName = ReflectionUtils.getSimpleClassName(name);
-        switch (clzName) {
-            case "Integer":
-                return Integer.class;
-            case "int":
-                return int.class;
 
-            case "Byte":
-                return Byte.class;
-            case "byte":
-                return byte.class;
-
-            case "Long":
-                return Long.class;
-            case "long":
-                return long.class;
-
-            case "Float":
-                return Float.class;
-            case "float":
-                return float.class;
-
-            case "Double":
-                return Double.class;
-            case "double":
-                return double.class;
-
-            case "Short":
-                return Short.class;
-            case "short":
-                return short.class;
-
-            case "Character":
-                return Character.class;
-            case "char":
-                return char.class;
-
-            case "Boolean":
-                return Boolean.class;
-            case "boolean":
-                return boolean.class;
-
-            case "String":
-                return String.class;
+        @Override
+        public String getSpecificType() {
+            return null;
         }
-        return null;
+
+        @Override
+        public String getFullName() {
+            return getName();
+        }
+
+        @Override
+        public String getName() {
+            return VOID;
+        }
+
+        @Override
+        public Class getJavaType() {
+            return null;
+        }
+    }
+
+    private static class JavaTypeByName extends JavaType {
+        private String name;
+        private String pack;
+
+        public JavaTypeByName(String name) {
+            if (ReflectionUtils.isFullClassName(name)) {
+                this.name = ReflectionUtils.getSimpleClassName(name);
+                pack = ReflectionUtils.getPackage(name);
+            } else
+                this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public Class getJavaType() {
+            return ReflectionUtils.tryGuessType(name);
+        }
+
+        public boolean isGenericType() {
+            return name.contains("<");
+        }
+
+        public String getSpecificType() {
+            if (!isGenericType())
+                return null;
+            return ReflectionUtils.findFirst(name, "<([^\\[\\]]+)>", matcher -> matcher.group(1));
+        }
+
+        @Override
+        public String getFullName() {
+            if (StringUtils.isBlank(pack))
+                return name;
+            return pack + "." + name;
+        }
+    }
+
+    private static class JavaTypeByClass extends JavaType {
+        private Class clz;
+
+        public JavaTypeByClass(Class clz) {
+            this.clz = clz;
+        }
+
+        @Override
+        public String getName() {
+            return clz.getSimpleName();
+        }
+
+        public Class getJavaType() {
+            return clz;
+        }
+
+        public boolean isGenericType() {
+            return false;
+        }
+
+        public String getSpecificType() {
+            return getName();
+        }
+
+        @Override
+        public String getFullName() {
+            return clz.getName();
+        }
+    }
+
+    private static class JavaTypeByType extends JavaType {
+        private Type type;
+
+        public JavaTypeByType(Type clz) {
+            this.type = clz;
+        }
+
+        @Override
+        public String getName() {
+            return type.getTypeName();
+        }
+
+        public Class getJavaType() {
+            return null;
+        }
+
+        public boolean isGenericType() {
+            return type instanceof ParameterizedType;
+        }
+
+        public String getSpecificType() {
+            if (!isGenericType())
+                return getName();
+            return ((ParameterizedType) type).getActualTypeArguments()[0].getTypeName();
+        }
+
+        @Override
+        public String getFullName() {
+            return type.getTypeName();
+        }
     }
 
     @Override
@@ -172,16 +218,16 @@ public class JavaType {
 
         JavaType javaType = (JavaType) o;
 
-        return name != null ? name.equals(javaType.name) : javaType.name == null;
+        return getFullName() != null ? getFullName().equals(javaType.getFullName()) : javaType.getFullName() == null;
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return getFullName() != null ? getFullName().hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return name;
+        return getName();
     }
 }
