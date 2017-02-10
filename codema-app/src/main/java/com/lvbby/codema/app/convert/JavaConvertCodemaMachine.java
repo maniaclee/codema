@@ -34,8 +34,6 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
                 .bind("Convert", config.getDestClassName())
                 .bind("cs", javaClasses)
                 .bind("map", javaClasses.stream().collect(Collectors.toMap(o -> o, javaClass -> ReflectionUtils.getSimpleClassName(getTargetClassName(config, javaClass)))))
-                .addImportJavaClasses(javaClasses)
-                .addImportClassFullName(javaClasses.stream().map(javaClass -> getTargetClassName(config, javaClass)).collect(Collectors.toList()))
                 .registerResult());
     }
 

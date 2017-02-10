@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.util.JdbcConstants;
-import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
@@ -38,7 +37,6 @@ public class SqlParser {
     private static SqlColumn buildColumn(MySqlSQLColumnDefinition column) {
         SqlColumn sqlColumn = new SqlColumn();
         sqlColumn.setNameInDb(column.getName().getSimpleName());
-        sqlColumn.setNameCamel(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, sqlColumn.getNameInDb()));
         sqlColumn.setComment(column.getComment().toString());
         sqlColumn.setNullable(!hasConstrain(column, NotNullConstraint.class));
         sqlColumn.setPrimaryKey(hasConstrain(column, SQLColumnPrimaryKey.class));

@@ -124,4 +124,8 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
         this.parameters = parameters;
         return this;
     }
+
+    protected void setString(String string) {
+        this.string = string;
+    }
 }

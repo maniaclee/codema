@@ -66,23 +66,29 @@ public class JavaSrcTemplateParser {
         JavaBasicCodemaConfig javaBasicCodemaConfig = context.getJavaBasicCodemaConfig();
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(context.getTemplateClass());
         filterImport(cu);
-        addImport(cu, context);
+//        addImport(cu, context);
         cu.setPackage(StringUtils.isNotBlank(context.getPack()) ? context.getPack() : javaBasicCodemaConfig.getDestPackage());
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
             filterAnnotation(classOrInterfaceDeclaration);
             classOrInterfaceDeclaration.setJavaDocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
-            if (context.getSource() != null) {
-                //parent class
-                if (StringUtils.isNotBlank(javaBasicCodemaConfig.getParentClass()))
-                    classOrInterfaceDeclaration.addExtends(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(javaBasicCodemaConfig.getParentClass(), context.getSource().getName())));
-                //interfaces
-                if (CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())) {
-                    javaBasicCodemaConfig.getImplementInterfaces().forEach(e -> classOrInterfaceDeclaration.addImplements(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(e, context.getSource().getName()))));
+//            if (context.getSource() != null) {
+//                //parent class
+//                if (StringUtils.isNotBlank(javaBasicCodemaConfig.getParentClass()))
+//                    classOrInterfaceDeclaration.addExtends(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(javaBasicCodemaConfig.getParentClass(), context.getSource().getName())));
+//                //interfaces
+//                if (CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())) {
+//                    javaBasicCodemaConfig.getImplementInterfaces().forEach(e -> classOrInterfaceDeclaration.addImplements(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(e, context.getSource().getName()))));
+//                }
+//            }
+            if(CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())){
+                for (String it : javaBasicCodemaConfig.getImplementInterfaces()) {
+                    classOrInterfaceDeclaration.addImplements(ReflectionUtils.getSimpleClassName(javaBasicCodemaConfig.eval(it,context.getSource().getName())));
                 }
             }
         });
         return cu;
     }
+
 
     private void filterAnnotation(ClassOrInterfaceDeclaration clz) {
         //        Lists.newArrayList(clz.getAnnotations()).stream().filter(an -> an.getNameAsString().startsWith("$"))

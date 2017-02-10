@@ -38,7 +38,7 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
                 .bind("buildUtilClass", buildUtil)
                 .bind("Repository", config.evalDestClassName(javaClass, javaClass.getName() + "Repository"))
                 .addImport(buildUtil);
-        collect.stream().filter(r -> r.getBuildReturnMethod() != null).forEach(r -> result.addImport(r.getBuildReturnMethod().getReturnType(), codemaContext));
+//        collect.stream().filter(r -> r.getBuildReturnMethod() != null).forEach(r -> result.addImport(r.getBuildReturnMethod().getReturnType(), codemaContext));
         config.handle(codemaContext, config, result.registerResult());
     }
 

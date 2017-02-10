@@ -75,7 +75,6 @@ public class JavaMybatisCodemaMachine implements CodemaInjectable {
             sqlColumn.setJavaType(javaField.getType().getJavaType());
             sqlColumn.setJavaTypeName(javaField.getType().getName());
             sqlColumn.setPrimaryKey(javaField.getName().equalsIgnoreCase("id"));
-            sqlColumn.setPrimaryKey(javaField.getName().equalsIgnoreCase("from"));//TODO test
             return sqlColumn;
         }).collect(Collectors.toList()));
         re.setPrimaryKeyField(re.getFields().stream().filter(SqlColumn::isPrimaryKey).findFirst().orElse(null));

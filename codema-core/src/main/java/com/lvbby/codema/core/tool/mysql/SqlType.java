@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
 
@@ -29,8 +28,8 @@ public class SqlType {
         map.put("DOUBLE", Double.class);
         map.put("DECIMAL", BigDecimal.class);
         map.put("DATE", Date.class);
-        map.put("DATETIME", Timestamp.class);
-        map.put("TIMESTAMP", Timestamp.class);
+        map.put("DATETIME", Date.class);
+        map.put("TIMESTAMP", Date.class);
         map.put("TIME", Time.class);
         map.put("CHAR", String.class);
         map.put("VARCHAR", String.class);
@@ -44,6 +43,7 @@ public class SqlType {
         map.put("VARCHAR", String.class);
         map.put("LONGBLOB", byte[].class);
         map.put("VARCHAR", String.class);
+        map.put("TEXT", String.class);
     }
 
     public static Class<?> getJavaType(String sqlType) {

@@ -1,8 +1,8 @@
 common:
   author: maniaclee
-  from: 'java://class/com.lvbby.codema.core.config.CommonCodemaConfig'
-#  from: 'file://java:src//Users/lipeng/workspace/github/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
-#  from: 'jdbc:mysql://localhost:3306/user?user=root&table=User'
+#  from: 'java://class/com.lvbby.codema.core.config.CommonCodemaConfig'
+#  from: 'file://java:src//Users/psyco/workspace/github/codema/codema-core/src/main/java/com/lvbby/codema/core/config/CommonCodemaConfig.java'
+  from: 'jdbc:mysql://localhost:3306/lvbby?user=root&table=article'
   result-handler:
       - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
       - 'com.lvbby.codema.core.result.handler.PrintResultHandler'
@@ -11,62 +11,69 @@ common:
 maven:
   name: 'project'
   artifact-id: 'project'
-  group-id: 'lvbby'
-  java-version: '1.6'
+  group-id: 'com.lvbby'
+  java-version: '1.8'
   version: '0.1-SNAPSHOT'
-  base-dir: '/Users/lipeng/tmp'
+  base-dir: '/Users/psyco/tmp'
   result-handler:
     - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
   modules:
-    - name: 'sub'
-      artifact-id: 'sub-api'
-      group-id: 'lvbby'
+    - name: 'garfield-service'
+      artifact-id: 'garfield-service'
+    - name: 'garfield-api'
+      artifact-id: 'garfield-api'
+const:
+    - &apiSrcDir '/Users/psyco/tmp/project/garfield-api/src/main/java'
+    - &servicePackage 'com.lvbby.garfield.service'
+    - &serviceSrcDir '/Users/psyco/tmp/project/garfield-service/src/main/java'
+    - &serviceResourceDir '/Users/psyco/tmp/project/garfield-service/src/main/resources'
 java:
   basic:
-    dest-src-root: '/Users/lipeng/tmp/project/src/main/java'
-    dest-resource-root: '/Users/lipeng/tmp/project/src/main/resources'
+    dest-src-root: *serviceSrcDir
+    dest-resource-root: *serviceResourceDir
     result-handler:
         - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
         - 'com.lvbby.codema.core.result.handler.FileWriterResultHandler'
         - 'com.lvbby.codema.core.result.handler.PrintResultHandler'
 
   bean:
-    dest-package: 'com.lvbby.entity'
-    dest-class-name: 'script://function:suffix/Entity'
+    dest-package:  'com.lvbby.garfield.api.dto'
+    dest-class-name: 'script://function:suffix/DTO'
+    dest-src-root: *apiSrcDir
     list:
-      - {dest-package: 'com.lvbby.dto',dest-class-name: 'script://function:suffix/DTO' }
-  testcase:
-    from-package: 'com.lvbby.service'
-    dest-package: 'com.lvbby.testcase'
-    dest-src-root: '/Users/lipeng/tmp/project/src/test/java'
-    is-spring: true
+      - {dest-package: &apiDoPackage 'com.lvbby.garfield.service.dal.entity',dest-class-name: 'script://function:suffix/DO' ,dest-src-root: *serviceSrcDir}
+#  testcase:
+#    from-package: 'com.lvbby.garfield.service'
+#    dest-package: 'com.lvbby.testcase'
+#    dest-src-root: '/Users/psyco/tmp/project/garfield-service/src/test/java'
+#    is-spring: true
   convert:
-    from-package: 'com.lvbby.entity'
-    convert-to-class-name: 'script://function:replace/?regx=Entity&replacement=DTO&prefix=com.lvbby.dto.'
+    from-package: *apiDoPackage
+    convert-to-class-name: 'script://function:replace/?regx=DO&replacement=DTO&prefix=com.lvbby.garfield.api.dto.'
     dest-package: 'com.lvbby.utils'
     dest-class-name: 'BuildUtils'
   mybatis:
-    from-package: 'com.lvbby.entity'
-    dest-package: 'com.lvbby.dao'
+    from-package: *apiDoPackage
+    dest-package: &daoPackage 'com.lvbby.garfield.service.dal.dao'
     mapper-dir: 'mapper'
-    config-package: 'com.lvbby.config'
+    config-package: 'com.lvbby.garfield.service.config'
   repository:
-    from-package: 'com.lvbby.dao'
-    dest-package: 'com.lvbby.repository'
-    dest-class-name: 'script://function:replace/?regx=EntityDao&replacement=Repository'
+    from-package: *daoPackage
+    dest-package: &repoPackage 'com.lvbby.repository'
+    dest-class-name: 'script://function:replace/?regx=DODao&replacement=Repository'
     convert-utils-class: 'com.lvbby.utils.BuildUtils'
   interfaces:
-    from-package: 'com.lvbby.repository'
-    dest-package: 'com.lvbby.service'
+    from-package: *repoPackage
+    dest-package: 'com.lvbby.garfield.service.service'
     dest-class-name: 'script://function:replace/?regx=Repository&replacement=Service'
   delegate:
-    from-package: 'com.lvbby.repository'
-    dest-package: 'com.lvbby.service.imp'
+    from-package: *repoPackage
+    dest-package: 'com.lvbby.garfield.service.service.impl'
     dest-class-name: 'script://function:replace/?regx=Repository&replacement=ServiceImpl'
     implement-interfaces:
-        - 'script://function:replace/?regx=Repository&replacement=Service&prefix=com.lvbby.service.'
+        - 'script://function:replace/?regx=Repository&replacement=Service&prefix=com.lvbby.garfield.service.service.'
   spring-boot:
-    dest-package: 'com.lvbby'
+    dest-package: *servicePackage
 
 #  es: {}
 

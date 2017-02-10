@@ -22,7 +22,6 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaTestcaseCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
         config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_Test.class, cu)
-                .addImport("java.util.*")
                 .bind("springBootConfig",codemaContext.getConfig(JavaSpringBootConfig.class))
                 .registerResult());
     }

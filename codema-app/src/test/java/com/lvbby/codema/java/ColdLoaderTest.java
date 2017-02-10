@@ -8,6 +8,7 @@ import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.inject.CodemaInjector;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.yaml.snakeyaml.Yaml;
 
 import java.util.ServiceLoader;
 
@@ -24,6 +25,17 @@ public class ColdLoaderTest {
     @Test
     public void codema() throws Exception {
         Codema.fromYaml(IOUtils.toString(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codema.yml"))).run();
+    }
+
+    @Test
+    public void yaml() throws Exception {
+        Yaml yaml = new Yaml();
+        Iterable<Object> result = yaml.loadAll(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codema.yml"));
+        if (result == null || !result.iterator().hasNext())
+            throw new IllegalArgumentException("no configuration found");
+        for (Object o : result) {
+            System.out.println(JSON.toJSONString(o,SerializerFeature.PrettyFormat));
+        }
     }
 
     @Test
