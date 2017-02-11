@@ -43,6 +43,10 @@ public class JavaResult implements PrintableResult, FileResult {
         return new File(file, JavaLexer.getClass(unit).map(clz -> clz.getNameAsString() + ".java").orElseThrow(() -> new CodemaRuntimeException("class not found.")));
     }
 
+    public CompilationUnit getUnit() {
+        return unit;
+    }
+
     @Override
     public String getString() {
         return unit.toString();

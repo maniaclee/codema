@@ -1,4 +1,4 @@
-package com.lvbby.codema.core.result.handler;
+package com.lvbby.codema.core.handler;
 
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.config.CommonCodemaConfig;

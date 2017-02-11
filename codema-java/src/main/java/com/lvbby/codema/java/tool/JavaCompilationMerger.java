@@ -3,6 +3,9 @@ package com.lvbby.codema.java.tool;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -18,12 +21,13 @@ import java.util.stream.Collectors;
  * Created by lipeng on 2017/2/11.
  */
 public class JavaCompilationMerger {
-    private static final String seperator = System.getProperty("line.separator");
+    private static final String separator = System.getProperty("line.separator");
     private static final String tab = "    ";
     private final CompilationUnit src;
     private StringBuilder stringBuilder;
     private CompilationUnit dest;
     private ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
+    private String result;
 
     public JavaCompilationMerger(String destSrc, CompilationUnit src) {
         this.stringBuilder = new StringBuilder(destSrc);
@@ -39,17 +43,14 @@ public class JavaCompilationMerger {
         return this;
     }
 
-    public String getResult() {
-        return stringBuilder.toString();
-    }
-
 
     public List<String> findDiffClass(Function<ClassOrInterfaceDeclaration, Collection> function) {
         return findDiff(compilationUnit -> function.apply(JavaLexer.getClass(compilationUnit).get()));
     }
 
     public List<String> findDiff(Function<CompilationUnit, Collection> function) {
-        Collection<Object> diff = CollectionUtils.disjunction(function.apply(src), function.apply(dest));
+        Collection<Object> diff = CollectionUtils.subtract(function.apply(src), function.apply(dest));
+//        Collection<Object> diff = CollectionUtils.subtract(NodeWrapper.from(function.apply(src)), NodeWrapper.from(function.apply(dest)));
         return diff.stream().map(Object::toString).collect(Collectors.toList());
     }
 
@@ -80,7 +81,7 @@ public class JavaCompilationMerger {
     }
 
     private int getLastPosition() {
-        return classOrInterfaceDeclaration.getEnd().get().line-1;
+        return classOrInterfaceDeclaration.getEnd().get().line - 1;
     }
 
 
@@ -96,13 +97,13 @@ public class JavaCompilationMerger {
     private void append(int line, String s) {
         int i = lineIndex(line);
         Validate.isTrue(i >= 0);
-        stringBuilder.insert(i, seperator + s);
+        stringBuilder.insert(i, separator + s);
     }
 
     private int lineIndex(int line) {
         int index = 0;
         for (int i = 0; i < line; i++) {
-            index = stringBuilder.indexOf(seperator, index + 1);
+            index = stringBuilder.indexOf(separator, index + 1);
             if (index <= 0)
                 return -1;
         }
@@ -111,21 +112,73 @@ public class JavaCompilationMerger {
 
     @Override
     public String toString() {
-        return getResult();
+        if (result == null)
+            this.result = stringBuilder.toString();
+        return result;
     }
 
     private String formatTab(String s) {
-        return tab + s.replaceAll(seperator, seperator + tab);
+        return tab + s.replaceAll(separator, separator + tab);
     }
 
     private List<String> formatTab(List<String> s) {
         return s.stream().map(s1 -> formatTab(s1)).collect(Collectors.toList());
     }
 
+    private static class NodeWrapper {
+        private Node node;
+        private String id;
+
+        public static List<NodeWrapper> from(Collection<?> collection) {
+            if (CollectionUtils.isNotEmpty(collection) && collection.iterator().next() instanceof Node) {
+                return collection.stream().map(e -> (Node) e).map(e -> new NodeWrapper(e)).collect(Collectors.toList());
+            }
+            return Lists.newLinkedList();
+        }
+
+        public NodeWrapper(Node node) {
+            this.node = node;
+            this.id = getNodeId(node);
+        }
+
+        private String getNodeId(Node node) {
+            if (node instanceof MethodDeclaration)
+                return ((MethodDeclaration) node).getDeclarationAsString();
+            if (node instanceof FieldDeclaration)
+                return ((FieldDeclaration) node).getVariable(0).getNameAsString();
+            return node.toString();
+        }
+
+        @Override
+        public String toString() {
+            return node.toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            NodeWrapper that = (NodeWrapper) o;
+
+            return id != null ? id.equals(that.id) : that.id == null;
+        }
+
+        @Override
+        public int hashCode() {
+            return id != null ? id.hashCode() : 0;
+        }
+    }
+
+    private void tst(){
+        findDiff(CompilationUnit::getImports).stream().map(s -> s.trim()).forEach(System.out::println);
+    }
+
     public static void main(String[] args) throws Exception {
         JavaCompilationMerger javaCompilationMerger = new JavaCompilationMerger(IOUtils.toString(new FileInputStream("/Users/lipeng/workspace/codema/codema-java/src/main/java/com/lvbby/codema/java/entity/JavaArg.java")),
                 JavaLexer.read(IOUtils.toString(new FileInputStream("/Users/lipeng/workspace/codema/codema-java/src/main/java/com/lvbby/codema/java/entity/JavaClass.java"))));
         System.out.println(javaCompilationMerger.merge().toString());
+//        javaCompilationMerger.tst();
 
     }
 }

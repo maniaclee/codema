@@ -1,4 +1,4 @@
-package com.lvbby.codema.core.result.handler;
+package com.lvbby.codema.core.handler;
 
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
@@ -25,7 +25,19 @@ public class FileWriterResultHandler implements ResultHandler {
                 return;
             if (StringUtils.isNotBlank(file.getParent()))
                 ReflectionUtils.makeSureDir(new File(file.getParent()));
-            IOUtils.write(((PrintableResult) result).getString(), new FileOutputStream(file));
+            IOUtils.write(getContent(((PrintableResult) result), file, resultContext), new FileOutputStream(file));
         }
+    }
+
+    /**
+     * 获取准备要写入的内容
+     *
+     * @param result        结果
+     * @param destFile      要写入的文件
+     * @param resultContext
+     * @return
+     */
+    protected String getContent(PrintableResult result, File destFile, ResultContext resultContext) throws Exception {
+        return result.getString();
     }
 }
