@@ -3,9 +3,6 @@ package com.lvbby.codema.java.tool;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -50,7 +47,6 @@ public class JavaCompilationMerger {
 
     public List<String> findDiff(Function<CompilationUnit, Collection> function) {
         Collection<Object> diff = CollectionUtils.subtract(function.apply(src), function.apply(dest));
-//        Collection<Object> diff = CollectionUtils.subtract(NodeWrapper.from(function.apply(src)), NodeWrapper.from(function.apply(dest)));
         return diff.stream().map(Object::toString).collect(Collectors.toList());
     }
 
@@ -125,60 +121,11 @@ public class JavaCompilationMerger {
         return s.stream().map(s1 -> formatTab(s1)).collect(Collectors.toList());
     }
 
-    private static class NodeWrapper {
-        private Node node;
-        private String id;
-
-        public static List<NodeWrapper> from(Collection<?> collection) {
-            if (CollectionUtils.isNotEmpty(collection) && collection.iterator().next() instanceof Node) {
-                return collection.stream().map(e -> (Node) e).map(e -> new NodeWrapper(e)).collect(Collectors.toList());
-            }
-            return Lists.newLinkedList();
-        }
-
-        public NodeWrapper(Node node) {
-            this.node = node;
-            this.id = getNodeId(node);
-        }
-
-        private String getNodeId(Node node) {
-            if (node instanceof MethodDeclaration)
-                return ((MethodDeclaration) node).getDeclarationAsString();
-            if (node instanceof FieldDeclaration)
-                return ((FieldDeclaration) node).getVariable(0).getNameAsString();
-            return node.toString();
-        }
-
-        @Override
-        public String toString() {
-            return node.toString();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            NodeWrapper that = (NodeWrapper) o;
-
-            return id != null ? id.equals(that.id) : that.id == null;
-        }
-
-        @Override
-        public int hashCode() {
-            return id != null ? id.hashCode() : 0;
-        }
-    }
-
-    private void tst(){
-        findDiff(CompilationUnit::getImports).stream().map(s -> s.trim()).forEach(System.out::println);
-    }
 
     public static void main(String[] args) throws Exception {
         JavaCompilationMerger javaCompilationMerger = new JavaCompilationMerger(IOUtils.toString(new FileInputStream("/Users/lipeng/workspace/codema/codema-java/src/main/java/com/lvbby/codema/java/entity/JavaArg.java")),
                 JavaLexer.read(IOUtils.toString(new FileInputStream("/Users/lipeng/workspace/codema/codema-java/src/main/java/com/lvbby/codema/java/entity/JavaClass.java"))));
         System.out.println(javaCompilationMerger.merge().toString());
-//        javaCompilationMerger.tst();
 
     }
 }
