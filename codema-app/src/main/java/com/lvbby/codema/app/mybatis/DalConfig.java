@@ -45,8 +45,8 @@ public class DalConfig {
 
     @Bean(initMethod = "init", destroyMethod = "close")
     public DataSource dataSource() throws SQLException {
-        String url = "";
-        String username = "";
+        String url = "jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8";
+        String username = "root";
         String password = "";
         return createDataSource(url, username, password);
     }
