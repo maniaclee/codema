@@ -26,14 +26,14 @@ public class YamlConfigLoader implements ConfigLoader {
 
     private CaseFormat caseFormat = CaseFormat.LOWER_HYPHEN;
 
-    @Override
-    public void load(String code) throws Exception {
+    public YamlConfigLoader load(String code) throws Exception {
         Yaml yaml = new Yaml();
         Iterable<Object> result = yaml.loadAll(code);
         if (result == null || !result.iterator().hasNext())
             throw new IllegalArgumentException("no configuration found");
         yamlMap = (Map<String, Object>) result.iterator().next();
         formatMap2cameCase(yamlMap);
+        return this;
     }
 
     @Override

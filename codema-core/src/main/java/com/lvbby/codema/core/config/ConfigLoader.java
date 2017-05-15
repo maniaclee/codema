@@ -5,7 +5,5 @@ package com.lvbby.codema.core.config;
  */
 public interface ConfigLoader {
 
-    void load(String code) throws Exception;
-
     <T> T getConfig(Class<T> clz);
 }

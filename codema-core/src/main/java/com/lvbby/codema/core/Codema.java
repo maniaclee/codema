@@ -29,12 +29,15 @@ public class Codema {
     private ClassLoader classLoader;
 
     public static Codema fromYaml(String yaml) throws Exception {
-        ConfigLoader configLoader = new YamlConfigLoader();
-        configLoader.load(yaml);
+        return from(new YamlConfigLoader().load(yaml));
+    }
+
+
+    public static Codema from(ConfigLoader configLoader) {
         return new Codema(configLoader);
     }
 
-    public Codema(ConfigLoader configLoader) {
+    private Codema(ConfigLoader configLoader) {
         this.configLoader = configLoader;
         init();
     }
