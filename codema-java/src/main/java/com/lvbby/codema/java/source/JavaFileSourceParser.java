@@ -37,7 +37,7 @@ public class JavaFileSourceParser implements SourceParser<JavaSourceParam> {
 
     @Override
     public String getSupportedUriScheme() {
-        return "file://java:src/";
+        return "java://file/";
     }
 
 }

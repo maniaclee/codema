@@ -33,9 +33,9 @@ public class $src__name_Test {
 
     // <%
     // for( m in src.methods){
-    //var invoke = m.name;
-    //var Class1 = m.returnType;
-    //var class = @m.getArgsDefaultValue();
+    //      var invoke = m.name;
+    //      var Class1 = m.returnType;
+    //      var class = @m.getArgsDefaultValue();
     // %>
     @Test
     public void $invoke_() throws Exception {
@@ -49,11 +49,13 @@ public class $src__name_Test {
         //<%}%>
 
         System.out.println(JSON.toJSONString(re));
-        //<%}else{%>
+        //<%}%>
+
+        //<% else{ %>
         $templateClass_.$invoke_($class_);
         //<%}%>
 
     }
-    // <% }%>
+    // <%}%>
 
 }

@@ -36,7 +36,7 @@ public class ColdLoaderTest {
         JavaTestcaseCodemaConfig config = new JavaTestcaseCodemaConfig();
         config.setAuthor("maniaclee");
         config.setSpring(true);
-        config.setFrom("file://java:src///Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/testcase/JavaTestcaseCodemaConfig.java");
+        config.setFrom("java://file//Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/testcase/JavaTestcaseCodemaConfig.java");
         config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(), PrintResultHandler.class.getName()));
         config.setDestPackage("com.lvbby");
         Codema.from(new DefaultConfigLoader().addConfigRecursive(config)).run();

@@ -21,8 +21,10 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     @JavaTemplate
     public void code(CodemaContext codemaContext, @NotNull JavaTestcaseCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $src__name_Test.class, cu)
-                .bind("springBootConfig",codemaContext.getConfig(JavaSpringBootConfig.class))
-                .registerResult());
+        config.handle(codemaContext, config,
+                new JavaTemplateResult(config, $src__name_Test.class, cu)
+                        .bind("springBootConfig", codemaContext.getConfig(JavaSpringBootConfig.class))
+                        .registerResult()
+        );
     }
 }
