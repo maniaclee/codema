@@ -14,7 +14,8 @@ public abstract class JavaType {
     public static final String VOID = "void";
 
     public boolean bePrimitive() {
-        return false;
+        String name = getName();
+        return StringUtils.isNotBlank(name) && StringUtils.isAllLowerCase(name);
     }
 
     public abstract String getName();
@@ -72,7 +73,7 @@ public abstract class JavaType {
     public abstract String getFullName();
 
 
-    private static class VoidClass extends JavaType {
+    public static class VoidClass extends JavaType {
 
         @Override
         public boolean beVoid() {
@@ -100,7 +101,7 @@ public abstract class JavaType {
         }
     }
 
-    private static class JavaTypeByName extends JavaType {
+    public static class JavaTypeByName extends JavaType {
         private String name;
         private String pack;
 
@@ -139,7 +140,7 @@ public abstract class JavaType {
         }
     }
 
-    private static class JavaTypeByClass extends JavaType {
+    public static class JavaTypeByClass extends JavaType {
         private Class clz;
 
         public JavaTypeByClass(Class clz) {
@@ -169,7 +170,7 @@ public abstract class JavaType {
         }
     }
 
-    private static class JavaTypeByType extends JavaType {
+    public static class JavaTypeByType extends JavaType {
         private Type type;
 
         public JavaTypeByType(Type clz) {

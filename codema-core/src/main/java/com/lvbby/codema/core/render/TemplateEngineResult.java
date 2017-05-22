@@ -88,6 +88,7 @@ public class TemplateEngineResult implements PrintableResult, FileResult {
             templateEngine.bind(o.toString(), parameters.get(o));
         }
         string = templateEngine.render();
+        System.out.println(string);//TODO
         afterRender();
         return this;
     }
