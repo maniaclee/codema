@@ -54,7 +54,7 @@ public class SimpleTest {
     public void yaml() throws Exception {
         Yaml yaml = new Yaml();
         A a = new A();
-        a.setName("sdf");
+        a.setName("sxxxxxdf");
         A aa = new A();
         aa.setName("aa");
         a.setA(Lists.newArrayList(aa));
