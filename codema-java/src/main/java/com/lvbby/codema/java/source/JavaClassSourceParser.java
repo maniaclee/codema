@@ -21,9 +21,15 @@ import java.util.stream.Collectors;
  * Created by lipeng on 17/1/9.
  */
 public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
+    public static final String schema = "java://class/";
+
     @Override
     public String getSupportedUriScheme() {
-        return "java://class/";
+        return schema;
+    }
+
+    public static String toURI(Class clz) {
+        return schema + clz.getName();
     }
 
     @Override

@@ -206,4 +206,10 @@ public class SimpleTest {
         System.out.println(System.getProperty("user.name"));
 
     }
+
+    @Test
+    public void primitiveClass() throws Exception {
+        System.out.println(boolean.class.getPackage());
+
+    }
 }

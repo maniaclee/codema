@@ -16,6 +16,12 @@ import java.net.URI;
  * Created by lipeng on 2016/12/24.
  */
 public class JavaFileSourceParser implements SourceParser<JavaSourceParam> {
+    public static final String schema = "java://file/";
+
+    public static String toURI(File file) {
+        return schema + file.getAbsolutePath();
+    }
+
     @Override
     public JavaSourceParam parse(URI from) throws Exception {
         JavaSourceParam re = new JavaSourceParam();
@@ -35,9 +41,10 @@ public class JavaFileSourceParser implements SourceParser<JavaSourceParam> {
         return JavaLexer.read(IOUtils.toString(new FileInputStream(file)));
     }
 
+
     @Override
     public String getSupportedUriScheme() {
-        return "java://file/";
+        return schema;
     }
 
 }

@@ -156,7 +156,9 @@ public class JavaLexer {
      */
     public static Expression newInstanceForDefaultValue(String type) {
         String lowerCase = type.toLowerCase().replaceAll("<[^>]+>", "");//remove generic type
-        List<String> numbers = Lists.newArrayList("int", "Integer", "short", "double", "float", "byte", "long");
+        if ("boolean".equalsIgnoreCase(lowerCase))
+            return new NameExpr("true");
+        List<String> numbers = Lists.newArrayList("int", "Integer", "short", "double", "float", "byte", "long", "boolean");
         if (numbers.contains(lowerCase)) {
             return new NameExpr("1");
         }

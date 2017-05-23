@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,7 +43,7 @@ public class JavaType {
     public boolean bePrimitive() {
         if (type != null)
             return type.isPrimitive();
-        if(beVoid())
+        if (beVoid())
             return false;
         String name = getName();
         return StringUtils.isNotBlank(name) && StringUtils.isAllLowerCase(name);
@@ -58,7 +59,7 @@ public class JavaType {
 
 
     public boolean beVoid() {
-        return this == VOID_TYPE;
+        return VOID.equals(getName());
     }
 
     public boolean isGenericType() {
@@ -75,11 +76,11 @@ public class JavaType {
 
 
     public static void main(String[] args) {
-//        GenericClass re = GenericClass.of("Map<Map<String,String>,String>");
-//        System.out.println(re);
-//        System.out.println(GenericClass.of("Map<String>"));
-//        System.out.println(GenericClass.of("String"));
-//        System.out.println(splitGeneric("Map<String,Map<Integer,Class>>,String"));
+        //        GenericClass re = GenericClass.of("Map<Map<String,String>,String>");
+        //        System.out.println(re);
+        //        System.out.println(GenericClass.of("Map<String>"));
+        //        System.out.println(GenericClass.of("String"));
+        //        System.out.println(splitGeneric("Map<String,Map<Integer,Class>>,String"));
         System.out.println(ofClassName("Map<String,Map<Integer,Class>,String>"));
         System.out.println(ofClassName("boolean").getFullName());
     }
@@ -141,7 +142,7 @@ public class JavaType {
         JavaType re = new JavaType();
         re.name = clz.getSimpleName();
         re.type = clz;
-        re.pack = clz.getPackage().getName();
+        re.pack = Optional.ofNullable(clz.getPackage()).map(Package::getName).orElse("");
         return re;
     }
 

@@ -1,5 +1,7 @@
 package com.lvbby.codema.app.testcase;
 
+import com.alibaba.fastjson.JSON;
+import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$TemplateClass_;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +10,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static com.lvbby.codema.java.template.$Symbols_.$class_;
 
 //<% if(springBootConfig!=null){ %>
 // <%}%>
@@ -33,12 +37,23 @@ public class $src__name_Test {
     //      var invoke = m.name;
     //      var Class1 = m.returnType;
     //      var class = @m.getArgsDefaultValue();
-    //      var isPrimitive = @Class1.bePrimitive();
+    //      var isPrimitive =  @m.returnType.bePrimitive();
     // %>
     @Test
     public void $invoke_() throws Exception {
-        //${class}
+        // <% if (!@m.returnVoid()){ %>
+        $Class1_ re = $templateClass_.$invoke_($class_);
 
+        /*# <% if (isPrimitive){ %>
+        assert re >0 ;
+        <%}else{%> */
+        assert re != null;
+        //<%}%>
+
+        System.out.println(JSON.toJSONString("[$src__name_.${invoke} return ===>]  " + re));
+        //<%}else{%>
+        $templateClass_.$invoke_($class_);
+        //<%}%>
     }
     // <%}%>
 
