@@ -42,6 +42,8 @@ public class JavaType {
     public boolean bePrimitive() {
         if (type != null)
             return type.isPrimitive();
+        if(beVoid())
+            return false;
         String name = getName();
         return StringUtils.isNotBlank(name) && StringUtils.isAllLowerCase(name);
     }
@@ -79,6 +81,7 @@ public class JavaType {
 //        System.out.println(GenericClass.of("String"));
 //        System.out.println(splitGeneric("Map<String,Map<Integer,Class>>,String"));
         System.out.println(ofClassName("Map<String,Map<Integer,Class>,String>"));
+        System.out.println(ofClassName("boolean").getFullName());
     }
 
     private static List<String> splitGeneric(String s) {

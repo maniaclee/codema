@@ -235,6 +235,8 @@ public class ReflectionUtils {
     }
 
     public static String getPackage(String className) {
+        if (!className.contains("."))
+            return "";
         return className.replaceAll("(\\.[^.]+)$", "");
     }
 

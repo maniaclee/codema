@@ -41,7 +41,12 @@ public class $src__name_Test {
     public void $invoke_() throws Exception {
         // <% if (!@m.returnVoid()){ %>
         $Class1_ re = $templateClass_.$invoke_($class_);
-        //${@Class1.bePrimitive()}
+        /*#
+        <% if(@Class1.bePrimitive()){ %>
+        assert re > 0 ;
+        <%}else{%>*/
+        assert re != null;
+        //<%}%>
 
         System.out.println(JSON.toJSONString(re));
         //<%}%>
