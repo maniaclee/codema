@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.SourceParser;
-import com.lvbby.codema.core.config.DefaultConfigLoader;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.inject.CodemaInjector;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
@@ -39,7 +38,7 @@ public class ColdLoaderTest {
         config.setFrom("java://file//Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/testcase/JavaTestcaseCodemaConfig.java");
         config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(), PrintResultHandler.class.getName()));
         config.setDestPackage("com.lvbby");
-        Codema.from(new DefaultConfigLoader().addConfigRecursive(config)).run();
+        Codema.exec(config);
     }
 
     @Test

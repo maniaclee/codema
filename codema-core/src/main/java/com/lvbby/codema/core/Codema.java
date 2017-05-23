@@ -5,6 +5,7 @@ import com.lvbby.codema.core.bean.CodemaBeanFactory;
 import com.lvbby.codema.core.bean.DefaultCodemaBeanFactory;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigLoader;
+import com.lvbby.codema.core.config.DefaultConfigLoader;
 import com.lvbby.codema.core.config.YamlConfigLoader;
 import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.inject.CodemaInject;
@@ -35,6 +36,10 @@ public class Codema {
 
     public static Codema from(ConfigLoader configLoader) {
         return new Codema(configLoader);
+    }
+
+    public static void exec(CommonCodemaConfig config) throws Exception {
+        Codema.from(new DefaultConfigLoader().addConfigRecursive(config)).run();
     }
 
     private Codema(ConfigLoader configLoader) {

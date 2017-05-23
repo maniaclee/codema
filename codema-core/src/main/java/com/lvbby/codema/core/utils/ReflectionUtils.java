@@ -100,6 +100,13 @@ public class ReflectionUtils {
         return null;
     }
 
+    public static List<String> findAll(String src, String regx, Function<Matcher, String> function) {
+        List<String> re = Lists.newArrayList();
+        for (Matcher matcher = Pattern.compile(regx).matcher(src); matcher.find(); )
+            re.add(function.apply(matcher));
+        return re;
+    }
+
     public static Field getField(Class clz, String property) {
         try {
             return clz.getDeclaredField(property);
