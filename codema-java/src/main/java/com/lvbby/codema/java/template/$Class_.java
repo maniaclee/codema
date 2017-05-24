@@ -7,6 +7,10 @@ public class $Class_ {
 
     public static String $Method_ = "$Method_";
 
+
+    private $Class1_ class1_;
+    private $Class2_ class2_;
+
     public $GenericTypeArg_ $Method_($GenericTypeArg_ arg) {
         $GenericTypeArg_ re = new $GenericTypeArg_();
         return re;
@@ -21,5 +25,21 @@ public class $Class_ {
     }
 
     public void $Method_Void($GenericTypeArg_ arg) {
+    }
+
+    public $Class1_ getClass1_() {
+        return class1_;
+    }
+
+    public void setClass1_($Class1_ class1_) {
+        this.class1_ = class1_;
+    }
+
+    public $Class2_ getClass2_() {
+        return class2_;
+    }
+
+    public void setClass2_($Class2_ class2_) {
+        this.class2_ = class2_;
     }
 }

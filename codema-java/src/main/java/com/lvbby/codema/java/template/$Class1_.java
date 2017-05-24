@@ -19,4 +19,5 @@ public class $Class1_ extends $Class_{
 
     public void $Method1_Void($GenericTypeArg_ arg) {
     }
+
 }
