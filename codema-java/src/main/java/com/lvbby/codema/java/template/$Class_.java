@@ -11,12 +11,12 @@ public class $Class_ {
     private $Class1_ class1_;
     private $Class2_ class2_;
 
-    public $GenericTypeArg_ $Method_($GenericTypeArg_ arg) {
+    public $GenericTypeArg_ $method_($GenericTypeArg_ arg) {
         $GenericTypeArg_ re = new $GenericTypeArg_();
         return re;
     }
 
-    public $GenericTypeArg1_ $Method_($GenericTypeArg1_ arg) {
+    public $GenericTypeArg1_ $method_($GenericTypeArg1_ arg) {
         $GenericTypeArg1_ re = new $GenericTypeArg1_();
         return re;
     }

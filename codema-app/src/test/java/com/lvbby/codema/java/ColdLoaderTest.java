@@ -4,17 +4,22 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
+import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.inject.CodemaInjector;
+import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.mock.ServiceImpl;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
+import java.lang.reflect.Field;
 import java.util.ServiceLoader;
+import java.util.stream.Stream;
 
 /**
  * Created by lipeng on 16/12/22.
@@ -45,12 +50,23 @@ public class ColdLoaderTest {
 
     @Test
     public void templateEngineTest() throws Exception {
-        JavaTestcaseCodemaConfig config = new JavaTestcaseCodemaConfig();
-        config.setAuthor("maniaclee");
+        JavaTestcaseCodemaConfig config = _newConfig(JavaTestcaseCodemaConfig.class);
         config.setSpring(true);
-        config.setFrom(JavaClassSourceParser.toURI(JavaTestcaseCodemaConfig.class));
+        Codema.exec(config);
+    }
+
+    private <T extends JavaBasicCodemaConfig> T _newConfig(Class<T> clz) throws Exception {
+        T config = clz.newInstance();
+        config.setAuthor("maniaclee");
+        config.setFrom(JavaClassSourceParser.toURI(ServiceImpl.class));
         config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(), PrintResultHandler.class.getName()));
         config.setDestPackage("com.lvbby");
+        return config;
+    }
+
+    @Test
+    public void mockTest() throws Exception {
+        JavaMockTestCodemaConfig config = _newConfig(JavaMockTestCodemaConfig.class);
         Codema.exec(config);
     }
 
@@ -69,5 +85,13 @@ public class ColdLoaderTest {
     public void name() throws Exception {
         Lists.newArrayList(ServiceLoader.load(SourceParser.class)).stream().forEach(e -> System.out.println(e.getClass().getName()));
         Lists.newArrayList(ServiceLoader.load(CodemaInjector.class)).stream().forEach(e -> System.out.println(e.getClass().getName()));
+    }
+
+    @Test
+    public void anno() throws Exception {
+        Field field = ServiceImpl.class.getDeclaredField("textHolder");
+        Stream.of(field.getAnnotations()).forEach(annotation -> {
+            System.out.println( annotation.annotationType().getName());
+        });
     }
 }

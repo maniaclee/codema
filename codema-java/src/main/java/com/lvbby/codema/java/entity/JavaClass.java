@@ -19,6 +19,9 @@ public class JavaClass {
      */
     private Object from;
 
+    public JavaClass() {
+    }
+
     public String classFullName() {
         return StringUtils.isBlank(pack) ? name : (pack + "." + name);
     }

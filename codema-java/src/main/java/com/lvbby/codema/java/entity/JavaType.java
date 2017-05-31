@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -311,8 +312,13 @@ public class JavaType {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (o == null)
+            return false;
+        if (!(o instanceof JavaType)) {
+            if(o instanceof Class){
+                return Objects.equals(((Class) o).getName(),getFullName());
+            }
+        }
         JavaType javaType = (JavaType) o;
 
         return getFullName() != null ? getFullName().equals(javaType.getFullName()) : javaType.getFullName() == null;

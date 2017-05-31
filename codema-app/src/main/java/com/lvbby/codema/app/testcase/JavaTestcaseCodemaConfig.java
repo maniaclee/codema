@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 @ConfigKey("java.testcase")
 public class JavaTestcaseCodemaConfig extends JavaBasicCodemaConfig implements Serializable {
+    private static final long serialVersionUID = 7518066872925613331L;
     private boolean spring = false;
 
     public boolean isSpring() {

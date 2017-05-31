@@ -56,6 +56,7 @@ public class JavaClassUtils {
             javaField.setName(variable.getNameAsString());
             javaField.setType(JavaType.ofClassName(variable.getType().toString()));
             javaField.setPrimitive(false);//TODO
+            javaField.setAnnotations(fieldDeclaration.getAnnotations().stream().map(annotationExpr -> JavaType.ofClassName(annotationExpr.getNameAsString())).collect(Collectors.toList()));
             return javaField;
         }).collect(Collectors.toList()));
         re.setMethods(JavaLexer.getMethods(clz).stream().map(methodDeclaration -> {

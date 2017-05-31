@@ -11,11 +11,13 @@ import org.apache.commons.collections.CollectionUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lipeng on 17/1/9.
@@ -50,10 +52,12 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
         re.setPack(clz.getPackage().getName());
         BeanInfo beanInfo = Introspector.getBeanInfo(clz, Object.class);
         re.setFields(Lists.newArrayList(beanInfo.getPropertyDescriptors()).stream().map(p -> {
+            Field field = ReflectionUtils.getField(clz, p.getName());
             JavaField javaField = new JavaField();
             javaField.setName(p.getName());
-            javaField.setType(JavaType.ofField(ReflectionUtils.getField(clz, p.getName())));
+            javaField.setType(JavaType.ofField(field));
             javaField.setPrimitive(p.getPropertyType().isPrimitive());
+            javaField.setAnnotations(Stream.of(field.getAnnotations()).map(annotation -> JavaType.ofClass(annotation.annotationType())).collect(Collectors.toList()));
             return javaField;
         }).collect(Collectors.toList()));
         re.setMethods(Lists.newArrayList(beanInfo.getMethodDescriptors()).stream()
