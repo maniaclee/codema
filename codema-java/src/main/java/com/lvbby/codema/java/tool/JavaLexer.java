@@ -202,4 +202,14 @@ public class JavaLexer {
     public static List<String> getImports(CompilationUnit compilationUnit) {
         return compilationUnit.getImports().stream().map(i -> i.toString().replaceAll("import", "").trim()).collect(Collectors.toList());
     }
+
+    public static String getFullClassName(CompilationUnit unit) {
+        if (unit == null)
+            return null;
+        String pack = unit.getPackage()
+                .map(packageDeclaration -> packageDeclaration.getPackageName())
+                .map(s -> StringUtils.isBlank(s) ? "" : (s + "."))
+                .orElse("");
+        return getClass(unit).map(classOrInterfaceDeclaration -> pack + classOrInterfaceDeclaration.getNameAsString()).orElse(null);
+    }
 }
