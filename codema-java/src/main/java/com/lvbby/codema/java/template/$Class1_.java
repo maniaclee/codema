@@ -4,6 +4,8 @@ package com.lvbby.codema.java.template;
  * Created by lipeng on 17/1/5.
  */
 public class $Class1_ extends $Class_{
+    public static final $Class1_  $class1Object_ = new $Class1_();
+
     public $GenericTypeArg_ $Method1_($GenericTypeArg_ arg) {
         $GenericTypeArg_ re = new $GenericTypeArg_();
         return re;

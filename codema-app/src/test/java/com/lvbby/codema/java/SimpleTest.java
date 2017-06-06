@@ -13,9 +13,12 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.app.mybatis.$src__name_Dao;
+import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.java.engine.JavaEngineContext;
+import com.lvbby.codema.java.mock.ServiceImpl;
+import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
@@ -50,6 +53,12 @@ public class SimpleTest {
         String eval = ScriptEngineFactory.instance.eval("script://js/  (function(){return {match: /.*DTO/i.test($fromClassName), result: $fromClassName.replace(/DTO/i, 'Entity')}})()", parameter);
         System.out.println(eval);
 
+    }
+
+    @Test
+    public void mockTest() throws Exception {
+        List mockMethods = new JavaMockTestCodemaMachine().parseMockMethods(JavaClassSourceParser.toJavaClass(ServiceImpl.class));
+        System.out.println(mockMethods);
     }
 
     @Test

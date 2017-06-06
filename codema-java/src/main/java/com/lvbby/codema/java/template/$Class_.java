@@ -20,6 +20,14 @@ public class $Class_ {
         $GenericTypeArg1_ re = new $GenericTypeArg1_();
         return re;
     }
+    public $GenericTypeArg_ $method1_($GenericTypeArg_ arg) {
+        $GenericTypeArg_ re = new $GenericTypeArg_();
+        return re;
+    }
+    public $GenericTypeArg1_ $method1_($GenericTypeArg1_ arg) {
+        $GenericTypeArg1_ re = new $GenericTypeArg1_();
+        return re;
+    }
 
     public void $Method_Void($GenericTypeArg1_ arg) {
     }

@@ -106,6 +106,12 @@ public class ReflectionUtils {
             re.add(function.apply(matcher));
         return re;
     }
+    public static <T> List<T> findAllConvert(String src, String regx, Function<Matcher, T> function) {
+        List<T> re = Lists.newArrayList();
+        for (Matcher matcher = Pattern.compile(regx).matcher(src); matcher.find(); )
+            re.add(function.apply(matcher));
+        return re;
+    }
 
     public static Field getField(Class clz, String property) {
         try {

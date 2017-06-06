@@ -2,6 +2,7 @@ package com.lvbby.codema.app.testcase.mock;
 
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Class_;
+import com.lvbby.codema.java.template.$GenericTypeArg1_;
 import com.lvbby.codema.java.template.$GenericTypeArg_;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,18 +12,25 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static com.lvbby.codema.java.template.$GenericTypeArg_.$GenericTypeArgInstance_;
+import static com.lvbby.codema.java.template.$Class2_.$class2Object_;
 
 /**
  * Created by dushang.lp on 2017/5/24.
  */
 public class $Mock_Test {
 
-    /*# <%
-     var Class1 = src.name;
-     var class1 = @src.getNameCamel();
-     %> */
+    /*#
+     <%
+     for(f in injectFields){
+       var Class1 = f.type.name;
+       var class1 = lee.unCapital(f.type.name);
+     %>
+    */
     @Mock
     private $Class1_ $class1_;
+
+    //<%}%>
+
     /*# <%
      var Class = src.name;
      var class = @src.getNameCamel();
@@ -34,19 +42,23 @@ public class $Mock_Test {
     public void init() {
         /*#
         <%
-        var GenericTypeArg = "Shit";
-        var GenericTypeArgInstance = "GenericTypeArgInstance";
+         for(f in injectFields){
+            var GenericTypeArg1 = "Shit";
+            var GenericTypeArgInstance = "GenericTypeArgInstance";
+            var class2Object = "a";
 
           %>*/
-        $GenericTypeArg_ value = new $GenericTypeArg_();
+        $GenericTypeArg1_ value = null;
+        value = new $GenericTypeArg1_();
         Mockito.when(
-                $class1_.$method_(Mockito.any($GenericTypeArg_.class)))
+                $class2Object_.$method_(Mockito.any($GenericTypeArg1_.class)))
                 .thenReturn(value);
+        //<%}%>
     }
 
     // <%
     // for( m in src.methods){
-    //      var method = m.name;
+    //      var method1 = m.name;
     //      var isPrimitive =  @m.returnType.bePrimitive();
     //      var GenericTypeArg = "Shit";
     //      var GenericTypeArgInstance = "GenericTypeArgInstance";
@@ -55,7 +67,7 @@ public class $Mock_Test {
     public void $method_Test() throws Exception {
 
 
-        $GenericTypeArg_ re = $class_.$method_($GenericTypeArgInstance_);
+        $GenericTypeArg_ re = $class_.$method1_($GenericTypeArgInstance_);
         success(re, null);
     }
     //<%}%>
