@@ -14,11 +14,12 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.app.mybatis.$src__name_Dao;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
+import com.lvbby.codema.core.SourceParserFactory;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
+import com.lvbby.codema.java.baisc.JavaSourceParam;
 import com.lvbby.codema.java.engine.JavaEngineContext;
-import com.lvbby.codema.java.mock.ServiceImpl;
-import com.lvbby.codema.java.source.JavaClassSourceParser;
+import com.lvbby.codema.java.source.JavaFileSourceParser;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
@@ -26,6 +27,7 @@ import org.joor.Reflect;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -57,7 +59,9 @@ public class SimpleTest {
 
     @Test
     public void mockTest() throws Exception {
-        List mockMethods = new JavaMockTestCodemaMachine().parseMockMethods(JavaClassSourceParser.toJavaClass(ServiceImpl.class));
+        JavaSourceParam parse = SourceParserFactory.defaultInstance().parse(JavaFileSourceParser.toURI(new File("/Users/dushang.lp/workspace/project/codema/codema-app/src/test/java/com/lvbby/codema/java/mock/ServiceImpl.java")));
+//        List mockMethods = new JavaMockTestCodemaMachine().parseMockMethods(JavaClassSourceParser.toJavaClass(ServiceImpl.class));
+        List mockMethods = new JavaMockTestCodemaMachine().parseMockMethods(parse.getClasses().get(0));
         System.out.println(mockMethods);
     }
 

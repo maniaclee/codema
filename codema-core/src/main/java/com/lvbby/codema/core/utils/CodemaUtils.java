@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.function.Function;
 
 /**
@@ -20,6 +21,14 @@ public class CodemaUtils {
         if (StringUtils.isNotBlank(uri.getAuthority()))
             path = uri.getAuthority() + path;
         return path;
+    }
+
+    public static <T> List<T> loadService(Class<T> clz, ClassLoader classLoader) {
+        return Lists.newArrayList(ServiceLoader.load(clz, classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader));
+    }
+
+    public static <T> List<T> loadService(Class<T> clz) {
+        return loadService(clz, null);
     }
 
     /***
@@ -62,4 +71,6 @@ public class CodemaUtils {
                 });
         }
     }
+
+
 }

@@ -1,6 +1,5 @@
 package com.lvbby.codema.core;
 
-import com.google.common.collect.Lists;
 import com.lvbby.codema.core.bean.CodemaBeanFactory;
 import com.lvbby.codema.core.bean.DefaultCodemaBeanFactory;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
@@ -10,12 +9,12 @@ import com.lvbby.codema.core.config.YamlConfigLoader;
 import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.inject.CodemaInject;
 import com.lvbby.codema.core.inject.CodemaInjectable;
+import com.lvbby.codema.core.utils.CodemaUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.net.URI;
 import java.util.List;
-import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 /**
@@ -49,9 +48,9 @@ public class Codema {
 
     private void init() {
         //加载CodeMachine
-        this.codemaMachines = loadService(CodemaMachine.class, classLoader);
-        this.sourceParserFactory = SourceParserFactory.of(loadService(SourceParser.class, classLoader));
-        this.codemaMachines.addAll(loadService(CodemaInjectable.class).stream().map(codemaInjectable -> codemaInject.toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
+        this.codemaMachines = CodemaUtils.loadService(CodemaMachine.class, classLoader);
+        this.sourceParserFactory = SourceParserFactory.of(classLoader);
+        this.codemaMachines.addAll(CodemaUtils.loadService(CodemaInjectable.class).stream().map(codemaInjectable -> codemaInject.toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
     }
 
     public Codema setClassLoader(ClassLoader classLoader) {
@@ -121,15 +120,6 @@ public class Codema {
     public Codema addCodemaMachine(SourceParser sourceParser) {
         this.sourceParserFactory.getSourceParsers().add(sourceParser);
         return this;
-    }
-
-
-    private <T> List<T> loadService(Class<T> clz) {
-        return Lists.newArrayList(ServiceLoader.load(clz, Thread.currentThread().getContextClassLoader()));
-    }
-
-    private <T> List<T> loadService(Class<T> clz, ClassLoader classLoader) {
-        return Lists.newArrayList(ServiceLoader.load(clz, classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader));
     }
 
     public CodemaInject getCodemaInject() {

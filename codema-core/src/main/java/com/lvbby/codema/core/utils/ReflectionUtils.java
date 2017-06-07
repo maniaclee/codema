@@ -14,6 +14,7 @@ import org.joor.Reflect;
 import org.joor.ReflectException;
 
 import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -106,6 +108,7 @@ public class ReflectionUtils {
             re.add(function.apply(matcher));
         return re;
     }
+
     public static <T> List<T> findAllConvert(String src, String regx, Function<Matcher, T> function) {
         List<T> re = Lists.newArrayList();
         for (Matcher matcher = Pattern.compile(regx).matcher(src); matcher.find(); )
@@ -251,6 +254,7 @@ public class ReflectionUtils {
         return IOUtils.toString(clz.getResourceAsStream(resourceName));
     }
 
+
     public static <T> T getFieldWithAnnotation(Object obj, Class<? extends Annotation> anno) {
         Class<?> clz = obj.getClass();
         while (clz != null && !clz.equals(Object.class)) {
@@ -266,6 +270,23 @@ public class ReflectionUtils {
             clz = clz.getSuperclass();
         }
         return null;
+    }
+
+    public static List<PropertyDescriptor> getFields(Class obj) {
+        return getFields(obj, propertyDescriptor -> propertyDescriptor.getReadMethod()!=null && propertyDescriptor.getWriteMethod()!=null);
+    }
+
+    public static List<PropertyDescriptor> getFields(Class obj, Predicate<PropertyDescriptor> predicate) {
+        BeanInfo beanInfo = null;
+        try {
+            beanInfo = Introspector.getBeanInfo(obj);
+        } catch (IntrospectionException e) {
+            return Lists.newLinkedList();
+        }
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        if (propertyDescriptors == null || propertyDescriptors.length == 0)
+            return Lists.newLinkedList();
+        return Lists.newArrayList(propertyDescriptors).stream().filter(predicate).collect(Collectors.toList());
     }
 
     public static List<Method> getMethodsWithAnnotation(Class<?> clz, Class<? extends Annotation> anno, boolean includeParent) {

@@ -28,4 +28,9 @@ public class JavaArg {
     public void setType(JavaType type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s",type,name);
+    }
 }

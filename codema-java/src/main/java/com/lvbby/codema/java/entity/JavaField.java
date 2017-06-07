@@ -42,4 +42,22 @@ public class JavaField {
     public void setAnnotations(List<JavaType> annotations) {
         this.annotations = annotations;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JavaField javaField = (JavaField) o;
+
+        if (!name.equals(javaField.name)) return false;
+        return type.equals(javaField.type);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
+    }
 }

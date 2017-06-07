@@ -65,4 +65,12 @@ public class JavaMethod {
     public void setReturnType(JavaType returnType) {
         this.returnType = returnType;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s %s(%s)]",
+                returnType,
+                getName(),
+                (CollectionUtils.isEmpty(args) ? "" : args.stream().map(JavaArg::toString).collect(Collectors.joining(","))));
+    }
 }

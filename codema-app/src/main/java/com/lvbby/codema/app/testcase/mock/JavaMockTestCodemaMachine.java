@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
@@ -23,7 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -38,22 +42,35 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
         config.handle(codemaContext, config,
                 new JavaTemplateResult(config, $Mock_Test.class, cu)
                         .bind("Mock", cu.getName() + "Test")
-                        .bind("injectFields", extractAllInjectFields(cu))
+                        .bind("injectFields", extractAllInjectFields(cu,config.getDependencyAnnotation()))
                         .registerResult()
         );
     }
 
-    public static List<JavaField> extractAllInjectFields(JavaClass javaClass) {
+    public static class  MockTestVo implements Serializable{
+        private static final long serialVersionUID = 5212603848572355054L;
+
+    }
+
+    public static List<JavaField> extractAllInjectFields(JavaClass javaClass , List<String> annotations) {
+        return extractAllInjectFields(javaClass, javaField -> isInjectField(javaField,annotations));
+    }
+
+    public static List<JavaField> extractAllInjectFields(JavaClass javaClass, Predicate<JavaField> predicate) {
         if (CollectionUtils.isNotEmpty(javaClass.getFields())) {
-            return javaClass.getFields().stream().filter(javaField -> isInjectField(javaField)).collect(Collectors.toList());
+            return javaClass.getFields().stream().filter(javaField -> predicate == null || predicate.test(javaField)).collect(Collectors.toList());
         }
         return null;
     }
 
     private static boolean isInjectField(JavaField field) {
+        return isInjectField(field, Lists.newArrayList(Autowired.class, Resource.class));
+    }
+
+    private static boolean isInjectField(JavaField field, List annotations) {
         return !field.getType().beVoid()
                 && !field.getType().bePrimitive()
-                && CollectionUtils.containsAny(field.getAnnotations(), Lists.newArrayList(Autowired.class, Resource.class))
+                && (CollectionUtils.isEmpty(annotations)||CollectionUtils.containsAny(field.getAnnotations(), annotations))
                 ;
     }
 
@@ -71,22 +88,22 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
 
     private static class MockMethod {
         private JavaMethod javaMethod;
-        private List<MockDependencyMethod> dependencyMethods;
+        private Set<MockDependencyMethod> dependencyMethods;
 
         public static MockMethod from(JavaClass javaClass, JavaMethod method, ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
             MockMethod mockMethod = new MockMethod();
             mockMethod.setJavaMethod(method);
             MethodDeclaration methodDeclaration = findMethod(classOrInterfaceDeclaration, method);
             String ms = methodDeclaration.toString();
-            List<JavaField> javaFields = JavaMockTestCodemaMachine.extractAllInjectFields(javaClass);
+            List<JavaField> javaFields = JavaMockTestCodemaMachine.extractAllInjectFields(javaClass, null);
             if (CollectionUtils.isNotEmpty(javaFields)) {
-                List<MockDependencyMethod> mockDependencyMethodList = Lists.newArrayList();
-                javaFields.forEach(javaField -> mockDependencyMethodList.addAll(findReferredInvokation(ms, javaField)));
+                mockMethod.setDependencyMethods(Sets.newHashSet());//init
+                javaFields.forEach(javaField -> mockMethod.getDependencyMethods().addAll(findReferredInvoke(ms, javaField)));
             }
             return mockMethod;
         }
 
-        private static List<MockDependencyMethod> findReferredInvokation(String s, JavaField javaField) {
+        private static List<MockDependencyMethod> findReferredInvoke(String s, JavaField javaField) {
             return ReflectionUtils.findAllConvert(s,
                     StringUtils.uncapitalize(javaField.getName()) + "\\.([^\\(\\)]+)\\(",
                     matcher -> new MockDependencyMethod(javaField, matcher.group(1)));
@@ -110,11 +127,11 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
             this.javaMethod = javaMethod;
         }
 
-        public List<MockDependencyMethod> getDependencyMethods() {
+        public Set<MockDependencyMethod> getDependencyMethods() {
             return dependencyMethods;
         }
 
-        public void setDependencyMethods(List<MockDependencyMethod> dependencyMethods) {
+        public void setDependencyMethods(Set<MockDependencyMethod> dependencyMethods) {
             this.dependencyMethods = dependencyMethods;
         }
     }
@@ -142,6 +159,29 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
 
         public void setMethod(String method) {
             this.method = method;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            MockDependencyMethod that = (MockDependencyMethod) o;
+
+            if (!javaField.equals(that.javaField)) return false;
+            return method.equals(that.method);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = javaField.hashCode();
+            result = 31 * result + method.hashCode();
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("MockDependencyMethod[%s.%s]", javaField.getType(), method);
         }
     }
 }
