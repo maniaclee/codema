@@ -1,5 +1,6 @@
 package com.lvbby.codema.java.entity;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +19,8 @@ public class JavaClass {
      * 来源于什么对象
      */
     private Object from;
+    /** 源代码 */
+    private CompilationUnit src;
 
     public JavaClass() {
     }
@@ -76,6 +79,14 @@ public class JavaClass {
 
     public void setImports(List<String> imports) {
         this.imports = imports;
+    }
+
+    public CompilationUnit getSrc() {
+        return src;
+    }
+
+    public void setSrc(CompilationUnit src) {
+        this.src = src;
     }
 
     @Override

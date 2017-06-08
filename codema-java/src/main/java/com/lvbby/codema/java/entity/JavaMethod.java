@@ -1,7 +1,9 @@
 package com.lvbby.codema.java.entity;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.beans.MethodDescriptor;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,6 +15,19 @@ public class JavaMethod {
     public String name;
     public JavaType returnType;
     public List<JavaArg> args;
+
+    public static JavaMethod from(MethodDescriptor m){
+        JavaMethod javaMethod = new JavaMethod();
+        javaMethod.setName(m.getName());
+        javaMethod.setReturnType(JavaType.ofMethodReturnType(m.getMethod()));
+        javaMethod.setArgs(Lists.newArrayList(m.getMethod().getParameters()).stream().map(parameterDescriptor -> {
+            JavaArg javaArg = new JavaArg();
+            javaArg.setName(parameterDescriptor.getName());
+            javaArg.setType(JavaType.ofMethodParameter(parameterDescriptor));
+            return javaArg;
+        }).collect(Collectors.toList()));
+        return javaMethod;
+    }
 
     public boolean returnVoid() {
         return returnType.beVoid();
@@ -64,6 +79,24 @@ public class JavaMethod {
 
     public void setReturnType(JavaType returnType) {
         this.returnType = returnType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JavaMethod that = (JavaMethod) o;
+
+        if (!name.equals(that.name)) return false;
+        return CollectionUtils.isEqualCollection(that.getArgs(),getArgs());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + args.hashCode();
+        return result;
     }
 
     @Override

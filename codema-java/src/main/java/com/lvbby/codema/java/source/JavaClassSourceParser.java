@@ -6,18 +6,19 @@ import com.lvbby.codema.core.error.CodemaException;
 import com.lvbby.codema.core.utils.CodemaUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
-import com.lvbby.codema.java.entity.*;
+import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaField;
+import com.lvbby.codema.java.entity.JavaMethod;
+import com.lvbby.codema.java.tool.JavaCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by lipeng on 17/1/9.
@@ -51,29 +52,14 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
         re.setFrom(clz);
         re.setPack(clz.getPackage().getName());
         BeanInfo beanInfo = Introspector.getBeanInfo(clz, Object.class);
-        re.setFields(Lists.newArrayList(beanInfo.getPropertyDescriptors()).stream().map(p -> {
-            Field field = ReflectionUtils.getField(clz, p.getName());
-            JavaField javaField = new JavaField();
-            javaField.setName(p.getName());
-            javaField.setType(JavaType.ofField(field));
-            javaField.setPrimitive(p.getPropertyType().isPrimitive());
-            javaField.setAnnotations(Stream.of(field.getAnnotations()).map(annotation -> JavaType.ofClass(annotation.annotationType())).collect(Collectors.toList()));
-            return javaField;
-        }).collect(Collectors.toList()));
+        re.setFields(Lists.newArrayList(beanInfo.getPropertyDescriptors()).stream()
+                .map(p -> JavaField.from(ReflectionUtils.getField(clz, p.getName())))
+                .collect(Collectors.toList()));
         re.setMethods(Lists.newArrayList(beanInfo.getMethodDescriptors()).stream()
                 .filter(methodDescriptor -> Modifier.isPublic(methodDescriptor.getMethod().getModifiers()))
-                .map(m -> {
-                    JavaMethod javaMethod = new JavaMethod();
-                    javaMethod.setName(m.getName());
-                    javaMethod.setReturnType(JavaType.ofMethodReturnType(m.getMethod()));
-                    javaMethod.setArgs(Lists.newArrayList(m.getMethod().getParameters()).stream().map(parameterDescriptor -> {
-                        JavaArg javaArg = new JavaArg();
-                        javaArg.setName(parameterDescriptor.getName());
-                        javaArg.setType(JavaType.ofMethodParameter(parameterDescriptor));
-                        return javaArg;
-                    }).collect(Collectors.toList()));
-                    return javaMethod;
-                }).collect(Collectors.toList()));
+                .map(m -> JavaMethod.from(m))
+                .collect(Collectors.toList()));
+        re.setSrc(JavaCodeUtils.loadJavaSrcFromProject(clz));
         return re;
     }
 

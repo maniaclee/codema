@@ -18,13 +18,14 @@ import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import com.lvbby.codema.java.tool.JavaCodeUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -42,18 +43,13 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
         config.handle(codemaContext, config,
                 new JavaTemplateResult(config, $Mock_Test.class, cu)
                         .bind("Mock", cu.getName() + "Test")
-                        .bind("injectFields", extractAllInjectFields(cu,config.getDependencyAnnotation()))
+                        .bind("injectFields", extractAllInjectFields(cu, config.getDependencyAnnotation()))
                         .registerResult()
         );
     }
 
-    public static class  MockTestVo implements Serializable{
-        private static final long serialVersionUID = 5212603848572355054L;
-
-    }
-
-    public static List<JavaField> extractAllInjectFields(JavaClass javaClass , List<String> annotations) {
-        return extractAllInjectFields(javaClass, javaField -> isInjectField(javaField,annotations));
+    public static List<JavaField> extractAllInjectFields(JavaClass javaClass, List<String> annotations) {
+        return extractAllInjectFields(javaClass, javaField -> isInjectField(javaField, annotations));
     }
 
     public static List<JavaField> extractAllInjectFields(JavaClass javaClass, Predicate<JavaField> predicate) {
@@ -70,7 +66,8 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
     private static boolean isInjectField(JavaField field, List annotations) {
         return !field.getType().beVoid()
                 && !field.getType().bePrimitive()
-                && (CollectionUtils.isEmpty(annotations)||CollectionUtils.containsAny(field.getAnnotations(), annotations))
+                && JavaCodeUtils.isOuterClass(field.getType().getJavaType())
+                && (CollectionUtils.isEmpty(annotations) || CollectionUtils.containsAny(field.getAnnotations(), annotations))
                 ;
     }
 
@@ -90,9 +87,10 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
         private JavaMethod javaMethod;
         private Set<MockDependencyMethod> dependencyMethods;
 
-        public static MockMethod from(JavaClass javaClass, JavaMethod method, ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
+        public static MockMethod from(JavaClass javaClass, JavaMethod method) {
             MockMethod mockMethod = new MockMethod();
             mockMethod.setJavaMethod(method);
+
             MethodDeclaration methodDeclaration = findMethod(classOrInterfaceDeclaration, method);
             String ms = methodDeclaration.toString();
             List<JavaField> javaFields = JavaMockTestCodemaMachine.extractAllInjectFields(javaClass, null);
@@ -138,9 +136,9 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
 
     private static class MockDependencyMethod {
         private JavaField javaField;
-        private String method;
+        private JavaMethod method;
 
-        public MockDependencyMethod(JavaField javaField, String method) {
+        public MockDependencyMethod(JavaField javaField, JavaMethod method) {
             this.javaField = javaField;
             this.method = method;
         }
@@ -153,11 +151,11 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
             this.javaField = javaField;
         }
 
-        public String getMethod() {
+        public JavaMethod getMethod() {
             return method;
         }
 
-        public void setMethod(String method) {
+        public void setMethod(JavaMethod method) {
             this.method = method;
         }
 
@@ -177,11 +175,6 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
             int result = javaField.hashCode();
             result = 31 * result + method.hashCode();
             return result;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("MockDependencyMethod[%s.%s]", javaField.getType(), method);
         }
     }
 }

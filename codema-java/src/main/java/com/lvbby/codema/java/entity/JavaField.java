@@ -1,6 +1,9 @@
 package com.lvbby.codema.java.entity;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lipeng on 17/1/5.
@@ -10,6 +13,15 @@ public class JavaField {
     private JavaType type;
     private boolean isPrimitive;
     private List<JavaType> annotations;
+
+    public static JavaField from(Field field){
+        JavaField javaField = new JavaField();
+        javaField.setName(field.getName());
+        javaField.setType(JavaType.ofField(field));
+        javaField.setPrimitive(field.getType().isPrimitive());
+        javaField.setAnnotations(Stream.of(field.getAnnotations()).map(annotation -> JavaType.ofClass(annotation.annotationType())).collect(Collectors.toList()));
+        return javaField;
+    }
 
     public String getName() {
         return name;

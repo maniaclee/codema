@@ -30,6 +30,24 @@ public class JavaArg {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JavaArg javaArg = (JavaArg) o;
+
+        if (!name.equals(javaArg.name)) return false;
+        return type.equals(javaArg.type);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return String.format("%s %s",type,name);
     }

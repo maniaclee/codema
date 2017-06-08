@@ -15,8 +15,11 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,10 @@ import java.util.stream.Collectors;
 public class JavaLexer {
     public static CompilationUnit read(String code) {
         return JavaParser.parse(code);
+    }
+
+    public static CompilationUnit read(File code) throws Exception {
+        return JavaParser.parse(IOUtils.toString(new FileInputStream(code)));
     }
 
     public static TypeDeclaration<?> parseJavaClass(String code) {

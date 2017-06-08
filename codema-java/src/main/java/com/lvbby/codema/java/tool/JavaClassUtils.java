@@ -72,6 +72,7 @@ public class JavaClassUtils {
             return javaMethod;
         }).collect(Collectors.toList()));
         re.setFrom(cu);
+        re.setSrc(cu);
         return re;
     }
 }
