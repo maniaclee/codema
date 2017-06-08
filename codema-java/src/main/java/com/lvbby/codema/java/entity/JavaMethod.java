@@ -1,9 +1,12 @@
 package com.lvbby.codema.java.entity;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.google.common.collect.Lists;
+import com.lvbby.codema.java.tool.JavaCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
 
-import java.beans.MethodDescriptor;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,12 +18,13 @@ public class JavaMethod {
     public String name;
     public JavaType returnType;
     public List<JavaArg> args;
+    private MethodDeclaration src;
 
-    public static JavaMethod from(MethodDescriptor m){
+    public static JavaMethod from(Method m) {
         JavaMethod javaMethod = new JavaMethod();
         javaMethod.setName(m.getName());
-        javaMethod.setReturnType(JavaType.ofMethodReturnType(m.getMethod()));
-        javaMethod.setArgs(Lists.newArrayList(m.getMethod().getParameters()).stream().map(parameterDescriptor -> {
+        javaMethod.setReturnType(JavaType.ofMethodReturnType(m));
+        javaMethod.setArgs(Lists.newArrayList(m.getParameters()).stream().map(parameterDescriptor -> {
             JavaArg javaArg = new JavaArg();
             javaArg.setName(parameterDescriptor.getName());
             javaArg.setType(JavaType.ofMethodParameter(parameterDescriptor));
@@ -28,6 +32,12 @@ public class JavaMethod {
         }).collect(Collectors.toList()));
         return javaMethod;
     }
+
+    public JavaMethod src(ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
+        setSrc(JavaCodeUtils.getMethodSrc(classOrInterfaceDeclaration, this));
+        return this;
+    }
+
 
     public boolean returnVoid() {
         return returnType.beVoid();
@@ -81,6 +91,14 @@ public class JavaMethod {
         this.returnType = returnType;
     }
 
+    public MethodDeclaration getSrc() {
+        return src;
+    }
+
+    public void setSrc(MethodDeclaration src) {
+        this.src = src;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,7 +107,7 @@ public class JavaMethod {
         JavaMethod that = (JavaMethod) o;
 
         if (!name.equals(that.name)) return false;
-        return CollectionUtils.isEqualCollection(that.getArgs(),getArgs());
+        return CollectionUtils.isEqualCollection(that.getArgs(), getArgs());
     }
 
     @Override

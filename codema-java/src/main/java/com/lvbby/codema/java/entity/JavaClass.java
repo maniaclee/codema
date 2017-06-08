@@ -21,6 +21,7 @@ public class JavaClass {
     private Object from;
     /** 源代码 */
     private CompilationUnit src;
+    private Class type;
 
     public JavaClass() {
     }
@@ -87,6 +88,14 @@ public class JavaClass {
 
     public void setSrc(CompilationUnit src) {
         this.src = src;
+    }
+
+    public Class getType() {
+        return type;
+    }
+
+    public void setType(Class type) {
+        this.type = type;
     }
 
     @Override

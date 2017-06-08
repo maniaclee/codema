@@ -1,8 +1,5 @@
 package com.lvbby.codema.app.testcase.mock;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.lvbby.codema.core.CodemaContext;
@@ -22,7 +19,6 @@ import com.lvbby.codema.java.tool.JavaCodeUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -48,8 +44,12 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
         );
     }
 
-    public static List<JavaField> extractAllInjectFields(JavaClass javaClass, List<String> annotations) {
+    public static List<JavaField> extractAllInjectFields(JavaClass javaClass, List annotations) {
         return extractAllInjectFields(javaClass, javaField -> isInjectField(javaField, annotations));
+    }
+
+    public static List<JavaField> extractAllInjectFields(JavaClass javaClass) {
+        return extractAllInjectFields(javaClass, Lists.newArrayList(Autowired.class, Resource.class));
     }
 
     public static List<JavaField> extractAllInjectFields(JavaClass javaClass, Predicate<JavaField> predicate) {
@@ -57,10 +57,6 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
             return javaClass.getFields().stream().filter(javaField -> predicate == null || predicate.test(javaField)).collect(Collectors.toList());
         }
         return null;
-    }
-
-    private static boolean isInjectField(JavaField field) {
-        return isInjectField(field, Lists.newArrayList(Autowired.class, Resource.class));
     }
 
     private static boolean isInjectField(JavaField field, List annotations) {
@@ -72,18 +68,18 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
     }
 
     public List<MockMethod> parseMockMethods(JavaClass clz) {
-        if (clz.getFrom() != null && clz.getFrom() instanceof CompilationUnit && CollectionUtils.isNotEmpty(clz.getMethods())) {
-            return JavaLexer.getClass((CompilationUnit) clz.getFrom())
+        if (clz.getSrc() != null && CollectionUtils.isNotEmpty(clz.getMethods())) {
+            return JavaLexer.getClass(clz.getSrc())
                     .map(classOrInterfaceDeclaration ->
                             clz.getMethods().stream()
-                                    .map(javaMethod -> MockMethod.from(clz, javaMethod, classOrInterfaceDeclaration))
+                                    .map(javaMethod -> MockMethod.from(clz, javaMethod))
                                     .collect(Collectors.toList()))
                     .orElse(null);
         }
         return Lists.newLinkedList();
     }
 
-    private static class MockMethod {
+    public static class MockMethod {
         private JavaMethod javaMethod;
         private Set<MockDependencyMethod> dependencyMethods;
 
@@ -91,30 +87,19 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
             MockMethod mockMethod = new MockMethod();
             mockMethod.setJavaMethod(method);
 
-            MethodDeclaration methodDeclaration = findMethod(classOrInterfaceDeclaration, method);
-            String ms = methodDeclaration.toString();
-            List<JavaField> javaFields = JavaMockTestCodemaMachine.extractAllInjectFields(javaClass, null);
+            String ms = method.getSrc().toString();
+            List<JavaField> javaFields = JavaMockTestCodemaMachine.extractAllInjectFields(javaClass);
             if (CollectionUtils.isNotEmpty(javaFields)) {
                 mockMethod.setDependencyMethods(Sets.newHashSet());//init
-                javaFields.forEach(javaField -> mockMethod.getDependencyMethods().addAll(findReferredInvoke(ms, javaField)));
+                javaFields.forEach(javaField -> mockMethod.getDependencyMethods().addAll(findReferredInvoke(ms, javaField, javaClass)));
             }
             return mockMethod;
         }
 
-        private static List<MockDependencyMethod> findReferredInvoke(String s, JavaField javaField) {
+        private static List<MockDependencyMethod> findReferredInvoke(String s, JavaField javaField, JavaClass javaClass) {
             return ReflectionUtils.findAllConvert(s,
                     StringUtils.uncapitalize(javaField.getName()) + "\\.([^\\(\\)]+)\\(",
-                    matcher -> new MockDependencyMethod(javaField, matcher.group(1)));
-        }
-
-        private static MethodDeclaration findMethod(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, JavaMethod method) {
-            List<MethodDeclaration> methodsByName = classOrInterfaceDeclaration.getMethodsByName(method.getName());
-            if (CollectionUtils.isNotEmpty(methodsByName)) {
-                if (methodsByName.size() == 1)
-                    return methodsByName.get(0);
-                //TODO
-            }
-            return null;
+                    matcher -> new MockDependencyMethod(javaField, JavaCodeUtils.findMethod(javaClass, matcher.group(1))));
         }
 
         public JavaMethod getJavaMethod() {
@@ -132,7 +117,9 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
         public void setDependencyMethods(Set<MockDependencyMethod> dependencyMethods) {
             this.dependencyMethods = dependencyMethods;
         }
+
     }
+
 
     private static class MockDependencyMethod {
         private JavaField javaField;

@@ -1,12 +1,18 @@
 package com.lvbby.codema.java.tool;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaGlobalContext;
 import com.lvbby.codema.core.CodemaGlobalContextKey;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaMethod;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,7 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by dushang.lp on 2017/6/7.
- * java code 相关工具类
+ * java code related functions
  */
 public class JavaCodeUtils {
 
@@ -47,11 +53,48 @@ public class JavaCodeUtils {
     public static CompilationUnit loadJavaSrcFromProject(Class clz) throws Exception {
         for (File file : getMavenSrcDirectories()) {
             File re = new File(file, clz.getName().replace('.', '/') + ".java");
-            if (re.isFile() && re.exists()){
+            if (re.isFile() && re.exists()) {
                 return JavaLexer.read(re);
             }
         }
         return null;
+    }
+
+
+    private static boolean isEqual(JavaArg javaArg, Parameter parameter) {
+        return javaArg.getName().equals(parameter.getNameAsString()) && (parameter.getType().toString().equals(javaArg.getType().getName()) || parameter.getType().toString().equals(javaArg.getType().getFullName()));
+    }
+
+    private static boolean isEqual(JavaMethod method, MethodDeclaration methodDeclaration) {
+        if (!method.getName().equals(methodDeclaration.getNameAsString()))
+            return false;
+        NodeList<Parameter> parameters = methodDeclaration.getParameters();
+        if (parameters.size() == method.getArgs().size()) {
+            for (int i = 0; i < method.getArgs().size(); i++) {
+                if (!isEqual(method.getArgs().get(i), parameters.get(i)))
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    public static JavaMethod findMethod(JavaClass javaClass , String methodName){
+        return javaClass.getMethods().stream().filter(method -> method.getName().equals(methodName)).findAny().orElse(null);
+    }
+    public static MethodDeclaration getMethodSrc(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, JavaMethod method) {
+        if(classOrInterfaceDeclaration==null)
+            return null;
+        List<MethodDeclaration> methodsByName = classOrInterfaceDeclaration.getMethodsByName(method.getName());
+        if (CollectionUtils.isEmpty(methodsByName))
+            return null;
+        if (methodsByName.size() == 1)
+            return methodsByName.get(0);
+        List<MethodDeclaration> collect = methodsByName.stream().filter(methodDeclaration -> isEqual(method, methodDeclaration)).collect(Collectors.toList());
+        if (collect.isEmpty())
+            return null;
+        return collect.get(0);
     }
 
     public static List<File> getMavenSrcDirectories() {
@@ -100,8 +143,7 @@ public class JavaCodeUtils {
     }
 
     /**
-     * 基本类型因为类名没有表示度，所以没法自动命名
-     * 返回类似：
+     * 缁撴灉绫讳技
      * <code>
      * JavaBasicCodemaConfig javaBasicCodemaConfig = new JavaBasicCodemaConfig();
      * javaBasicCodemaConfig.setAuthor("");
@@ -187,7 +229,7 @@ public class JavaCodeUtils {
 
         System.out.println(getMavenSrcDirectories(new File("/Users/dushang.lp/workspace/zcbprod")).stream().map(File::toString).collect(Collectors.joining("\n")));
         System.out.println(getMavenRootDirectories(new File("/Users/dushang.lp/workspace/zcbprod")).stream().map(File::toString).collect(Collectors.joining("\n")));
-        CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot,Lists.newArrayList("/Users/dushang.lp/workspace/zcbprod"));
+        CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList("/Users/dushang.lp/workspace/zcbprod"));
     }
 
 }

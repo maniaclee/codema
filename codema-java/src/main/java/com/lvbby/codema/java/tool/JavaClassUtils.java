@@ -61,6 +61,7 @@ public class JavaClassUtils {
         }).collect(Collectors.toList()));
         re.setMethods(JavaLexer.getMethods(clz).stream().map(methodDeclaration -> {
             JavaMethod javaMethod = new JavaMethod();
+            javaMethod.setSrc(methodDeclaration);
             javaMethod.setName(methodDeclaration.getNameAsString());
             javaMethod.setReturnType(JavaType.ofClassName(methodDeclaration.getType().toString()));
             javaMethod.setArgs(methodDeclaration.getParameters().stream().map(parameter -> {

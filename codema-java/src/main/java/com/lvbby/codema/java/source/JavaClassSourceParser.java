@@ -1,5 +1,6 @@
 package com.lvbby.codema.java.source;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.error.CodemaException;
@@ -10,6 +11,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.tool.JavaCodeUtils;
+import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.beans.BeanInfo;
@@ -47,19 +49,23 @@ public class JavaClassSourceParser implements SourceParser<JavaSourceParam> {
     }
 
     public static JavaClass toJavaClass(Class clz) throws Exception {
+        CompilationUnit src = JavaCodeUtils.loadJavaSrcFromProject(clz);
+
         JavaClass re = new JavaClass();
         re.setName(clz.getSimpleName());
         re.setFrom(clz);
         re.setPack(clz.getPackage().getName());
+        re.setType(clz);
+
         BeanInfo beanInfo = Introspector.getBeanInfo(clz, Object.class);
         re.setFields(Lists.newArrayList(beanInfo.getPropertyDescriptors()).stream()
                 .map(p -> JavaField.from(ReflectionUtils.getField(clz, p.getName())))
                 .collect(Collectors.toList()));
         re.setMethods(Lists.newArrayList(beanInfo.getMethodDescriptors()).stream()
                 .filter(methodDescriptor -> Modifier.isPublic(methodDescriptor.getMethod().getModifiers()))
-                .map(m -> JavaMethod.from(m))
+                .map(m -> JavaMethod.from(m.getMethod()).src(JavaLexer.getClass(src).orElse(null)))
                 .collect(Collectors.toList()));
-        re.setSrc(JavaCodeUtils.loadJavaSrcFromProject(clz));
+        re.setSrc(src);
         return re;
     }
 

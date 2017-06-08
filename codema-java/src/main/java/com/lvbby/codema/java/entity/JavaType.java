@@ -158,11 +158,16 @@ public class JavaType {
             re.genericTypes = Stream.of(parameterizedType.getActualTypeArguments()).map(t -> ofType(t)).collect(Collectors.toList());
             return re;
         }
+        //        if (type instanceof TypeVariable) {
+        //            GenericDeclaration genericDeclaration = ((TypeVariable) type).getGenericDeclaration();
+        //            if (genericDeclaration instanceof Method)
+        //        }
         throw new IllegalArgumentException("unknown type:" + type.toString());
     }
 
     public static JavaType ofMethodReturnType(Method method) {
-        return ofType(ObjectUtils.firstNonNull(method.getGenericReturnType(), method.getReturnType()));
+        //        return ofType(ObjectUtils.firstNonNull(method.getGenericReturnType(), method.getReturnType()));
+        return ofType(ObjectUtils.firstNonNull(method.getReturnType()));
     }
 
     public static JavaType ofField(Field field) {
@@ -170,7 +175,8 @@ public class JavaType {
     }
 
     public static JavaType ofMethodParameter(Parameter parameter) {
-        return ofType(ObjectUtils.firstNonNull(parameter.getParameterizedType(), parameter.getType()));
+        //        return ofType(ObjectUtils.firstNonNull(parameter.getParameterizedType(), parameter.getType()));
+        return ofType(ObjectUtils.firstNonNull(parameter.getType()));
     }
 
     public String getFullName() {
@@ -185,8 +191,8 @@ public class JavaType {
         if (o == null)
             return false;
         if (!(o instanceof JavaType)) {
-            if(o instanceof Class){
-                return Objects.equals(((Class) o).getName(),getFullName());
+            if (o instanceof Class) {
+                return Objects.equals(((Class) o).getName(), getFullName());
             }
         }
         JavaType javaType = (JavaType) o;

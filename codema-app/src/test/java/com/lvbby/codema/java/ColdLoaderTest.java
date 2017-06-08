@@ -5,7 +5,10 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
+import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.core.Codema;
+import com.lvbby.codema.core.CodemaGlobalContext;
+import com.lvbby.codema.core.CodemaGlobalContextKey;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.inject.CodemaInjector;
@@ -14,10 +17,13 @@ import com.lvbby.codema.java.mock.ServiceImpl;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import org.apache.commons.io.IOUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
@@ -30,6 +36,15 @@ public class ColdLoaderTest {
         System.out.println(JSON.toJSONString(a, SerializerFeature.PrettyFormat));
     }
 
+
+    @Before
+    public void init() {
+        File f = new File(JavaMockTestCodemaMachine.class.getResource("/").getPath());
+        f = f.getParentFile().getParentFile();//codema-app
+        f=f.getParentFile();//codema
+
+        CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList(f.getAbsolutePath()));
+    }
 
     @Test
     public void codemaYaml() throws Exception {
@@ -71,6 +86,12 @@ public class ColdLoaderTest {
     }
 
     @Test
+    public void mockUnitTest() throws Exception {
+        List<JavaMockTestCodemaMachine.MockMethod> mockMethods = new JavaMockTestCodemaMachine().parseMockMethods(JavaClassSourceParser.toJavaClass(Codema.class));
+        System.out.println(mockMethods);
+    }
+
+    @Test
     public void yaml() throws Exception {
         Yaml yaml = new Yaml();
         Iterable<Object> result = yaml.loadAll(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codema.yml"));
@@ -91,7 +112,7 @@ public class ColdLoaderTest {
     public void anno() throws Exception {
         Field field = ServiceImpl.class.getDeclaredField("textHolder");
         Stream.of(field.getAnnotations()).forEach(annotation -> {
-            System.out.println( annotation.annotationType().getName());
+            System.out.println(annotation.annotationType().getName());
         });
     }
 }
