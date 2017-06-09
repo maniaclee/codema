@@ -20,7 +20,7 @@ public class JavaClass {
      */
     private Object from;
     /** 源代码 */
-    private CompilationUnit src;
+    private transient CompilationUnit src;
     private Class type;
 
     public JavaClass() {

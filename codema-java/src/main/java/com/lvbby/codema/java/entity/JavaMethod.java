@@ -18,7 +18,7 @@ public class JavaMethod {
     public String name;
     public JavaType returnType;
     public List<JavaArg> args;
-    private MethodDeclaration src;
+    private transient MethodDeclaration src;
 
     public static JavaMethod from(Method m) {
         JavaMethod javaMethod = new JavaMethod();

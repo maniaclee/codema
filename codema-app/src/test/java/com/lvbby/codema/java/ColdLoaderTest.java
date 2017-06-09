@@ -88,7 +88,12 @@ public class ColdLoaderTest {
     @Test
     public void mockUnitTest() throws Exception {
         List<JavaMockTestCodemaMachine.MockMethod> mockMethods = new JavaMockTestCodemaMachine().parseMockMethods(JavaClassSourceParser.toJavaClass(Codema.class));
-        System.out.println(mockMethods);
+        print(mockMethods);
+//        mockMethods.forEach(mockMethod -> {
+//            mockMethod.getDependencyMethods().forEach(mockDependencyMethod -> {
+//                mockDependencyMethod.
+//            });
+//        });
     }
 
     @Test

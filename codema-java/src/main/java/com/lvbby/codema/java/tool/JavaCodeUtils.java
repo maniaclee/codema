@@ -62,7 +62,7 @@ public class JavaCodeUtils {
 
 
     private static boolean isEqual(JavaArg javaArg, Parameter parameter) {
-        return javaArg.getName().equals(parameter.getNameAsString()) && (parameter.getType().toString().equals(javaArg.getType().getName()) || parameter.getType().toString().equals(javaArg.getType().getFullName()));
+        return parameter.getType().toString().equals(javaArg.getType().getName()) || parameter.getType().toString().equals(javaArg.getType().getFullName());
     }
 
     private static boolean isEqual(JavaMethod method, MethodDeclaration methodDeclaration) {
