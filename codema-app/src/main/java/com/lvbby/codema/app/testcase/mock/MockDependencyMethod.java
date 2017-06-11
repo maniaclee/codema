@@ -15,6 +15,10 @@ public class MockDependencyMethod {
         this.method = method;
     }
 
+    public String getMockSentence(){
+        return null;//TODO
+    }
+
     public JavaField getJavaField() {
         return javaField;
     }
