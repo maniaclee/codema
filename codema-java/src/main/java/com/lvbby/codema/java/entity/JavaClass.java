@@ -1,10 +1,15 @@
 package com.lvbby.codema.java.entity;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.google.common.collect.Maps;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.tool.JavaCodeUtils;
+import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 17/1/5.
@@ -19,9 +24,34 @@ public class JavaClass {
      * 来源于什么对象
      */
     private Object from;
-    /** 源代码 */
+    /**
+     * 源代码
+     */
     private transient CompilationUnit src;
     private Class type;
+
+    /**
+     * 缓存
+     */
+    private static Map<Class, JavaClass> cache = Maps.newHashMap();
+
+    public static JavaClass from(Class clz) throws Exception {
+        if (cache.containsKey(clz))
+            return cache.get(clz);
+        CompilationUnit src = JavaCodeUtils.loadJavaSrcFromProject(clz);
+
+        JavaClass re = new JavaClass();
+        re.setName(clz.getSimpleName());
+        re.setFrom(clz);
+        re.setPack(clz.getPackage().getName());
+        re.setType(clz);
+
+        re.setFields(JavaField.from(clz));
+        re.setMethods(JavaMethod.from(clz).stream().map(method -> method.src(JavaLexer.getClass(src).orElse(null))).collect(Collectors.toList()));
+        re.setSrc(src);
+        cache.put(clz, re);
+        return re;
+    }
 
     public JavaClass() {
     }

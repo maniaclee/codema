@@ -38,14 +38,11 @@ public class MockDependencyMethod {
 
         MockDependencyMethod that = (MockDependencyMethod) o;
 
-        if (!javaField.equals(that.javaField)) return false;
         return method.equals(that.method);
     }
 
     @Override
     public int hashCode() {
-        int result = javaField.hashCode();
-        result = 31 * result + method.hashCode();
-        return result;
+        return method.hashCode();
     }
 }

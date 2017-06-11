@@ -41,6 +41,10 @@ public class JavaType {
     public JavaType() {
     }
 
+    public boolean beOutterClass() {
+        return !bePrimitive() && !getFullName().startsWith("java");
+    }
+
     public boolean bePrimitive() {
         if (type != null)
             return type.isPrimitive();

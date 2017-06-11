@@ -13,7 +13,7 @@ import java.util.List;
 public class JavaMockTestCodemaConfig extends JavaBasicCodemaConfig implements Serializable {
     private static final long serialVersionUID = -5605104495541164985L;
     /***
-     * É¸Ñ¡ÊôÐÔµÄannotation
+     *   the dependency annotations
      */
     private List<String> dependencyAnnotation;
 

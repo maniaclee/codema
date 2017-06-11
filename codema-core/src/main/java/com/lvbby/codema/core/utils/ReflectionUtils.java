@@ -20,10 +20,7 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +30,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lipeng on 2016/12/19.
@@ -111,8 +109,11 @@ public class ReflectionUtils {
 
     public static <T> List<T> findAllConvert(String src, String regx, Function<Matcher, T> function) {
         List<T> re = Lists.newArrayList();
-        for (Matcher matcher = Pattern.compile(regx).matcher(src); matcher.find(); )
-            re.add(function.apply(matcher));
+        for (Matcher matcher = Pattern.compile(regx).matcher(src); matcher.find(); ) {
+            T apply = function.apply(matcher);
+            if (apply != null)
+                re.add(apply);
+        }
         return re;
     }
 
@@ -272,8 +273,58 @@ public class ReflectionUtils {
         return null;
     }
 
+    public static String genGetter(String s) {
+        return String.format("get%s", StringUtils.capitalize(s));
+    }
+
+    public static String genSetter(String s) {
+        return String.format("set%s", StringUtils.capitalize(s));
+    }
+
     public static List<PropertyDescriptor> getFields(Class obj) {
-        return getFields(obj, propertyDescriptor -> propertyDescriptor.getReadMethod()!=null && propertyDescriptor.getWriteMethod()!=null);
+        return getFields(obj, propertyDescriptor -> propertyDescriptor.getReadMethod() != null && propertyDescriptor.getWriteMethod() != null);
+    }
+
+    public static List<Field> getAllFields(Class obj, Predicate<Field> predicate) {
+        Field[] fields = obj.getDeclaredFields();
+        List<Field> re = Stream.of(fields).filter(field -> !Modifier.isStatic(field.getModifiers()) && (predicate == null || predicate.test(field))).collect(Collectors.toList());
+        if (obj.getSuperclass() != null && !obj.getSuperclass().equals(Object.class))
+            re.addAll(getAllFields(obj.getSuperclass(), predicate));
+        return re;
+    }
+
+    public static boolean isJavaBeanProperty(Class<?> obj, Field field) {
+        return getMethod(obj, genGetter(field.getName()), null) != null
+                && getMethod(obj, genSetter(field.getName()), field.getType()) != null;
+    }
+
+    public static List<Field> getAllProperties(Class obj) {
+        return getAllFields(obj, field -> isJavaBeanProperty(obj, field));
+    }
+
+    public static Method getMethod(Class clz, String method, Class<?>... types) {
+        try {
+            return clz.getMethod(method, types);
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
+    }
+
+    public static List<Method> getAllMethods(Class<?> clz) {
+        return getAllMethods(clz, null);
+    }
+
+    public static List<Method> getAllMethods(Class<?> clz, Predicate<Method> predicate) {
+        Method[] methods = clz.getMethods();
+        if (methods == null || methods.length == 0)
+            return Lists.newLinkedList();
+        List<Method> re = Stream.of(clz.getMethods())
+                .filter(method -> Modifier.isPublic(method.getModifiers())
+                        && !Modifier.isStatic(method.getModifiers())
+                        && !method.getDeclaringClass().equals(Object.class)
+                        && (predicate == null || predicate.test(method)))
+                .collect(Collectors.toList());
+        return re;
     }
 
     public static List<PropertyDescriptor> getFields(Class obj, Predicate<PropertyDescriptor> predicate) {

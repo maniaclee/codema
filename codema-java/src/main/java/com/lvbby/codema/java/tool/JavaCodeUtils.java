@@ -81,6 +81,8 @@ public class JavaCodeUtils {
 
 
     public static JavaMethod findMethod(JavaClass javaClass , String methodName){
+        if(javaClass==null)
+            return null;
         return javaClass.getMethods().stream().filter(method -> method.getName().equals(methodName)).findAny().orElse(null);
     }
     public static MethodDeclaration getMethodSrc(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, JavaMethod method) {

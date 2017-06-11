@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.java.entity.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -57,6 +58,7 @@ public class JavaClassUtils {
             javaField.setType(JavaType.ofClassName(variable.getType().toString()));
             javaField.setPrimitive(false);//TODO
             javaField.setAnnotations(fieldDeclaration.getAnnotations().stream().map(annotationExpr -> JavaType.ofClassName(annotationExpr.getNameAsString())).collect(Collectors.toList()));
+            javaField.setProperty(hasGetterSetter(clz, javaField.getName()));
             return javaField;
         }).collect(Collectors.toList()));
         re.setMethods(JavaLexer.getMethods(clz).stream().map(methodDeclaration -> {
@@ -75,5 +77,10 @@ public class JavaClassUtils {
         re.setFrom(cu);
         re.setSrc(cu);
         return re;
+    }
+
+    public static boolean hasGetterSetter(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, String field) {
+        return CollectionUtils.isNotEmpty(classOrInterfaceDeclaration.getMethodsByName(JavaCodeUtils.genGetter(field)))
+                && CollectionUtils.isNotEmpty(classOrInterfaceDeclaration.getMethodsByName(JavaCodeUtils.genSetter(field)));
     }
 }

@@ -37,7 +37,8 @@ public class JavaJdbcUrlSourceParser implements SourceParser<JavaSourceParam> {
             javaClass.setFields(sqlTable.getFields().stream().map(sqlColumn -> {
                 JavaField javaField = new JavaField();
                 javaField.setName(sqlColumn.getNameCamel());
-                javaField.setType(JavaType.ofClass(sqlColumn.getJavaType() ));
+                javaField.setType(JavaType.ofClass(sqlColumn.getJavaType()));
+                javaField.setProperty(true);
                 return javaField;
             }).collect(Collectors.toList()));
             javaClass.setFrom(sqlTable);

@@ -3,6 +3,7 @@ package com.lvbby.codema.java.entity;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.tool.JavaCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -19,6 +20,11 @@ public class JavaMethod {
     public JavaType returnType;
     public List<JavaArg> args;
     private transient MethodDeclaration src;
+
+
+    public static List<JavaMethod> from(Class clz) {
+        return ReflectionUtils.getAllMethods(clz).stream().map(method -> from(method)).collect(Collectors.toList());
+    }
 
     public static JavaMethod from(Method m) {
         JavaMethod javaMethod = new JavaMethod();
