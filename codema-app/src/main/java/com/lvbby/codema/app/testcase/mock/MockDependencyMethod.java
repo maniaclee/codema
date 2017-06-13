@@ -2,6 +2,9 @@ package com.lvbby.codema.app.testcase.mock;
 
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.stream.Collectors;
 
 /**
  * Created by dushang.lp on 2017/6/9.
@@ -15,8 +18,14 @@ public class MockDependencyMethod {
         this.method = method;
     }
 
-    public String getMockSentence(){
-        return null;//TODO
+    public String parseMockSentence() {
+        String collect = method.getArgs().stream().map(javaArg -> String.format("Mockito.any(%s.class)", javaArg.getType().getName())).collect(Collectors.joining(","));
+        return String.format("Mockito.when(%s.%s(%s)).thenReturn(%s);"
+                , StringUtils.uncapitalize(javaField.getType().getName())
+                , method.getName()
+                , collect
+                , "null"
+        );
     }
 
     public JavaField getJavaField() {

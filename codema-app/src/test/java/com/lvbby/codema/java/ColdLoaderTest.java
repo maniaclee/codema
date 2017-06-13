@@ -15,13 +15,10 @@ import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.inject.CodemaInjector;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.mock.ServiceImpl;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -93,23 +90,10 @@ public class ColdLoaderTest {
     @Test
     public void mockUnitTest() throws Exception {
         List<MockMethod> mockMethods = MockMethod.parseMockMethods(JavaClass.from(Codema.class), javaField -> javaField.getType().beOutterClass());
-        mockMethods.forEach(mockMethod -> System.err.println(mockMethod.getJavaMethod().getName()));
-        print(mockMethods);
-        //        Mockito.when(mockMethods.get(Mockito.any(Integer.class))).thenReturn(new MockMethod());
         mockMethods.forEach(mockMethod -> {
-            if (CollectionUtils.isNotEmpty(mockMethod.getDependencyMethods())) {
-                mockMethod.getDependencyMethods().forEach(mockDependencyMethod -> {
-                    JavaField javaField = mockDependencyMethod.getJavaField();
-//                    System.out.println(JavaCodeUtils.newObjectSentences(javaField));
-                    String s = String.format("Mockito.when(%s.%s(Mockito.any(%s))).thenReturn(%s);"
-                            , StringUtils.uncapitalize(javaField.getType().getName())
-                            , mockDependencyMethod.getMethod().getName()
-                            , CollectionUtils.isEmpty(mockDependencyMethod.getMethod().getArgs()) ? "" : mockDependencyMethod.getMethod().getArgs().get(0).getType().getName()
-                            , "null"
-                    );
-                    System.out.println(s);
-                });
-            }
+            mockMethod.parseMockSentence().forEach(mockDependencyMethod -> {
+                System.out.println(mockDependencyMethod);
+            });
         });
     }
 

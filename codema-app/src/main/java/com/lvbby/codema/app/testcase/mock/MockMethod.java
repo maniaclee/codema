@@ -36,6 +36,12 @@ public class MockMethod {
         return Lists.newLinkedList();
     }
 
+    public List<String> parseMockSentence() {
+        if (CollectionUtils.isEmpty(dependencyMethods))
+            return Lists.newLinkedList();
+        return dependencyMethods.stream().map(mockDependencyMethod -> mockDependencyMethod.parseMockSentence()).collect(Collectors.toList());
+    }
+
     public static MockMethod from(JavaClass javaClass, JavaMethod method, List<JavaField> javaFields) {
         MockMethod mockMethod = new MockMethod();
         mockMethod.setJavaMethod(method);
