@@ -3,6 +3,7 @@ package com.lvbby.codema.app.testcase.mock;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class MockMethod {
     private JavaMethod javaMethod;
     private Set<MockDependencyMethod> dependencyMethods;
+    private JavaClass parentClass;
 
 
     public static List<MockMethod> parseMockMethods(JavaClass clz, Predicate<JavaField> predicate) {
@@ -36,6 +38,17 @@ public class MockMethod {
         return Lists.newLinkedList();
     }
 
+    public String parseMockInvoke() {
+        if (javaMethod.returnVoid()) {
+            return null;
+        }
+        String params = CollectionUtils.isEmpty(javaMethod.getArgs()) ? "" :
+                javaMethod.getArgs().stream()
+                        .map(javaArg -> String.format("Mockito.any(%s.class)", javaArg.getType().getName()))
+                        .collect(Collectors.joining(","));
+        return String.format("%s.%s(%s)", parentClass.getNameCamel(), javaMethod.getName(), params);
+    }
+
     public List<String> parseMockSentence() {
         if (CollectionUtils.isEmpty(dependencyMethods))
             return Lists.newLinkedList();
@@ -45,6 +58,7 @@ public class MockMethod {
     public static MockMethod from(JavaClass javaClass, JavaMethod method, List<JavaField> javaFields) {
         MockMethod mockMethod = new MockMethod();
         mockMethod.setJavaMethod(method);
+        mockMethod.setParentClass(javaClass);
 
         String ms = method.getSrc().toString();
         if (CollectionUtils.isNotEmpty(javaFields)) {
@@ -79,4 +93,11 @@ public class MockMethod {
         this.dependencyMethods = dependencyMethods;
     }
 
+    public JavaClass getParentClass() {
+        return parentClass;
+    }
+
+    public void setParentClass(JavaClass parentClass) {
+        this.parentClass = parentClass;
+    }
 }

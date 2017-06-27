@@ -27,6 +27,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
@@ -36,6 +37,7 @@ import java.util.List;
  */
 public class SimpleTest {
 
+    public static int a = 1;
     @Test
     public void uri() {
         URI uri = URI.create("asdf:///root/leaf?path=sdf&&sub=sdf");
@@ -233,6 +235,14 @@ public class SimpleTest {
     @Test
     public void primitiveClass() throws Exception {
         System.out.println(boolean.class.getPackage());
+        System.out.println(String.class.getClass());
+
+        Field a = this.getClass().getDeclaredField("a");
+        a.setAccessible(true);
+        SimpleTest simpleTest = new SimpleTest();
+        System.out.println(simpleTest.a);
+        a.set(simpleTest,3);
+        System.out.println(simpleTest.a);
 
     }
 }

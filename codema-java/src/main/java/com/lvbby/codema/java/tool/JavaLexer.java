@@ -1,22 +1,35 @@
 package com.lvbby.codema.java.tool;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.JavaToken;
+import com.github.javaparser.Position;
+import com.github.javaparser.Range;
+import com.github.javaparser.Token;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.comments.BlockComment;
+import com.github.javaparser.ast.comments.Comment;
+import com.github.javaparser.ast.comments.LineComment;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
-import com.github.javaparser.ast.imports.SingleTypeImportDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.google.common.collect.Lists;
+import com.lvbby.codema.java.entity.JavaAnnotation;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,13 +66,94 @@ public class JavaLexer {
 
     public static BodyDeclaration parseMethod(String code) {
         return JavaParser.parseInterfaceBodyDeclaration(code);
-
     }
 
     public static List<FieldDeclaration> getFields(TypeDeclaration<?> cu) {
         return cu.getFields().stream().filter(f -> isProperty(f)).collect(Collectors.toList());
     }
 
+    public static <T extends Node> T ensureComment(T node, boolean lineComment) {
+        if (node != null && node.getComment() == null) {
+            node.setComment(lineComment ? new LineComment() : new BlockComment());
+        }
+        return node;
+    }
+
+    public static <T extends Node> T ensureComment(T node) {
+        return ensureComment(node, true);
+    }
+
+    public static JavaAnnotation parseAnnotation(AnnotationExpr expr) {
+        JavaAnnotation javaAnnotation = new JavaAnnotation(expr.getNameAsString());
+        if (expr instanceof SingleMemberAnnotationExpr) {
+            return javaAnnotation.add("value", ((SingleMemberAnnotationExpr) expr).getMemberValue().toString());
+        }
+        if (expr instanceof NormalAnnotationExpr) {
+            ((NormalAnnotationExpr) expr).getPairs().forEach(memberValuePair -> {
+                if (memberValuePair.getValue() instanceof ArrayInitializerExpr) {
+                    ArrayInitializerExpr value = (ArrayInitializerExpr) memberValuePair.getValue();
+                    value.getValues().forEach(expression -> javaAnnotation.add(memberValuePair.getNameAsString(), expression.toString()));
+                } else {
+                    javaAnnotation.add(memberValuePair.getNameAsString(), memberValuePair.getValue().toString());
+                }
+            });
+        }
+        return javaAnnotation;
+    }
+
+
+    public static void main(String[] args) {
+        Token token = Token.newToken(1, "fuck");
+        token.beginLine = 3;
+        System.out.println(token);
+
+        Token token2 = Token.newToken(1, "you");
+        System.out.println(token2);
+
+        JavaToken javaToken = new JavaToken(token, Lists.newArrayList());
+        JavaToken javaTokenEnd = new JavaToken(token2, Lists.newArrayList());
+        System.out.println(javaToken);
+
+        TokenRange tokenRange = new TokenRange(javaToken, javaToken);
+        System.out.println("tokenRange :   " + tokenRange);
+
+
+        CompilationUnit unit = JavaParser.parse("public class A{private int a ;//back\nprivate int b ;\n}");
+        ClassOrInterfaceDeclaration classOrInterfaceType = getClass(unit).get();
+        FieldDeclaration fieldDeclaration = classOrInterfaceType.getFields().get(0);
+
+        //        appendFieldCommentAdEnd(fieldDeclaration, "asdfs");
+        VariableDeclarator variable = fieldDeclaration.getVariable(0);
+        variable.setBlockComment("$$");
+        //        System.out.println(variable.setLineComment("init"));
+        //        //        Comment comment = variable.getComment().get();
+        //        //        comment.setRange(fieldDeclaration.getRange().get().withBeginLine(fieldDeclaration.getRange().get().end.line + 3));
+        //        System.err.println(fieldDeclaration.getComment().get());
+        //        System.out.println(fieldDeclaration);
+        System.out.println(unit);
+
+    }
+
+    private static TokenRange tokenRange(String s, Position begin, Position end) {
+        JavaToken javaToken = new JavaToken(Token.newToken(1, s), Lists.newArrayList());
+        return new TokenRange(javaToken, javaToken);
+    }
+
+    public static void appendFieldCommentAdEnd(FieldDeclaration fieldDeclaration, String comment) {
+        VariableDeclarator variableDeclarator = fieldDeclaration.getVariables().get(fieldDeclaration.getVariables().size() - 1);
+        variableDeclarator.setComment(new BlockComment(variableDeclarator.getComment().map(comment1 -> comment1.getContent() + comment).orElse(comment)));
+    }
+
+    public static void addComment(Node node, boolean append, String s) {
+        Validate.notNull(node, "node can't be null");
+        if (!node.getComment().isPresent())
+            node.setComment(new LineComment());
+        Comment comment = node.getComment().get();
+        if (append)
+            comment.setContent(comment.getContent() + "\n" + s);
+        else
+            comment.setContent(s + "\n" + comment.getContent());
+    }
 
     public static List<MethodDeclaration> getMethods(TypeDeclaration<?> cu) {
         ClassOrInterfaceDeclaration classOrInterfaceType = (ClassOrInterfaceDeclaration) cu;
@@ -191,7 +285,7 @@ public class JavaLexer {
 
     public static boolean hasImport(CompilationUnit compilationUnit, Class clz) {
         return compilationUnit.getImports().stream()
-                .filter(im -> im instanceof SingleTypeImportDeclaration && ((SingleTypeImportDeclaration) im).getType().getNameAsString().equalsIgnoreCase(clz.getName()))
+                .filter(im -> !im.isStatic() && im.getNameAsString().equalsIgnoreCase(clz.getName()))
                 .findFirst().isPresent();
     }
 
@@ -206,6 +300,10 @@ public class JavaLexer {
         return null;
     }
 
+    public static String getPackage(CompilationUnit compilationUnit) {
+        return compilationUnit.getPackageDeclaration().map(packageDeclaration -> packageDeclaration.toString()).orElse("");
+    }
+
     public static List<String> getImports(CompilationUnit compilationUnit) {
         return compilationUnit.getImports().stream().map(i -> i.toString().replaceAll("import", "").trim()).collect(Collectors.toList());
     }
@@ -213,8 +311,8 @@ public class JavaLexer {
     public static String getFullClassName(CompilationUnit unit) {
         if (unit == null)
             return null;
-        String pack = unit.getPackage()
-                .map(packageDeclaration -> packageDeclaration.getPackageName())
+        String pack = unit.getPackageDeclaration()
+                .map(packageDeclaration -> packageDeclaration.getNameAsString())
                 .map(s -> StringUtils.isBlank(s) ? "" : (s + "."))
                 .orElse("");
         return getClass(unit).map(classOrInterfaceDeclaration -> pack + classOrInterfaceDeclaration.getNameAsString()).orElse(null);

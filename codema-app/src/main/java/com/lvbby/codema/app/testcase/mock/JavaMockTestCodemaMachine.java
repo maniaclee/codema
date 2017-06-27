@@ -1,6 +1,7 @@
 package com.lvbby.codema.app.testcase.mock;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
@@ -34,6 +35,7 @@ public class JavaMockTestCodemaMachine implements CodemaInjectable {
                 new JavaTemplateResult(config, $Mock_Test.class, cu)
                         .bind("Mock", cu.getName() + "Test")
                         .bind("injectFields", extractAllInjectFields(cu, config.getDependencyAnnotation()))
+                        .bind("methods", MockMethod.parseMockMethods(JavaClass.from(Codema.class), javaField -> javaField.getType().beOutterClass()))
                         .registerResult()
         );
     }

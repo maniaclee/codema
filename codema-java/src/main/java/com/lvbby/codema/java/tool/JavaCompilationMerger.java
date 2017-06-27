@@ -72,7 +72,7 @@ public class JavaCompilationMerger {
 
     private int getImportPosition() {
         return ObjectUtils.firstNonNull(_getLine(dest.getImports()),
-                _getLine(dest.getPackage().get()),
+                _getLine(dest.getPackageDeclaration().get()),
                 1);
     }
 

@@ -53,7 +53,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
     public static CompilationUnit genTest(CompilationUnit target, ClassOrInterfaceDeclaration typeDeclaration) {
         String beanName = camel(typeDeclaration.getNameAsString());
-        target.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
+        target.getChildNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
             /** bean field */
             testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
             JavaLexer.addAnnotationWithImport(testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE), Test.class);
@@ -65,7 +65,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
 
     public static MethodDeclaration genTestMethod(NameExpr bean, MethodDeclaration m, TypeDeclaration typeDeclaration) {
-        MethodDeclaration methodDeclaration = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), VoidType.VOID_TYPE, m.getNameAsString());
+        MethodDeclaration methodDeclaration = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), new VoidType(), m.getNameAsString());
         methodDeclaration.setParentNode(typeDeclaration);
         methodDeclaration.setBody(genTestStatement(bean, m).stream().reduce(new BlockStmt(), (blockStmt, expression) -> blockStmt.addStatement(expression), binaryReturnOperator()));
         addAnnotationWithImport(methodDeclaration, Test.class);

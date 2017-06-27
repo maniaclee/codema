@@ -12,7 +12,7 @@ public class JavaCodemaResoure extends CodemaBean {
     public JavaCodemaResoure(CompilationUnit compilationUnit) {
         super(compilationUnit);
         String className = JavaLexer.getClass(compilationUnit).map(clz -> clz.getNameAsString()).orElse("");
-        String id = compilationUnit.getPackage().map(packageDeclaration -> packageDeclaration.getPackageName())
+        String id = compilationUnit.getPackageDeclaration().map(packageDeclaration -> packageDeclaration.toString())
                 .filter(e -> StringUtils.isNotBlank(e))
                 .map(e -> e + "." + className).orElse(className);
         setId(id);

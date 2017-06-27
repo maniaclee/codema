@@ -31,7 +31,7 @@ public class JavaClassUtils {
         CompilationUnit re = new CompilationUnit();
         //package
         if (StringUtils.isNotBlank(packageName))
-            re.setPackage(packageName);
+            re.setPackageDeclaration(packageName);
         //class
         re.setTypes(NodeList.nodeList(createJavaClass(className, author, isInterface)));
         return re;
@@ -41,13 +41,15 @@ public class JavaClassUtils {
         //class
         ClassOrInterfaceDeclaration clz = new ClassOrInterfaceDeclaration(EnumSet.of(Modifier.PUBLIC), false, className).setInterface(isInterface);
         if (StringUtils.isNotBlank(author))
-            clz.setJavaDocComment(String.format("\n* Created by %s on %s\n", author, new SimpleDateFormat("yyyy/MM/hh").format(new Date())));
+            clz.setJavadocComment(String.format("\n* Created by %s on %s\n", author, new SimpleDateFormat("yyyy/MM/hh").format(new Date())));
         return clz;
     }
 
+
+
     public static JavaClass convert(CompilationUnit cu) {
         JavaClass re = new JavaClass();
-        re.setPack(cu.getPackage().map(packageDeclaration -> packageDeclaration.getNameAsString()).orElse(""));
+        re.setPack(JavaLexer.getPackage(cu));
         ClassOrInterfaceDeclaration clz = JavaLexer.getClass(cu).orElseThrow(() -> new CodemaRuntimeException("no class found"));
         re.setName(clz.getNameAsString());
         re.setImports(JavaLexer.getImports(cu));

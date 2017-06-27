@@ -36,7 +36,7 @@ public class JavaResult implements PrintableResult, FileResult {
         File file = new File(destSrcRoot);
         if (!file.isDirectory() || !file.exists())
             throw new CodemaRuntimeException("file dir not existed");
-        String pack = unit.getPackage().map(e -> e.getPackageName()).orElse("");
+        String pack = JavaLexer.getPackage(unit);
         if (StringUtils.isNotBlank(pack)) {
             file = new File(file, pack.replace('.', '/'));
         }

@@ -40,9 +40,9 @@ public class ImportUtils {
                 methodDeclaration.getParameters().forEach(parameter -> _tryAddImports(parameter.getType().toString(), cu));
             });
             //接口
-            classOrInterfaceDeclaration.getImplements().forEach(intf->_tryAddImports(intf.getNameAsString(),cu));
+            classOrInterfaceDeclaration.getImplementedTypes().forEach(intf->_tryAddImports(intf.getNameAsString(),cu));
             //父类
-            classOrInterfaceDeclaration.getExtends().forEach(ex->_tryAddImports(ex.getNameAsString(),cu));
+            classOrInterfaceDeclaration.getExtendedTypes().forEach(ex->_tryAddImports(ex.getNameAsString(),cu));
         });
     }
 

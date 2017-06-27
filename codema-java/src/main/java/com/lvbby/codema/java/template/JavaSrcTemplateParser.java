@@ -1,15 +1,18 @@
 package com.lvbby.codema.java.template;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.imports.ImportDeclaration;
+import com.github.javaparser.ast.comments.LineComment;
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.CodemaContextHolder;
-import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.entity.JavaAnnotation;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -17,9 +20,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 17/1/5.
@@ -53,10 +61,6 @@ public class JavaSrcTemplateParser {
         return prepareTemplate(cu.toString());
     }
 
-    public String loadSrcTemplateByMethod(TemplateContext context, String methodName) {
-        MethodDeclaration methodByName = JavaLexer.getMethodByNameSingle(JavaLexer.getClass(loadSrcTemplateRaw(context)).orElseThrow(() -> new CodemaRuntimeException("no class found")), methodName);
-        return prepareTemplate(methodName.toString());
-    }
 
     public String loadSrcTemplate(TemplateContext context) {
         return prepareTemplate(loadSrcTemplateRaw(context).toString());
@@ -66,29 +70,28 @@ public class JavaSrcTemplateParser {
         JavaBasicCodemaConfig javaBasicCodemaConfig = context.getJavaBasicCodemaConfig();
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(context.getTemplateClass());
         filterImport(cu);
-//        addImport(cu, context);
-        cu.setPackage(StringUtils.isNotBlank(context.getPack()) ? context.getPack() : javaBasicCodemaConfig.getDestPackage());
+        //        addImport(cu, context);
+        cu.setPackageDeclaration(StringUtils.isNotBlank(context.getPack()) ? context.getPack() : javaBasicCodemaConfig.getDestPackage());
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
             filterAnnotation(classOrInterfaceDeclaration);
-            classOrInterfaceDeclaration.setJavaDocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
-//            if (context.getSource() != null) {
-//                //parent class
-//                if (StringUtils.isNotBlank(javaBasicCodemaConfig.getParentClass()))
-//                    classOrInterfaceDeclaration.addExtends(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(javaBasicCodemaConfig.getParentClass(), context.getSource().getName())));
-//                //interfaces
-//                if (CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())) {
-//                    javaBasicCodemaConfig.getImplementInterfaces().forEach(e -> classOrInterfaceDeclaration.addImplements(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(e, context.getSource().getName()))));
-//                }
-//            }
-            if(CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())){
+            classOrInterfaceDeclaration.setJavadocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
+            //            if (context.getSource() != null) {
+            //                //parent class
+            //                if (StringUtils.isNotBlank(javaBasicCodemaConfig.getParentClass()))
+            //                    classOrInterfaceDeclaration.addExtends(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(javaBasicCodemaConfig.getParentClass(), context.getSource().getName())));
+            //                //interfaces
+            //                if (CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())) {
+            //                    javaBasicCodemaConfig.getImplementInterfaces().forEach(e -> classOrInterfaceDeclaration.addImplements(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(e, context.getSource().getName()))));
+            //                }
+            //            }
+            if (CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())) {
                 for (String it : javaBasicCodemaConfig.getImplementInterfaces()) {
-                    classOrInterfaceDeclaration.addImplements(ReflectionUtils.getSimpleClassName(javaBasicCodemaConfig.eval(it,context.getSource().getName())));
+                    classOrInterfaceDeclaration.addImplements(ReflectionUtils.getSimpleClassName(javaBasicCodemaConfig.eval(it, context.getSource().getName())));
                 }
             }
         });
         return cu;
     }
-
 
     private void filterAnnotation(ClassOrInterfaceDeclaration clz) {
         //        Lists.newArrayList(clz.getAnnotations()).stream().filter(an -> an.getNameAsString().startsWith("$"))
