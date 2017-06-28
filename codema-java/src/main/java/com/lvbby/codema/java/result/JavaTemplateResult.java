@@ -120,7 +120,7 @@ public class JavaTemplateResult extends TemplateEngineResult {
                     JavaLexer.addComment(fieldDeclaration, false,
                             String.format("for(%s){", javaAnnotation.get(JavaAnnotation.defaultPropertyName).toString()));
                     JavaLexer.addComment(fieldDeclaration, false,
-                            javaAnnotation.getList("body").stream().map(Object::toString).collect(Collectors.joining(";")));
+                            javaAnnotation.getList("body").stream().map(o -> o.toString() + ";").collect(Collectors.joining("\n")));
                     JavaLexer.appendFieldCommentAdEnd(fieldDeclaration, "}");
                 }
 
@@ -132,9 +132,9 @@ public class JavaTemplateResult extends TemplateEngineResult {
     @Override
     protected void beforeRender(Map bindingParameters) {
         processForeach(compilationUnit);
-        super.beforeRender(bindingParameters);
         String template = ReflectionUtils.replace(compilationUnit.toString(), "/\\*\\s*#(\\}+)\\*/\\s*([^;]+);",
-                matcher -> matcher.group(2) + ";<%" + matcher.group(1) + "%>");
+                matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
+        super.beforeRender(bindingParameters);
         System.err.println(template);
         setTemplate(JavaSrcTemplateParser.prepareTemplate(template));
     }

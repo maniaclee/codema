@@ -86,19 +86,25 @@ public class JavaLexer {
     public static JavaAnnotation parseAnnotation(AnnotationExpr expr) {
         JavaAnnotation javaAnnotation = new JavaAnnotation(expr.getNameAsString());
         if (expr instanceof SingleMemberAnnotationExpr) {
-            return javaAnnotation.add("value", ((SingleMemberAnnotationExpr) expr).getMemberValue().toString());
+            return javaAnnotation.add("value", trimString(((SingleMemberAnnotationExpr) expr).getMemberValue()));
         }
         if (expr instanceof NormalAnnotationExpr) {
             ((NormalAnnotationExpr) expr).getPairs().forEach(memberValuePair -> {
                 if (memberValuePair.getValue() instanceof ArrayInitializerExpr) {
                     ArrayInitializerExpr value = (ArrayInitializerExpr) memberValuePair.getValue();
-                    value.getValues().forEach(expression -> javaAnnotation.add(memberValuePair.getNameAsString(), expression.toString()));
+                    value.getValues().forEach(expression -> javaAnnotation.add(memberValuePair.getNameAsString(), trimString(expression)));
                 } else {
-                    javaAnnotation.add(memberValuePair.getNameAsString(), memberValuePair.getValue().toString());
+                    javaAnnotation.add(memberValuePair.getNameAsString(), trimString(memberValuePair.getValue()));
                 }
             });
         }
         return javaAnnotation;
+    }
+    private static String trimString(Expression expression){
+        String s = expression.toString();
+        if(s.startsWith("\"") && s.endsWith("\""))
+            s=s.substring(1,s.length()-1);
+        return s;
     }
 
 

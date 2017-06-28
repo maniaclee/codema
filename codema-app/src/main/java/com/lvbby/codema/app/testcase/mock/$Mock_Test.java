@@ -24,11 +24,12 @@ public class $Mock_Test {
     //          var Class1 = d.javaField.type.name;
     //          var class1 = d.javaField.name;
     //%>
-    @ForeachSub("a in ds")
-    @ForeachSub(value = "a in ds", body = {"sdf", "sdfxx"})
-//    @Foreach(@ForeachSub(value = "sdf",body = {"sdf", "sdf"}))
+    @ForeachSub("dm in  methods")
+    @ForeachSub(value = "d in dm.dependencyMethods", body = {
+            "var Class1 = d.javaField.type.name",
+            "var class1 = d.javaField.name"})
     @Mock
-    private $Class1_ $class1_;/*fuck/
+    private $Class1_ $class1_;
     //      <%}} %>
 
     /*# <%
@@ -59,7 +60,7 @@ public class $Mock_Test {
         //${GenericTypeArgInstance};
         //<% } else { %>
         @ForeachSub("sdf")
-                int a =3;
+        int a = 3;
         Assert.assertNotNull($GenericTypeArgInstance_);
         //<%}%>
     }
