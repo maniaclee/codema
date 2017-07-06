@@ -114,15 +114,18 @@ public class JavaTemplateResult extends TemplateEngineResult {
                         annotationByClass.remove(i);
                     }
                 }
-                if (!annotations.isEmpty())
-                    JavaLexer.appendFieldCommentAdEnd(fieldDeclaration, "#");
+                if (!annotations.isEmpty()){
+                    JavaLexer.addComment(fieldDeclaration,  "<%");
+                }
                 for (JavaAnnotation javaAnnotation : annotations) {
-                    JavaLexer.addComment(fieldDeclaration, false,
+                    JavaLexer.addComment(fieldDeclaration,
                             String.format("for(%s){", javaAnnotation.get(JavaAnnotation.defaultPropertyName).toString()));
-                    JavaLexer.addComment(fieldDeclaration, false,
+                    JavaLexer.addComment(fieldDeclaration,
                             javaAnnotation.getList("body").stream().map(o -> o.toString() + ";").collect(Collectors.joining("\n")));
                     JavaLexer.appendFieldCommentAdEnd(fieldDeclaration, "}");
                 }
+                if (!annotations.isEmpty())
+                    JavaLexer.appendFieldCommentAdEnd(fieldDeclaration, "%>");
 
             });
         });

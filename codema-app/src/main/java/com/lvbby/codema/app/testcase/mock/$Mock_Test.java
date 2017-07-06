@@ -18,19 +18,12 @@ import static com.lvbby.codema.java.template.$GenericTypeArg_.$GenericTypeArgIns
 public class $Mock_Test {
 
 
-    // <%
-    // for( dm in  methods){
-    //      for(d in dm.dependencyMethods){
-    //          var Class1 = d.javaField.type.name;
-    //          var class1 = d.javaField.name;
-    //%>
     @ForeachSub("dm in  methods")
     @ForeachSub(value = "d in dm.dependencyMethods", body = {
             "var Class1 = d.javaField.type.name",
             "var class1 = d.javaField.name"})
     @Mock
     private $Class1_ $class1_;
-    //      <%}} %>
 
     /*# <%
      var Class = src.name;

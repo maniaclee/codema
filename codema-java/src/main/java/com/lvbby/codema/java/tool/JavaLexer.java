@@ -150,6 +150,9 @@ public class JavaLexer {
         variableDeclarator.setComment(new BlockComment(variableDeclarator.getComment().map(comment1 -> comment1.getContent() + comment).orElse(comment)));
     }
 
+    public static void addComment(Node node, String s) {
+        addComment(node,true,s);
+    }
     public static void addComment(Node node, boolean append, String s) {
         Validate.notNull(node, "node can't be null");
         if (!node.getComment().isPresent())
