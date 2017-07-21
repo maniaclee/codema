@@ -1,8 +1,7 @@
-package com.lvbby.codema.java.template;
+package com.lvbby.codema.java.template.annotaion;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -10,19 +9,12 @@ import java.lang.annotation.Target;
 /**
  * Created by lipeng on 2016/12/22.
  */
-@Target({ElementType.METHOD, ElementType.FIELD,ElementType.TYPE_USE,ElementType.LOCAL_VARIABLE})
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Repeatable(value = Foreach.class)
-public @interface ForeachSub {
-
+public @interface SentenceGroup {
     /**
      * for condition
      */
-    String value();
-
-    /**
-     * body
-     */
-    String[] body() default "";
+    Sentence[] value();
 }

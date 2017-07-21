@@ -2,8 +2,8 @@ package com.lvbby.codema.app.testcase.mock;
 
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Class_;
-import com.lvbby.codema.java.template.Foreach;
-import com.lvbby.codema.java.template.ForeachSub;
+import com.lvbby.codema.java.template.annotaion.Foreach;
+import com.lvbby.codema.java.template.annotaion.Sentence;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,17 +18,15 @@ import static com.lvbby.codema.java.template.$GenericTypeArg_.$GenericTypeArgIns
 public class $Mock_Test {
 
 
-    @ForeachSub("dm in  methods")
-    @ForeachSub(value = "d in dm.dependencyMethods", body = {
+    @Foreach("dm in  methods")
+    @Foreach(value = "d in dm.dependencyMethods", body = {
             "var Class1 = d.javaField.type.name",
             "var class1 = d.javaField.name"})
     @Mock
     private $Class1_ $class1_;
 
-    /*# <%
-     var Class = src.name;
-     var class = @src.getNameCamel();
-     %> */
+    @Sentence("var Class = src.name;")
+    @Sentence("var class = @src.getNameCamel();")
     @InjectMocks
     private $Class_ $class_;
 
@@ -52,7 +50,7 @@ public class $Mock_Test {
         //<% if(returnVoid){ %>
         //${GenericTypeArgInstance};
         //<% } else { %>
-        @ForeachSub("sdf")
+        @Foreach("sdf")
         int a = 3;
         Assert.assertNotNull($GenericTypeArgInstance_);
         //<%}%>

@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.template;
+package com.lvbby.codema.java.template.annotaion;
 
 import java.lang.annotation.*;
 
@@ -8,9 +8,9 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Foreach {
+public @interface ForeachGroup {
     /**
      * for condition
      */
-    ForeachSub[] value();
+    Foreach[] value();
 }
