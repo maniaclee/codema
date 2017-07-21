@@ -18,6 +18,7 @@ import com.lvbby.codema.java.tool.ImportUtils;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaCodemaUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
+import com.lvbby.codema.java.tool.templateEngin.CodemaJavaSourcePrinter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -99,43 +100,11 @@ public class JavaTemplateResult extends TemplateEngineResult {
         return this;
     }
 
-    /***
-     * 对模板进行处理
-     * @param compilationUnit
-     */
-    private void processForeach(CompilationUnit compilationUnit) {
-        JavaLexer.getClass(compilationUnit).ifPresent(clz -> {
-            clz.getFields().forEach(fieldDeclaration -> {
-                NodeList<AnnotationExpr> annotationByClass = fieldDeclaration.getAnnotations();
-                List<JavaAnnotation> annotations = Lists.newArrayList();
-                for (int i = annotationByClass.size() - 1; i >= 0; i--) {
-                    if (ForeachSub.class.getSimpleName().equals(annotationByClass.get(i).getNameAsString())) {
-                        annotations.add(JavaLexer.parseAnnotation(annotationByClass.get(i)));
-                        annotationByClass.remove(i);
-                    }
-                }
-                if (!annotations.isEmpty()){
-                    JavaLexer.addComment(fieldDeclaration,  "<%");
-                }
-                for (JavaAnnotation javaAnnotation : annotations) {
-                    JavaLexer.addComment(fieldDeclaration,
-                            String.format("for(%s){", javaAnnotation.get(JavaAnnotation.defaultPropertyName).toString()));
-                    JavaLexer.addComment(fieldDeclaration,
-                            javaAnnotation.getList("body").stream().map(o -> o.toString() + ";").collect(Collectors.joining("\n")));
-                    JavaLexer.appendFieldCommentAdEnd(fieldDeclaration, "}");
-                }
-                if (!annotations.isEmpty())
-                    JavaLexer.appendFieldCommentAdEnd(fieldDeclaration, "%>");
-
-            });
-        });
-        System.out.println(compilationUnit);
-    }
 
     @Override
     protected void beforeRender(Map bindingParameters) {
-        processForeach(compilationUnit);
-        String template = ReflectionUtils.replace(compilationUnit.toString(), "/\\*\\s*#(\\}+)\\*/\\s*([^;]+);",
+        String template = CodemaJavaSourcePrinter.toJavaSource(compilationUnit);
+        template = ReflectionUtils.replace(template, "/\\*\\s*#(\\}+)\\*/\\s*([^;]+);",
                 matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
         super.beforeRender(bindingParameters);
         System.err.println(template);

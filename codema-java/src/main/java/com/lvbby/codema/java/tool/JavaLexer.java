@@ -3,7 +3,6 @@ package com.lvbby.codema.java.tool;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.JavaToken;
 import com.github.javaparser.Position;
-import com.github.javaparser.Range;
 import com.github.javaparser.Token;
 import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
@@ -26,6 +25,7 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.java.entity.JavaAnnotation;
+import com.lvbby.codema.java.tool.templateEngin.CodemaJavaSourcePrinter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -124,20 +124,23 @@ public class JavaLexer {
         System.out.println("tokenRange :   " + tokenRange);
 
 
-        CompilationUnit unit = JavaParser.parse("public class A{private int a ;//back\nprivate int b ;\n}");
+        CompilationUnit unit = JavaParser.parse("" +
+                "public class A{\n" +
+                "private int a ;" +
+                "//back\nprivate int b ;\n}");
         ClassOrInterfaceDeclaration classOrInterfaceType = getClass(unit).get();
         FieldDeclaration fieldDeclaration = classOrInterfaceType.getFields().get(0);
+        fieldDeclaration.setData(CodemaJavaSourcePrinter.dataKey_fieldAppend,"fuck");
 
         //        appendFieldCommentAdEnd(fieldDeclaration, "asdfs");
-        VariableDeclarator variable = fieldDeclaration.getVariable(0);
-        variable.setBlockComment("$$");
+//        VariableDeclarator variable = fieldDeclaration.getVariable(0);
+
         //        System.out.println(variable.setLineComment("init"));
         //        //        Comment comment = variable.getComment().get();
         //        //        comment.setRange(fieldDeclaration.getRange().get().withBeginLine(fieldDeclaration.getRange().get().end.line + 3));
         //        System.err.println(fieldDeclaration.getComment().get());
         //        System.out.println(fieldDeclaration);
-        System.out.println(unit);
-
+        System.out.println(CodemaJavaSourcePrinter.toJavaSource(unit));
     }
 
     private static TokenRange tokenRange(String s, Position begin, Position end) {
@@ -156,7 +159,7 @@ public class JavaLexer {
     public static void addComment(Node node, boolean append, String s) {
         Validate.notNull(node, "node can't be null");
         if (!node.getComment().isPresent())
-            node.setComment(new LineComment());
+            node.setComment(new LineComment(""));
         Comment comment = node.getComment().get();
         if (append)
             comment.setContent(comment.getContent() + "\n" + s);

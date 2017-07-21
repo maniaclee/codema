@@ -10,6 +10,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.type.PrimitiveType;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.app.mybatis.$src__name_Dao;
@@ -38,6 +40,7 @@ import java.util.List;
 public class SimpleTest {
 
     public static int a = 1;
+
     @Test
     public void uri() {
         URI uri = URI.create("asdf:///root/leaf?path=sdf&&sub=sdf");
@@ -83,7 +86,7 @@ public class SimpleTest {
                 "        return this;\n" +
                 "    }";
         String field = "sourceParserFactory";
-        List<Object> allConvert = ReflectionUtils.findAllConvert(s, field + "\\.([^\\(\\)]+)\\(",matcher-> matcher.group(1));
+        List<Object> allConvert = ReflectionUtils.findAllConvert(s, field + "\\.([^\\(\\)]+)\\(", matcher -> matcher.group(1));
         System.out.println(allConvert);
     }
 
@@ -241,8 +244,14 @@ public class SimpleTest {
         a.setAccessible(true);
         SimpleTest simpleTest = new SimpleTest();
         System.out.println(simpleTest.a);
-        a.set(simpleTest,3);
+        a.set(simpleTest, 3);
         System.out.println(simpleTest.a);
 
+    }
+
+    @Test
+    public void commentAtEnd() throws Exception {
+        VariableDeclarator variableDeclarator = new VariableDeclarator(PrimitiveType.booleanType(), "a");
+        System.out.println(variableDeclarator);
     }
 }
