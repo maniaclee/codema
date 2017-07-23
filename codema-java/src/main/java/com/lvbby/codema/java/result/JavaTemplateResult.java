@@ -107,6 +107,8 @@ public class JavaTemplateResult extends TemplateEngineResult {
     @Override
     protected void afterRender() {
         //imports
+        System.out.println("afterRender");
+        System.out.println(getString());
         CompilationUnit cu = JavaLexer.read(getString());
         new ImportUtils().tryAddImports(cu);
         setString(cu.toString());

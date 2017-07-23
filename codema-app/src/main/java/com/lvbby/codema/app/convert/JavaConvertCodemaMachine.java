@@ -10,6 +10,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaCodemaUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
     @CodemaRunner
     public void code(CodemaContext codemaContext, @NotNull JavaConvertCodemaConfig config) throws Exception {
         Validate.notBlank(config.getConvertToClassName(), "convert-to-class-name can't be blank");
+        if(StringUtils.isBlank(config.getDestClassName()))
+            config.setDestClassName("BuildUtils");
 
         List<JavaClass> javaClasses = JavaCodemaUtils.findBeansByPackage(codemaContext, config);
         if (CollectionUtils.isEmpty(javaClasses))

@@ -1,5 +1,6 @@
 package com.lvbby.codema.java.mock;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -11,7 +12,15 @@ public class ServiceImpl implements IService {
 
     @Override
     public String echo(String s) {
-        return String.format("echo ---->   [%s.%s]  --->  %s ", textHolder.getClass().getName(), textHolder.getText(), s);
+        if (StringUtils.isBlank(s)) {
+            return "empty sentence";
+        }
+        try {
+            return String.format("echo ---->   [%s.%s]  --->  %s ", textHolder.getClass().getName(), textHolder.getText(), s);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public TextHolder getTextHolder() {

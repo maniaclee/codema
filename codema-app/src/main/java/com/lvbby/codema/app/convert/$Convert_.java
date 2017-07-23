@@ -1,5 +1,6 @@
 package com.lvbby.codema.app.convert;
 
+import com.google.common.collect.Lists;
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Class_;
 
@@ -17,8 +18,9 @@ public class $Convert_ {
     // var Class1=@map.get(c);
     // %>
     public static $Class1_ build$Class1_($Class_ from) {
-        if (from == null)
+        if (from == null){
             return null;
+        }
         $Class1_ re = new $Class1_();
         /**#
          <%
@@ -32,7 +34,7 @@ public class $Convert_ {
     }
 
     public static List<$Class1_> build$Class1_s(List<$Class_> from) {
-        List<$Class1_> re = new ArrayList<$Class1_>();
+        List<$Class1_> re = Lists.newArrayList();
         if (from == null)
             return re;
         for ($Class_ e : from) {
@@ -42,8 +44,9 @@ public class $Convert_ {
     }
 
     public static $Class_ build$Class_($Class1_ from) {
-        if (from == null)
+        if (from == null){
             return null;
+        }
         $Class_ re = new $Class_();
         /**#
          <%

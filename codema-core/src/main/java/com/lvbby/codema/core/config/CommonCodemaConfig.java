@@ -6,6 +6,7 @@ import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.Result;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
 import java.util.List;
@@ -92,6 +93,18 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
 
     public void handle(CodemaContext codemaContext, CommonCodemaConfig config, Result result) throws Exception {
         handle(ResultContext.of(codemaContext, config, result));
+    }
+
+    public void addResultHandler(String resultHandler) {
+        Validate.notBlank(resultHandler, "empty resultHandler");
+        if(getResultHandler()==null){
+            setResultHandler(Lists.newArrayList());
+        }
+        this.getResultHandler().add(resultHandler);
+    }
+
+    public void addResultHandler(Class resultHandler) {
+        this.resultHandler.add(resultHandler.getName());
     }
 
 }

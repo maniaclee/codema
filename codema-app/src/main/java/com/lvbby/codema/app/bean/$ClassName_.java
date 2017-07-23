@@ -1,6 +1,7 @@
 package com.lvbby.codema.app.bean;
 
 import com.lvbby.codema.java.template.$Class1_;
+import com.lvbby.codema.java.template.annotaion.Foreach;
 
 import java.io.Serializable;
 
@@ -10,12 +11,12 @@ import java.io.Serializable;
 public class $ClassName_ implements Serializable {
 
 
-    // <% for( f in src.fields){
-    // var Class1 = f.type;
-    // var class1 = f.name;
-    // %>
+    @Foreach(value = "f in src.fields", body = {
+            "var Class1 = f.type",
+            "var class1 = f.name"
+
+    })
     private $Class1_ $class1_;
-    // <% }%>
 
     // <%
     // for( f in src.fields){

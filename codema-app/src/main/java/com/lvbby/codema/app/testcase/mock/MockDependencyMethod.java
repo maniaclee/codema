@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.stream.Collectors;
 
 /**
+ * 方法中依赖的某个方法调用，输出mock
  * Created by dushang.lp on 2017/6/9.
  */
 public class MockDependencyMethod {
@@ -18,6 +19,10 @@ public class MockDependencyMethod {
         this.method = method;
     }
 
+    /***
+     * 输出mock sentence
+     * @return
+     */
     public String parseMockSentence() {
         String collect = method.getArgs().stream().map(javaArg -> String.format("Mockito.any(%s.class)", javaArg.getType().getName())).collect(Collectors.joining(","));
         return String.format("Mockito.when(%s.%s(%s)).thenReturn(%s);"

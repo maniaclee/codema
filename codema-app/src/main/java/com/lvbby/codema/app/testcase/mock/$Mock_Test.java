@@ -34,28 +34,23 @@ public class $Mock_Test {
     public void init() {
     }
 
-    // <%
-    // for( m in  methods){
-    //      var method = m.javaMethod.name;
-    //      var returnVoid = @m.getJavaMethod().returnVoid();
-    //      var deps = @m.parseMockSentence();
-    //      var GenericTypeArgInstance = @m.parseMockInvoke();
-    // %>
+    @Foreach(value = "m in methods", body = {
+            "var method = m.javaMethod.name",
+            "var returnVoid = @m.getJavaMethod().returnVoid()",
+            "var deps = @m.parseMockSentence()",
+            "var GenericTypeArgInstance = @m.parseMockInvoke()"
+    })
     @Test
     public void $method_Test() throws Exception {
-        //<% for(s in deps){
-        //%>
+        //<% for(s in deps){ %>
         //${s}
         //<%}%>
         //<% if(returnVoid){ %>
         //${GenericTypeArgInstance};
         //<% } else { %>
-        @Foreach("sdf")
-        int a = 3;
         Assert.assertNotNull($GenericTypeArgInstance_);
         //<%}%>
     }
-    //<%}%>
 
     private void success(Object response, Object expect) {
         Assert.assertEquals(response, expect);

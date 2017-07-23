@@ -13,13 +13,13 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
 import com.google.common.collect.Lists;
+import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
-import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.inject.JavaTemplateInjector;
 import com.lvbby.codema.java.inject.JavaTemplateParameter;
@@ -37,6 +37,7 @@ import static com.lvbby.codema.java.tool.JavaLexer.*;
 /**
  * Created by lipeng on 16/12/23.
  */
+@Deprecated
 public class JavaTestcaseCodemaMachine implements CodemaInjectable {
     private static String newVarNameDefault = "result";
 
@@ -53,7 +54,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
     public static CompilationUnit genTest(CompilationUnit target, ClassOrInterfaceDeclaration typeDeclaration) {
         String beanName = camel(typeDeclaration.getNameAsString());
-        target.getChildNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
+        target.getNodesByType(ClassOrInterfaceDeclaration.class).stream().findFirst().ifPresent(testClass -> {
             /** bean field */
             testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE).addAnnotation("Autowired");
             JavaLexer.addAnnotationWithImport(testClass.addField(typeDeclaration.getNameAsString(), beanName, Modifier.PRIVATE), Test.class);
@@ -65,7 +66,7 @@ public class JavaTestcaseCodemaMachine implements CodemaInjectable {
 
 
     public static MethodDeclaration genTestMethod(NameExpr bean, MethodDeclaration m, TypeDeclaration typeDeclaration) {
-        MethodDeclaration methodDeclaration = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), new VoidType(), m.getNameAsString());
+        MethodDeclaration methodDeclaration = new MethodDeclaration(EnumSet.of(Modifier.PUBLIC), VoidType.VOID_TYPE, m.getNameAsString());
         methodDeclaration.setParentNode(typeDeclaration);
         methodDeclaration.setBody(genTestStatement(bean, m).stream().reduce(new BlockStmt(), (blockStmt, expression) -> blockStmt.addStatement(expression), binaryReturnOperator()));
         addAnnotationWithImport(methodDeclaration, Test.class);
