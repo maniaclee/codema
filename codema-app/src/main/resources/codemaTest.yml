@@ -1,0 +1,26 @@
+common:
+  author: maniaclee
+#  from: 'java://class/com.lvbby.codema.core.config.CommonCodemaConfig'
+  from: 'java://file//Users/lipeng/workspace/codema/codema-app/src/main/java/com/lvbby/codema/app/testcase/JavaTestcaseCodemaConfig.java'
+#  from: 'jdbc:mysql://localhost:3306/lvbby?user=root&table=article'
+  result-handler:
+      - 'com.lvbby.codema.java.result.JavaRegisterResultHandler'
+      - 'com.lvbby.codema.core.handler.PrintResultHandler'
+
+const:
+    - &apiSrcDir '/Users/psyco/tmp/project/garfield-api/src/main/java'
+    - &servicePackage 'com.lvbby.garfield.service'
+    - &serviceSrcDir '/Users/psyco/tmp/project/garfield-service/src/main/java'
+    - &serviceResourceDir '/Users/psyco/tmp/project/garfield-service/src/main/resources'
+java:
+  basic:
+    dest-src-root: *serviceSrcDir
+    dest-resource-root: *serviceResourceDir
+  testcase:
+    from-package: 'com.lvbby'
+    dest-package: 'com.lvbby.testcase'
+    dest-src-root: '/Users/psyco/tmp/project/garfield-service/src/test/java'
+    is-spring: true
+
+#  es: {}
+
