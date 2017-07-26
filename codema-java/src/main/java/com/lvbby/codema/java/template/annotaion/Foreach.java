@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  * Created by lipeng on 2016/12/22.
  */
-@Target({ElementType.METHOD, ElementType.FIELD,ElementType.TYPE_USE,ElementType.LOCAL_VARIABLE})
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE_USE, ElementType.LOCAL_VARIABLE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(value = ForeachGroup.class)

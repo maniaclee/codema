@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.tool.templateEngin;
+package com.lvbby.codema.java.tool.templateEngine;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import com.google.common.collect.Lists;
@@ -46,6 +47,17 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
         super.visit(n, arg);
         processForeachPost(CollectionUtils.isEmpty(javaAnnotations) ? 0 : javaAnnotations.size());
     }
+
+
+    @Override
+    public void visit(IfStmt n, Void arg) {
+        System.out.println("----------- if -------------");
+        System.out.println("con: " +n.getCondition());
+        System.out.println("then"+n.getThenStmt());
+        System.out.println("else"+n.getElseStmt());
+    }
+
+
 
     private void processSentence(NodeWithAnnotations node) {
         handleAnnotation(node, Sentence.class, javaAnnotations -> {

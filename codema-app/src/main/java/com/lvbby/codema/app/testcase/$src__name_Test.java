@@ -3,6 +3,8 @@ package com.lvbby.codema.app.testcase;
 import com.alibaba.fastjson.JSON;
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$TemplateClass_;
+import com.lvbby.codema.java.template.$TemplateUtils_;
+import com.lvbby.codema.java.template.annotaion.Foreach;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +34,25 @@ public class $src__name_Test {
     @Autowired
     private $TemplateClass_ $templateClass_;
 
-    // <%
-    // for( m in src.methods){
-    //      var invoke = m.name;
-    //      var Class1 = m.returnType;
-    //      var class = @m.getArgsDefaultValue();
-    //      var isPrimitive =  @m.returnType.bePrimitive();
-    // %>
+    @Foreach(value = " m in src.methods", body = {
+            "var invoke = m.name",
+            "var Class1 = m.returnType",
+            "var class = @m.getArgsDefaultValue()",
+            "var isPrimitive =  @m.returnType.bePrimitive()",
+    })
     @Test
     public void $invoke_() throws Exception {
         // <% if (!@m.returnVoid()){ %>
         $Class1_ re = $templateClass_.$invoke_($class_);
 
+        if ($TemplateUtils_.isTrue("")) {
+            String a = "";
+            System.out.println(a);
+        } else if (true) {
+            System.out.println("shit");
+        } else {
+            re = null;
+        }
         /*# <% if (isPrimitive){ %>
         assert re >0 ;
         <%}else{%> */
@@ -55,6 +64,5 @@ public class $src__name_Test {
         $templateClass_.$invoke_($class_);
         //<%}%>
     }
-    // <%}%>
 
 }

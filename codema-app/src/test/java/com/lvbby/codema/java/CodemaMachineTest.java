@@ -3,6 +3,7 @@ package com.lvbby.codema.java;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.app.convert.JavaConvertCodemaConfig;
+import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.core.Codema;
@@ -55,6 +56,11 @@ public class CodemaMachineTest extends BaseTest {
     @Test
     public void bean() throws Exception {
         JavaBeanCodemaConfig config = _newConfig(JavaBeanCodemaConfig.class);
+        exec(config);
+    }
+    @Test
+    public void testcase() throws Exception {
+        JavaTestcaseCodemaConfig config = _newConfig(JavaTestcaseCodemaConfig.class);
         exec(config);
     }
 
