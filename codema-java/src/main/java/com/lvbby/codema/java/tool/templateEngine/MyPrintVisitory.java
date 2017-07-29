@@ -5,6 +5,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.printer.PrettyPrintVisitor;
@@ -52,9 +53,10 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
     @Override
     public void visit(IfStmt n, Void arg) {
         System.out.println("----------- if -------------");
-        System.out.println("con: " +n.getCondition());
-        System.out.println("then"+n.getThenStmt());
-        System.out.println("else"+n.getElseStmt());
+        Expression condition = n.getCondition();
+        System.out.println("con: " + condition);
+        System.out.println("then: "+n.getThenStmt());
+        System.out.println("else: "+n.getElseStmt());
     }
 
 

@@ -19,7 +19,6 @@ import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.engine.JavaEngineContext;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
@@ -48,16 +47,6 @@ public class SimpleTest {
         System.out.println(uri.getPath());
         System.out.println(uri.getQuery());
         System.out.println(uri);
-    }
-
-    @Test
-    public void name() throws Exception {
-        JavaEngineContext parameter = new JavaEngineContext();
-        parameter.setFromClassName("shitDto");
-        //        String eval = ScriptEngineFactory.instance.eval("script://js/{match: /.*DTO/i.test($fromClassName), result: $fromClassName.replace(/DTO/i, 'Entity')}}", parameter);
-        String eval = ScriptEngineFactory.instance.eval("script://js/  (function(){return {match: /.*DTO/i.test($fromClassName), result: $fromClassName.replace(/DTO/i, 'Entity')}})()", parameter);
-        System.out.println(eval);
-
     }
 
     @Test
