@@ -45,7 +45,7 @@ public class $src__name_Test {
         // <% if (!@m.returnVoid()){ %>
         $Class1_ re = $templateClass_.$invoke_($class_);
 
-        if ($TemplateUtils_.isTrue("")) {
+        if ($TemplateUtils_.isTrue("isPrimitive")) {
             String a = "";
             System.out.println(a);
         } else if (true) {

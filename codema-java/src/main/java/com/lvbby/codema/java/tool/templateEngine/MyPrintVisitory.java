@@ -6,12 +6,15 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.java.entity.JavaAnnotation;
+import com.lvbby.codema.java.template.$TemplateUtils_;
 import com.lvbby.codema.java.template.annotaion.Foreach;
 import com.lvbby.codema.java.template.annotaion.Sentence;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -52,13 +55,55 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
 
     @Override
     public void visit(IfStmt n, Void arg) {
-        System.out.println("----------- if -------------");
         Expression condition = n.getCondition();
-        System.out.println("con: " + condition);
-        System.out.println("then: "+n.getThenStmt());
-        System.out.println("else: "+n.getElseStmt());
+        String body = statement2string(n.getThenStmt());
+        if (condition instanceof MethodCallExpr) {
+            MethodCallExpr expr = (MethodCallExpr) condition;
+            String callerClass = expr.getScope().get().toString();
+            String method = expr.getNameAsString();
+            String parameter = expr.getArguments().get(0).toString();
+            if (parameter.startsWith("\""))
+                parameter = parameter.substring(1);
+            if (parameter.endsWith("\""))
+                parameter = parameter.substring(0, parameter.length() - 1);
+            if ($TemplateUtils_.class.getSimpleName().equals(callerClass)) {
+                printIfStatement(parameter, body, "isTrue".equalsIgnoreCase(method));
+                printElse(n.getElseStmt().orElse(null), arg);
+            }
+        } else {
+            printIfStatement(condition.toString(), body, true);
+            printElse(n.getElseStmt().orElse(null), arg);
+        }
+
     }
 
+    private void printIfStatement(String ifString, String body, boolean isTrue) {
+        printTemplateEngineContent(String.format("if(%s%s){", isTrue ? "" : "!", ifString));
+        print(body);
+        printTemplateEngineContent("}");
+    }
+
+    private void printElse(Statement elseStatement, Void arg) {
+        if (elseStatement == null)
+            return;
+        if (elseStatement instanceof IfStmt) {
+            IfStmt elseIf = (IfStmt) elseStatement;
+            visit(elseIf, arg);
+        } else {
+            printTemplateEngineContent("else{");
+            println(statement2string(elseStatement));
+            printTemplateEngineContent("}");
+        }
+    }
+
+    private String statement2string(Statement statement) {
+        String s = statement.toString();
+        if (s.startsWith("{"))
+            s = s.substring(1);
+        if (s.endsWith("}"))
+            s = s.substring(0, s.length() - 1);
+        return s;
+    }
 
 
     private void processSentence(NodeWithAnnotations node) {
