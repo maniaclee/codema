@@ -17,4 +17,10 @@ public class $TemplateUtils_ {
     public static boolean isFalse(String sentence) {
         return false;
     }
+
+    public static void print(String s) {
+    }
+
+    public static void println(String s) {
+    }
 }

@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.printer.PrettyPrintVisitor;
@@ -52,6 +53,29 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
         processForeachPost(CollectionUtils.isEmpty(javaAnnotations) ? 0 : javaAnnotations.size());
     }
 
+    /**
+     * 处理$TemplateUtils_的函数
+     *
+     * @param expr
+     * @param arg
+     */
+    @Override
+    public void visit(final MethodCallExpr expr, final Void arg) {
+        System.out.println("xxxxxxxxxxxxx====>  " + expr.toString());
+        String callerClass = expr.getScope().get().toString();
+        String method = expr.getNameAsString();
+        String parameter = expr.getArguments().get(0).toString();
+        if ($TemplateUtils_.class.getSimpleName().equals(callerClass)) {
+            if ("println".equals(method)) {
+                println(parameter);
+            } else if ("print".equals(method)) {
+                print(parameter);
+            } else
+                throw new IllegalArgumentException("unknown method in :" + $TemplateUtils_.class.getName());
+        } else {
+            super.visit(expr, arg);
+        }
+    }
 
     @Override
     public void visit(IfStmt n, Void arg) {
@@ -67,11 +91,14 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
             if (parameter.endsWith("\""))
                 parameter = parameter.substring(0, parameter.length() - 1);
             if ($TemplateUtils_.class.getSimpleName().equals(callerClass)) {
-                printIfStatement(parameter, body, "isTrue".equalsIgnoreCase(method));
+                //                printIfStatement(parameter, body, "isTrue".equalsIgnoreCase(method));
+                printIfStatement(parameter, n.getThenStmt(), "isTrue".equalsIgnoreCase(method), arg);
                 printElse(n.getElseStmt().orElse(null), arg);
             }
         } else {
-            printIfStatement(condition.toString(), body, true);
+            //            printIfStatement(condition.toString(), body, true);
+            printIfStatement(condition.toString(), n.getThenStmt(), true, arg);
+
             printElse(n.getElseStmt().orElse(null), arg);
         }
 
@@ -83,16 +110,30 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
         printTemplateEngineContent("}");
     }
 
+    private void printIfStatement(String ifString, Statement body, boolean isTrue, Void arg) {
+        printlnTemplateEngineContent(String.format("if(%s%s){", isTrue ? "" : "!", ifString));
+        if (body instanceof BlockStmt) {
+            for (Statement statement : ((BlockStmt) body).getStatements()) {
+                statement.accept(this, arg);
+            }
+        } else {
+            throw new IllegalArgumentException("body in if statement must be block statement");
+        }
+        printlnTemplateEngineContent("}");
+    }
+
     private void printElse(Statement elseStatement, Void arg) {
         if (elseStatement == null)
             return;
         if (elseStatement instanceof IfStmt) {
             IfStmt elseIf = (IfStmt) elseStatement;
+            printlnTemplateEngineContent("else{");
             visit(elseIf, arg);
+            printlnTemplateEngineContent("}");
         } else {
-            printTemplateEngineContent("else{");
+            printlnTemplateEngineContent("else{");
             println(statement2string(elseStatement));
-            printTemplateEngineContent("}");
+            printlnTemplateEngineContent("}");
         }
     }
 
