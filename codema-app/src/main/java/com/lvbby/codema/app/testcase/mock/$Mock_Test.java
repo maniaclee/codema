@@ -47,7 +47,6 @@ public class $Mock_Test {
         //${s}
         //<%}%>
         if ($TemplateUtils_.isTrue("returnVoid")) {
-            //${GenericTypeArgInstance};
             $TemplateUtils_.println("${GenericTypeArgInstance}");
         } else {
             Assert.assertNotNull($GenericTypeArgInstance_);

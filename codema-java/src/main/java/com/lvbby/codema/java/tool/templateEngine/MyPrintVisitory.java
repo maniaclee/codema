@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -61,15 +63,14 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
      */
     @Override
     public void visit(final MethodCallExpr expr, final Void arg) {
-        System.out.println("xxxxxxxxxxxxx====>  " + expr.toString());
         String callerClass = expr.getScope().get().toString();
         String method = expr.getNameAsString();
         String parameter = expr.getArguments().get(0).toString();
         if ($TemplateUtils_.class.getSimpleName().equals(callerClass)) {
             if ("println".equals(method)) {
-                println(parameter);
+                printlnTrimString(parameter);
             } else if ("print".equals(method)) {
-                print(parameter);
+                printTrimString(parameter);
             } else
                 throw new IllegalArgumentException("unknown method in :" + $TemplateUtils_.class.getName());
         } else {
@@ -77,10 +78,22 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
         }
     }
 
+    private String formatVar(String s) {
+        return removeFirstAndEnd(s, "\"", "\"");
+    }
+
+    private String removeFirstAndEnd(String src, String prefix, String end) {
+        if (src.startsWith(prefix))
+            src = src.substring(prefix.length());
+        if (src.endsWith(end))
+            src = src.substring(0, src.length() - end.length());
+        return src;
+    }
+
     @Override
     public void visit(IfStmt n, Void arg) {
+        printJavaComment(n.getComment(), arg);//TODO
         Expression condition = n.getCondition();
-        String body = statement2string(n.getThenStmt());
         if (condition instanceof MethodCallExpr) {
             MethodCallExpr expr = (MethodCallExpr) condition;
             String callerClass = expr.getScope().get().toString();
@@ -104,14 +117,11 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
 
     }
 
-    private void printIfStatement(String ifString, String body, boolean isTrue) {
-        printTemplateEngineContent(String.format("if(%s%s){", isTrue ? "" : "!", ifString));
-        print(body);
-        printTemplateEngineContent("}");
+    private void printJavaComment(final Optional<Comment> javacomment, final Void arg) {
+        javacomment.ifPresent(c -> c.accept(this, arg));
     }
-
     private void printIfStatement(String ifString, Statement body, boolean isTrue, Void arg) {
-        printlnTemplateEngineContent(String.format("if(%s%s){", isTrue ? "" : "!", ifString));
+        printTemplateEngineContent(String.format("if(%s%s){", isTrue ? "" : "!", ifString));
         if (body instanceof BlockStmt) {
             for (Statement statement : ((BlockStmt) body).getStatements()) {
                 statement.accept(this, arg);
@@ -119,7 +129,7 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
         } else {
             throw new IllegalArgumentException("body in if statement must be block statement");
         }
-        printlnTemplateEngineContent("}");
+        printTemplateEngineContent("}");
     }
 
     private void printElse(Statement elseStatement, Void arg) {
@@ -214,6 +224,14 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
 
     protected void print(String s) {
         printer.print(s);
+    }
+
+    protected void printTrimString(String s) {
+        printer.print(formatVar(s));
+    }
+
+    protected void printlnTrimString(String s) {
+        printer.println(formatVar(s));
     }
 
     protected void println(String s) {
