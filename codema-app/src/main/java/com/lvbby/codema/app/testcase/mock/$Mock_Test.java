@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static com.lvbby.codema.java.template.$GenericTypeArg_.$GenericTypeArgInstance_;
+import static com.lvbby.codema.java.template.$TemplateUtils_.varList;
 
 /**
  * Created by dushang.lp on 2017/5/24.
@@ -43,9 +44,14 @@ public class $Mock_Test {
     })
     @Test
     public void $method_Test() throws Exception {
-        //<% for(s in deps){ %>
-        //${s}
-        //<%}%>
+        /*#
+          <% for(s in deps){ %>
+         ${s}
+         <%}%>
+         */
+        for (String s : varList("deps")) {
+            $TemplateUtils_.println(s);
+        }
         if ($TemplateUtils_.isTrue("returnVoid")) {
             $TemplateUtils_.println("${GenericTypeArgInstance}");
         } else {
