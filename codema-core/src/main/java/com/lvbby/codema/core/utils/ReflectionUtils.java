@@ -49,7 +49,7 @@ public class ReflectionUtils {
         try {
             return clz.newInstance();
         } catch (Exception e) {
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

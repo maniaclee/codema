@@ -5,6 +5,8 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.Result;
+import com.lvbby.codema.core.utils.ReflectionUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -21,6 +23,23 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     private String from;
     private List<String> resultHandler;
     private String destFile;
+
+    /***
+     * 用一个父类当做模板来初始化配置
+     * @param srcConfig
+     * @param targetConfigClass
+     * @param <T>
+     * @return
+     */
+    public static <T extends CommonCodemaConfig> T newConfigFromTemplate(CommonCodemaConfig srcConfig, Class<T> targetConfigClass) {
+        T re = ReflectionUtils.instance(targetConfigClass);
+        try {
+            BeanUtils.copyProperties(re, srcConfig);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return re;
+    }
 
     public List<String> getResultHandler() {
         return resultHandler;
@@ -97,7 +116,7 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
 
     public void addResultHandler(String resultHandler) {
         Validate.notBlank(resultHandler, "empty resultHandler");
-        if(getResultHandler()==null){
+        if (getResultHandler() == null) {
             setResultHandler(Lists.newArrayList());
         }
         this.getResultHandler().add(resultHandler);
