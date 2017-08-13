@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 @ConfigKey("common")
 public class CommonCodemaConfig implements Serializable, ResultHandler {
-    private String author;
+    private String author = System.getProperty("user.name");
     private String from;
     private List<String> resultHandler;
     private String destFile;

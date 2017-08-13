@@ -36,7 +36,6 @@ public class CodemaMachineTest extends BaseTest {
 
     private <T extends JavaBasicCodemaConfig> T _newConfig(Class<T> clz) throws Exception {
         T config = clz.newInstance();
-        config.setAuthor("maniaclee");
         config.setFrom(JavaClassSourceParser.toURI(ServiceImpl.class));
         config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(), PrintResultHandler.class.getName()));
         config.setDestPackage("com.lvbby");

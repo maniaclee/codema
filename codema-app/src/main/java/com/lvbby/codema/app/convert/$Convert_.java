@@ -18,7 +18,7 @@ public class $Convert_ {
     // var Class1=@map.get(c);
     // %>
     public static $Class1_ build$Class1_($Class_ from) {
-        if (from == null){
+        if (from == null) {
             return null;
         }
         $Class1_ re = new $Class1_();
@@ -34,9 +34,10 @@ public class $Convert_ {
     }
 
     public static List<$Class1_> build$Class1_s(List<$Class_> from) {
+        if (from == null) {
+            return null;
+        }
         List<$Class1_> re = Lists.newArrayList();
-        if (from == null)
-            return re;
         for ($Class_ e : from) {
             re.add(build$Class1_(e));
         }
@@ -44,7 +45,7 @@ public class $Convert_ {
     }
 
     public static $Class_ build$Class_($Class1_ from) {
-        if (from == null){
+        if (from == null) {
             return null;
         }
         $Class_ re = new $Class_();
@@ -60,9 +61,10 @@ public class $Convert_ {
     }
 
     public static List<$Class_> build$Class_s(List<$Class1_> from) {
+        if (from == null) {
+            return null;
+        }
         List<$Class_> re = new ArrayList<$Class_>();
-        if (from == null)
-            return re;
         for ($Class1_ e : from) {
             re.add(build$Class_(e));
         }
