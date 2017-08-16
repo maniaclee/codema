@@ -50,7 +50,10 @@ public class Codema {
         //加载CodeMachine
         this.codemaMachines = CodemaUtils.loadService(CodemaMachine.class, classLoader);
         this.sourceParserFactory = SourceParserFactory.of(classLoader);
-        this.codemaMachines.addAll(CodemaUtils.loadService(CodemaInjectable.class).stream().map(codemaInjectable -> codemaInject.toCodemaMachine(codemaInjectable)).flatMap(r -> r.stream()).collect(Collectors.toList()));
+        this.codemaMachines.addAll(CodemaUtils.loadService(CodemaInjectable.class).stream()
+                .map(codemaInjectable -> codemaInject.toCodemaMachine(codemaInjectable))
+                .flatMap(r -> r.stream())
+                .collect(Collectors.toList()));
     }
 
     public Codema setClassLoader(ClassLoader classLoader) {

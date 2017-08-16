@@ -13,3 +13,6 @@ com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine
 com.lvbby.codema.app.mvn.MavenCodemaMachine
 com.lvbby.codema.app.es.JavaEsCodemaMachine
 com.lvbby.codema.app.springboot.JavaSpringBootCodemaMachine
+
+com.lvbby.codema.app.javaMdDoc.JavaMdDocCodemaMachine
+
