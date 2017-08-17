@@ -24,8 +24,8 @@ public class JavaTemplateInjector implements CodemaInjector {
     public void process(CodemaInjectContext context) throws Exception {
         if (!context.getCodeRunnerMethod().isAnnotationPresent(JavaTemplate.class))
             return;
-        Object source = context.getContext().getSource();
-        if (source == null || !(source instanceof JavaSourceParam))
+        Object source = context.getContext().getSourceByType(JavaSourceParam.class);
+        if (source == null)
             return;
         /** 从参数中找到制定的Config */
         JavaBasicCodemaConfig config = context.findConfig(JavaBasicCodemaConfig.class);

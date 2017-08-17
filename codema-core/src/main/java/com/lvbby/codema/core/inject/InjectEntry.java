@@ -34,8 +34,9 @@ public class InjectEntry {
         Class<?> clz = parameter.getType();
         if (CodemaContext.class.equals(clz))
             return context;
-        if (Objects.equals(context.getSource().getClass(), clz))
-            return context.getSource();
+        Object sourceByType = context.getSourceByType(clz);
+        if (sourceByType!=null)
+            return sourceByType;
         try {
             return ObjectUtils.firstNonNull(context.getParam(clz).orElse(null), context.getConfig(clz));
         } catch (Exception e) {

@@ -3,133 +3,75 @@ package com.lvbby.codema.core;
 import com.lvbby.codema.core.bean.CodemaBeanFactory;
 import com.lvbby.codema.core.bean.DefaultCodemaBeanFactory;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
-import com.lvbby.codema.core.config.ConfigLoader;
-import com.lvbby.codema.core.config.DefaultConfigLoader;
-import com.lvbby.codema.core.config.YamlConfigLoader;
-import com.lvbby.codema.core.error.CodemaException;
-import com.lvbby.codema.core.inject.CodemaInject;
-import com.lvbby.codema.core.inject.CodemaInjectable;
-import com.lvbby.codema.core.utils.CodemaUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
+import com.lvbby.codema.core.config.ConfigBind;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
 /**
  * Created by lipeng on 16/12/23.
  */
 public class Codema {
-    private ConfigLoader configLoader;
-    private List<CodemaMachine> codemaMachines;
-    private SourceParserFactory sourceParserFactory;
-    private CodemaInject codemaInject = new CodemaInject();
     private CodemaBeanFactory codemaBeanFactory = new DefaultCodemaBeanFactory();
-    private ClassLoader classLoader;
 
-    public static Codema fromYaml(String yaml) throws Exception {
-        return from(new YamlConfigLoader().load(yaml));
+    private LinkedHashMap<CodemaMachine, CommonCodemaConfig> runMap = new LinkedHashMap<>();
+    CodemaContext codemaContext = new CodemaContext();
+
+    {
+        codemaContext.setCodema(this);
     }
 
-
-    public static Codema from(ConfigLoader configLoader) {
-        return new Codema(configLoader);
+    public static <T extends CommonCodemaConfig> void exec(T config) throws Exception {
+        new Codema().bind(config).run();
     }
 
-    public static void exec(CommonCodemaConfig config) throws Exception {
-        Codema.from(new DefaultConfigLoader().addConfigRecursive(config)).run();
+    /***
+     *
+     * @param configBinder
+     * @param config
+     * @param <T>
+     * @return
+     */
+    public <T extends CommonCodemaConfig> Codema bind(CodemaMachine<T> configBinder, T config) {
+        runMap.put(configBinder, config);
+        return this;
     }
 
-    private Codema(ConfigLoader configLoader) {
-        this.configLoader = configLoader;
-        init();
+    public <T extends CommonCodemaConfig> Codema bind(T config) {
+        ConfigBind annotation = config.getClass().getAnnotation(ConfigBind.class);
+        if (annotation == null || annotation.value() == null) {
+            throw new RuntimeException(String.format("no ConfigBind found for config %s",
+                    config.getClass().getName()));
+        }
+        Class<?> value = annotation.value();
+        if (!CodemaMachine.class.isAssignableFrom(value)) {
+            throw new RuntimeException(
+                    String.format("config must bind a %s", CodemaMachine.class.getName()));
+        }
+        runMap.put((CodemaMachine) ReflectionUtils.instance(value), config);
+        return this;
     }
 
-    private void init() {
-        //加载CodeMachine
-        this.codemaMachines = CodemaUtils.loadService(CodemaMachine.class, classLoader);
-        this.sourceParserFactory = SourceParserFactory.of(classLoader);
-        this.codemaMachines.addAll(CodemaUtils.loadService(CodemaInjectable.class).stream()
-                .map(codemaInjectable -> codemaInject.toCodemaMachine(codemaInjectable))
-                .flatMap(r -> r.stream())
-                .collect(Collectors.toList()));
-    }
-
-    public Codema setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public Codema withSource(Object object) {
+        codemaContext.addSource(object);
         return this;
     }
 
     public void run() throws Exception {
         /** 整个codema生命周期内共用一个context */
-        CodemaContext codemaContext = new CodemaContext();
-        codemaContext.setConfigLoader(configLoader);
-        codemaContext.setCodema(this);
+        //        codemaContext.setConfigLoader(configLoader);
 
-        CommonCodemaConfig config = codemaContext.getConfig(CommonCodemaConfig.class);
-        Validate.notNull(config, "common config is missing");
-
-        /** 解析输入，注入到context里 */
-        Object source = findSourceParser(config.getFrom()).parse(URI.create(config.getFrom()));
-        codemaContext.setSource(source);
-
-        /** 设置上下文holder */
-        CodemaContextHolder.setCodemaContext(codemaContext);
         /** 执行 */
-        try {
-            for (CodemaMachine codemaMachine : codemaMachines) {
-                //没有找到配置的不执行，filter
-                if (codemaContext.getConfig(codemaMachine.getConfigType()) != null)
-                    codemaMachine.code(codemaContext);
-            }
-        } finally {
-            CodemaContextHolder.clear();
+        for (CodemaMachine codemaMachine : runMap.keySet()) {
+            codemaMachine.code(codemaContext, runMap.get(codemaMachine));
         }
-    }
-
-    /***
-     *  查找id以pack开头的beans
-     */
-    public <T> List<T> findBeans(String pack, Class<T> clz) {
-        return getCodemaBeanFactory().getBeans(codemaBean -> StringUtils.isBlank(pack) || codemaBean.getId().startsWith(pack), clz);
-    }
-
-    private SourceParser findSourceParser(String from) throws CodemaException {
-        SourceParser load = sourceParserFactory.load(from);
-        if (load == null)
-            throw new CodemaException(String.format("can't find source parser for %s", from));
-        return load;
-    }
-
-    public Object parseSource(String url) throws Exception {
-        return findSourceParser(url).parse(URI.create(url));
-    }
-
-    public Codema addCodemaMachine(CodemaMachine codemaMachine) {
-        this.codemaMachines.add(codemaMachine);
-        return this;
-    }
-
-    public Codema addCodemaMachineInject(Object codemaMachine) {
-        this.codemaMachines.addAll(codemaInject.toCodemaMachine(codemaMachine));
-        return this;
-    }
-
-    public <T extends CodemaMachine> T getCodemaMachineByType(Class<T> clz) {
-        return (T) codemaMachines.stream().filter(codemaMachine -> codemaMachine.getClass().equals(clz));
-    }
-
-    public Codema addCodemaMachine(SourceParser sourceParser) {
-        this.sourceParserFactory.getSourceParsers().add(sourceParser);
-        return this;
-    }
-
-    public CodemaInject getCodemaInject() {
-        return codemaInject;
     }
 
     public CodemaBeanFactory getCodemaBeanFactory() {
         return codemaBeanFactory;
+    }
+
+    public void setCodemaBeanFactory(CodemaBeanFactory codemaBeanFactory) {
+        this.codemaBeanFactory = codemaBeanFactory;
     }
 }

@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
+import com.lvbby.codema.app.testcase.JavaTestcaseCodemaMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.app.testcase.mock.MockMethod;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.CodemaGlobalContext;
 import com.lvbby.codema.core.CodemaGlobalContextKey;
+import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.SourceParser;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.inject.CodemaInjector;
@@ -46,11 +48,6 @@ public class ColdLoaderTest {
         f = f.getParentFile();//codema
 
         CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList(f.getAbsolutePath()));
-    }
-
-    @Test
-    public void codemaYaml() throws Exception {
-        Codema.fromYaml(IOUtils.toString(ColdLoaderTest.class.getClassLoader().getResourceAsStream("codemaTest.yml"))).run();
     }
 
     @Test
@@ -116,6 +113,7 @@ public class ColdLoaderTest {
 
     @Test
     public void anno() throws Exception {
+        System.out.println(CodemaMachine.class.isAssignableFrom(JavaTestcaseCodemaMachine.class));
         Field field = ServiceImpl.class.getDeclaredField("textHolder");
         Stream.of(field.getAnnotations()).forEach(annotation -> {
             System.out.println(annotation.annotationType().getName());

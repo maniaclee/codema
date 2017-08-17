@@ -1,8 +1,10 @@
 package com.lvbby.codema.core;
 
 import com.google.common.collect.Maps;
+import com.lvbby.codema.core.bean.CodemaBeanFactory;
 import com.lvbby.codema.core.config.ConfigLoader;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,12 +17,20 @@ public class CodemaContext {
      */
     private ConfigLoader configLoader;
     /**
-     * 项目的入参，由Common的from字段解析而来，所有模块都以这个参数为入参
+     * 项目的入参, 把source按type分类
      */
-    private Object source;
+    private Map<Class, Object> sourceMap = Maps.newHashMap();
     private Codema codema;
 
     Map<Class, Object> paramMap = Maps.newConcurrentMap();
+
+    public <T> T getSourceByType(Class<T> clz) {
+        return (T) sourceMap.get(clz);
+    }
+
+    public void addSource(Object source) {
+        sourceMap.put(source.getClass(), source);
+    }
 
     public Codema getCodema() {
         return codema;
@@ -58,11 +68,4 @@ public class CodemaContext {
         this.configLoader = configLoader;
     }
 
-    public Object getSource() {
-        return source;
-    }
-
-    public void setSource(Object source) {
-        this.source = source;
-    }
 }
