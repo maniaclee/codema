@@ -59,6 +59,15 @@ public class JavaCodeUtils {
         }
         return null;
     }
+    public static CompilationUnit loadJavaSrcFromProject(String clzFullName) throws Exception {
+        for (File file : getMavenSrcDirectories()) {
+            File re = new File(file, clzFullName.replace('.', '/') + ".java");
+            if (re.isFile() && re.exists()) {
+                return JavaLexer.read(re);
+            }
+        }
+        return null;
+    }
 
 
     private static boolean isEqual(JavaArg javaArg, Parameter parameter) {

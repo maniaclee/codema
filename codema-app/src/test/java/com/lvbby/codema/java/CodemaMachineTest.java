@@ -1,5 +1,10 @@
 package com.lvbby.codema.java;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.app.convert.JavaConvertCodemaConfig;
@@ -15,6 +20,9 @@ import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.mock.ServiceImpl;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
+import com.lvbby.codema.java.tool.JavaCodeUtils;
+import com.lvbby.codema.java.tool.JavaLexer;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,19 +33,20 @@ import java.io.File;
  */
 public class CodemaMachineTest extends BaseTest {
 
-    @Before
-    public void init() {
+    @Before public void init() {
         File f = new File(JavaMockTestCodemaMachine.class.getResource("/").getPath());
         f = f.getParentFile().getParentFile();//codema-app
         f = f.getParentFile();//codema
 
-        CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList(f.getAbsolutePath()));
+        CodemaGlobalContext
+                .set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList(f.getAbsolutePath()));
     }
 
     private <T extends JavaBasicCodemaConfig> T _newConfig(Class<T> clz) throws Exception {
         T config = clz.newInstance();
         config.setFrom(JavaClassSourceParser.toURI(ServiceImpl.class));
-        config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(), PrintResultHandler.class.getName()));
+        config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(),
+                PrintResultHandler.class.getName()));
         config.setDestPackage("com.lvbby");
         return config;
     }
@@ -46,27 +55,26 @@ public class CodemaMachineTest extends BaseTest {
         Codema.exec(config);
     }
 
-    @Test
-    public void mock() throws Exception {
+    @Test public void mock() throws Exception {
         JavaMockTestCodemaConfig config = _newConfig(JavaMockTestCodemaConfig.class);
         exec(config);
     }
 
-    @Test
-    public void bean() throws Exception {
+    @Test public void bean() throws Exception {
         JavaBeanCodemaConfig config = _newConfig(JavaBeanCodemaConfig.class);
         exec(config);
     }
-    @Test
-    public void testcase() throws Exception {
+
+    @Test public void testcase() throws Exception {
         JavaTestcaseCodemaConfig config = _newConfig(JavaTestcaseCodemaConfig.class);
         exec(config);
     }
 
-    @Test
-    public void convert() throws Exception {
+    @Test public void convert() throws Exception {
         JavaConvertCodemaConfig config = _newConfig(JavaConvertCodemaConfig.class);
         config.setConvertToClassName("BuildUtils");
         exec(config);
     }
+
+
 }

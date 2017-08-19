@@ -10,4 +10,8 @@ public class BaseTest {
     protected void print(Object a) {
         System.out.println(JSON.toJSONString(a, SerializerFeature.PrettyFormat));
     }
+
+    protected void println(String s ){
+        System.out.println(s);
+    }
 }
