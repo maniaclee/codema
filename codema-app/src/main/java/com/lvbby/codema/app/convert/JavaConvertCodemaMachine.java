@@ -1,9 +1,7 @@
 package com.lvbby.codema.app.convert;
 
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.inject.CodemaInjectable;
-import com.lvbby.codema.core.inject.CodemaRunner;
+import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -19,13 +17,11 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 16/12/23.
  */
-public class JavaConvertCodemaMachine implements CodemaInjectable {
+public class JavaConvertCodemaMachine implements CodemaMachine<JavaConvertCodemaConfig> {
 
-    @ConfigBind(JavaConvertCodemaConfig.class)
-    @CodemaRunner
     public void code(CodemaContext codemaContext, @NotNull JavaConvertCodemaConfig config) throws Exception {
         Validate.notBlank(config.getConvertToClassName(), "convert-to-class-name can't be blank");
-        if(StringUtils.isBlank(config.getDestClassName()))
+        if (StringUtils.isBlank(config.getDestClassName()))
             config.setDestClassName("BuildUtils");
 
         List<JavaClass> javaClasses = JavaCodemaUtils.findBeansByPackage(codemaContext, config);

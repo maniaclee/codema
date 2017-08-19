@@ -23,7 +23,7 @@ public class JavaMethod {
 
 
     public static List<JavaMethod> from(Class clz) {
-        return ReflectionUtils.getAllMethods(clz).stream().map(method -> from(method)).collect(Collectors.toList());
+        return ReflectionUtils.getAllMethodsOfThisClass(clz).stream().map(method -> from(method)).collect(Collectors.toList());
     }
 
     public static JavaMethod from(Method m) {

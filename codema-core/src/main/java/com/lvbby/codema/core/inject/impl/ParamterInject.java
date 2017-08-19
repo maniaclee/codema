@@ -60,7 +60,7 @@ public class ParamterInject implements CodemaInjector {
             String parentBeanId = value.substring(0, end);
             Object parentBean = null;
             try {
-                parentBean = context.getContext().getConfig(Class.forName(parentBeanId));
+                parentBean = context.getContext().getCodema().findConfigBlur(Class.forName(parentBeanId));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

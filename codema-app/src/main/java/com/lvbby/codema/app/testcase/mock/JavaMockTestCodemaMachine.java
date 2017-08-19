@@ -1,17 +1,13 @@
 package com.lvbby.codema.app.testcase.mock;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
-import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.inject.JavaTemplate;
-import com.lvbby.codema.java.inject.JavaTemplateInjector;
-import com.lvbby.codema.java.inject.JavaTemplateParameter;
+import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -25,17 +21,17 @@ import java.util.stream.Collectors;
 /**
  * Created by dushang.lp on 2017/5/31.
  */
-public class JavaMockTestCodemaMachine implements CodemaInjectable {
+public class JavaMockTestCodemaMachine extends AbstractJavaCodemaMachine<JavaMockTestCodemaConfig> {
 
     @ConfigBind(JavaMockTestCodemaConfig.class)
     @CodemaRunner
     @JavaTemplate
-    public void code(CodemaContext codemaContext, @NotNull JavaMockTestCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
+    public void processSingle(CodemaContext codemaContext, JavaMockTestCodemaConfig config, JavaClass cu) throws Exception {
         config.handle(codemaContext, config,
                 new JavaTemplateResult(config, $Mock_Test.class, cu)
                         .bind("Mock", cu.getName() + "Test")
                         .bind("injectFields", extractAllInjectFields(cu, config.getDependencyAnnotation()))
-                        .bind("methods", MockMethod.parseMockMethods(JavaClass.from(Codema.class), javaField -> javaField.getType().beOutterClass()))
+                        .bind("methods", MockMethod.parseMockMethods(cu, javaField -> javaField.getType().beOutterClass()))
                         .registerResult()
         );
     }

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -127,11 +128,11 @@ public class ReflectionUtils {
         }
     }
 
-    public static Collection<Class<?>> loadClasses(String packageName) throws Exception {
+    public static List<Class> loadClasses(String packageName) throws Exception {
         return loadClasses(packageName, null);
     }
 
-    public static Collection<Class<?>> loadClasses(String packageName, ClassLoader classLoader) throws Exception {
+    public static List<Class> loadClasses(String packageName, ClassLoader classLoader) throws Exception {
         if (classLoader == null)
             classLoader = ReflectionUtils.class.getClassLoader();
         //single class
@@ -312,6 +313,10 @@ public class ReflectionUtils {
 
     public static List<Method> getAllMethods(Class<?> clz) {
         return getAllMethods(clz, null);
+    }
+    public static List<Method> getAllMethodsOfThisClass(Class<?> clz) {
+        return Arrays.stream(clz.getDeclaredMethods()).filter(method -> Modifier.isPublic(method.getModifiers())
+                && !Modifier.isStatic(method.getModifiers())).collect(Collectors.toList());
     }
 
     public static List<Method> getAllMethods(Class<?> clz, Predicate<Method> predicate) {

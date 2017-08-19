@@ -15,9 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static com.lvbby.codema.java.template.$Symbols_.$class_;
 
-//<% if(springBootConfig!=null){ %>
-// <%}%>
-
 
 /**
  * Created by lipeng on 2016/12/24.

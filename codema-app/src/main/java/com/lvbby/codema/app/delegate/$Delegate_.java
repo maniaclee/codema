@@ -24,8 +24,7 @@ public class $Delegate_ {
         // <% if (@m.returnVoid()){ %>
         $templateClass_.$invoke_($class_);
         //<%}else{%>
-        $Class1_ re = $templateClass_.$invoke_($class_);
-        return re;
+        return $templateClass_.$invoke_($class_);
         //<%}%>
     }
     // <% }%>

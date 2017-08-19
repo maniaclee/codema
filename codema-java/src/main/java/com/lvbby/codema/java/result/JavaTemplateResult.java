@@ -9,7 +9,6 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 import com.lvbby.codema.java.template.TemplateContext;
-import com.lvbby.codema.java.tool.ImportUtils;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaCodemaUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -110,7 +109,7 @@ public class JavaTemplateResult extends TemplateEngineResult {
         System.out.println("afterRender");
         System.out.println(getString());
         CompilationUnit cu = JavaLexer.read(getString());
-        new ImportUtils().tryAddImports(cu);
+//        new ImportUtils().tryAddImports(cu);
         setString(cu.toString());
 
         registerResult();

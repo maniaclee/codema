@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +37,7 @@ public class InjectEntry {
         if (sourceByType!=null)
             return sourceByType;
         try {
-            return ObjectUtils.firstNonNull(context.getParam(clz).orElse(null), context.getConfig(clz));
+            return ObjectUtils.firstNonNull(context.getParam(clz).orElse(null), context.getCodema().findConfigBlur(clz));
         } catch (Exception e) {
             return null;
         }

@@ -1,10 +1,9 @@
 package com.lvbby.codema.core;
 
 import com.google.common.collect.Maps;
-import com.lvbby.codema.core.bean.CodemaBeanFactory;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigLoader;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,6 +22,10 @@ public class CodemaContext {
     private Codema codema;
 
     Map<Class, Object> paramMap = Maps.newConcurrentMap();
+
+    public Map<Class, Object> getSourceMap() {
+        return sourceMap;
+    }
 
     public <T> T getSourceByType(Class<T> clz) {
         return (T) sourceMap.get(clz);
@@ -48,24 +51,8 @@ public class CodemaContext {
         paramMap.put(result.getClass(), result);
     }
 
-    public <T> T getConfig(Class<T> clz) {
-        return configLoader.getConfig(clz);
-    }
-
-    public <T> Optional<T> loadConfig(Class<T> clz) {
-        return Optional.ofNullable((T) configLoader.getConfig(clz));
-    }
-
-    public boolean hasConfig(Class clz) {
-        return getConfig(clz) != null;
-    }
-
-    public ConfigLoader getConfigLoader() {
-        return configLoader;
-    }
-
-    public void setConfigLoader(ConfigLoader configLoader) {
-        this.configLoader = configLoader;
+    public <T extends CommonCodemaConfig> T getConfig(Class<T> clz) {
+        return codema.findConfig(clz);
     }
 
 }

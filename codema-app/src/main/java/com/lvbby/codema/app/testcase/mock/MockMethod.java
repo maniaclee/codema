@@ -3,7 +3,6 @@ package com.lvbby.codema.app.testcase.mock;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
@@ -61,8 +60,8 @@ public class MockMethod {
         mockMethod.setParentClass(javaClass);
 
         String ms = method.getSrc().toString();
+        mockMethod.setDependencyMethods(Sets.newHashSet());//init
         if (CollectionUtils.isNotEmpty(javaFields)) {
-            mockMethod.setDependencyMethods(Sets.newHashSet());//init
             javaFields.forEach(javaField -> mockMethod.getDependencyMethods().addAll(findReferredInvoke(ms, javaField, javaClass)));
         }
         return mockMethod;
