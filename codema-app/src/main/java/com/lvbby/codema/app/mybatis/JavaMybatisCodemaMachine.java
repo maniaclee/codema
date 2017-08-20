@@ -2,18 +2,12 @@ package com.lvbby.codema.app.mybatis;
 
 import com.google.common.base.CaseFormat;
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.inject.CodemaInjectable;
-import com.lvbby.codema.core.inject.CodemaRunner;
-import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.inject.JavaTemplate;
-import com.lvbby.codema.java.inject.JavaTemplateInjector;
-import com.lvbby.codema.java.inject.JavaTemplateParameter;
+import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.result.JavaXmlTemplateResult;
 import com.lvbby.codema.java.template.TemplateContext;
@@ -27,33 +21,28 @@ import java.util.stream.Collectors;
  * Created by lipeng on 16/12/23.
  * 产生dao和mapper.xml
  */
-public class JavaMybatisCodemaMachine implements CodemaInjectable {
+public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMybatisCodemaConfig> {
 
-    @ConfigBind(JavaMybatisCodemaConfig.class)
-    @CodemaRunner
-    @JavaTemplate
-    public void code(CodemaContext codemaContext, @NotNull JavaMybatisCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass cu) throws Exception {
+    public void codeEach(CodemaContext codemaContext, JavaMybatisCodemaConfig config, JavaClass cu) throws Exception {
         SqlTable sqlTable = getSqlTable(cu);
         validate(sqlTable);
         TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $src__name_Dao.class, cu)
                 .bind("table", sqlTable)
                 .registerResult();
-        config.handle(codemaContext, config, daoTemplateResult);
+        config.handle(codemaContext, daoTemplateResult);
 
         String xml = IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
-        config.handle(codemaContext, config, JavaXmlTemplateResult.ofResource(config, xml, cu, new File(new File(config.getDestResourceRoot(), config.getMapperDir()), String.format("%sMapper.xml", cu.getName())))
+        config.handle(codemaContext, JavaXmlTemplateResult.ofResource(config, xml, cu, new File(new File(config.getDestResourceRoot(), config.getMapperDir()), String.format("%sMapper.xml", cu.getName())))
                 .bind("table", sqlTable)
                 .bind("dao", daoTemplateResult.getResult()));
     }
 
-    @ConfigBind(JavaMybatisCodemaConfig.class)
-    @CodemaRunner
-    public void global(CodemaContext codemaContext, @NotNull JavaMybatisCodemaConfig config) throws Exception {
+    public void preCode(CodemaContext codemaContext, JavaMybatisCodemaConfig config) throws Exception {
         /**mybatis config*/
-        config.handle(codemaContext, config, BasicResult.ofResource(JavaMybatisCodemaMachine.class, "mybatis.xml", config.getDestResourceRoot()));
+        config.handle(codemaContext, BasicResult.ofResource(JavaMybatisCodemaMachine.class, "mybatis.xml", config.getDestResourceRoot()));
 
         /** dal config */
-        config.handle(codemaContext, config, new JavaTemplateResult(new TemplateContext(DalConfig.class, config)
+        config.handle(codemaContext, new JavaTemplateResult(new TemplateContext(DalConfig.class, config)
                 .pack(config.getConfigPackage()))
                 .render());
     }

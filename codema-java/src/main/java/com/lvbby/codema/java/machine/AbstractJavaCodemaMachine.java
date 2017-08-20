@@ -12,13 +12,18 @@ import java.util.List;
  * Created by dushang.lp on 2017/8/16.
  */
 public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig> implements CodemaMachine<T> {
-    @Override public void code(CodemaContext context, T config) throws Exception {
+    @Override
+    public void code(CodemaContext context, T config) throws Exception {
+        preCode(context, config);
         List<JavaClass> sources = JavaCodemaUtils.findBeansByPackage(context, config);
         for (JavaClass javaClass : sources) {
-            processSingle(context, config, javaClass);
+            codeEach(context, config, javaClass);
         }
     }
 
-    protected abstract void processSingle(CodemaContext context, T config, JavaClass javaClass)
+    protected abstract void codeEach(CodemaContext context, T config, JavaClass javaClass)
             throws Exception;
+
+    protected void preCode(CodemaContext context, T config) throws Exception {
+    }
 }

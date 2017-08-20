@@ -8,8 +8,8 @@ import com.github.javaparser.ast.body.Parameter;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaGlobalContext;
 import com.lvbby.codema.core.CodemaGlobalContextKey;
-import com.lvbby.codema.java.tool.JavaCodeUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
@@ -30,9 +30,9 @@ public class MdTools {
         String[] split = s.split("#");
         String service = split[0];
         String method = split[1];
-        CompilationUnit compilationUnit = JavaCodeUtils.loadJavaSrcFromProject(service);
+        CompilationUnit compilationUnit = JavaSrcLoader.getJavaSrcCompilationUnit(service);
         ClassOrInterfaceDeclaration clz = JavaLexer
-                .getClass(JavaCodeUtils.loadJavaSrcFromProject(service)).get();
+                .getClass(JavaSrcLoader.getJavaSrcCompilationUnit(service)).get();
         MethodDeclaration methodDeclaration = clz.getMethodsByName(method).get(0);
 
         printTitle("½Ó¿Ú£º");
@@ -60,7 +60,7 @@ public class MdTools {
     }
 
     private String printParam(String className) throws Exception {
-        return printParam(JavaCodeUtils.loadJavaSrcFromProject(className));
+        return printParam(JavaSrcLoader.getJavaSrcCompilationUnit(className));
     }
 
     private String printParam(CompilationUnit compilationUnit) {

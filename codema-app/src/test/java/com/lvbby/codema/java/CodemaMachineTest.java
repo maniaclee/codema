@@ -9,14 +9,13 @@ import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.core.Codema;
-import com.lvbby.codema.core.CodemaGlobalContext;
-import com.lvbby.codema.core.CodemaGlobalContextKey;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,8 +33,8 @@ public class CodemaMachineTest extends BaseTest {
         f = f.getParentFile().getParentFile();//codema-app
         f = f.getParentFile();//codema
 
-        CodemaGlobalContext
-                .set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList(f.getAbsolutePath()));
+        /** 设置java src 根路径*/
+        JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(f));
         try {
             sourceLoader = JavaClassSourceParser.fromClass(JavaMockTestCodemaConfig.class);
         } catch (Exception e) {
@@ -46,8 +45,7 @@ public class CodemaMachineTest extends BaseTest {
     private <T extends JavaBasicCodemaConfig> T _newConfig(Class<T> clz) throws Exception {
         T config = clz.newInstance();
         //        config.setFrom(JavaClassSourceParser.toURI(ServiceImpl.class));
-        config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(),
-                PrintResultHandler.class.getName()));
+        config.setResultHandlers(Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
         config.setDestPackage("com.lvbby");
         return config;
     }
@@ -77,6 +75,7 @@ public class CodemaMachineTest extends BaseTest {
         JavaTestcaseCodemaConfig config = _newConfig(JavaTestcaseCodemaConfig.class);
         exec(config);
     }
+
     @Test
     public void delegate() throws Exception {
         JavaDelegateCodemaConfig config = _newConfig(JavaDelegateCodemaConfig.class);
@@ -89,6 +88,7 @@ public class CodemaMachineTest extends BaseTest {
         config.setConvertToClassName("BuildUtils");
         exec(config);
     }
+
     @Test
     public void interfaces() throws Exception {
         JavaInterfaceCodemaConfig config = _newConfig(JavaInterfaceCodemaConfig.class);

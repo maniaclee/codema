@@ -13,12 +13,12 @@ import org.apache.commons.lang3.ObjectUtils;
  */
 public class JavaBeanCodemaMachine extends AbstractJavaCodemaMachine<JavaBeanCodemaConfig> {
 
-    public void processSingle(CodemaContext codemaContext, JavaBeanCodemaConfig config, JavaClass javaClass) throws Exception {
+    public void codeEach(CodemaContext codemaContext, JavaBeanCodemaConfig config, JavaClass javaClass) throws Exception {
         for (JavaBeanCodemaConfig c : CodemaUtils.getAllConfig(config, JavaBeanCodemaConfig::getList)) {
             JavaTemplateResult re = new JavaTemplateResult(c, $ClassName_.class, javaClass)
                     .bind("ClassName", ObjectUtils.firstNonNull(ScriptEngineFactory.instance.eval(c.getDestClassName(), javaClass.getName()), javaClass.getName()))
                     .registerResult();//注册
-            config.handle(codemaContext, c, re);
+            config.handle(codemaContext, re);
         }
     }
 

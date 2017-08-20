@@ -10,8 +10,8 @@ import com.lvbby.codema.java.result.JavaTemplateResult;
  */
 public class JavaInterfaceCodemaMachine extends AbstractJavaCodemaMachine<JavaInterfaceCodemaConfig> {
 
-    public void processSingle(CodemaContext codemaContext, JavaInterfaceCodemaConfig config, JavaClass javaClass) throws Exception {
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $Interface_.class, javaClass)
+    public void codeEach(CodemaContext codemaContext, JavaInterfaceCodemaConfig config, JavaClass javaClass) throws Exception {
+        config.handle(codemaContext, new JavaTemplateResult(config, $Interface_.class, javaClass)
                 .bind("Interface", config.evalDestClassName(javaClass, javaClass.getName() + "Service"))
                 .registerResult());
     }

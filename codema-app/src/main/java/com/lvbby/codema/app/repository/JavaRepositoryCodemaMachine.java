@@ -2,17 +2,11 @@ package com.lvbby.codema.app.repository;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.inject.CodemaInjectable;
-import com.lvbby.codema.core.inject.CodemaRunner;
-import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.inject.JavaTemplate;
-import com.lvbby.codema.java.inject.JavaTemplateInjector;
-import com.lvbby.codema.java.inject.JavaTemplateParameter;
+import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import org.apache.commons.lang3.Validate;
 
@@ -23,12 +17,9 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 16/12/23.
  */
-public class JavaRepositoryCodemaMachine implements CodemaInjectable {
+public class JavaRepositoryCodemaMachine extends AbstractJavaCodemaMachine<JavaRepositoryCodemaConfig> {
 
-    @ConfigBind(JavaRepositoryCodemaConfig.class)
-    @CodemaRunner
-    @JavaTemplate
-    public void code(CodemaContext codemaContext, @NotNull JavaRepositoryCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass javaClass) throws Exception {
+    public void codeEach(CodemaContext codemaContext, JavaRepositoryCodemaConfig config, JavaClass javaClass) throws Exception {
         JavaClass buildUtil = codemaContext.getCodema().getCodemaBeanFactory().getBean(config.getConvertUtilsClass());
         Validate.notNull(buildUtil, "buildClass not found");
 
@@ -38,8 +29,8 @@ public class JavaRepositoryCodemaMachine implements CodemaInjectable {
                 .bind("buildUtilClass", buildUtil)
                 .bind("Repository", config.evalDestClassName(javaClass, javaClass.getName() + "Repository"))
                 .addImport(buildUtil);
-//        collect.stream().filter(r -> r.getBuildReturnMethod() != null).forEach(r -> result.addImport(r.getBuildReturnMethod().getReturnType(), codemaContext));
-        config.handle(codemaContext, config, result.registerResult());
+        //        collect.stream().filter(r -> r.getBuildReturnMethod() != null).forEach(r -> result.addImport(r.getBuildReturnMethod().getReturnType(), codemaContext));
+        config.handle(codemaContext, result.registerResult());
     }
 
 

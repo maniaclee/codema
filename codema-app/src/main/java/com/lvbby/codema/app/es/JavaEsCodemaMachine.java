@@ -1,17 +1,11 @@
 package com.lvbby.codema.app.es;
 
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.inject.CodemaInjectable;
-import com.lvbby.codema.core.inject.CodemaRunner;
-import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.utils.JsonBuilder;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.inject.JavaTemplate;
-import com.lvbby.codema.java.inject.JavaTemplateInjector;
-import com.lvbby.codema.java.inject.JavaTemplateParameter;
+import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import org.apache.commons.lang3.StringUtils;
 
 import static com.lvbby.codema.core.utils.JsonBuilder.node;
@@ -19,13 +13,10 @@ import static com.lvbby.codema.core.utils.JsonBuilder.node;
 /**
  * Created by lipeng on 16/12/23.
  */
-public class JavaEsCodemaMachine implements CodemaInjectable {
+public class JavaEsCodemaMachine extends AbstractJavaCodemaMachine<JavaEsCodemaConfig> {
 
-    @ConfigBind(JavaEsCodemaConfig.class)
-    @CodemaRunner
-    @JavaTemplate
-    public void code(CodemaContext codemaContext, @NotNull JavaEsCodemaConfig config, @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) JavaClass javaClass) throws Exception {
-        config.handle(codemaContext, config, new BasicResult().result(genEsMapping(javaClass)));
+    public void codeEach(CodemaContext codemaContext, JavaEsCodemaConfig config, JavaClass javaClass) throws Exception {
+        config.handle(codemaContext, new BasicResult().result(genEsMapping(javaClass)));
     }
 
     public static JsonBuilder genEsMapping(JavaClass javaClass) {

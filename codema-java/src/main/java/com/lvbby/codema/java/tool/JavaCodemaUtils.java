@@ -23,6 +23,8 @@ public class JavaCodemaUtils {
         JavaSourceParam source = codemaContext.getSourceByType(JavaSourceParam.class);
         if (source == null)
             return Lists.newLinkedList();
+        if (StringUtils.isBlank(pack))
+            return source.getClasses();
         /** 根据config来筛选需要处理的source */
         List<JavaClass> sources = source.getJavaClass(pack);
         /** 从容器里找 */

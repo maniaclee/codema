@@ -17,7 +17,6 @@ import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.java.inject.JavaTemplate;
@@ -38,14 +37,11 @@ import static com.lvbby.codema.java.tool.JavaLexer.*;
  * Created by lipeng on 16/12/23.
  */
 @Deprecated
-public class JavaTestcaseCodemaMachine implements CodemaInjectable {
+public class JavaTestcaseCodemaMachine  {
     private static String newVarNameDefault = "result";
 
-    @ConfigBind(JavaTestcaseCodemaConfig.class)
-    @CodemaRunner
-    @JavaTemplate
-    public void code(CodemaContext codemaContext, @NotNull JavaTestcaseCodemaConfig config,
-                     @NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
+    public void code(CodemaContext codemaContext,   JavaTestcaseCodemaConfig config,
+                       @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
                      /**@NotNull @JavaTemplateParameter(identifier = JavaTemplateInjector.java_dest)*/CompilationUnit compilationUnitDest) throws Exception {
 
         CompilationUnit result = genTest(compilationUnitDest, JavaLexer.getClass(compilationUnitSource).orElse(null));

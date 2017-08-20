@@ -10,8 +10,8 @@ import com.lvbby.codema.java.result.JavaTemplateResult;
  */
 public class JavaDelegateCodemaMachine extends AbstractJavaCodemaMachine<JavaDelegateCodemaConfig> {
 
-    public void processSingle(CodemaContext codemaContext, JavaDelegateCodemaConfig config, JavaClass javaClass) throws Exception {
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $Delegate_.class, javaClass)
+    public void codeEach(CodemaContext codemaContext, JavaDelegateCodemaConfig config, JavaClass javaClass) throws Exception {
+        config.handle(codemaContext, new JavaTemplateResult(config, $Delegate_.class, javaClass)
                 .bind("Delegate", config.evalDestClassName(javaClass, javaClass.getName() + "Delegate"))
                 .registerResult());
     }

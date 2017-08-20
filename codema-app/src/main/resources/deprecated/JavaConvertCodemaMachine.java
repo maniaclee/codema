@@ -17,7 +17,6 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
-import com.lvbby.codema.core.inject.CodemaInjectable;
 import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.core.inject.Parameter;
 import deprecated.JavaEngineContext;
@@ -43,10 +42,7 @@ import static com.lvbby.codema.java.tool.JavaLexer.*;
  * Created by lipeng on 16/12/27.
  */
 @Deprecated
-public class JavaConvertCodemaMachine implements CodemaInjectable {
-    @ConfigBind(JavaConvertCodemaConfig.class)
-    @CodemaRunner
-    @JavaTemplate
+public class JavaConvertCodemaMachine {
     public void code(CodemaContext codemaContext, JavaConvertCodemaConfig config,
                      @JavaTemplateParameter(identifier = JavaTemplateInjector.java_source) CompilationUnit compilationUnitSource,
                      @Parameter(value = "${com.lvbby.codema.java.app.convert.JavaConvertCodemaConfig.destClassName}", createFactory = JavaClassParameterFactory.class) CompilationUnit compilationUnitDest) throws Exception {
@@ -75,7 +71,7 @@ public class JavaConvertCodemaMachine implements CodemaInjectable {
      * 用自定义
      */
     public static BodyDeclaration genConvertToMethodBatch(String fromClass, String otherClass) {
-//        String methodSrc = JavaSrcLoader.getMethod(JavaConvertCodemaMachine.class, "build$className_Batch").toString();
+        //        String methodSrc = JavaSrcLoader.getMethod(JavaConvertCodemaMachine.class, "build$className_Batch").toString();
         String methodSrc = null;
         String className = new JavaTemplateEngine(methodSrc)
                 .bind($GenericTypeArg1_.class, fromClass)

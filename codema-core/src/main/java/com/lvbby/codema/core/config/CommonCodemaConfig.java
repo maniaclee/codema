@@ -7,12 +7,9 @@ import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.Validate;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 2016/12/22.
@@ -20,8 +17,6 @@ import java.util.stream.Collectors;
 @ConfigKey("common")
 public class CommonCodemaConfig implements Serializable, ResultHandler {
     private String author = System.getProperty("user.name");
-    private String from;
-    private List<String> resultHandler;
     private String destFile;
     private List<ResultHandler> resultHandlers = Lists.newLinkedList();
 
@@ -42,22 +37,6 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         return re;
     }
 
-    public List<String> getResultHandler() {
-        return resultHandler;
-    }
-
-    public void setResultHandler(List<String> resultHandler) {
-        this.resultHandler = resultHandler;
-    }
-
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
     public String getAuthor() {
         return author;
     }
@@ -74,16 +53,6 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         this.destFile = destFile;
     }
 
-    private static ResultHandler instanceResultHandler(String handler) {
-        try {
-            Object o = Class.forName(handler).newInstance();
-            if (o instanceof ResultHandler)
-                return (ResultHandler) o;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        throw new IllegalArgumentException("handler not found");
-    }
 
     @Override
     public void handle(ResultContext resultContext) throws Exception {
@@ -92,8 +61,8 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         }
     }
 
-    public void handle(CodemaContext codemaContext, CommonCodemaConfig config, Result result) throws Exception {
-        handle(ResultContext.of(codemaContext, config, result));
+    public void handle(CodemaContext codemaContext, Result result) throws Exception {
+        handle(ResultContext.of(codemaContext, this, result));
     }
 
     public void addResultHandler(Class<? extends ResultHandler> resultHandler) {

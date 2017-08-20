@@ -3,8 +3,8 @@ package com.lvbby.codema.java.entity;
 import com.github.javaparser.ast.CompilationUnit;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.tool.JavaCodeUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class JavaClass {
     public static JavaClass from(Class clz) throws Exception {
         if (cache.containsKey(clz))
             return cache.get(clz);
-        CompilationUnit src = JavaCodeUtils.loadJavaSrcFromProject(clz);
+        CompilationUnit src = JavaSrcLoader.getJavaSrcCompilationUnit(clz);
 
         JavaClass re = new JavaClass();
         re.setName(clz.getSimpleName());

@@ -2,7 +2,6 @@ package com.lvbby.codema.app.convert;
 
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
-import com.lvbby.codema.core.inject.NotNull;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.result.JavaTemplateResult;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
  */
 public class JavaConvertCodemaMachine implements CodemaMachine<JavaConvertCodemaConfig> {
 
-    public void code(CodemaContext codemaContext, @NotNull JavaConvertCodemaConfig config) throws Exception {
+    public void code(CodemaContext codemaContext, JavaConvertCodemaConfig config) throws Exception {
         Validate.notBlank(config.getConvertToClassName(), "convert-to-class-name can't be blank");
         if (StringUtils.isBlank(config.getDestClassName()))
             config.setDestClassName("BuildUtils");
@@ -29,7 +28,7 @@ public class JavaConvertCodemaMachine implements CodemaMachine<JavaConvertCodema
             return;
 
 
-        config.handle(codemaContext, config, new JavaTemplateResult(config, $Convert_.class)
+        config.handle(codemaContext, new JavaTemplateResult(config, $Convert_.class)
                 .bind("Convert", config.getDestClassName())
                 .bind("cs", javaClasses)
                 .bind("map", javaClasses.stream().collect(Collectors.toMap(o -> o, javaClass -> ReflectionUtils.getSimpleClassName(getTargetClassName(config, javaClass)))))

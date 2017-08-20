@@ -1,15 +1,11 @@
 package com.lvbby.codema.java.tool;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.CodemaGlobalContext;
-import com.lvbby.codema.core.CodemaGlobalContextKey;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
@@ -17,7 +13,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,26 +45,6 @@ public class JavaCodeUtils {
     }};
 
 
-    public static CompilationUnit loadJavaSrcFromProject(Class clz) throws Exception {
-        for (File file : getMavenSrcDirectories()) {
-            File re = new File(file, clz.getName().replace('.', '/') + ".java");
-            if (re.isFile() && re.exists()) {
-                return JavaLexer.read(re);
-            }
-        }
-        return null;
-    }
-    public static CompilationUnit loadJavaSrcFromProject(String clzFullName) throws Exception {
-        for (File file : getMavenSrcDirectories()) {
-            File re = new File(file, clzFullName.replace('.', '/') + ".java");
-            if (re.isFile() && re.exists()) {
-                return JavaLexer.read(re);
-            }
-        }
-        return null;
-    }
-
-
     private static boolean isEqual(JavaArg javaArg, Parameter parameter) {
         return parameter.getType().toString().equals(javaArg.getType().getName()) || parameter.getType().toString().equals(javaArg.getType().getFullName());
     }
@@ -89,13 +64,14 @@ public class JavaCodeUtils {
     }
 
 
-    public static JavaMethod findMethod(JavaClass javaClass , String methodName){
-        if(javaClass==null)
+    public static JavaMethod findMethod(JavaClass javaClass, String methodName) {
+        if (javaClass == null)
             return null;
         return javaClass.getMethods().stream().filter(method -> method.getName().equals(methodName)).findAny().orElse(null);
     }
+
     public static MethodDeclaration getMethodSrc(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, JavaMethod method) {
-        if(classOrInterfaceDeclaration==null)
+        if (classOrInterfaceDeclaration == null)
             return null;
         List<MethodDeclaration> methodsByName = classOrInterfaceDeclaration.getMethodsByName(method.getName());
         if (CollectionUtils.isEmpty(methodsByName))
@@ -108,41 +84,6 @@ public class JavaCodeUtils {
         return collect.get(0);
     }
 
-    public static List<File> getMavenSrcDirectories() {
-        List<File> re = Lists.newArrayList();
-        List<String> roots = CodemaGlobalContext.get(CodemaGlobalContextKey.directoryRoot);
-        if (CollectionUtils.isNotEmpty(roots)) {
-            for (String root : roots) {
-                re.addAll(getMavenSrcDirectories(new File(root)));
-            }
-        }
-        return re;
-    }
-
-    public static List<File> getMavenSrcDirectories(File file) {
-        return getMavenRootDirectories(file).stream()
-                .map(file1 -> new File(file1, "src/main/java"))
-                .filter(file1 -> file1.isDirectory() && file1.exists())
-                .collect(Collectors.toList());
-    }
-
-    public static List<File> getMavenRootDirectories(File file) {
-        List<File> re = Lists.newArrayList();
-        _getMavenSrcDirectories(file, re);
-        return re;
-    }
-
-    static void _getMavenSrcDirectories(File file, List<File> result) {
-        if (file == null || !file.exists() || !file.isDirectory())
-            return;
-        if (new File(file, "pom.xml").exists()) {
-            result.add(file);
-        }
-        for (File child : file.listFiles()) {
-            if (child.isDirectory())
-                _getMavenSrcDirectories(child, result);
-        }
-    }
 
     public static boolean isOuterClass(Class clz) {
         return !clz.isPrimitive() && !clz.getPackage().getName().startsWith("java");
@@ -230,17 +171,5 @@ public class JavaCodeUtils {
         return null;
     }
 
-    public static void main(String[] args) {
-        System.out.println(newObjectSentences(JavaClass.class));
-        System.out.println(newObjectSentences(int.class, "s"));
-        System.out.println(newObjectSentences(boolean.class, "s"));
-        System.out.println(newObjectSentences(Boolean.class, "s"));
-        System.out.println(newObjectSentences(String.class, "s"));
-        System.out.println(newObjectSentences(JavaBasicCodemaConfig.class).stream().collect(Collectors.joining("\n")));
-
-        System.out.println(getMavenSrcDirectories(new File("/Users/dushang.lp/workspace/zcbprod")).stream().map(File::toString).collect(Collectors.joining("\n")));
-        System.out.println(getMavenRootDirectories(new File("/Users/dushang.lp/workspace/zcbprod")).stream().map(File::toString).collect(Collectors.joining("\n")));
-        CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList("/Users/dushang.lp/workspace/zcbprod"));
-    }
 
 }

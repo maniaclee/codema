@@ -11,8 +11,8 @@ import com.lvbby.codema.java.result.JavaTemplateResult;
  */
 public class JavaTestcaseCodemaMachine extends AbstractJavaCodemaMachine<JavaTestcaseCodemaConfig> {
 
-    public void processSingle(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, JavaClass cu) throws Exception {
-        config.handle(codemaContext, config,
+    public void codeEach(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, JavaClass cu) throws Exception {
+        config.handle(codemaContext,
                 new JavaTemplateResult(config, $src__name_Test.class, cu)
                         .bind("springBootConfig", codemaContext.getCodema().findConfig(JavaSpringBootConfig.class))
                         .registerResult()

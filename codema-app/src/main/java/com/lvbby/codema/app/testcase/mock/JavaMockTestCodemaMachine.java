@@ -2,11 +2,8 @@ package com.lvbby.codema.app.testcase.mock;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.inject.CodemaRunner;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
-import com.lvbby.codema.java.inject.JavaTemplate;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaCodeUtils;
@@ -23,11 +20,8 @@ import java.util.stream.Collectors;
  */
 public class JavaMockTestCodemaMachine extends AbstractJavaCodemaMachine<JavaMockTestCodemaConfig> {
 
-    @ConfigBind(JavaMockTestCodemaConfig.class)
-    @CodemaRunner
-    @JavaTemplate
-    public void processSingle(CodemaContext codemaContext, JavaMockTestCodemaConfig config, JavaClass cu) throws Exception {
-        config.handle(codemaContext, config,
+    public void codeEach(CodemaContext codemaContext, JavaMockTestCodemaConfig config, JavaClass cu) throws Exception {
+        config.handle(codemaContext,
                 new JavaTemplateResult(config, $Mock_Test.class, cu)
                         .bind("Mock", cu.getName() + "Test")
                         .bind("injectFields", extractAllInjectFields(cu, config.getDependencyAnnotation()))

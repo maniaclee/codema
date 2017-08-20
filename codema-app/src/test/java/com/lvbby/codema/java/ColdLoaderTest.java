@@ -50,8 +50,8 @@ public class ColdLoaderTest {
         config.setAuthor("maniaclee");
         config.setSpring(true);
         //        config.setFrom("java://file//Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/testcase/JavaTestcaseCodemaConfig.java");
-        config.setFrom("java://file//Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/mybatis/JavaMybatisCodemaConfig.java");
-        config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(), PrintResultHandler.class.getName()));
+//        config.setFrom("java://file//Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/mybatis/JavaMybatisCodemaConfig.java");
+        config.setResultHandlers(Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
         config.setDestPackage("com.lvbby");
         Codema.exec(config);
     }
@@ -67,7 +67,7 @@ public class ColdLoaderTest {
         T config = clz.newInstance();
         config.setAuthor("maniaclee");
 //        config.setFrom(JavaClassSourceParser.toURI(ServiceImpl.class));
-        config.setResultHandler(Lists.newArrayList(JavaRegisterResultHandler.class.getName(), PrintResultHandler.class.getName()));
+        config.setResultHandlers(Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
         config.setDestPackage("com.lvbby");
         return config;
     }
