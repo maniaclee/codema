@@ -10,10 +10,7 @@ import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
-import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.source.SourceLoader;
-import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
-import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
@@ -42,13 +39,6 @@ public class CodemaMachineTest extends BaseTest {
         }
     }
 
-    private <T extends JavaBasicCodemaConfig> T _newConfig(Class<T> clz) throws Exception {
-        T config = clz.newInstance();
-        //        config.setFrom(JavaClassSourceParser.toURI(ServiceImpl.class));
-        config.setResultHandlers(Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
-        config.setDestPackage("com.lvbby");
-        return config;
-    }
 
     private void exec(CommonCodemaConfig config) throws Exception {
         Codema.exec(config, sourceLoader);

@@ -17,7 +17,7 @@ public class JavaSrcLoader {
     private static MavenDirectoryScanner mavenDirectoryScanner;
 
     public static void initJavaSrcRoots(List<File> javaFileSrcRoot) {
-        initJavaSrcRoots(javaFileSrcRoot, 10);
+        initJavaSrcRoots(javaFileSrcRoot, 5);
     }
 
     public static void initJavaSrcRoots(List<File> javaFileSrcRoot, int depth) {

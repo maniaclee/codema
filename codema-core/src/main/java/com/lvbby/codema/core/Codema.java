@@ -34,7 +34,7 @@ public class Codema {
         Codema codema = new Codema().bind(config);
         if (sourceLoaders != null) {
             for (SourceLoader sourceLoader : sourceLoaders) {
-                codema.withSourceLoader(sourceLoader);
+                codema.source(sourceLoader);
             }
         }
         codema.run();
@@ -78,7 +78,7 @@ public class Codema {
         return this;
     }
 
-    public Codema withSourceLoader(SourceLoader sourceLoader) throws Exception {
+    public Codema source(SourceLoader sourceLoader) throws Exception {
         return withSource(sourceLoader.loadSource());
     }
 

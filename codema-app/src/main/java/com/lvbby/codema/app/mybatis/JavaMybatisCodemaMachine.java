@@ -7,6 +7,7 @@ import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.result.JavaXmlTemplateResult;
@@ -15,6 +16,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.io.File;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
 public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMybatisCodemaConfig> {
 
     public void codeEach(CodemaContext codemaContext, JavaMybatisCodemaConfig config, JavaClass cu) throws Exception {
-        SqlTable sqlTable = getSqlTable(cu);
+        SqlTable sqlTable = getSqlTable(cu, config.getIdQuery());
         validate(sqlTable);
         TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $src__name_Dao.class, cu)
                 .bind("table", sqlTable)
@@ -47,13 +50,13 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
                 .render());
     }
 
-    private SqlTable getSqlTable(JavaClass cu) {
+    private SqlTable getSqlTable(JavaClass cu, Function<JavaClass, JavaField> idQuery) {
         if (cu.getFrom() != null && cu.getFrom() instanceof SqlTable)
             return (SqlTable) cu.getFrom();
-        return guessFromJavaClass(cu);
+        return guessFromJavaClass(cu, idQuery);
     }
 
-    private SqlTable guessFromJavaClass(JavaClass javaClass) {
+    private SqlTable guessFromJavaClass(JavaClass javaClass, Function<JavaClass, JavaField> idQuery) {
         SqlTable re = new SqlTable();
         re.setName(javaClass.getName());
         re.setNameInDb(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, javaClass.getName()));
@@ -66,6 +69,19 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
             sqlColumn.setPrimaryKey(javaField.getName().equalsIgnoreCase("id"));
             return sqlColumn;
         }).collect(Collectors.toList()));
+        //id field
+        if (idQuery != null) {
+            JavaField idField = idQuery.apply(javaClass);
+            if (idField != null) {
+                List<SqlColumn> idColumns = re.getFields().stream().filter(sqlColumn -> sqlColumn.getNameCamel().equalsIgnoreCase(idField.getName())).collect(Collectors.toList());
+                if (idColumns.size() > 1)
+                    throw new IllegalArgumentException(String.format("multi id columns found for %s", javaClass.getName()));
+                if (idColumns.size() == 1) {
+                    idColumns.get(0).setPrimaryKey(true);
+                }
+            }
+        }
+
         re.setPrimaryKeyField(re.getFields().stream().filter(SqlColumn::isPrimaryKey).findFirst().orElse(null));
         return re;
     }

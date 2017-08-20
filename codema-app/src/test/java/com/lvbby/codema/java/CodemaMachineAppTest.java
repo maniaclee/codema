@@ -1,10 +1,11 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.app.mybatis.JavaMybatisCodemaConfig;
 import com.lvbby.codema.core.Codema;
-import com.lvbby.codema.core.CodemaGlobalContext;
-import com.lvbby.codema.core.CodemaGlobalContextKey;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.java.source.JavaClassSourceParser;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,9 +18,7 @@ public class CodemaMachineAppTest extends BaseTest {
 
     @Before
     public void init() {
-        File f = new File(System.getProperty("user.home"), "workspace");
-
-        CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList(f.getAbsolutePath()));
+        JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(new File(System.getProperty("user.home"), "workspace")));
     }
 
     private void exec(CommonCodemaConfig config) throws Exception {
@@ -27,7 +26,14 @@ public class CodemaMachineAppTest extends BaseTest {
     }
 
     @Test
-    public void mock() throws Exception {
+    public void mybatis() throws Exception {
+        JavaMybatisCodemaConfig javaMybatisCodemaConfig = _newConfig(JavaMybatisCodemaConfig.class);
+        javaMybatisCodemaConfig.setIdQuery(javaClass -> javaClass.getFields().stream().filter(javaField -> javaField.getName().equals("mapperDir")).findAny().orElse(null));
+
+        new Codema()
+                .source(JavaClassSourceParser.fromClass(JavaMybatisCodemaConfig.class))
+                .bind(javaMybatisCodemaConfig)
+                .run();
     }
 
 }
