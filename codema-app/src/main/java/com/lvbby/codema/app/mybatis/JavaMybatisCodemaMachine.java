@@ -6,6 +6,7 @@ import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
+import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
@@ -15,7 +16,6 @@ import com.lvbby.codema.java.template.TemplateContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 
-import java.io.File;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,9 +35,10 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
         config.handle(codemaContext, daoTemplateResult);
 
         String xml = IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
-        config.handle(codemaContext, JavaXmlTemplateResult.ofResource(config, xml, cu, new File(new File(config.getDestResourceRoot(), config.getMapperDir()), String.format("%sMapper.xml", cu.getName())))
-                .bind("table", sqlTable)
-                .bind("dao", daoTemplateResult.getResult()));
+        config.handle(codemaContext,
+                JavaXmlTemplateResult.ofResource(config, xml, cu, FileUtils.buildFile(config.getDestResourceRoot(), config.getMapperDir(), String.format("%sMapper.xml", cu.getName())))
+                        .bind("table", sqlTable)
+                        .bind("dao", daoTemplateResult.getResult()));
     }
 
     public void preCode(CodemaContext codemaContext, JavaMybatisCodemaConfig config) throws Exception {
