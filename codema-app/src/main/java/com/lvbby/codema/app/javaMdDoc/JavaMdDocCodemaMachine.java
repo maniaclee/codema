@@ -14,6 +14,6 @@ public class JavaMdDocCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocC
         config.handle(codemaContext, TemplateEngineResult
                 .ofResource(TemplateEngineResult.class, getClass(),
                         "javaMdDoc.btl",
-                        config.getDestFile()));
+                        config.getDestRootDir()));
     }
 }

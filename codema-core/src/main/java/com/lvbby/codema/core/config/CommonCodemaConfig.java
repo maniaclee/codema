@@ -2,6 +2,7 @@ package com.lvbby.codema.core.config;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.DestFileLoader;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.Result;
@@ -17,7 +18,8 @@ import java.util.List;
 @ConfigKey("common")
 public class CommonCodemaConfig implements Serializable, ResultHandler {
     private String author = System.getProperty("user.name");
-    private String destFile;
+    /** 最终输出文件的根目录 */
+    private String         destRootDir;
     private List<ResultHandler> resultHandlers = Lists.newLinkedList();
 
     /***
@@ -37,23 +39,6 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         return re;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getDestFile() {
-        return destFile;
-    }
-
-    public void setDestFile(String destFile) {
-        this.destFile = destFile;
-    }
-
-
     @Override
     public void handle(ResultContext resultContext) throws Exception {
         for (ResultHandler handler : resultHandlers) {
@@ -65,6 +50,15 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         handle(ResultContext.of(codemaContext, this, result));
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+
     public void addResultHandler(Class<? extends ResultHandler> resultHandler) {
         this.resultHandlers.add(ReflectionUtils.instance(resultHandler));
     }
@@ -75,5 +69,13 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
 
     public void setResultHandlers(List<ResultHandler> resultHandlers) {
         this.resultHandlers = resultHandlers;
+    }
+
+    public String getDestRootDir() {
+        return destRootDir;
+    }
+
+    public void setDestRootDir(String destRootDir) {
+        this.destRootDir = destRootDir;
     }
 }

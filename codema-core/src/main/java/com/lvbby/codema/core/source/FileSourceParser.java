@@ -6,25 +6,21 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URI;
 
 /**
  * Created by lipeng on 17/1/4.
  */
-public class FileSourceParser implements SourceParser<String> {
-    public static final String schema = "file://";
+public class FileSourceParser extends AbstractSourceLoader<String> {
 
-    @Override
-    public String getSupportedUriScheme() {
-        return schema;
+    public FileSourceParser(File file) throws Exception {
+        setInputStream(new FileInputStream(file));
     }
 
     @Override
-    public String parse(URI from) throws Exception {
-        return IOUtils.toString(new FileInputStream(CodemaUtils.getResourcePath(from)));
-    }
-
-    public static String toURI(File file) {
-        return schema + file.getAbsolutePath();
+    public String loadSource() throws Exception {
+        return IOUtils.toString(inputStream);
     }
 }

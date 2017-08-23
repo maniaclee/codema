@@ -9,29 +9,21 @@ import java.net.URI;
 /**
  * Created by lipeng on 17/1/4.
  */
-public class ClasspathSourceParser implements SourceParser<String> {
-    private ClassLoader classLoader;
+public class ClasspathSourceParser extends AbstractSourceLoader<String> {
 
-    public ClasspathSourceParser(ClassLoader classLoader) {
-        if (classLoader == null)
-            classLoader = this.getClass().getClassLoader();
-        this.classLoader = classLoader;
+    public ClasspathSourceParser(String resource) throws Exception {
+        this(null, resource);
     }
 
-    public ClasspathSourceParser() {
-        this(null);
-    }
-
-    @Override
-    public String getSupportedUriScheme() {
-        return "classpath://";
+    public ClasspathSourceParser(ClassLoader classLoader, String resource) throws Exception {
+        if (classLoader == null) {
+            classLoader = getClass().getClassLoader();
+        }
+        setInputStream(classLoader.getResourceAsStream(resource));
     }
 
     @Override
-    public String parse(URI from) throws Exception {
-        return IOUtils.toString(classLoader.getResourceAsStream(CodemaUtils.getResourcePath(from)));
+    public String loadSource() throws Exception {
+        return IOUtils.toString(inputStream);
     }
-
-
-
 }
