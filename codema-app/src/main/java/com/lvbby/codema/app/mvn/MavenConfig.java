@@ -1,6 +1,7 @@
 package com.lvbby.codema.app.mvn;
 
 import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.config.ConfigKey;
 import com.lvbby.codema.core.config.PostProcess;
 import com.lvbby.codema.core.config.RecursiveConfigField;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * Created by lipeng on 2017/1/3.
  */
-@ConfigKey("maven")
+@ConfigBind(MavenCodemaMachine.class)
 public class MavenConfig extends CommonCodemaConfig {
 
     private String name;

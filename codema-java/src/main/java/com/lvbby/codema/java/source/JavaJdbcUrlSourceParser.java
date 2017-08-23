@@ -1,7 +1,7 @@
 package com.lvbby.codema.java.source;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.SourceParser;
+import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.core.tool.mysql.UrlJdbcTableFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
@@ -16,15 +16,11 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 2017/1/7.
  */
-public class JavaJdbcUrlSourceParser implements SourceParser<JavaSourceParam> {
-    @Override
-    public String getSupportedUriScheme() {
-        return "jdbc:mysql://";
-    }
+public class JavaJdbcUrlSourceParser implements SourceLoader<JavaSourceParam> {
+    private JavaSourceParam javaSourceParam;
 
-    @Override
-    public JavaSourceParam parse(URI from) throws Exception {
-        return new JavaSourceParam(convert(UrlJdbcTableFactory.of(from).getTables()));
+    public JavaJdbcUrlSourceParser(URI from) throws Exception {
+        javaSourceParam = new JavaSourceParam(convert(UrlJdbcTableFactory.of(from).getTables()));
     }
 
     public static List<JavaClass> convert(List<SqlTable> tables) {
@@ -44,5 +40,10 @@ public class JavaJdbcUrlSourceParser implements SourceParser<JavaSourceParam> {
             javaClass.setFrom(sqlTable);
             return javaClass;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public JavaSourceParam loadSource() throws Exception {
+        return javaSourceParam;
     }
 }

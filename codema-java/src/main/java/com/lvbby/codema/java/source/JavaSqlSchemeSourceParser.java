@@ -1,25 +1,24 @@
 package com.lvbby.codema.java.source;
 
-import com.lvbby.codema.core.SourceParser;
+import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.core.tool.mysql.SqlParser;
 import com.lvbby.codema.java.baisc.JavaSourceParam;
-import org.apache.commons.io.IOUtils;
-
-import java.io.FileInputStream;
-import java.net.URI;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Created by lipeng on 2017/1/7.
  */
-public class JavaSqlSchemeSourceParser implements SourceParser<JavaSourceParam> {
-    @Override
-    public String getSupportedUriScheme() {
-        return "file://sql/";
+public class JavaSqlSchemeSourceParser implements SourceLoader<JavaSourceParam> {
+
+    private String sql;
+
+    public JavaSqlSchemeSourceParser(String sql) {
+        Validate.notBlank(sql, "create sql can't be blank");
+        this.sql = sql;
     }
 
     @Override
-    public JavaSourceParam parse(URI from) throws Exception {
-        return new JavaSourceParam(JavaJdbcUrlSourceParser.convert(SqlParser.fromSql(IOUtils.toString(new FileInputStream(from.getPath())))));
+    public JavaSourceParam loadSource() throws Exception {
+        return new JavaSourceParam(JavaJdbcUrlSourceParser.convert(SqlParser.fromSql(sql)));
     }
-
 }

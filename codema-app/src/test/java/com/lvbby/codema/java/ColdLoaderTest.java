@@ -100,12 +100,6 @@ public class ColdLoaderTest {
     }
 
     @Test
-    public void name() throws Exception {
-        Lists.newArrayList(ServiceLoader.load(SourceParser.class)).stream().forEach(e -> System.out.println(e.getClass().getName()));
-        Lists.newArrayList(ServiceLoader.load(CodemaInjector.class)).stream().forEach(e -> System.out.println(e.getClass().getName()));
-    }
-
-    @Test
     public void anno() throws Exception {
         System.out.println(CodemaMachine.class.isAssignableFrom(JavaTestcaseCodemaMachine.class));
         Field field = ServiceImpl.class.getDeclaredField("textHolder");

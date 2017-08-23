@@ -1,10 +1,6 @@
 package com.lvbby.codema.core.source;
 
-import com.lvbby.codema.core.SourceParser;
-import com.lvbby.codema.core.utils.CodemaUtils;
 import org.apache.commons.io.IOUtils;
-
-import java.net.URI;
 
 /**
  * Created by lipeng on 17/1/4.
