@@ -2,7 +2,6 @@ package com.lvbby.codema.core;
 
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
-import com.lvbby.codema.core.config.ConfigLoader;
 
 import java.util.Map;
 import java.util.Optional;
@@ -11,10 +10,6 @@ import java.util.Optional;
  * Created by lipeng on 16/12/23.
  */
 public class CodemaContext {
-    /**
-     * 配置
-     */
-    private ConfigLoader configLoader;
     /**
      * 项目的入参, 把source按type分类
      */

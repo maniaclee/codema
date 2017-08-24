@@ -1,12 +1,11 @@
 package com.lvbby.codema.core.handler;
 
 import com.lvbby.codema.core.ResultContext;
+import com.lvbby.codema.core.result.AbstractResultHandler;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.PrintableResult;
-import com.lvbby.codema.core.result.AbstractResultHandler;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,10 +20,12 @@ public class FileWriterResultHandler extends AbstractResultHandler<FileResult> {
         File file = result.getFile();
         if (file == null)
             return;
-        if (StringUtils.isNotBlank(file.getParent()))
-            ReflectionUtils.makeSureDir(new File(file.getParent()));
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            ReflectionUtils.makeSureDir(file.getParentFile());
+            logger.debug("mkdir : %s ", file.getParentFile());
+        }
         IOUtils.write(getContent(result, file, resultContext), new FileOutputStream(file));
-
+        logger.debug("write file: %s",file);
     }
 
     /**

@@ -2,10 +2,11 @@ package com.lvbby.codema.app.mvn;
 
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.config.ConfigKey;
 import com.lvbby.codema.core.config.PostProcess;
 import com.lvbby.codema.core.config.RecursiveConfigField;
+import com.lvbby.codema.core.utils.FileUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -19,31 +20,52 @@ public class MavenConfig extends CommonCodemaConfig {
     private String name;
     private String artifactId;
     private String groupId;
-    private String version;
+    private String version = "1.0";
     private String javaVersion = "1.8";
     @RecursiveConfigField
     private List<MavenConfig> modules;
+    /**
+     * 目标src路径
+     */
+    private String destSrcRoot;
+    private String destResourceRoot;
 
     private transient MavenConfig parent;
-
-    public File findRootDir() {
-        if (getParent() != null) {
-            return new File(getParent().findRootDir(), name);
-        }
-        return new File(getDestRootDir(), name);
-    }
 
     /***
      * 递归将children的parent设为自己
      */
     @PostProcess
     public void init() {
+        //设置maven项目的路径
+        File dir = parseRoot();
+        if(dir!=null){
+            setDestRootDir(dir.getAbsolutePath());
+        }
+
+        setDestSrcRoot(FileUtils.parseFileWithParentAsString(getDestRootDir(),getDestSrcRoot()));
+        setDestResourceRoot(FileUtils.parseFileWithParentAsString(getDestRootDir(),getDestResourceRoot()));
         if (CollectionUtils.isNotEmpty(getModules())) {
             getModules().forEach(child -> {
                 child.setParent(this);
                 child.init();
             });
         }
+    }
+    private File parseRoot(){
+        if(parent==null){
+            if(StringUtils.isNotBlank(getDestRootDir())){
+                return FileUtils.parseFile(getDestRootDir(),getName());
+            }
+            return null;
+        }
+        if (FileUtils.isRelativeFilePath(getDestRootDir())){
+            return FileUtils.parseFile(getDestRootDir(),getName());
+        }
+        if(StringUtils.isBlank(getDestRootDir())){
+            return FileUtils.parseFile(parent.getDestRootDir(),getName());
+        }
+        return FileUtils.parseFile(parent.getDestRootDir(),getDestRootDir(),getName());
     }
 
     public MavenConfig getParent() {
@@ -100,5 +122,21 @@ public class MavenConfig extends CommonCodemaConfig {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getDestSrcRoot() {
+        return destSrcRoot;
+    }
+
+    public void setDestSrcRoot(String destSrcRoot) {
+        this.destSrcRoot = destSrcRoot;
+    }
+
+    public String getDestResourceRoot() {
+        return destResourceRoot;
+    }
+
+    public void setDestResourceRoot(String destResourceRoot) {
+        this.destResourceRoot = destResourceRoot;
     }
 }

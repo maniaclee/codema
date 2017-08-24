@@ -1,15 +1,52 @@
 package com.lvbby.codema.core.utils;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by lipeng on 17/8/22.
  */
 public class FileUtils {
     private static final String USER_HOME_DIRECTORY = System.getProperty("user.home");
+    private static final List<File> FILE_ROOTS = Lists.newArrayList(File.listRoots());
+
+    public static boolean isRelativeFilePath(String file) {
+        return isRelativeFilePath(new File(file));
+    }
+
+    public static boolean isRelativeFilePath(File file) {
+        while (file.getParentFile() != null) {
+            file = file.getParentFile();
+        }
+        return !FILE_ROOTS.contains(file);
+    }
+
+    /***
+     * 如果sub是绝对路径就返回sub
+     * @param parent
+     * @param sub
+     * @return
+     */
+    public static String parseFileWithParentAsString(String parent, String sub) {
+        File file = parseFileWithParent(parent == null ? null : new File(parent), sub);
+        return file == null ? null : file.getAbsolutePath();
+    }
+
+    public static File parseFileWithParent(File parent, String sub) {
+        if (StringUtils.isBlank(sub))
+            return null;
+        if (!isRelativeFilePath(sub)) {
+            return new File(sub);
+        }
+        if (parent != null) {
+            return parseFile(parent, sub);
+        }
+        return null;
+    }
 
     /***
      * merge file ， sub路径支持./和../
@@ -94,4 +131,15 @@ public class FileUtils {
         return null;
     }
 
+    public static void main(String[] args) {
+        System.out.println(isRelativeFilePath(new File("/")));
+        System.out.println(isRelativeFilePath(new File("/a/b")));
+        System.out.println(isRelativeFilePath(new File("./a/b")));
+        System.out.println(isRelativeFilePath(new File(".")));
+        System.out.println(isRelativeFilePath(new File("./")));
+        System.out.println(isRelativeFilePath(new File("../")));
+        System.out.println(isRelativeFilePath(new File("../a")));
+        System.out.println(isRelativeFilePath(new File("ab/sd")));
+        System.out.println(isRelativeFilePath(new File("ab")));
+    }
 }

@@ -5,11 +5,14 @@ import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.app.convert.JavaConvertCodemaConfig;
 import com.lvbby.codema.app.delegate.JavaDelegateCodemaConfig;
 import com.lvbby.codema.app.interfaces.JavaInterfaceCodemaConfig;
+import com.lvbby.codema.app.mvn.MavenConfig;
 import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.handler.FileWriterResultHandler;
+import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -82,6 +85,17 @@ public class CodemaMachineTest extends BaseTest {
     @Test
     public void interfaces() throws Exception {
         JavaInterfaceCodemaConfig config = _newConfig(JavaInterfaceCodemaConfig.class);
+        exec(config);
+    }
+
+    @Test
+    public void maven() throws Exception {
+        MavenConfig config = new MavenConfig();
+        config.setName("lvbby-maven-project");
+        config.setGroupId("lvbby");
+        config.setArtifactId("lvbby-maven");
+        config.setDestRootDir("~/temp");
+        config.setResultHandlers(Lists.newArrayList(new PrintResultHandler(),new FileWriterResultHandler()));
         exec(config);
     }
 
