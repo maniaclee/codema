@@ -13,11 +13,10 @@ import java.io.File;
  */
 public class JavaXmlTemplateResult extends XmlTemplateResult {
 
-    public static JavaXmlTemplateResult ofResource(JavaBasicCodemaConfig config, String resource, JavaClass javaClass, File file) {
+    public static JavaXmlTemplateResult ofResource(JavaBasicCodemaConfig config, String resource, JavaClass javaClass) {
         JavaXmlTemplateResult re = TemplateEngineResult.of(JavaXmlTemplateResult.class, resource);
         if (javaClass != null)
             re.bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
-        re.setFile(file);
         return re;
     }
 }

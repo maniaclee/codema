@@ -23,7 +23,6 @@ public class MavenConfig extends CommonCodemaConfig {
     private String javaVersion = "1.8";
     @RecursiveConfigField
     private List<MavenConfig> modules;
-    private String baseDir;
 
     private transient MavenConfig parent;
 
@@ -31,7 +30,7 @@ public class MavenConfig extends CommonCodemaConfig {
         if (getParent() != null) {
             return new File(getParent().findRootDir(), name);
         }
-        return new File(baseDir, name);
+        return new File(getDestRootDir(), name);
     }
 
     /***
@@ -45,14 +44,6 @@ public class MavenConfig extends CommonCodemaConfig {
                 child.init();
             });
         }
-    }
-
-    public String getBaseDir() {
-        return baseDir;
-    }
-
-    public void setBaseDir(String baseDir) {
-        this.baseDir = baseDir;
     }
 
     public MavenConfig getParent() {

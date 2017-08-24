@@ -1,9 +1,9 @@
 package com.lvbby.codema.core.handler;
 
 import com.lvbby.codema.core.ResultContext;
-import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.PrintableResult;
+import com.lvbby.codema.core.result.AbstractResultHandler;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,19 +14,17 @@ import java.io.FileOutputStream;
 /**
  * Created by lipeng on 17/1/4.
  */
-public class FileWriterResultHandler implements ResultHandler {
+public class FileWriterResultHandler extends AbstractResultHandler<FileResult> {
 
     @Override
-    public void handle(ResultContext resultContext) throws Exception {
-        Object result = resultContext.getResult();
-        if (result instanceof PrintableResult && result instanceof FileResult) {
-            File file = ((FileResult) result).getFile();
-            if (file == null)
-                return;
-            if (StringUtils.isNotBlank(file.getParent()))
-                ReflectionUtils.makeSureDir(new File(file.getParent()));
-            IOUtils.write(getContent(((PrintableResult) result), file, resultContext), new FileOutputStream(file));
-        }
+    protected void process(ResultContext resultContext, FileResult result) throws Exception {
+        File file = result.getFile();
+        if (file == null)
+            return;
+        if (StringUtils.isNotBlank(file.getParent()))
+            ReflectionUtils.makeSureDir(new File(file.getParent()));
+        IOUtils.write(getContent(result, file, resultContext), new FileOutputStream(file));
+
     }
 
     /**
@@ -37,7 +35,8 @@ public class FileWriterResultHandler implements ResultHandler {
      * @param resultContext
      * @return
      */
-    protected String getContent(PrintableResult result, File destFile, ResultContext resultContext) throws Exception {
+    protected String getContent(PrintableResult result, File destFile,
+                                ResultContext resultContext) throws Exception {
         return result.getString();
     }
 }

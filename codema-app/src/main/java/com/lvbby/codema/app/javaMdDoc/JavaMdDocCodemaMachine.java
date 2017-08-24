@@ -10,10 +10,11 @@ import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
  */
 public class JavaMdDocCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocCodemaConfig> {
 
-    public void codeEach(CodemaContext codemaContext, JavaMdDocCodemaConfig config, JavaClass cu) throws Exception {
-        config.handle(codemaContext, TemplateEngineResult
-                .ofResource(TemplateEngineResult.class, getClass(),
-                        "javaMdDoc.btl",
-                        config.getDestRootDir()));
+    public void codeEach(CodemaContext codemaContext, JavaMdDocCodemaConfig config,
+                         JavaClass cu) throws Exception {
+        config.handle(codemaContext,
+            new TemplateEngineResult()
+                    .template(loadResourceAsString("javaMdDoc.btl"))
+                    .config(config));
     }
 }

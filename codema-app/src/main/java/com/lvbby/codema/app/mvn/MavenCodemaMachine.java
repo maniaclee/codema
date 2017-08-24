@@ -1,5 +1,6 @@
 package com.lvbby.codema.app.mvn;
 
+import com.lvbby.codema.core.AbstractCodemaMachine;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.render.TemplateEngineResult;
@@ -10,21 +11,25 @@ import com.lvbby.codema.core.utils.CodemaUtils;
 /**
  * Created by lipeng on 16/12/23.
  */
-public class MavenCodemaMachine implements CodemaMachine<MavenConfig> {
+public class MavenCodemaMachine extends AbstractCodemaMachine<MavenConfig> {
 
     public void code(CodemaContext codemaContext, MavenConfig config) throws Exception {
         for (MavenConfig c : CodemaUtils.getAllConfigWithAnnotation(config)) {
             config.handle(codemaContext,
-                    TemplateEngineResult.ofResource(
-                            XmlTemplateResult.class,
-                            MavenCodemaMachine.class,
-                            "pom.xml",
-                            c.findRootDir().getAbsolutePath())
-                            .bind("config", c));
+                    new XmlTemplateResult()
+                            .template(loadResourceAsString("pom.xml"))
+                            .bind("config", c)
+                            .destFile("pom.xml")
+                            .config(c)
+            );
         }
 
         /** .git ignore */
-        config.handle(codemaContext, BasicResult.ofResource(getClass(), ".gitignore", config.findRootDir().getAbsolutePath()));
+        config.handle(codemaContext, new BasicResult()
+                .result(loadResourceAsString(".gitignore"))
+                .config(config)
+                .destFile(".gitignore")
+        );
     }
 
 }

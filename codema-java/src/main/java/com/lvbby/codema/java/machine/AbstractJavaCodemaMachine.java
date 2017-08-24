@@ -1,5 +1,6 @@
 package com.lvbby.codema.java.machine;
 
+import com.lvbby.codema.core.AbstractCodemaMachine;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
@@ -11,7 +12,8 @@ import java.util.List;
 /**
  * Created by dushang.lp on 2017/8/16.
  */
-public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig> implements CodemaMachine<T> {
+public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig> extends
+                                                                                 AbstractCodemaMachine<T> {
     @Override
     public void code(CodemaContext context, T config) throws Exception {
         preCode(context, config);

@@ -1,16 +1,15 @@
 package com.lvbby.codema.core.handler;
 
 import com.lvbby.codema.core.ResultContext;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.result.PrintableResult;
-import com.lvbby.codema.core.result.TypedResultHandler;
+import com.lvbby.codema.core.result.AbstractResultHandler;
 
 /**
  * Created by lipeng on 2016/12/26.
  */
-public class PrintResultHandler extends TypedResultHandler<CommonCodemaConfig, PrintableResult> {
+public class PrintResultHandler extends AbstractResultHandler<PrintableResult> {
     @Override
-    protected void process(ResultContext resultContext, CommonCodemaConfig config, PrintableResult result) {
+    protected void process(ResultContext resultContext, PrintableResult result) {
         System.out.println(result.getString());
     }
 }

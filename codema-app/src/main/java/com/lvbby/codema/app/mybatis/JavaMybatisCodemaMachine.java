@@ -36,14 +36,20 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
 
         String xml = IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
         config.handle(codemaContext,
-                JavaXmlTemplateResult.ofResource(config, xml, cu, FileUtils.buildFile(config.getDestResourceRoot(), config.getMapperDir(), String.format("%sMapper.xml", cu.getName())))
+                JavaXmlTemplateResult.ofResource(config, xml, cu)
                         .bind("table", sqlTable)
-                        .bind("dao", daoTemplateResult.getResult()));
+                        .bind("dao", daoTemplateResult.getResult())
+                        .filePath(config.getDestResourceRoot(), config.getMapperDir(), String.format("%sMapper.xml", cu.getName()))
+        );
     }
 
     public void preCode(CodemaContext codemaContext, JavaMybatisCodemaConfig config) throws Exception {
         /**mybatis config*/
-        config.handle(codemaContext, BasicResult.ofResource(JavaMybatisCodemaMachine.class, "mybatis.xml", config.getDestResourceRoot()));
+
+        config.handle(codemaContext,
+            new BasicResult().result(loadResourceAsString("mybatis.xml"))
+                .filePath(config.getDestResourceRoot(), "mybatis.xml")
+        );
 
         /** dal config */
         config.handle(codemaContext, new JavaTemplateResult(new TemplateContext(DalConfig.class, config)
