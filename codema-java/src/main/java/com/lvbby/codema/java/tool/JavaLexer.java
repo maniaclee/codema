@@ -68,6 +68,18 @@ public class JavaLexer {
         return JavaParser.parseInterfaceBodyDeclaration(code);
     }
 
+    /***
+     * 查询一个类名的全类名，从imports里面查找
+     * @param compilationUnit
+     * @param s
+     * @return
+     */
+    public static String getFullClassNameForSymbol(CompilationUnit compilationUnit , String s){
+        return compilationUnit.getImports().stream()
+                .map(importDeclaration -> importDeclaration.toString().trim().replaceAll(";", "")
+                        .split("\\s+")[1])
+                .filter(importDeclaration -> importDeclaration.endsWith(s)).findAny().orElse(null);
+    }
     public static List<FieldDeclaration> getFields(TypeDeclaration<?> cu) {
         return cu.getFields().stream().filter(f -> isProperty(f)).collect(Collectors.toList());
     }
@@ -107,41 +119,6 @@ public class JavaLexer {
         return s;
     }
 
-
-    public static void main(String[] args) {
-        Token token = Token.newToken(1, "fuck");
-        token.beginLine = 3;
-        System.out.println(token);
-
-        Token token2 = Token.newToken(1, "you");
-        System.out.println(token2);
-
-        JavaToken javaToken = new JavaToken(token, Lists.newArrayList());
-        JavaToken javaTokenEnd = new JavaToken(token2, Lists.newArrayList());
-        System.out.println(javaToken);
-
-        TokenRange tokenRange = new TokenRange(javaToken, javaToken);
-        System.out.println("tokenRange :   " + tokenRange);
-
-
-        CompilationUnit unit = JavaParser.parse("" +
-                "public class A{\n" +
-                "private int a ;" +
-                "//back\nprivate int b ;\n}");
-        ClassOrInterfaceDeclaration classOrInterfaceType = getClass(unit).get();
-        FieldDeclaration fieldDeclaration = classOrInterfaceType.getFields().get(0);
-        fieldDeclaration.setData(CodemaJavaSourcePrinter.dataKey_fieldAppend,"fuck");
-
-        //        appendFieldCommentAdEnd(fieldDeclaration, "asdfs");
-//        VariableDeclarator variable = fieldDeclaration.getVariable(0);
-
-        //        System.out.println(variable.setLineComment("init"));
-        //        //        Comment comment = variable.getComment().get();
-        //        //        comment.setRange(fieldDeclaration.getRange().get().withBeginLine(fieldDeclaration.getRange().get().end.line + 3));
-        //        System.err.println(fieldDeclaration.getComment().get());
-        //        System.out.println(fieldDeclaration);
-        System.out.println(CodemaJavaSourcePrinter.toJavaSource(unit));
-    }
 
     private static TokenRange tokenRange(String s, Position begin, Position end) {
         JavaToken javaToken = new JavaToken(Token.newToken(1, s), Lists.newArrayList());

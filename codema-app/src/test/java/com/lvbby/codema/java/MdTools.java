@@ -16,6 +16,7 @@ import org.junit.Test;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 
 /**
  * Created by dushang.lp on 2017/8/18.
@@ -25,8 +26,7 @@ public class MdTools {
     private static int titleLevel = 4;
 
     public void mdDesc(String s, String packageFileter) throws Exception {
-        CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot,
-                Lists.newArrayList("/Users/dushang.lp/workspace/zcbsalescenter"));
+        JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(new File("/Users/dushang.lp/workspace/zcbsalescenter")));
         String[] split = s.split("#");
         String service = split[0];
         String method = split[1];
@@ -43,14 +43,14 @@ public class MdTools {
         printTitle("参数:");
         for (Parameter parameter : methodDeclaration.getParameters()) {
             String paramType = parameter.getType().toString();
-            String fullClassName = findFullClassName(compilationUnit, paramType);
+            String fullClassName = JavaLexer.getFullClassNameForSymbol(compilationUnit, paramType);
             if (StringUtils.isNotBlank(fullClassName) && fullClassName.startsWith(packageFileter)) {
                 printBlock(fullClassName);
                 printMd(printParam(fullClassName));
             }
         }
 
-        String returnType = findFullClassName(compilationUnit,
+        String returnType = JavaLexer.getFullClassNameForSymbol(compilationUnit,
                 methodDeclaration.getType().toString());
         if (StringUtils.isNotBlank(returnType) && returnType.startsWith(packageFileter)) {
             printTitle("结果:");
@@ -85,12 +85,6 @@ public class MdTools {
                 JavaLexer.getClass(compilationUnit).get().getNameAsString(), declarationAsString);
     }
 
-    private String findFullClassName(CompilationUnit compilationUnit, String s) {
-        return compilationUnit.getImports().stream()
-                .map(importDeclaration -> importDeclaration.toString().trim().replaceAll(";", "")
-                        .split("\\s+")[1])
-                .filter(importDeclaration -> importDeclaration.endsWith(s)).findAny().orElse(null);
-    }
 
     private StringBuilder resultBuffer = new StringBuilder();
 

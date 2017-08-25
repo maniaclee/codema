@@ -9,8 +9,7 @@ public class XmlTemplateResult extends TemplateEngineResult {
 
     @Override
     protected void beforeRender(Map bindingParameters) {
-        //        setTemplate(ReflectionUtils.replace(getTemplate(), "<!--(.*)-->", matcher -> matcher.group(1)));
-        setTemplate(getTemplate().replaceAll("<!--\\s*", "").replaceAll("\\s*-->", ""));
+        template(getTemplate().replaceAll("<!--\\s*", "").replaceAll("\\s*-->", ""));
     }
 
 }

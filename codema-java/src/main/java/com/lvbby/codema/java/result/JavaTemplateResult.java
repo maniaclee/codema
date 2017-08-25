@@ -102,7 +102,7 @@ public class JavaTemplateResult extends TemplateEngineResult {
                 matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
         super.beforeRender(bindingParameters);
         System.err.println(template);
-        setTemplate(JavaSrcTemplateParser.prepareTemplate(template));
+        template(JavaSrcTemplateParser.prepareTemplate(template));
     }
 
     @Override

@@ -18,7 +18,7 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
     public static <T extends TemplateEngineResult> T of(Class<T> t, String template) {
         try {
             T re = t.newInstance();
-            re.setTemplate(template);
+            re.template(template);
             return re;
         } catch (Exception e) {
             throw new CodemaRuntimeException(
@@ -67,10 +67,6 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
         this.template = template;
         return this;
     }
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
     public String getTemplate() {
         return template;
     }
