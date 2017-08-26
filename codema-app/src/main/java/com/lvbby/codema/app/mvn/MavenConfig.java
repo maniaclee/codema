@@ -1,14 +1,13 @@
 package com.lvbby.codema.app.mvn;
 
+import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.config.PostProcess;
 import com.lvbby.codema.core.config.RecursiveConfigField;
-import com.lvbby.codema.core.utils.FileUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -27,45 +26,66 @@ public class MavenConfig extends CommonCodemaConfig {
     /**
      * 目标src路径
      */
-    private String destSrcRoot;
-    private String destResourceRoot;
+    private String destSrcRoot = "src/main/java";
+    private String destResourceRoot = "src/main/resources";
+
+    private String destTestSrcRoot = "src/test/java";
+    private String destTestResourceRoot = "src/test/resources";
 
     private transient MavenConfig parent;
+
+    public void init() {
+        super.init();
+        initMaven();
+    }
 
     /***
      * 递归将children的parent设为自己
      */
-    @PostProcess
-    public void init() {
-        //设置maven项目的路径
-        File dir = parseRoot();
-        if(dir!=null){
-            setDestRootDir(dir.getAbsolutePath());
-        }
+    private void initMaven() {
+        Validate.notBlank(name, "name can't be blank");
 
-        setDestSrcRoot(FileUtils.parseFileWithParentAsString(getDestRootDir(),getDestSrcRoot()));
-        setDestResourceRoot(FileUtils.parseFileWithParentAsString(getDestRootDir(),getDestResourceRoot()));
+        //设置maven项目的路径
+        if (parent != null) {
+            if (StringUtils.isBlank(getDestRootDir())) {
+                //将根路径设为parent
+                setDestRootDir(getParent().getDestRootDir());
+            } else {
+                setDestRootDir(parseFileWithParent(getParent().getDestRootDir(), getDestRootDir(), String.format("MavenConfig[%s].destRootDir", name)));
+            }
+        }
+        //将根路径设为maven的名称
+        setDestRootDir(parseFileWithParent(getDestRootDir(), name, String.format("MavenConfig[%s].destRootDir", name)));
+
+        setDestSrcRoot(parseFileWithParent(getDestRootDir(), getDestSrcRoot(), String.format("MavenConfig[%s].destSrcRoot", name)));
+        setDestResourceRoot(parseFileWithParent(getDestRootDir(), getDestResourceRoot(), String.format("MavenConfig[%s].destResourceRoot", name)));
+
+        setDestTestSrcRoot(parseFileWithParent(getDestRootDir(), getDestTestSrcRoot(), String.format("MavenConfig[%s].destTestSrcRoot", name)));
+        setDestTestResourceRoot(parseFileWithParent(getDestRootDir(), getDestTestResourceRoot(), String.format("MavenConfig[%s].destTestResourceRoot", name)));
+
         if (CollectionUtils.isNotEmpty(getModules())) {
             getModules().forEach(child -> {
                 child.setParent(this);
-                child.init();
+                child.initMaven();
             });
         }
     }
-    private File parseRoot(){
-        if(parent==null){
-            if(StringUtils.isNotBlank(getDestRootDir())){
-                return FileUtils.parseFile(getDestRootDir(),getName());
-            }
-            return null;
-        }
-        if (FileUtils.isRelativeFilePath(getDestRootDir())){
-            return FileUtils.parseFile(getDestRootDir(),getName());
-        }
-        if(StringUtils.isBlank(getDestRootDir())){
-            return FileUtils.parseFile(parent.getDestRootDir(),getName());
-        }
-        return FileUtils.parseFile(parent.getDestRootDir(),getDestRootDir(),getName());
+
+    public static void main(String[] args) {
+        MavenConfig parent = new MavenConfig();
+        parent.setName("lee");
+        parent.setDestRootDir("~");
+
+        MavenConfig child = new MavenConfig();
+        child.setName("child");
+        parent.setModules(Lists.newArrayList(child));
+        parent.init();
+        System.out.println(parent.getDestRootDir());
+        System.out.println(parent.getDestSrcRoot());
+        System.out.println(child.getDestRootDir());
+        System.out.println(child.getDestResourceRoot());
+        System.out.println(child.getDestTestResourceRoot());
+
     }
 
     public MavenConfig getParent() {
@@ -138,5 +158,21 @@ public class MavenConfig extends CommonCodemaConfig {
 
     public void setDestResourceRoot(String destResourceRoot) {
         this.destResourceRoot = destResourceRoot;
+    }
+
+    public String getDestTestSrcRoot() {
+        return destTestSrcRoot;
+    }
+
+    public void setDestTestSrcRoot(String destTestSrcRoot) {
+        this.destTestSrcRoot = destTestSrcRoot;
+    }
+
+    public String getDestTestResourceRoot() {
+        return destTestResourceRoot;
+    }
+
+    public void setDestTestResourceRoot(String destTestResourceRoot) {
+        this.destTestResourceRoot = destTestResourceRoot;
     }
 }

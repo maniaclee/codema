@@ -15,6 +15,7 @@ public class FileUtils {
     private static final List<File> FILE_ROOTS = Lists.newArrayList(File.listRoots());
 
     public static boolean isRelativeFilePath(String file) {
+        Validate.notBlank(file, "file can't be blank");
         return isRelativeFilePath(new File(file));
     }
 
@@ -25,37 +26,20 @@ public class FileUtils {
         return !FILE_ROOTS.contains(file);
     }
 
-    /***
-     * 如果sub是绝对路径就返回sub
-     * @param parent
-     * @param sub
-     * @return
-     */
-    public static String parseFileWithParentAsString(String parent, String sub) {
-        File file = parseFileWithParent(parent == null ? null : new File(parent), sub);
-        return file == null ? null : file.getAbsolutePath();
+    public static boolean exist(String s) {
+        return StringUtils.isNotBlank(s) && new File(s).exists();
     }
 
-    public static File parseFileWithParent(File parent, String sub) {
-        if (StringUtils.isBlank(sub))
-            return null;
-        if (!isRelativeFilePath(sub)) {
-            return new File(sub);
-        }
-        if (parent != null) {
-            return parseFile(parent, sub);
-        }
-        return null;
-    }
 
     /***
      * merge file ， sub路径支持./和../
-     * @param file
-     * @param sub
+     * @param file notnull
+     * @param sub notnull
      * @return
      */
     public static File parseFile(File file, String sub) {
         Validate.notNull(file, "file can't be null");
+        Validate.notBlank(sub, String.format("child file can't be empty,parent dir: %s", file));
         if (!StringUtils.isBlank(sub)) {
             for (String s : sub.trim().split("/")) {
                 switch (s) {
@@ -63,6 +47,7 @@ public class FileUtils {
                         continue;
                     case "..":
                         file = file.getParentFile();
+                        Validate.notNull(file, "invalid path: parent[%s] , child[%s]", file, sub);
                         break;
                     default:
                         file = new File(file, s);
@@ -141,5 +126,10 @@ public class FileUtils {
         System.out.println(isRelativeFilePath(new File("../a")));
         System.out.println(isRelativeFilePath(new File("ab/sd")));
         System.out.println(isRelativeFilePath(new File("ab")));
+
+        File x = parseFileRoot("a/b/c/d/../");
+        System.out.println(x);
+        System.out.println(x.getPath());
+        System.out.println(x.getAbsolutePath());
     }
 }

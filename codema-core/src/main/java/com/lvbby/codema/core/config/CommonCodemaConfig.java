@@ -5,9 +5,15 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.Result;
+import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,9 +22,12 @@ import java.util.List;
  */
 @ConfigKey("common")
 public class CommonCodemaConfig implements Serializable, ResultHandler {
+    static Logger logger = LoggerFactory.getLogger(CommonCodemaConfig.class);
     private String author = System.getProperty("user.name");
-    /** 最终输出文件的根目录 */
-    private String         destRootDir;
+    /**
+     * 最终输出文件的根目录,必须存在，支持~ / ../ ./
+     */
+    private String destRootDir;
     private List<ResultHandler> resultHandlers = Lists.newLinkedList();
 
     /***
@@ -36,6 +45,57 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
             throw new RuntimeException(e);
         }
         return re;
+    }
+
+
+    /**
+     * 初始化
+     */
+    public void init() {
+        if (StringUtils.isNotBlank(destRootDir)) {
+            //转化为标准路径
+            File file = FileUtils.parseFileRoot(destRootDir);
+            Validate.isTrue(file.exists(), String.format("dest root dir not exist:%s", destRootDir));
+            destRootDir = file.getAbsolutePath();
+        }
+    }
+
+    protected String parseFileWithParent(String parent, String sub, String message) {
+        return parseFileWithParent(parent, sub, message, false);
+    }
+
+    /***
+     * 根据parent解析file
+     * 1. parent 必须存在,如果不存在返回null
+     * 2. 如果sub是绝对路径，返回sub
+     * @param parent
+     * @param sub
+     * @param message
+     * @return
+     */
+
+    protected String parseFileWithParent(String parent, String sub, String message, boolean parentMustExist) {
+        if (StringUtils.isBlank(parent)) {
+            if (StringUtils.isNotBlank(sub)) {
+                logger.warn("{}parent is null,ignore path {}", message, sub);
+            }
+            return null;
+        }
+        if (StringUtils.isBlank(sub)) {
+            logger.warn("{} ignore blank path", message);
+            return null;
+        }
+        Validate.notBlank(sub, "[%s]child file can't be empty,parent dir: %s", message, sub);
+        if (parentMustExist) {
+            Validate.isTrue(FileUtils.exist(parent), "[%s]parent file not exist:%s".format(message, parent));
+        }
+        //解析子路径
+        String subFile = FileUtils.parseFileRoot(sub).getPath();
+        if (!FileUtils.isRelativeFilePath(subFile)) {
+            Validate.isTrue(FileUtils.exist(subFile), "[%s]path not exist: %s", message, sub);
+            return subFile;
+        }
+        return FileUtils.parseFile(parent, subFile).getAbsolutePath();
     }
 
     @Override

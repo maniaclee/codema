@@ -86,7 +86,10 @@ public class Codema {
         Validate.notEmpty(codemaContext.getSourceMap(), "no source found");
         /** 执行 */
         for (CodemaMachine codemaMachine : runMap.keySet()) {
-            codemaMachine.code(codemaContext, runMap.get(codemaMachine));
+            CommonCodemaConfig config = runMap.get(codemaMachine);
+            //初始化config
+            config.init();
+            codemaMachine.code(codemaContext, config);
         }
     }
 
