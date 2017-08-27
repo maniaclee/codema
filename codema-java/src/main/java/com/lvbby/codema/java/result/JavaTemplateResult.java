@@ -3,7 +3,6 @@ package com.lvbby.codema.java.result;
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.render.TemplateEngineResult;
-import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -15,9 +14,7 @@ import com.lvbby.codema.java.tool.JavaCodemaUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.templateEngine.CodemaJavaSourcePrinter;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 
@@ -44,6 +41,44 @@ public class JavaTemplateResult extends TemplateEngineResult {
             bind(JavaSrcTemplateParser.instance.getArgs4te(templateContext.getSource(), templateContext.getJavaBasicCodemaConfig()));
         }
         filePath(templateContext.getJavaBasicCodemaConfig().getDestSrcRoot());
+    }
+
+    @Override
+    protected void beforeRender(Map bindingParameters) {
+        String template = CodemaJavaSourcePrinter.toJavaSource(compilationUnit);
+        template = ReflectionUtils.replace(template, "/\\*\\s*#(\\}+)\\*/\\s*([^;]+);",
+                matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
+        super.beforeRender(bindingParameters);
+        template(JavaSrcTemplateParser.prepareTemplate(template));
+    }
+
+    @Override
+    protected void afterRender() {
+        //imports
+        CompilationUnit cu = JavaLexer.read(getString());
+        //        new ImportUtils().tryAddImports(cu);
+        setString(cu.toString());
+
+        JavaClass javaClass = JavaClassUtils.convert(JavaLexer.read(getString()));
+        if (templateContext.getSource() != null)
+            javaClass.setFrom(templateContext.getSource().getFrom());
+        //注册result
+        result(javaClass);
+        //处理dest file
+        filePath(javaClass.getPack().replace('.', '/'), javaClass.getName() + ".java");
+    }
+
+    /***
+     * to achieve stream api
+     * */
+    @Override
+    public JavaTemplateResult bind(Map map) {
+        return (JavaTemplateResult) super.bind(map);
+    }
+
+    @Override
+    public JavaTemplateResult bind(String key, Object value) {
+        return (JavaTemplateResult) super.bind(key, value);
     }
 
 
@@ -94,56 +129,5 @@ public class JavaTemplateResult extends TemplateEngineResult {
         return this;
     }
 
-
-    @Override
-    protected void beforeRender(Map bindingParameters) {
-        String template = CodemaJavaSourcePrinter.toJavaSource(compilationUnit);
-        template = ReflectionUtils.replace(template, "/\\*\\s*#(\\}+)\\*/\\s*([^;]+);",
-                matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
-        super.beforeRender(bindingParameters);
-        System.err.println(template);
-        template(JavaSrcTemplateParser.prepareTemplate(template));
-    }
-
-    @Override
-    protected void afterRender() {
-        //imports
-        System.out.println("afterRender");
-        System.out.println(getString());
-        CompilationUnit cu = JavaLexer.read(getString());
-//        new ImportUtils().tryAddImports(cu);
-        setString(cu.toString());
-
-        registerResult();
-    }
-
-    /**
-     * register the generated result to the container , so that other module can make use of
-     */
-    public JavaTemplateResult registerResult() {
-        if (getResult() != null)
-            return this;
-        JavaClass javaClass = JavaClassUtils.convert(JavaLexer.read(getString()));
-        if (templateContext.getSource() != null)
-            javaClass.setFrom(templateContext.getSource().getFrom());
-        result(javaClass);
-        //处理dest file
-        filePath(javaClass.getPack().replace('.', '/'),javaClass.getName()+".java");
-        return this;
-    }
-
-
-    /***
-     * to achieve stream api
-     * */
-    @Override
-    public JavaTemplateResult bind(Map map) {
-        return (JavaTemplateResult) super.bind(map);
-    }
-
-    @Override
-    public JavaTemplateResult bind(String key, Object value) {
-        return (JavaTemplateResult) super.bind(key, value);
-    }
 
 }

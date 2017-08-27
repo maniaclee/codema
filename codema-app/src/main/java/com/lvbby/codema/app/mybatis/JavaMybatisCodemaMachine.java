@@ -6,7 +6,6 @@ import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
-import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
@@ -30,8 +29,7 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
         SqlTable sqlTable = getSqlTable(cu, config.getIdQuery());
         validate(sqlTable);
         TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $src__name_Dao.class, cu)
-                .bind("table", sqlTable)
-                .registerResult();
+                .bind("table", sqlTable);
         config.handle(codemaContext, daoTemplateResult);
 
         String xml = IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
@@ -47,14 +45,13 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
         /**mybatis config*/
 
         config.handle(codemaContext,
-            new BasicResult().result(loadResourceAsString("mybatis.xml"))
-                .filePath(config.getDestResourceRoot(), "mybatis.xml")
+                new BasicResult().result(loadResourceAsString("mybatis.xml"))
+                        .filePath(config.getDestResourceRoot(), "mybatis.xml")
         );
 
         /** dal config */
         config.handle(codemaContext, new JavaTemplateResult(new TemplateContext(DalConfig.class, config)
-                .pack(config.getConfigPackage()))
-                .render());
+                .pack(config.getConfigPackage())));
     }
 
     private SqlTable getSqlTable(JavaClass cu, Function<JavaClass, JavaField> idQuery) {

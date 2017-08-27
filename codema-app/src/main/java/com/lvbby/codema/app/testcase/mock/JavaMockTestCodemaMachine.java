@@ -26,7 +26,6 @@ public class JavaMockTestCodemaMachine extends AbstractJavaCodemaMachine<JavaMoc
                         .bind("Mock", cu.getName() + "Test")
                         .bind("injectFields", extractAllInjectFields(cu, config.getDependencyAnnotation()))
                         .bind("methods", MockMethod.parseMockMethods(cu, javaField -> javaField.getType().beOutterClass()))
-                        .registerResult()
         );
     }
 

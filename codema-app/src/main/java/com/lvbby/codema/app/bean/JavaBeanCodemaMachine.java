@@ -16,8 +16,7 @@ public class JavaBeanCodemaMachine extends AbstractJavaCodemaMachine<JavaBeanCod
     public void codeEach(CodemaContext codemaContext, JavaBeanCodemaConfig config, JavaClass javaClass) throws Exception {
         for (JavaBeanCodemaConfig c : CodemaUtils.getAllConfig(config, JavaBeanCodemaConfig::getList)) {
             JavaTemplateResult re = new JavaTemplateResult(c, $ClassName_.class, javaClass)
-                    .bind("ClassName", ObjectUtils.firstNonNull(ScriptEngineFactory.instance.eval(c.getDestClassName(), javaClass.getName()), javaClass.getName()))
-                    .registerResult();//注册
+                    .bind("ClassName", ObjectUtils.firstNonNull(ScriptEngineFactory.instance.eval(c.getDestClassName(), javaClass.getName()), javaClass.getName()));
             config.handle(codemaContext, re);
         }
     }

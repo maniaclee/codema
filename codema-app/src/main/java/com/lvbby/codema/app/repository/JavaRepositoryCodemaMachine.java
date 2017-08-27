@@ -30,7 +30,7 @@ public class JavaRepositoryCodemaMachine extends AbstractJavaCodemaMachine<JavaR
                 .bind("Repository", config.evalDestClassName(javaClass, javaClass.getName() + "Repository"))
                 .addImport(buildUtil);
         //        collect.stream().filter(r -> r.getBuildReturnMethod() != null).forEach(r -> result.addImport(r.getBuildReturnMethod().getReturnType(), codemaContext));
-        config.handle(codemaContext, result.registerResult());
+        config.handle(codemaContext, result);
     }
 
 

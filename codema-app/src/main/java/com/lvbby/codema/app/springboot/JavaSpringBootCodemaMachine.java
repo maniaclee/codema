@@ -10,8 +10,7 @@ import com.lvbby.codema.java.result.JavaTemplateResult;
 public class JavaSpringBootCodemaMachine implements CodemaMachine<JavaSpringBootConfig> {
 
     public void code(CodemaContext codemaContext, JavaSpringBootConfig config) throws Exception {
-        config.handle(codemaContext, new JavaTemplateResult(config, MainApp.class)
-                .registerResult());
+        config.handle(codemaContext, new JavaTemplateResult(config, MainApp.class));
     }
 
 }

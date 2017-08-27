@@ -1,10 +1,6 @@
 package com.lvbby.codema.java.tool;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.JavaToken;
-import com.github.javaparser.Position;
-import com.github.javaparser.Token;
-import com.github.javaparser.TokenRange;
+import com.github.javaparser.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
@@ -13,19 +9,11 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.LineComment;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.expr.ArrayInitializerExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NormalAnnotationExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.java.entity.JavaAnnotation;
-import com.lvbby.codema.java.tool.templateEngine.CodemaJavaSourcePrinter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +57,7 @@ public class JavaLexer {
     }
 
     /***
-     * ²éÑ¯Ò»¸öÀàÃûµÄÈ«ÀàÃû£¬´ÓimportsÀïÃæ²éÕÒ
+     * ï¿½ï¿½Ñ¯Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½importsï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      * @param compilationUnit
      * @param s
      * @return
@@ -290,7 +278,7 @@ public class JavaLexer {
     }
 
     public static String getPackage(CompilationUnit compilationUnit) {
-        return compilationUnit.getPackageDeclaration().map(packageDeclaration -> packageDeclaration.toString()).orElse("");
+        return compilationUnit.getPackageDeclaration().map(packageDeclaration -> packageDeclaration.getNameAsString()).orElse("");
     }
 
     public static List<String> getImports(CompilationUnit compilationUnit) {

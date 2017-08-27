@@ -15,7 +15,6 @@ public class JavaTestcaseCodemaMachine extends AbstractJavaCodemaMachine<JavaTes
         config.handle(codemaContext,
                 new JavaTemplateResult(config, $src__name_Test.class, cu)
                         .bind("springBootConfig", codemaContext.getCodema().findConfig(JavaSpringBootConfig.class))
-                        .registerResult()
         );
     }
 

@@ -13,7 +13,8 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
     private String template;
     /* rendered result */
     private String string;
-    private Map    parameters = Maps.newHashMap();
+    private Map parameters = Maps.newHashMap();
+    private transient boolean rendered = false;
 
     public static <T extends TemplateEngineResult> T of(Class<T> t, String template) {
         try {
@@ -22,7 +23,7 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
             return re;
         } catch (Exception e) {
             throw new CodemaRuntimeException(
-                "error create template string for class : " + t.getName());
+                    "error create template string for class : " + t.getName());
         }
     }
 
@@ -45,21 +46,21 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
 
     @Override
     public String getString() {
-        if (string == null)
+        if (!rendered) {
+            beforeRender(parameters);
             render();
+            rendered = true;
+            afterRender();
+        }
         return string;
     }
 
     public TemplateEngineResult render() {
-        if (string != null)
-            return this;
-        beforeRender(parameters);
         TemplateEngine templateEngine = TemplateEngineFactory.create(template);
         for (Object o : parameters.keySet()) {
             templateEngine.bind(o.toString(), parameters.get(o));
         }
         string = templateEngine.render();
-        afterRender();
         return this;
     }
 
@@ -67,6 +68,7 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
         this.template = template;
         return this;
     }
+
     public String getTemplate() {
         return template;
     }

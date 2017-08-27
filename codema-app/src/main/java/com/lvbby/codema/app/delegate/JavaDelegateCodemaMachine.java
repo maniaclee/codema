@@ -13,6 +13,6 @@ public class JavaDelegateCodemaMachine extends AbstractJavaCodemaMachine<JavaDel
     public void codeEach(CodemaContext codemaContext, JavaDelegateCodemaConfig config, JavaClass javaClass) throws Exception {
         config.handle(codemaContext, new JavaTemplateResult(config, $Delegate_.class, javaClass)
                 .bind("Delegate", config.evalDestClassName(javaClass, javaClass.getName() + "Delegate"))
-                .registerResult());
+        );
     }
 }

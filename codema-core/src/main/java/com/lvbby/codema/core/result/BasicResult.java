@@ -5,10 +5,12 @@ import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,22 +18,26 @@ import java.util.List;
  */
 public class BasicResult<T> implements PrintableResult, FileResult {
 
+    protected static Logger logger = LoggerFactory.getLogger(BasicResult.class);
     /***
      * result的原始对象
      */
-    private T            result;
+    private T result;
     /***
      * 目标文件或目标路径路径，这里由几部分组成，方便调用方分多个部分组装
      */
     private List<String> filePaths = Lists.newLinkedList();
-    /**目标文件*/
-    private String       destFile;
+    /**
+     * 目标文件
+     */
+    private String destFile;
 
 
-    public BasicResult config(CommonCodemaConfig config){
+    public BasicResult config(CommonCodemaConfig config) {
         filePath(config.getDestRootDir());
         return this;
     }
+
     public BasicResult filePath(String... paths) {
         if (paths != null && paths.length > 0) {
             for (String path : paths) {
@@ -73,7 +79,7 @@ public class BasicResult<T> implements PrintableResult, FileResult {
         for (String filePath : filePaths) {
             if (StringUtils.isBlank(filePath)) {
                 throw new IllegalArgumentException(
-                    String.format("invalid file paths:  %s", filePath));
+                        String.format("invalid file paths:  %s", filePaths));
             }
         }
         List<String> destPaths = Lists.newArrayList(filePaths);
@@ -81,6 +87,13 @@ public class BasicResult<T> implements PrintableResult, FileResult {
         if (StringUtils.isNotBlank(destFile)) {
             destPaths.add(destFile);
         }
-        return FileUtils.parseFile(destPaths.toArray(new String[0]));
+        File re = FileUtils.parseFile(destPaths.toArray(new String[0]));
+        File parentFile = re.getParentFile();
+        Validate.notNull(parentFile, "invalid file path:%s", re);
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+            logger.info("mkdir {}", parentFile.getAbsolutePath());
+        }
+        return re;
     }
 }

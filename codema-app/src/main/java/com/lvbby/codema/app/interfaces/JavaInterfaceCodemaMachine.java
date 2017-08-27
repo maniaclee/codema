@@ -13,7 +13,7 @@ public class JavaInterfaceCodemaMachine extends AbstractJavaCodemaMachine<JavaIn
     public void codeEach(CodemaContext codemaContext, JavaInterfaceCodemaConfig config, JavaClass javaClass) throws Exception {
         config.handle(codemaContext, new JavaTemplateResult(config, $Interface_.class, javaClass)
                 .bind("Interface", config.evalDestClassName(javaClass, javaClass.getName() + "Service"))
-                .registerResult());
+        );
     }
 
 }

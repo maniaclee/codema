@@ -34,6 +34,8 @@ public class MavenConfig extends CommonCodemaConfig {
 
     private transient MavenConfig parent;
 
+    private transient boolean mavenInitialized = false;
+
     public void init() {
         super.init();
         initMaven();
@@ -42,8 +44,12 @@ public class MavenConfig extends CommonCodemaConfig {
     /***
      * 递归将children的parent设为自己
      */
-    private void initMaven() {
+    public void initMaven() {
+        if(mavenInitialized)
+            return;
         Validate.notBlank(name, "name can't be blank");
+        Validate.notBlank(artifactId, "[%s] artifactId can't be blank", _getId());
+        Validate.notBlank(groupId, "[%s] groupId can't be blank", _getId());
 
         //设置maven项目的路径
         if (parent != null) {
@@ -51,24 +57,33 @@ public class MavenConfig extends CommonCodemaConfig {
                 //将根路径设为parent
                 setDestRootDir(getParent().getDestRootDir());
             } else {
-                setDestRootDir(parseFileWithParent(getParent().getDestRootDir(), getDestRootDir(), String.format("MavenConfig[%s].destRootDir", name)));
+                setDestRootDir(parseFileWithParent(getParent().getDestRootDir(), getDestRootDir(), String.format("%s.destRootDir", _getId(), name)));
             }
         }
         //将根路径设为maven的名称
-        setDestRootDir(parseFileWithParent(getDestRootDir(), name, String.format("MavenConfig[%s].destRootDir", name)));
+        setDestRootDir(parseFileWithParent(getDestRootDir(), name, String.format("%s.destRootDir", _getId())));
 
-        setDestSrcRoot(parseFileWithParent(getDestRootDir(), getDestSrcRoot(), String.format("MavenConfig[%s].destSrcRoot", name)));
-        setDestResourceRoot(parseFileWithParent(getDestRootDir(), getDestResourceRoot(), String.format("MavenConfig[%s].destResourceRoot", name)));
+        setDestSrcRoot(parseFileWithParent(getDestRootDir(), getDestSrcRoot(), String.format("%s.destSrcRoot", _getId(), name)));
+        setDestResourceRoot(parseFileWithParent(getDestRootDir(), getDestResourceRoot(), String.format("%s.destResourceRoot", _getId(), name)));
 
-        setDestTestSrcRoot(parseFileWithParent(getDestRootDir(), getDestTestSrcRoot(), String.format("MavenConfig[%s].destTestSrcRoot", name)));
-        setDestTestResourceRoot(parseFileWithParent(getDestRootDir(), getDestTestResourceRoot(), String.format("MavenConfig[%s].destTestResourceRoot", name)));
-
+        setDestTestSrcRoot(parseFileWithParent(getDestRootDir(), getDestTestSrcRoot(), String.format("%s.destTestSrcRoot", _getId(), name)));
+        setDestTestResourceRoot(parseFileWithParent(getDestRootDir(), getDestTestResourceRoot(), String.format("%s.destTestResourceRoot", _getId(), name)));
+        mavenInitialized =true;
         if (CollectionUtils.isNotEmpty(getModules())) {
             getModules().forEach(child -> {
                 child.setParent(this);
                 child.initMaven();
             });
         }
+    }
+
+    /**
+     * 标识符，打印日志用
+     *
+     * @return
+     */
+    private String _getId() {
+        return String.format("%s[%s]", getClass().getSimpleName(), name);
     }
 
     public static void main(String[] args) {

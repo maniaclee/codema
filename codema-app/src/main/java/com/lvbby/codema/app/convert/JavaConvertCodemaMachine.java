@@ -31,8 +31,7 @@ public class JavaConvertCodemaMachine implements CodemaMachine<JavaConvertCodema
         config.handle(codemaContext, new JavaTemplateResult(config, $Convert_.class)
                 .bind("Convert", config.getDestClassName())
                 .bind("cs", javaClasses)
-                .bind("map", javaClasses.stream().collect(Collectors.toMap(o -> o, javaClass -> ReflectionUtils.getSimpleClassName(getTargetClassName(config, javaClass)))))
-                .registerResult());
+                .bind("map", javaClasses.stream().collect(Collectors.toMap(o -> o, javaClass -> ReflectionUtils.getSimpleClassName(getTargetClassName(config, javaClass))))));
     }
 
     private String getTargetClassName(JavaConvertCodemaConfig config, JavaClass javaClass) {

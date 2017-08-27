@@ -13,7 +13,6 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,6 +28,8 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
      */
     private String destRootDir;
     private List<ResultHandler> resultHandlers = Lists.newLinkedList();
+
+    private boolean inited = false;
 
     /***
      * 用一个父类当做模板来初始化配置
@@ -52,12 +53,16 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
      * 初始化
      */
     public void init() {
-        if (StringUtils.isNotBlank(destRootDir)) {
-            //转化为标准路径
-            File file = FileUtils.parseFileRoot(destRootDir);
-            Validate.isTrue(file.exists(), String.format("dest root dir not exist:%s", destRootDir));
-            destRootDir = file.getAbsolutePath();
+        if (inited) {
+            return;
         }
+//        if (StringUtils.isNotBlank(destRootDir)) {
+//            //转化为标准路径
+//            File file = FileUtils.parseFileRoot(destRootDir);
+//            Validate.isTrue(file.exists(), String.format("dest root dir not exist:%s", destRootDir));
+//            destRootDir = file.getAbsolutePath();
+//        }
+        inited = true;
     }
 
     protected String parseFileWithParent(String parent, String sub, String message) {
@@ -118,8 +123,9 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     }
 
 
-    public void addResultHandler(Class<? extends ResultHandler> resultHandler) {
+    public CommonCodemaConfig addResultHandler(Class<? extends ResultHandler> resultHandler) {
         this.resultHandlers.add(ReflectionUtils.instance(resultHandler));
+        return this;
     }
 
     public List<ResultHandler> getResultHandlers() {
