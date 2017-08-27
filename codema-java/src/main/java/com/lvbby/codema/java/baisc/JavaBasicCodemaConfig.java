@@ -26,6 +26,10 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
     private String destResourceRoot;
 
     private String destClassName;
+    /***
+     * 获取目标bean的名称
+     */
+    private JavaClassNameParser javaClassNameParser = new DefaultJavaClassNameParser();
     /**
      * 选取类的package
      */
@@ -96,6 +100,14 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
 
     public void setDestResourceRoot(String destResourceRoot) {
         this.destResourceRoot = destResourceRoot;
+    }
+
+    public JavaClassNameParser getJavaClassNameParser() {
+        return javaClassNameParser;
+    }
+
+    public void setJavaClassNameParser(JavaClassNameParser javaClassNameParser) {
+        this.javaClassNameParser = javaClassNameParser;
     }
 
     public String evalDestClassName(JavaClass javaClass, String defaultValue) {

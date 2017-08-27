@@ -4,10 +4,12 @@ import com.lvbby.codema.core.bean.CodemaBeanFactory;
 import com.lvbby.codema.core.bean.DefaultCodemaBeanFactory;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigBind;
+import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.Validate;
 
+import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,12 +86,25 @@ public class Codema {
 
     public void run() throws Exception {
         Validate.notEmpty(codemaContext.getSourceMap(), "no source found");
+        checkConfig();
         /** 执行 */
         for (CodemaMachine codemaMachine : runMap.keySet()) {
             CommonCodemaConfig config = runMap.get(codemaMachine);
             //初始化config
             config.init();
             codemaMachine.code(codemaContext, config);
+        }
+    }
+    private void checkConfig() throws Exception {
+        for (CommonCodemaConfig commonCodemaConfig : runMap.values()) {
+            //NotBlank
+            for (Field field : ReflectionUtils.getAllFields(commonCodemaConfig.getClass(),
+                    field -> field.isAnnotationPresent(NotBlank.class))) {
+                Object o = field.get(commonCodemaConfig);
+                if (o instanceof String) {
+                    Validate.notBlank(o.toString(), "%s.%s can't be blank");
+                }
+            }
         }
     }
 

@@ -1,12 +1,14 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.app.mvn.MavenConfig;
 import com.lvbby.codema.app.mybatis.JavaMybatisCodemaConfig;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
+import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
@@ -30,25 +32,37 @@ public class CodemaMachineAppTest extends BaseTest {
 
     @Test
     public void mybatis() throws Exception {
-        String rootDir = "~/workspace/";
-        MavenConfig mavenConfig = new MavenConfig();
-        mavenConfig.setDestRootDir(rootDir);
+
+        CommonCodemaConfig config = new CommonCodemaConfig();
+        config.setAuthor("lee");
+        config.addResultHandler(PrintResultHandler.class).addResultHandler(FileWriterResultHandler.class);
+
+        MavenConfig mavenConfig = config.copy(MavenConfig.class);
+        mavenConfig.setDestRootDir("~/workspace/");
         mavenConfig.setName("test-codema");
         mavenConfig.setGroupId("lvbby");
         mavenConfig.setArtifactId(mavenConfig.getName());
         mavenConfig.initMaven();
-        mavenConfig.addResultHandler(PrintResultHandler.class).addResultHandler(FileWriterResultHandler.class);
 
-        JavaMybatisCodemaConfig javaMybatisCodemaConfig = _newConfig(JavaMybatisCodemaConfig.class);
-        javaMybatisCodemaConfig.setDestRootDir(mavenConfig.getDestSrcRoot());
-        javaMybatisCodemaConfig.setIdQuery(javaClass -> javaClass.getFields().stream().filter(javaField -> javaField.getName().equals("mapperDir")).findAny().orElse(null));
-        javaMybatisCodemaConfig.addResultHandler(FileWriterResultHandler.class);
-        javaMybatisCodemaConfig.setDestResourceRoot(mavenConfig.getDestResourceRoot());
-        javaMybatisCodemaConfig.setDestSrcRoot(mavenConfig.getDestSrcRoot());
+        JavaBasicCodemaConfig javaConfig = config.copy(JavaBasicCodemaConfig.class);
+        javaConfig.setFromPackage("com.lvbby");
+        javaConfig.setDestRootDir(mavenConfig.getDestSrcRoot());
+        javaConfig.setDestResourceRoot(mavenConfig.getDestResourceRoot());
+        javaConfig.setDestSrcRoot(mavenConfig.getDestSrcRoot());
+
+
+        JavaMybatisCodemaConfig javaMybatisCodemaConfig = javaConfig.copy(JavaMybatisCodemaConfig.class);
+        javaMybatisCodemaConfig.setIdQuery(javaClass -> javaClass.getFields().stream().filter(javaField -> javaField.getName().equals("destPackage")).findAny().orElse(null));
         javaMybatisCodemaConfig.setMapperDir("mapper");
+        javaMybatisCodemaConfig.setDestPackage("com.lvbby");
+        javaMybatisCodemaConfig.setConfigPackage("com.lvbby.config");
+        JavaBeanCodemaConfig beanCodemaConfig = javaConfig.copy(JavaBeanCodemaConfig.class);
+        beanCodemaConfig.setDestPackage("com.lvbby.bean");
+
 
         new Codema()
-                .source(JavaClassSourceParser.fromClass(JavaMybatisCodemaConfig.class))
+                .source(JavaClassSourceParser.fromClass(JavaBasicCodemaConfig.class))
+                .bind(beanCodemaConfig)
                 .bind(javaMybatisCodemaConfig)
                 .bind(mavenConfig)
                 .run();

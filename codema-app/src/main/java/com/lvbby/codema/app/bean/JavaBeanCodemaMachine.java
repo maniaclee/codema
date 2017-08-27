@@ -1,24 +1,20 @@
 package com.lvbby.codema.app.bean;
 
 import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.engine.ScriptEngineFactory;
-import com.lvbby.codema.core.utils.CodemaUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * Created by lipeng on 16/12/23.
  */
 public class JavaBeanCodemaMachine extends AbstractJavaCodemaMachine<JavaBeanCodemaConfig> {
 
-    public void codeEach(CodemaContext codemaContext, JavaBeanCodemaConfig config, JavaClass javaClass) throws Exception {
-        for (JavaBeanCodemaConfig c : CodemaUtils.getAllConfig(config, JavaBeanCodemaConfig::getList)) {
-            JavaTemplateResult re = new JavaTemplateResult(c, $ClassName_.class, javaClass)
-                    .bind("ClassName", ObjectUtils.firstNonNull(ScriptEngineFactory.instance.eval(c.getDestClassName(), javaClass.getName()), javaClass.getName()));
-            config.handle(codemaContext, re);
-        }
+    public void codeEach(CodemaContext codemaContext, JavaBeanCodemaConfig c, JavaClass javaClass)
+            throws Exception {
+        JavaTemplateResult re = new JavaTemplateResult(c, $ClassName_.class, javaClass)
+                .bind("ClassName", c.getJavaClassNameParser().getClassName(javaClass));
+        c.handle(codemaContext, re);
     }
 
 }

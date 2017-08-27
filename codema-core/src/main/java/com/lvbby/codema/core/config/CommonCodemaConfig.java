@@ -31,23 +31,15 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
 
     private boolean inited = false;
 
-    /***
-     * 用一个父类当做模板来初始化配置
-     * @param srcConfig
-     * @param targetConfigClass
-     * @param <T>
-     * @return
-     */
-    public static <T extends CommonCodemaConfig> T newConfigFromTemplate(CommonCodemaConfig srcConfig, Class<T> targetConfigClass) {
+    public <T extends CommonCodemaConfig> T copy(Class<T> targetConfigClass){
         T re = ReflectionUtils.instance(targetConfigClass);
         try {
-            BeanUtils.copyProperties(re, srcConfig);
+            BeanUtils.copyProperties(re, this);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return re;
     }
-
 
     /**
      * 初始化
