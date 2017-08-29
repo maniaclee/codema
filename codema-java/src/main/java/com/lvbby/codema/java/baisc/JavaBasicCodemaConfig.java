@@ -6,6 +6,7 @@ import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.java.entity.JavaClass;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -37,6 +38,25 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
     private boolean toBeInterface = false;
     private List<String> implementInterfaces;
     private String parentClass;
+
+    public JavaBasicCodemaConfig addSubDestPackage(String pack) {
+        setDestPackage(relativePackage(pack));
+        return this;
+    }
+
+    /***
+     * 基于destPackage计算最终的package
+     * @param subPackage
+     * @return
+     */
+    public String relativePackage(String subPackage) {
+        if (StringUtils.isNotBlank(subPackage)) {
+            if (StringUtils.isNotBlank(destPackage)) {
+                subPackage = String.format("%s.%s", destPackage, subPackage);
+            }
+        }
+        return subPackage;
+    }
 
     public boolean isToBeInterface() {
         return toBeInterface;
