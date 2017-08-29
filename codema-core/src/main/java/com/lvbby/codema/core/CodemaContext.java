@@ -15,13 +15,12 @@ public class CodemaContext {
      */
     private Map<Class, Object> sourceMap = Maps.newHashMap();
     private Codema codema;
+    private Object source;
 
     Map<Class, Object> paramMap = Maps.newConcurrentMap();
 
-    public Map<Class, Object> getSourceMap() {
-        return sourceMap;
-    }
 
+    @Deprecated
     public <T> T getSourceByType(Class<T> clz) {
         return (T) sourceMap.get(clz);
     }
@@ -50,4 +49,11 @@ public class CodemaContext {
         return codema.findConfig(clz);
     }
 
+    public Object getSource() {
+        return source;
+    }
+
+    public void setSource(Object source) {
+        this.source = source;
+    }
 }

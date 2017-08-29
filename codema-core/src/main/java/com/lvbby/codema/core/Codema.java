@@ -85,7 +85,6 @@ public class Codema {
     }
 
     public void run() throws Exception {
-        Validate.notEmpty(codemaContext.getSourceMap(), "no source found");
         checkConfig();
         /** 执行 */
         for (CodemaMachine codemaMachine : runMap.keySet()) {
