@@ -8,6 +8,7 @@ import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
+import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -52,7 +53,7 @@ public class CodemaMachineAppTest extends BaseTest {
 
 
         JavaMybatisCodemaConfig javaMybatisCodemaConfig = javaConfig.copy(JavaMybatisCodemaConfig.class);
-        javaMybatisCodemaConfig.setIdQuery(javaClass -> javaClass.getFields().stream().filter(javaField -> javaField.getName().equals("destPackage")).findAny().orElse(null));
+        javaMybatisCodemaConfig.setIdQuery(javaClass -> javaClass.getFields().stream().filter(javaField -> javaField.getName().equals("nameCamel")).findAny().orElse(null));
         javaMybatisCodemaConfig.setMapperDir("mapper");
         javaMybatisCodemaConfig.setDestPackage("com.lvbby");
         javaMybatisCodemaConfig.setConfigPackage("com.lvbby.config");
@@ -61,7 +62,7 @@ public class CodemaMachineAppTest extends BaseTest {
 
 
         new Codema()
-                .source(JavaClassSourceParser.fromClass(JavaBasicCodemaConfig.class))
+                .source(JavaClassSourceParser.fromClass(SqlColumn.class))
                 .bind(beanCodemaConfig)
                 .bind(javaMybatisCodemaConfig)
                 .bind(mavenConfig)

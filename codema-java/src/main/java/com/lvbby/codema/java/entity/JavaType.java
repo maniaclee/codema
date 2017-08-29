@@ -5,6 +5,7 @@ import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import sun.reflect.generics.reflectiveObjects.WildcardTypeImpl;
 
 import java.lang.reflect.*;
 import java.util.List;
@@ -166,6 +167,9 @@ public class JavaType {
         //            GenericDeclaration genericDeclaration = ((TypeVariable) type).getGenericDeclaration();
         //            if (genericDeclaration instanceof Method)
         //        }
+        if (type instanceof WildcardTypeImpl) {
+            return new JavaType("?");
+        }
         throw new IllegalArgumentException("unknown type:" + type.toString());
     }
 
