@@ -3,6 +3,7 @@ package com.lvbby.codema.app.convert;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Class_;
+import com.lvbby.codema.java.template.annotaion.Sentence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +11,12 @@ import java.util.List;
 /**
  * Created by lipeng on 2016/12/24.
  */
+@Sentence("var Convert = config.destClassName;")
 public class $Convert_ {
 
     // <%
-    // for( c in  cs){
-    // var Class =c.name;
-    // var Class1=@map.get(c);
+    // var Class = src.name;
+    // var Class1= config.convertToClassName;
     // %>
     public static $Class1_ build$Class1_($Class_ from) {
         if (from == null) {
@@ -24,7 +25,7 @@ public class $Convert_ {
         $Class1_ re = new $Class1_();
         /**#
          <%
-         for( f in  c.fields){
+         for( f in  src.fields){
          var name =f.name;
          var nameUpper = lee.capital(name);
          %>
@@ -51,7 +52,7 @@ public class $Convert_ {
         $Class_ re = new $Class_();
         /**#
          <%
-         for( f in  c.fields){
+         for( f in  from.fields){
          var name =f.name;
          var nameUpper = lee.capital(name);
          %>
@@ -70,6 +71,5 @@ public class $Convert_ {
         }
         return re;
     }
-    // <% }%>
 
 }

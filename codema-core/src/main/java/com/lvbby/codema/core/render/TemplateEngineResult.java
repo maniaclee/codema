@@ -78,6 +78,10 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
         return this;
     }
 
+    public Map getParameters() {
+        return parameters;
+    }
+
     protected void setString(String string) {
         this.string = string;
     }

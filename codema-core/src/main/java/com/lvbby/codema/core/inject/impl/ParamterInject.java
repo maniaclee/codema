@@ -27,14 +27,14 @@ public class ParamterInject implements CodemaInjector {
             } catch (Exception e) {
                 throw new InjectInterruptException(e);
             }
-            Object bean = context.getContext().getCodema().getCodemaBeanFactory().getBean(beanId);
+            Object bean = context.getContext().getCodemaBeanFactory().getBean(beanId);
             if (bean == null && annotation.createFactory() != null) {
                 InjectParameterFactory instance = ReflectionUtils.instance(annotation.createFactory());
                 CodemaBean codemaBean = instance.create(context, beanId);
                 if (codemaBean != null) {
                     bean = codemaBean.getResource();
                     //注册到容器
-                    context.getContext().getCodema().getCodemaBeanFactory().register(codemaBean);
+                    context.getContext().getCodemaBeanFactory().register(codemaBean);
                 }
             }
             //注入参数bean
@@ -60,7 +60,7 @@ public class ParamterInject implements CodemaInjector {
             String parentBeanId = value.substring(0, end);
             Object parentBean = null;
             try {
-                parentBean = context.getContext().getCodema().findConfigBlur(Class.forName(parentBeanId));
+                parentBean = context.getContext().findConfigBlur(Class.forName(parentBeanId));
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

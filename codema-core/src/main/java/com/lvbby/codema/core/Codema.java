@@ -18,15 +18,7 @@ import java.util.stream.Collectors;
  * Created by lipeng on 16/12/23.
  */
 public class Codema {
-    private CodemaBeanFactory codemaBeanFactory = new DefaultCodemaBeanFactory();
-
-    private LinkedHashMap<CodemaMachine, CommonCodemaConfig> runMap = new LinkedHashMap<>();
     private CodemaContext codemaContext = new CodemaContext();
-
-    {
-        codemaContext.setCodema(this);
-    }
-
 
     public static <T extends CommonCodemaConfig> void exec(T config) throws Exception {
         new Codema().bind(config).run();
@@ -50,14 +42,14 @@ public class Codema {
      * @return
      */
     public <T extends CommonCodemaConfig> Codema bind(CodemaMachine<T> configBinder, T config) {
-        runMap.put(configBinder, config);
+        codemaContext.getRunMap().put(configBinder, config);
         return this;
     }
 
     public <T extends CommonCodemaConfig> Codema bind(T config) {
         Class codemaMachineClass = findCodemaMachineClass(config.getClass());
         CodemaMachine instance = (CodemaMachine) ReflectionUtils.instance(codemaMachineClass);
-        runMap.put(instance, config);
+        codemaContext.getRunMap().put(instance, config);
         return this;
     }
 
@@ -76,29 +68,37 @@ public class Codema {
     }
 
     public Codema withSource(Object object) {
-        codemaContext.addSource(object);
+        codemaContext.setSource(object);
         return this;
     }
 
     public Codema source(SourceLoader sourceLoader) throws Exception {
-        return withSource(sourceLoader.loadSource());
+        withSource(sourceLoader.loadSource());
+         return this;
     }
 
     public void run() throws Exception {
-        checkConfig();
-        /** 执行 */
-        for (CodemaMachine codemaMachine : runMap.keySet()) {
-            CommonCodemaConfig config = runMap.get(codemaMachine);
-            //初始化config
-            config.init();
-            codemaMachine.code(codemaContext, config);
+        CodemaContextHolder.setCodemaContext(codemaContext);
+        try {
+            Validate.notNull(codemaContext.getSource(),"no source found");
+            checkConfig();
+            /** 执行 */
+            for (CodemaMachine codemaMachine : codemaContext.getRunMap().keySet()) {
+                CommonCodemaConfig config = codemaContext.getRunMap().get(codemaMachine);
+                //初始化config
+                config.init();
+                codemaMachine.code(codemaContext, config);
+            }
+        } finally {
+            CodemaContextHolder.clear();
         }
     }
     private void checkConfig() throws Exception {
-        for (CommonCodemaConfig commonCodemaConfig : runMap.values()) {
+        for (CommonCodemaConfig commonCodemaConfig : codemaContext.getRunMap().values()) {
             //NotBlank
             for (Field field : ReflectionUtils.getAllFields(commonCodemaConfig.getClass(),
                     field -> field.isAnnotationPresent(NotBlank.class))) {
+                field.setAccessible(true);
                 Object o = field.get(commonCodemaConfig);
                 if (o instanceof String) {
                     Validate.notBlank(o.toString(), "%s.%s can't be blank");
@@ -106,25 +106,5 @@ public class Codema {
             }
         }
     }
-
-    public <T extends CommonCodemaConfig> T findConfig(Class<T> clz) {
-        return (T) findConfigBlur(clz);
-    }
-
-    public Object findConfigBlur(Class clz) {
-        List<CommonCodemaConfig> configs = runMap.values().stream().filter(commonCodemaConfig -> clz.equals(commonCodemaConfig.getClass())).collect(Collectors.toList());
-        if (configs.size() > 1)
-            throw new IllegalArgumentException(String.format("multi config found : %s", clz.getName()));
-        return configs.isEmpty() ? null : configs.get(0);
-    }
-
-    public CodemaBeanFactory getCodemaBeanFactory() {
-        return codemaBeanFactory;
-    }
-
-    public void setCodemaBeanFactory(CodemaBeanFactory codemaBeanFactory) {
-        this.codemaBeanFactory = codemaBeanFactory;
-    }
-
 
 }

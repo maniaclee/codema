@@ -79,11 +79,11 @@ public class CodemaMachineAppTest extends BaseTest {
 
         new Codema()
                 .source(JavaClassSourceParser.fromClass(SqlColumn.class))
+                .bind(mavenConfig)
                 .bind(beanCodemaConfig)
                 .bind(convert)
                 .bind(mybatis)
                 .bind(repo)
-                .bind(mavenConfig)
                 .run();
     }
 

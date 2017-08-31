@@ -2,12 +2,14 @@ package com.lvbby.codema.java.tool.templateEngine;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -47,6 +49,11 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
         super(prettyPrinterConfiguration);
     }
 
+    @Override
+    public void visit(final ClassOrInterfaceDeclaration n, final Void arg) {
+        processSentence(n);
+        super.visit(n, arg);
+    }
     @Override
     public void visit(FieldDeclaration n, Void arg) {
         List<JavaAnnotation> javaAnnotations = processForeachPre(n);
@@ -257,9 +264,9 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
         }
     }
 
-    private <A> void handleAnnotation(NodeWithAnnotations fieldDeclaration, Class<A> clz,
+    private <A> void handleAnnotation(NodeWithAnnotations nodeWithAnnotations, Class<A> clz,
                                       Consumer<List<JavaAnnotation>> function) {
-        NodeList<AnnotationExpr> annotationByClass = fieldDeclaration.getAnnotations();
+        NodeList<AnnotationExpr> annotationByClass = nodeWithAnnotations.getAnnotations();
         LinkedList<JavaAnnotation> annotations = Lists.newLinkedList();
         for (int i = annotationByClass.size() - 1; i >= 0; i--) {
             if (clz.getSimpleName().equals(annotationByClass.get(i).getNameAsString())) {

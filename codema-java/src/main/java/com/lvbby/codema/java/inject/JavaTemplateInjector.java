@@ -24,7 +24,7 @@ public class JavaTemplateInjector implements CodemaInjector {
     public void process(CodemaInjectContext context) throws Exception {
         if (!context.getCodeRunnerMethod().isAnnotationPresent(JavaTemplate.class))
             return;
-        Object source = context.getContext().getSourceByType(JavaSourceParam.class);
+        Object source = context.getContext().getSource();
         if (source == null)
             return;
         /** 从参数中找到制定的Config */
@@ -32,14 +32,13 @@ public class JavaTemplateInjector implements CodemaInjector {
         if (config == null)
             return;
 
-        List<JavaClass> sources = JavaCodemaUtils.findBeansByPackage(context.getContext(), config);
+        JavaClass javaClass = (JavaClass) context.getContext().getSource();
 
-        for (JavaClass javaClass : sources) {
-            /** 对每个source，分别调用改方法，自动把foreach干掉 */
-            List<InjectEntry> cloneEntries = context.cloneEntries();
-            cloneEntries.stream().forEach(injectEntry -> injectCompilationUnit(context, config, javaClass, injectEntry));
-            context.invoke(cloneEntries);//出错直接抛出去
-        }
+        /** 对每个source，分别调用改方法，自动把foreach干掉 */
+        List<InjectEntry> cloneEntries = context.cloneEntries();
+        cloneEntries.stream()
+            .forEach(injectEntry -> injectCompilationUnit(context, config, javaClass, injectEntry));
+        context.invoke(cloneEntries);//出错直接抛出去
         throw new InjectInterruptException("interrupted by " + getClass().getName());
     }
 

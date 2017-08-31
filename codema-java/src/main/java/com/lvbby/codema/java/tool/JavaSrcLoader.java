@@ -78,10 +78,12 @@ public class JavaSrcLoader {
      * @throws Exception
      */
     private static CompilationUnit loadJavaSrcFromProject(String className) throws Exception {
-        for (File file : mavenDirectoryScanner.getMavenSrcDirectories()) {
-            File re = new File(file, className.replace('.', '/') + ".java");
-            if (re.isFile() && re.exists()) {
-                return JavaLexer.read(re);
+        if (mavenDirectoryScanner != null) {
+            for (File file : mavenDirectoryScanner.getMavenSrcDirectories()) {
+                File re = new File(file, className.replace('.', '/') + ".java");
+                if (re.isFile() && re.exists()) {
+                    return JavaLexer.read(re);
+                }
             }
         }
         return null;

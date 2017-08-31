@@ -14,7 +14,7 @@ public class JavaTestcaseCodemaMachine extends AbstractJavaCodemaMachine<JavaTes
     public void codeEach(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, JavaClass cu) throws Exception {
         config.handle(codemaContext,
                 new JavaTemplateResult(config, $src__name_Test.class, cu)
-                        .bind("springBootConfig", codemaContext.getCodema().findConfig(JavaSpringBootConfig.class))
+                        .bind("springBootConfig", codemaContext.findConfig(JavaSpringBootConfig.class))
         );
     }
 

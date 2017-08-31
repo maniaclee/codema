@@ -102,7 +102,7 @@ public class JavaSrcTemplateParser {
         JavaClass javaClassSrc = templateContext.getSource();
         //检查javaClass是否在容器里
         if (javaClassSrc != null) {
-            if (CodemaContextHolder.getCodemaContext().getCodema().getCodemaBeanFactory().getBean(javaClassSrc.classFullName()) != null)
+            if (CodemaContextHolder.getCodemaContext().getCodemaBeanFactory().getBean(javaClassSrc.classFullName()) != null)
                 cu.addImport(javaClassSrc.classFullName());
             if (CollectionUtils.isNotEmpty(javaClassSrc.getImports()))
                 javaClassSrc.getImports().forEach(i -> cu.addImport(i));

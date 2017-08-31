@@ -1,22 +1,21 @@
 package com.lvbby.codema.java.result;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.entity.JavaType;
+import com.lvbby.codema.java.resource.JavaClassResource;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 import com.lvbby.codema.java.template.TemplateContext;
+import com.lvbby.codema.java.tool.AutoImport;
 import com.lvbby.codema.java.tool.JavaClassUtils;
-import com.lvbby.codema.java.tool.JavaCodemaUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.templateEngine.CodemaJavaSourcePrinter;
-import org.apache.commons.collections.CollectionUtils;
 
-import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by lipeng on 17/1/6.
@@ -36,10 +35,9 @@ public class JavaTemplateResult extends TemplateEngineResult {
     public JavaTemplateResult(TemplateContext templateContext) {
         compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(templateContext);
         this.templateContext = templateContext;
-        bind("config", templateContext.getJavaBasicCodemaConfig());
-        if (templateContext.getSource() != null) {
-            bind(JavaSrcTemplateParser.instance.getArgs4te(templateContext.getSource(), templateContext.getJavaBasicCodemaConfig()));
-        }
+        //bind默认的参数
+        bind(JavaSrcTemplateParser.instance.getArgs4te(templateContext.getSource(),
+            templateContext.getJavaBasicCodemaConfig()));
         filePath(templateContext.getJavaBasicCodemaConfig().getDestSrcRoot());
     }
 
@@ -54,9 +52,14 @@ public class JavaTemplateResult extends TemplateEngineResult {
 
     @Override
     protected void afterRender() {
-        //imports
         CompilationUnit cu = JavaLexer.read(getString());
-        //        new ImportUtils().tryAddImports(cu);
+        //自动import
+        AutoImport autoImport = new AutoImport(cu);
+        //import beanFactory里的bean
+        CodemaContextHolder.getCodemaContext().getCodemaBeanFactory().getBeans(JavaClass.class)
+            .forEach(javaClass -> autoImport.addCandidate(javaClass));
+        autoImport.parse();
+
         setString(cu.toString());
 
         JavaClass javaClass = JavaClassUtils.convert(JavaLexer.read(getString()));
@@ -81,51 +84,8 @@ public class JavaTemplateResult extends TemplateEngineResult {
         return (JavaTemplateResult) super.bind(key, value);
     }
 
-
-    public JavaTemplateResult addImportClassFullName(Collection<String> importClass) {
-        if (CollectionUtils.isNotEmpty(importClass))
-            importClass.forEach(i -> addImport(i));
-        return this;
-    }
-
-    public JavaTemplateResult addImport(String importClass) {
-        if (ReflectionUtils.isFullClassName(importClass))
-            compilationUnit.addImport(importClass);
-        return this;
-    }
-
     public JavaTemplateResult addImport(JavaClass importClass) {
         compilationUnit.addImport(importClass.classFullName());
-        return this;
-    }
-
-    public JavaTemplateResult addImportJavaClasses(Collection<JavaClass> importClass) {
-        if (CollectionUtils.isNotEmpty(importClass))
-            importClass.forEach(i -> addImport(i));
-        return this;
-    }
-
-    public JavaTemplateResult addImport(Class importClass) {
-        compilationUnit.addImport(importClass);
-        return this;
-    }
-
-    public JavaTemplateResult addImport(String className, CodemaContext codemaContext) {
-        /** 如果是全类名 */
-        if (ReflectionUtils.isFullClassName(className))
-            return addImport(className);
-        JavaClass clz = JavaCodemaUtils.findBeanByJavaClassName(codemaContext, className);
-        if (clz != null)
-            addImport(clz);
-        return this;
-    }
-
-    public JavaTemplateResult addImport(JavaType type, CodemaContext codemaContext) {
-        if (type.getJavaType() != null)
-            return addImport(type.getJavaType());
-        JavaClass clz = JavaCodemaUtils.findBeanByJavaClassName(codemaContext, type.getSpecificType());
-        if (clz != null)
-            addImport(clz);
         return this;
     }
 

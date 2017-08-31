@@ -54,7 +54,7 @@ public class DefaultCodemaBeanFactory implements CodemaBeanFactory {
 
     @Override
     public <T> List<T> getBeans(Class<T> type) {
-        return resources.stream().filter(e -> e.match(type)).map(e -> (T) e).collect(Collectors.toList());
+        return resources.stream().filter(e -> e.match(type)).map(e -> (T) e.getResource()).collect(Collectors.toList());
     }
 
 }

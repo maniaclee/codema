@@ -61,7 +61,7 @@ public class ImportUtils {
             return;
         }
         CodemaContext codemaContext = CodemaContextHolder.getCodemaContext();
-        List<Object> beans = codemaContext.getCodema().getCodemaBeanFactory().getBeans(codemaBean -> ReflectionUtils.getSimpleClassName(codemaBean.getId()).equals(type), Object.class);
+        List<Object> beans = codemaContext.getCodemaBeanFactory().getBeans(codemaBean -> ReflectionUtils.getSimpleClassName(codemaBean.getId()).equals(type), Object.class);
         if (CollectionUtils.isNotEmpty(beans)) {
             beans.forEach(o -> {
                 if(o instanceof JavaClass)
