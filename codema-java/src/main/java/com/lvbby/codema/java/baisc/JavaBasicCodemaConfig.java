@@ -1,10 +1,14 @@
 package com.lvbby.codema.java.baisc;
 
+import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigKey;
 import com.lvbby.codema.core.engine.ScriptEngineFactory;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
+import com.lvbby.codema.java.result.JavaTemplateResult;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -56,6 +60,24 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
             }
         }
         return subPackage;
+    }
+
+    @Override public CodemaMachine loadCodemaMachine() {
+        CodemaMachine codemaMachine = super.loadCodemaMachine();
+        if(codemaMachine==null){
+            JavaTemplateResource annotation = getClass().getAnnotation(JavaTemplateResource.class);
+            if(annotation!=null && annotation.value()!=null){
+                return new AbstractJavaCodemaMachine() {
+                    @Override protected void codeEach(CodemaContext context,
+                                                      JavaBasicCodemaConfig config,
+                                                      JavaClass javaClass) throws Exception {
+                        config.handle(context, new JavaTemplateResult(config, annotation.value(), javaClass));
+                    }
+
+                };
+            }
+        }
+        return codemaMachine;
     }
 
     public boolean isToBeInterface() {
@@ -143,5 +165,21 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         if (s == null)
             throw new CodemaRuntimeException(String.format("eval %s return null !", src));
         return s;
+    }
+
+    /***
+     * 将Java template class 转为codemaMachine
+     * @param clz
+     * @return
+     */
+    protected CodemaMachine load(Class clz) {
+        return new AbstractJavaCodemaMachine() {
+            @Override
+            protected void codeEach(CodemaContext context, JavaBasicCodemaConfig config,
+                                    JavaClass javaClass) throws Exception {
+
+                config.handle(context, new JavaTemplateResult(config, clz, javaClass));
+            }
+        };
     }
 }

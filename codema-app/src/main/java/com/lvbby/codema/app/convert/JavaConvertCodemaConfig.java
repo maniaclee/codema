@@ -3,14 +3,16 @@ package com.lvbby.codema.app.convert;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.baisc.JavaTemplateResource;
 
 /**
  * Created by lipeng on 16/12/27.
  */
-@ConfigBind(JavaConvertCodemaMachine.class)
+@JavaTemplateResource($Convert_.class)
 public class JavaConvertCodemaConfig extends JavaBasicCodemaConfig {
     @NotBlank
     private String convertToClassName;
+
 
     public String getConvertToClassName() {
         return convertToClassName;

@@ -1,5 +1,7 @@
 package com.lvbby.codema.core.config;
 
+import com.lvbby.codema.core.CodemaMachine;
+
 import java.lang.annotation.*;
 
 /**
@@ -10,5 +12,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ConfigBind {
-    Class<?> value();
+    Class<? extends CodemaMachine> value();
 }

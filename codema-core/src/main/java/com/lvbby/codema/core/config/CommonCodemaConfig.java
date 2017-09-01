@@ -2,6 +2,7 @@ package com.lvbby.codema.core.config;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.Result;
@@ -104,6 +105,15 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
 
     public void handle(CodemaContext codemaContext, Result result) throws Exception {
         handle(ResultContext.of(codemaContext, this, result));
+    }
+
+    public CodemaMachine loadCodemaMachine() {
+        ConfigBind annotation = getClass().getAnnotation(ConfigBind.class);
+        if (annotation != null && annotation.value() != null
+            && CodemaMachine.class.isAssignableFrom(annotation.value())) {
+            return ReflectionUtils.instance(annotation.value());
+        }
+        return null;
     }
 
     public String getAuthor() {

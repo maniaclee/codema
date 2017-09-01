@@ -1,7 +1,5 @@
 package com.lvbby.codema.core;
 
-import com.lvbby.codema.core.bean.CodemaBeanFactory;
-import com.lvbby.codema.core.bean.DefaultCodemaBeanFactory;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.config.NotBlank;
@@ -10,9 +8,6 @@ import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -47,24 +42,10 @@ public class Codema {
     }
 
     public <T extends CommonCodemaConfig> Codema bind(T config) {
-        Class codemaMachineClass = findCodemaMachineClass(config.getClass());
-        CodemaMachine instance = (CodemaMachine) ReflectionUtils.instance(codemaMachineClass);
+        CodemaMachine instance = config.loadCodemaMachine();
+        Validate.notNull(instance, "no codema machine found for config %s", config.getClass().getSimpleName());
         codemaContext.getRunMap().put(instance, config);
         return this;
-    }
-
-    private Class<?> findCodemaMachineClass(Class<? extends CommonCodemaConfig> configClz) {
-        ConfigBind annotation = configClz.getAnnotation(ConfigBind.class);
-        if (annotation == null || annotation.value() == null) {
-            throw new RuntimeException(String.format("no ConfigBind found for config %s",
-                    configClz.getName()));
-        }
-        Class<?> value = annotation.value();
-        if (!CodemaMachine.class.isAssignableFrom(value)) {
-            throw new RuntimeException(
-                    String.format("config must bind a %s", CodemaMachine.class.getName()));
-        }
-        return value;
     }
 
     public Codema withSource(Object object) {

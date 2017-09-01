@@ -71,6 +71,7 @@ public class CodemaMachineAppTest extends BaseTest {
         JavaConvertCodemaConfig convert = java.copy(JavaConvertCodemaConfig.class);
         convert.addSubDestPackage("util");
         convert.setConvertToClassName("BuildUtils");
+        convert.setDestClassName("BuildUtils");
 
         JavaRepositoryCodemaConfig repo = java.copy(JavaRepositoryCodemaConfig.class);
         repo.addSubDestPackage("repo");
