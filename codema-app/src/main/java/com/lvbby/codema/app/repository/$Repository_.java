@@ -3,6 +3,7 @@ package com.lvbby.codema.app.repository;
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Null_;
 import com.lvbby.codema.java.template.$TemplateClass_;
+import com.lvbby.codema.java.template.annotaion.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,8 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
  */
 @Component
 public class $Repository_ {
-
+    @Sentence("var TemplateClass = srcClassName;")
+    @Sentence("var templateClass = srcClassNameUncapitalized;")
     @Autowired
     private $TemplateClass_ $templateClass_;
 

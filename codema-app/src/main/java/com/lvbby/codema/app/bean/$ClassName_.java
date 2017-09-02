@@ -2,12 +2,14 @@ package com.lvbby.codema.app.bean;
 
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.annotaion.Foreach;
+import com.lvbby.codema.java.template.annotaion.Sentence;
 
 import java.io.Serializable;
 
 /**
  * Created by lipeng on 2016/12/24.
  */
+@Sentence("var ClassName  = destClassName;")
 public class $ClassName_ implements Serializable {
 
 

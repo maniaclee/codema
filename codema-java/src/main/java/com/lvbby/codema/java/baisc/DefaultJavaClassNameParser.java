@@ -9,7 +9,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 /**
  *
  * @author dushang.lp
- * @version $Id: FixJavaClassNameParser.java, v 0.1 2017-08-27 обнГ5:51 dushang.lp Exp $
+ * @version $Id: FixJavaClassNameParser.java, v 0.1 2017-08-27 5:51 dushang.lp Exp $
  */
 public class DefaultJavaClassNameParser implements JavaClassNameParser<JavaClass> {
 

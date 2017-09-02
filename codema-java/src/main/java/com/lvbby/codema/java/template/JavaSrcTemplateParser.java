@@ -2,17 +2,12 @@ package com.lvbby.codema.java.template;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.comments.LineComment;
-import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
-import com.lvbby.codema.java.entity.JavaAnnotation;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -20,14 +15,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 17/1/5.
@@ -38,11 +28,15 @@ public class JavaSrcTemplateParser {
 
     public Map getArgs4te(JavaClass src, JavaBasicCodemaConfig config) {
         HashMap<Object, Object> map = Maps.newHashMap();
+        map.put("destClassName", config.getDestClassName());
         if (src != null) {
             map.put("src", src);
             map.put("from", src.getFrom());
-            map.put("TemplateClass", src.getName());
-            map.put("templateClass", JavaLexer.camel(src.getName()));
+            map.put("srcClassName", src.getName());
+            map.put("srcClassNameUncapitalized", JavaLexer.camel(src.getName()));
+            if (StringUtils.isBlank(config.getDestClassName()) && config.getJavaClassNameParser() != null) {
+                map.put("destClassName", config.getJavaClassNameParser().getClassName(src));
+            }
         }
         map.put("config", config);
         map.put(_getInnerTemplateClassVar($Null_.class), "");

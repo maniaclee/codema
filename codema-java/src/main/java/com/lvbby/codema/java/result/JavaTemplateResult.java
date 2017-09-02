@@ -6,7 +6,6 @@ import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.resource.JavaClassResource;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 import com.lvbby.codema.java.template.TemplateContext;
 import com.lvbby.codema.java.tool.AutoImport;
@@ -15,7 +14,6 @@ import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.templateEngine.CodemaJavaSourcePrinter;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by lipeng on 17/1/6.
@@ -83,11 +81,5 @@ public class JavaTemplateResult extends TemplateEngineResult {
     public JavaTemplateResult bind(String key, Object value) {
         return (JavaTemplateResult) super.bind(key, value);
     }
-
-    public JavaTemplateResult addImport(JavaClass importClass) {
-        compilationUnit.addImport(importClass.classFullName());
-        return this;
-    }
-
 
 }

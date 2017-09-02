@@ -5,6 +5,7 @@ import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$TemplateClass_;
 import com.lvbby.codema.java.template.$TemplateUtils_;
 import com.lvbby.codema.java.template.annotaion.Foreach;
+import com.lvbby.codema.java.template.annotaion.Sentence;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
 // <%}%>
 public class $src__name_Test {
 
+    @Sentence("var TemplateClass = srcClassName;")
+    @Sentence("var templateClass = srcClassNameUncapitalized;")
     @Autowired
     private $TemplateClass_ $templateClass_;
 

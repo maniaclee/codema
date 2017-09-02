@@ -3,6 +3,7 @@ package com.lvbby.codema.app.delegate;
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Null_;
 import com.lvbby.codema.java.template.$TemplateClass_;
+import com.lvbby.codema.java.template.annotaion.Sentence;
 
 import static com.lvbby.codema.java.template.$Symbols_.$class_;
 
@@ -10,7 +11,8 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
  * Created by lipeng on 2016/12/24.
  */
 public class $Delegate_ {
-
+    @Sentence("var TemplateClass = srcClassName;")
+    @Sentence("var templateClass = srcClassNameUncapitalized;")
     private $TemplateClass_ $templateClass_;
 
     // <%

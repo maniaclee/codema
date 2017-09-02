@@ -14,6 +14,7 @@ import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.source.SourceLoader;
+import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
@@ -97,6 +98,23 @@ public class CodemaMachineTest extends BaseTest {
         config.setDestRootDir("~/temp");
         config.setResultHandlers(Lists.newArrayList(new PrintResultHandler(),new FileWriterResultHandler()));
         exec(config);
+    }
+
+    @Test
+    public void quickStart() throws Exception {
+        //配置
+        JavaBeanCodemaConfig config = new JavaBeanCodemaConfig();
+        config.setAuthor("lee");
+        config.setResultHandlers(Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
+        config.setDestPackage("com.lvbby");
+        config.setDestClassName("DestBean");
+
+        //以JavaMockTestCodemaConfig.class为模板
+        JavaClassSourceParser sourceLoader = JavaClassSourceParser.fromClass(JavaMockTestCodemaConfig.class);
+
+        //执行
+        Codema.exec(config, sourceLoader);
+
     }
 
 

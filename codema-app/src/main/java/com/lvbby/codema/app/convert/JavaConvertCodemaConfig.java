@@ -1,6 +1,5 @@
 package com.lvbby.codema.app.convert;
 
-import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.baisc.JavaTemplateResource;

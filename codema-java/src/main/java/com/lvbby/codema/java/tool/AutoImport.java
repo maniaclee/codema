@@ -72,7 +72,6 @@ public class AutoImport extends VoidVisitorAdapter {
     public void visit(ClassOrInterfaceType n, Object arg) {
         String typeName = n.toString();
         addImport(typeName, globalCandidates, candidates);
-        System.err.println(n);
     }
 
     private boolean addImport(String s, Map<String, String>... candidates) {

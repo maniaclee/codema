@@ -27,8 +27,7 @@ public class JavaRepositoryCodemaMachine extends AbstractJavaCodemaMachine<JavaR
         JavaTemplateResult result = new JavaTemplateResult(config, $Repository_.class, javaClass)
                 .bind("methods", collect)
                 .bind("buildUtilClass", buildUtil)
-                .bind("Repository", config.evalDestClassName(javaClass, javaClass.getName() + "Repository"))
-                .addImport(buildUtil);
+                .bind("Repository", config.evalDestClassName(javaClass, javaClass.getName() + "Repository"));
         config.handle(codemaContext, result);
     }
 
