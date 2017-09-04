@@ -28,7 +28,7 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
     public void codeEach(CodemaContext codemaContext, JavaMybatisCodemaConfig config, JavaClass cu) throws Exception {
         SqlTable sqlTable = getSqlTable(cu, config.getIdQuery());
         validate(sqlTable);
-        TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $src__name_Dao.class, cu)
+        TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $Dao_.class, cu)
                 .bind("table", sqlTable);
         config.handle(codemaContext, daoTemplateResult);
 

@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class $ClassName_ implements Serializable {
 
 
-    @Foreach(value = "f in src.fields", body = {
+    @Foreach(value = "f in from.fields", body = {
             "var Class1 = f.type",
             "var class1 = f.name"
 
@@ -21,7 +21,7 @@ public class $ClassName_ implements Serializable {
     private $Class1_ $class1_;
 
     // <%
-    // for( f in src.fields){
+    // for( f in from.fields){
     // var Class1 = f.type;
     // var class1 = f.name;
     // var capital = lee.capital(f.name);

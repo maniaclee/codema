@@ -38,7 +38,7 @@ java:
 
   bean:
     dest-package:  'com.lvbby.garfield.api.dto'
-    dest-class-name: 'script://function:suffix/DTO'
+    dest-class-name: 'script://function:fromSuffix/DTO'
     dest-src-root: *apiSrcDir
     list:
       - {dest-package: &apiDoPackage 'com.lvbby.garfield.service.dal.entity',dest-class-name: 'script://function:suffix/DO' ,dest-src-root: *serviceSrcDir}

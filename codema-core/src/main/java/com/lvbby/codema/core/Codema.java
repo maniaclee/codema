@@ -65,10 +65,11 @@ public class Codema {
             checkConfig();
             /** 执行 */
             for (CodemaMachine codemaMachine : codemaContext.getRunMap().keySet()) {
-                CommonCodemaConfig config = codemaContext.getRunMap().get(codemaMachine);
-                //初始化config
-                config.init();
-                codemaMachine.code(codemaContext, config);
+                for (CommonCodemaConfig config : codemaContext.getRunMap().get(codemaMachine)) {
+                    //初始化config
+                    config.init();
+                    codemaMachine.code(codemaContext, config);
+                }
             }
         } finally {
             CodemaContextHolder.clear();

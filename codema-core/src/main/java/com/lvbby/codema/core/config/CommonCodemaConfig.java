@@ -20,7 +20,6 @@ import java.util.List;
 /**
  * Created by lipeng on 2016/12/22.
  */
-@ConfigKey("common")
 public class CommonCodemaConfig implements Serializable, ResultHandler {
     static Logger logger = LoggerFactory.getLogger(CommonCodemaConfig.class);
     private String author = System.getProperty("user.name");
@@ -71,7 +70,6 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
      * @param message
      * @return
      */
-
     protected String parseFileWithParent(String parent, String sub, String message, boolean parentMustExist) {
         if (StringUtils.isBlank(parent)) {
             if (StringUtils.isNotBlank(sub)) {

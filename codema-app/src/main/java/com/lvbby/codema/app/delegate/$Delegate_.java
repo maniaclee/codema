@@ -10,6 +10,7 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
 /**
  * Created by lipeng on 2016/12/24.
  */
+@Sentence("var Delegate = @config.parseDestClassName(from)+'Delegate';")
 public class $Delegate_ {
     @Sentence("var TemplateClass = srcClassName;")
     @Sentence("var templateClass = srcClassNameUncapitalized;")

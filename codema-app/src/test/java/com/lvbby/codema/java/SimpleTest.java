@@ -12,9 +12,14 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.PrimitiveType;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.core.Codema;
+import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -28,7 +33,9 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by lipeng on 2016/12/24.
@@ -232,5 +239,30 @@ public class SimpleTest {
     public void commentAtEnd() throws Exception {
         VariableDeclarator variableDeclarator = new VariableDeclarator(PrimitiveType.booleanType(), "a");
         System.out.println(variableDeclarator);
+    }
+
+    private List<String> split(String s ){
+        return Lists.newArrayList(s.split("[<>,]+"));
+    }
+    @Test public void genericType() throws Exception {
+        System.out.println(split("List<Long>"));
+        System.out.println(split("List"));
+        System.out.println(split("Map<String,String>"));
+        System.out.println(split("Map<String,Map<Long,Object>>"));
+    }
+
+    @Test public void multimap() throws Exception {
+//          LinkedHashMap<String, String> runMap            = new LinkedHashMap<>();
+          Multimap<String, String> runMap            = LinkedHashMultimap.create();
+          runMap.put("ssss" , "xxxx");
+          runMap.put("aaaa","xxxx");
+          runMap.put("XXXX","xxxx");
+          runMap.put("111","xxxx");
+          runMap.put("zzzzz","xxxx");
+        for (String s : runMap.keySet()) {
+            System.out.println(s);
+        }
+
+
     }
 }

@@ -2,22 +2,22 @@ package com.lvbby.codema.app.convert;
 
 import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import com.lvbby.codema.java.baisc.JavaTemplateResource;
+import com.lvbby.codema.java.entity.JavaClass;
 
 /**
  * Created by lipeng on 16/12/27.
  */
 @JavaTemplateResource($Convert_.class)
 public class JavaConvertCodemaConfig extends JavaBasicCodemaConfig {
-    @NotBlank
-    private String convertToClassName;
+    private JavaClassNameParser convertToClassNameParser;
 
-
-    public String getConvertToClassName() {
-        return convertToClassName;
+    public JavaClassNameParser getConvertToClassNameParser() {
+        return convertToClassNameParser;
     }
 
-    public void setConvertToClassName(String convertToClassName) {
-        this.convertToClassName = convertToClassName;
+    public void setConvertToClassNameParser(JavaClassNameParser convertToClassNameParser) {
+        this.convertToClassNameParser = convertToClassNameParser;
     }
 }

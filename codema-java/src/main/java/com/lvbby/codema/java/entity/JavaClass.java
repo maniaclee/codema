@@ -6,6 +6,7 @@ import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,21 @@ public class JavaClass {
     }
 
     public JavaClass() {
+    }
+
+    /***
+     * 根据名称查找方法，选任意一个，如果有重载的任选一个
+     * @param method
+     * @return
+     */
+    public JavaMethod findMethodByName(String method){
+        List<JavaMethod> collect = getMethods().stream().filter(method1 -> method1.getName().equals(method))
+                .collect(Collectors.toList());
+        if(collect.isEmpty()){
+            return null;
+        }
+        Validate.isTrue(collect.size()==1,"multi method found : %s" , method);
+        return collect.get(0);
     }
 
     public String classFullName() {

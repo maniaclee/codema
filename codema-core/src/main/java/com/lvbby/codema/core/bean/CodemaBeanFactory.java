@@ -12,7 +12,7 @@ public interface CodemaBeanFactory {
 
     <T> T getBean(String id);
 
-    <T> List<T> getBeans(Predicate<CodemaBean> predicate, Class<T> clz);
+    <T> List<T> getBeans( Class<T> clz,Predicate<CodemaBean> predicate);
 
     <T> T getBean(Class<T> type);
 

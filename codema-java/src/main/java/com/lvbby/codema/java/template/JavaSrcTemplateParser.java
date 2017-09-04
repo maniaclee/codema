@@ -30,12 +30,13 @@ public class JavaSrcTemplateParser {
         HashMap<Object, Object> map = Maps.newHashMap();
         map.put("destClassName", config.getDestClassName());
         if (src != null) {
-            map.put("src", src);
-            map.put("from", src.getFrom());
+            map.put("source", CodemaContextHolder.getCodemaContext().getSource());
+            map.put("from", src);
             map.put("srcClassName", src.getName());
             map.put("srcClassNameUncapitalized", JavaLexer.camel(src.getName()));
             if (StringUtils.isBlank(config.getDestClassName()) && config.getJavaClassNameParser() != null) {
-                map.put("destClassName", config.getJavaClassNameParser().getClassName(src));
+                map.put("destClassName", config.getJavaClassNameParser().getClassName(
+                        (JavaClass) CodemaContextHolder.getCodemaContext().getSource(),src));
             }
         }
         map.put("config", config);
@@ -49,66 +50,16 @@ public class JavaSrcTemplateParser {
         return clz.getSimpleName().replaceAll("[$_]", "");
     }
 
-    public String loadSrcTemplate(Class templateClass) {
-        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(templateClass);
-        filterImport(cu);
-        return prepareTemplate(cu.toString());
-    }
-
-
-    public String loadSrcTemplate(TemplateContext context) {
-        return prepareTemplate(loadSrcTemplateRaw(context).toString());
-    }
 
     public CompilationUnit loadSrcTemplateRaw(TemplateContext context) {
         JavaBasicCodemaConfig javaBasicCodemaConfig = context.getJavaBasicCodemaConfig();
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(context.getTemplateClass());
         filterImport(cu);
-        //        addImport(cu, context);
         cu.setPackageDeclaration(StringUtils.isNotBlank(context.getPack()) ? context.getPack() : javaBasicCodemaConfig.getDestPackage());
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
-            filterAnnotation(classOrInterfaceDeclaration);
             classOrInterfaceDeclaration.setJavadocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
-            //            if (context.getSource() != null) {
-            //                //parent class
-            //                if (StringUtils.isNotBlank(javaBasicCodemaConfig.getParentClass()))
-            //                    classOrInterfaceDeclaration.addExtends(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(javaBasicCodemaConfig.getParentClass(), context.getSource().getName())));
-            //                //interfaces
-            //                if (CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())) {
-            //                    javaBasicCodemaConfig.getImplementInterfaces().forEach(e -> classOrInterfaceDeclaration.addImplements(importAndReturnSimpleClassName(cu, javaBasicCodemaConfig.eval(e, context.getSource().getName()))));
-            //                }
-            //            }
-            if (CollectionUtils.isNotEmpty(javaBasicCodemaConfig.getImplementInterfaces())) {
-                for (String it : javaBasicCodemaConfig.getImplementInterfaces()) {
-                    classOrInterfaceDeclaration.addImplements(ReflectionUtils.getSimpleClassName(javaBasicCodemaConfig.eval(it, context.getSource().getName())));
-                }
-            }
         });
         return cu;
-    }
-
-    private void filterAnnotation(ClassOrInterfaceDeclaration clz) {
-        //        Lists.newArrayList(clz.getAnnotations()).stream().filter(an -> an.getNameAsString().startsWith("$"))
-        //                .forEach(annotationExpr -> clz.getAnnotations().remove(annotationExpr));
-    }
-
-    private void addImport(CompilationUnit cu, TemplateContext templateContext) {
-        JavaClass javaClassSrc = templateContext.getSource();
-        //检查javaClass是否在容器里
-        if (javaClassSrc != null) {
-            if (CodemaContextHolder.getCodemaContext().getCodemaBeanFactory().getBean(javaClassSrc.classFullName()) != null)
-                cu.addImport(javaClassSrc.classFullName());
-            if (CollectionUtils.isNotEmpty(javaClassSrc.getImports()))
-                javaClassSrc.getImports().forEach(i -> cu.addImport(i));
-        }
-        /** 常用的引用 */
-        cu.addImport(List.class);
-    }
-
-    private String importAndReturnSimpleClassName(CompilationUnit cu, String className) {
-        if (className.contains("."))
-            cu.addImport(className);
-        return ReflectionUtils.getSimpleClassName(className);
     }
 
     /***

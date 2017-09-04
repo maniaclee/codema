@@ -1,7 +1,6 @@
 package com.lvbby.codema.core.handler;
 
 import com.lvbby.codema.core.ResultContext;
-import com.lvbby.codema.core.result.AbstractResultHandler;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.PrintableResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;

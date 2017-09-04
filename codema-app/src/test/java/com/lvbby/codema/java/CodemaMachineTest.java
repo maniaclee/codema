@@ -14,6 +14,7 @@ import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.source.SourceLoader;
+import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -79,7 +80,7 @@ public class CodemaMachineTest extends BaseTest {
     @Test
     public void convert() throws Exception {
         JavaConvertCodemaConfig config = _newConfig(JavaConvertCodemaConfig.class);
-        config.setConvertToClassName("BuildUtils");
+        config.setConvertToClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
         exec(config);
     }
 

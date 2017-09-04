@@ -1,8 +1,10 @@
 package com.lvbby.codema.java.tool;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author dushang.lp
@@ -71,7 +74,27 @@ public class AutoImport extends VoidVisitorAdapter {
     @Override
     public void visit(ClassOrInterfaceType n, Object arg) {
         String typeName = n.toString();
-        addImport(typeName, globalCandidates, candidates);
+        //泛型，如List<String> , Map<String,Map<Long,Object>>
+        if(typeName.contains("<")){
+            for (String s : typeName.split("[<>,]+")) {
+                addImport(s);
+            }
+            return;
+        }
+        addImport(typeName);
+    }
+
+    @Override public void visit(NameExpr n, Object arg) {
+        super.visit(n, arg);
+        //静态方法中里静态类引用，如BuildUtils.build(s),BuildUtils需要解析
+        if (StringUtils.isAllUpperCase(n.toString().substring(0,1))) {
+            addImport(n.toString());
+        }
+    }
+
+
+    private boolean addImport(String s) {
+        return addImport(s, globalCandidates, candidates);
     }
 
     private boolean addImport(String s, Map<String, String>... candidates) {
@@ -102,7 +125,7 @@ public class AutoImport extends VoidVisitorAdapter {
 
     public static void main(String[] args) throws Exception {
         CompilationUnit src = JavaLexer.read(new File(
-            "/Users/dushang.lp/workspace/test-codema/src/main/java/com/lvbby/test/codema/dao/SqlColumnDao.java"));
+            "/Users/dushang.lp/workspace/test-codema/src/main/java/com/lvbby/test/codema/repo/SqlColumnDaoRepository.java"));
         AutoImport autoImport = new AutoImport(src);
         CompilationUnit parse = autoImport.parse();
         System.out.println("=======");

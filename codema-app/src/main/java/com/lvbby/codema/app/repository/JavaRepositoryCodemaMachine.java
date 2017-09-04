@@ -20,14 +20,13 @@ import java.util.stream.Collectors;
 public class JavaRepositoryCodemaMachine extends AbstractJavaCodemaMachine<JavaRepositoryCodemaConfig> {
 
     public void codeEach(CodemaContext codemaContext, JavaRepositoryCodemaConfig config, JavaClass javaClass) throws Exception {
-        JavaClass buildUtil = codemaContext.getCodemaBeanFactory().getBean(config.getConvertUtilsClass());
+        JavaClass buildUtil = codemaContext.findBeanBlur(JavaClass.class,config.getConvertUtilsClass());
         Validate.notNull(buildUtil, "buildClass not found");
 
         List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> new RepositoryMethod(javaMethod, buildUtil)).collect(Collectors.toList());
         JavaTemplateResult result = new JavaTemplateResult(config, $Repository_.class, javaClass)
                 .bind("methods", collect)
-                .bind("buildUtilClass", buildUtil)
-                .bind("Repository", config.evalDestClassName(javaClass, javaClass.getName() + "Repository"));
+                .bind("buildUtilClass", buildUtil);
         config.handle(codemaContext, result);
     }
 

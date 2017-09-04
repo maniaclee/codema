@@ -3,7 +3,6 @@ package com.lvbby.codema.app.mvn;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.config.RecursiveConfigField;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -21,7 +20,6 @@ public class MavenConfig extends CommonCodemaConfig {
     private String groupId;
     private String version = "1.0";
     private String javaVersion = "1.8";
-    @RecursiveConfigField
     private List<MavenConfig> modules;
     /**
      * 目标src路径

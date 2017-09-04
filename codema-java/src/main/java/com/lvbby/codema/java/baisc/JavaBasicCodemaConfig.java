@@ -1,15 +1,12 @@
 package com.lvbby.codema.java.baisc;
 
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
-import com.lvbby.codema.core.config.ConfigKey;
-import com.lvbby.codema.core.engine.ScriptEngineFactory;
-import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
@@ -18,7 +15,6 @@ import java.util.List;
 /**
  * Created by lipeng on 2016/12/22.
  */
-@ConfigKey("java.basic")
 public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Serializable {
     /**
      * 目标package
@@ -34,7 +30,7 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
     /***
      * 获取目标bean的名称
      */
-    private JavaClassNameParser javaClassNameParser = new DefaultJavaClassNameParser();
+    private JavaClassNameParser javaClassNameParser = JavaClassNameParserFactory.defaultInstance();
     /**
      * 选取类的package
      */
@@ -78,6 +74,19 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
             }
         }
         return codemaMachine;
+    }
+
+    /**
+     * 解析目标类的名称
+     * @param javaClass
+     * @return
+     */
+    public String parseDestClassName(JavaClass javaClass){
+        if(StringUtils.isNotBlank(destClassName)){
+            return destClassName;
+        }
+        return javaClassNameParser.getClassName(
+                (JavaClass) CodemaContextHolder.getCodemaContext().getSource(),javaClass);
     }
 
     public boolean isToBeInterface() {
@@ -152,20 +161,6 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         this.javaClassNameParser = javaClassNameParser;
     }
 
-    public String evalDestClassName(JavaClass javaClass, String defaultValue) {
-        return eval(getDestClassName(), javaClass.getName(), defaultValue);
-    }
-
-    public String eval(String src, String param) {
-        return eval(src, param, null);
-    }
-
-    public String eval(String src, String param, String defaultValue) {
-        String s = ObjectUtils.firstNonNull(ScriptEngineFactory.instance.eval(src, param), defaultValue);
-        if (s == null)
-            throw new CodemaRuntimeException(String.format("eval %s return null !", src));
-        return s;
-    }
 
     /***
      * 将Java template class 转为codemaMachine

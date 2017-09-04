@@ -56,8 +56,9 @@ public class JavaLexer {
         return JavaParser.parseInterfaceBodyDeclaration(code);
     }
 
+
     /***
-     * ��ѯһ��������ȫ��������imports�������
+     * 获取一个类的全类名
      * @param compilationUnit
      * @param s
      * @return

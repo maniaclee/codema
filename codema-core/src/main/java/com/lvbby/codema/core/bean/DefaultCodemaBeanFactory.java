@@ -40,7 +40,7 @@ public class DefaultCodemaBeanFactory implements CodemaBeanFactory {
     }
 
     @Override
-    public <T> List<T> getBeans(Predicate<CodemaBean> predicate , Class<T> clz){
+    public <T> List<T> getBeans(  Class<T> clz,Predicate<CodemaBean> predicate){
         return resources.stream().filter(predicate).filter(codemaBean -> clz.isAssignableFrom(codemaBean.getResource().getClass())).map(codemaBean -> (T)codemaBean.getResource()).collect(Collectors.toList());
     }
 

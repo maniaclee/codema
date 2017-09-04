@@ -12,6 +12,7 @@ import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -23,15 +24,11 @@ import java.io.File;
 /**
  * Created by dushang.lp on 2017/6/26.
  */
-public class CodemaMachineAppTest extends BaseTest {
+public class MybatisTest extends BaseTest {
 
     @Before
     public void init() {
         JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(new File(System.getProperty("user.home"), "workspace")));
-    }
-
-    private void exec(CommonCodemaConfig config) throws Exception {
-        Codema.exec(config);
     }
 
     @Test
@@ -52,36 +49,48 @@ public class CodemaMachineAppTest extends BaseTest {
         mavenConfig.initMaven();
 
         JavaBasicCodemaConfig java = config.copy(JavaBasicCodemaConfig.class);
-        java.setFromPackage("com.lvbby");
         java.setDestPackage("com.lvbby.test.codema");
         java.setDestRootDir(mavenConfig.getDestSrcRoot());
         java.setDestResourceRoot(mavenConfig.getDestResourceRoot());
         java.setDestSrcRoot(mavenConfig.getDestSrcRoot());
 
+        //entity
+        JavaBeanCodemaConfig beanCodemaConfig = java.copy(JavaBeanCodemaConfig.class);
+        beanCodemaConfig.addSubDestPackage("entity");
+        beanCodemaConfig.setJavaClassNameParser(JavaClassNameParserFactory.fromSuffix("Entity"));
 
+        //dto
+        JavaBeanCodemaConfig dtoBeanCodemaConfig = java.copy(JavaBeanCodemaConfig.class);
+        dtoBeanCodemaConfig.addSubDestPackage("dto");
+        dtoBeanCodemaConfig.setJavaClassNameParser(JavaClassNameParserFactory.fromSuffix("DTO"));
+
+        //bean ---> DTO
+        JavaConvertCodemaConfig convert = java.copy(JavaConvertCodemaConfig.class);
+        convert.addSubDestPackage("util");
+        convert.setDestClassName("BuildUtils");
+        convert.setFromPackage(beanCodemaConfig.getDestPackage());
+        convert.setConvertToClassNameParser(JavaClassNameParserFactory.sourceSuffix("DTO"));//convert to DTO
+
+        //dao & xml mapper & dal config & mybatis xml config
         JavaMybatisCodemaConfig mybatis = java.copy(JavaMybatisCodemaConfig.class);
         mybatis.setIdQuery(javaClass -> javaClass.getFields().stream().filter(javaField -> javaField.getName().equals("nameCamel")).findAny().orElse(null));
         mybatis.setMapperDir("mapper");
+        mybatis.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Dao"));
+        mybatis.setFromPackage(beanCodemaConfig.getDestPackage());
         mybatis.setConfigPackage(mybatis.relativePackage("config"));
         mybatis.addSubDestPackage("dao");
 
-        JavaBeanCodemaConfig beanCodemaConfig = java.copy(JavaBeanCodemaConfig.class);
-        beanCodemaConfig.addSubDestPackage("entity");
-
-        JavaConvertCodemaConfig convert = java.copy(JavaConvertCodemaConfig.class);
-        convert.addSubDestPackage("util");
-        convert.setConvertToClassName("BuildUtils");
-        convert.setDestClassName("BuildUtils");
-
         JavaRepositoryCodemaConfig repo = java.copy(JavaRepositoryCodemaConfig.class);
         repo.addSubDestPackage("repo");
-        repo.setConvertUtilsClass(convert.getDestPackage()+"."+convert.getConvertToClassName());
+        repo.setFromPackage(mybatis.getDestPackage());
+        repo.setConvertUtilsClass(convert.getDestClassName());
 
 
         new Codema()
                 .source(JavaClassSourceParser.fromClass(SqlColumn.class))
                 .bind(mavenConfig)
                 .bind(beanCodemaConfig)
+                .bind(dtoBeanCodemaConfig)
                 .bind(convert)
                 .bind(mybatis)
                 .bind(repo)
