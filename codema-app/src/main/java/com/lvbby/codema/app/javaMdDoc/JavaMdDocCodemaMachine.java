@@ -11,9 +11,9 @@ import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaMdTemplateResult;
+import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Collectors;
 
@@ -26,41 +26,39 @@ public class JavaMdDocCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocC
                          JavaClass cu) throws Exception {
         JavaMethod method = cu.findMethodByName(config.getMethod());
         config.handle(codemaContext,
-            JavaMdTemplateResult.ofResource(config, loadResourceAsString("mdJavaDoc.md"), cu)
-                .bind("method",genClassWithMethod(cu.getSrc(),method.getSrc()))
-                .bind("result", printParam(cu.getSrc(),method.getReturnType()))
-                .bind("parameters", method.getArgs().stream().map(JavaArg::getType)
-                        .filter(javaType -> !javaType.bePrimitive())
-                        .map(javaType -> printParam(cu.getSrc(),javaType))
-                        .filter(s -> s!=null)
-                        .collect(
-                                Collectors.toList()))
+                JavaMdTemplateResult.ofResource(config, loadResourceAsString("mdJavaDoc.md"), cu)
+                        .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
+                        .bind("result", printParam(cu.getSrc(), method.getReturnType()))
+                        .bind("parameters", method.getArgs().stream().map(JavaArg::getType)
+                                .filter(javaType -> !javaType.bePrimitive())
+                                .map(javaType -> printParam(cu.getSrc(), javaType))
+                                .filter(s -> s != null)
+                                .collect(
+                                        Collectors.toList()))
         );
 
     }
 
-    private String genClassWithMethod(CompilationUnit compilationUnit, MethodDeclaration methodDeclaration){
+    private String genClassWithMethod(CompilationUnit compilationUnit, MethodDeclaration methodDeclaration) {
         String declarationAsString = methodDeclaration.getDeclarationAsString();
         return String.format("%s\npublic class %s{\n\t%s;\n}",
                 compilationUnit.getPackageDeclaration().get().toString(),
                 JavaLexer.getClass(compilationUnit).get().getNameAsString(), declarationAsString);
     }
 
-    private String printParam(CompilationUnit compilationUnit, JavaType javaType)  {
-        if(javaType==null || javaType.beVoid())
+    private JavaClass printParam(CompilationUnit compilationUnit, JavaType javaType) {
+        if (javaType == null || javaType.beVoid())
             return null;
         String className = javaType.getName();
-        if(className.contains("."))
-            return className;
         String fullClassNameForSymbol = JavaLexer
                 .getFullClassNameForSymbol(compilationUnit, className);
-        if(fullClassNameForSymbol == null){
+        if (fullClassNameForSymbol == null) {
             return null;
         }
         return printParam(JavaSrcLoader.getJavaSrcCompilationUnit(fullClassNameForSymbol));
     }
 
-    private String printParam(CompilationUnit compilationUnit) {
+    private JavaClass printParam(CompilationUnit compilationUnit) {
         ClassOrInterfaceDeclaration paramClz = JavaLexer.getClass(compilationUnit).get();
         for (MethodDeclaration methodDeclaration : paramClz.getMethods()) {
             paramClz.remove(methodDeclaration);
@@ -72,6 +70,10 @@ public class JavaMdDocCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocC
 
         paramClz.getFields().stream().filter(fieldDeclaration -> fieldDeclaration.isStatic())
                 .forEach(fieldDeclaration -> paramClz.remove(fieldDeclaration));
-        return compilationUnit.toString();
+        try {
+            return JavaClassSourceParser.fromClassSrc(compilationUnit).loadSource();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

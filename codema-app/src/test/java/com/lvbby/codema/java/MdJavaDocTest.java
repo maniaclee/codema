@@ -3,6 +3,7 @@ package com.lvbby.codema.java;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.javaMdDoc.JavaMdDocCodemaConfig;
 import com.lvbby.codema.core.Codema;
+import com.lvbby.codema.core.handler.ClipBoardResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -30,7 +31,7 @@ public class MdJavaDocTest extends BaseTest {
 
         JavaMdDocCodemaConfig md = new JavaMdDocCodemaConfig();
         md.setAuthor("lee");
-        md.addResultHandler(PrintResultHandler.class);
+        md.addResultHandler(PrintResultHandler.class).addResultHandler(ClipBoardResultHandler.class);
         md.setMethod(method);
 
         new Codema()

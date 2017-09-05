@@ -1,18 +1,20 @@
-## 接口
-### 接口定义
+## 鎺ュ彛
+### 鎺ュ彛瀹氫箟
 `${@from.classFullName()}`
 ```java
 ${method}
 ```
-### 参数
+### 鍙傛暟
 <% for( p in parameters){ %>
+ `${@p.classFullName()}`
 ```java
-${p}
+${p.src}
 ```
 <%}%>
 <%if(result !=null){%>
-### 结果
+### 缁撴灉
+ `${@result.classFullName()}`
 ```java
-${result}
+${result.src}
 ```
 <%}%>

@@ -63,12 +63,23 @@ public class JavaLexer {
      * @param s
      * @return
      */
-    public static String getFullClassNameForSymbol(CompilationUnit compilationUnit , String s){
+    public static String getFullClassNameForSymbol(CompilationUnit compilationUnit, String s) {
+        if(StringUtils.isBlank(s))
+            return null;
+        //全路径名，直接返回
+        if (s.contains("."))
+            return s;
+        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = JavaLexer.getClass(compilationUnit).get();
+        //类型就是自己
+        if (StringUtils.equals(s, classOrInterfaceDeclaration.getNameAsString())) {
+            return compilationUnit.getPackageDeclaration().map(packageDeclaration -> packageDeclaration.getNameAsString()).map(s1 -> s1 + "." + s).orElse(s);
+        }
         return compilationUnit.getImports().stream()
                 .map(importDeclaration -> importDeclaration.toString().trim().replaceAll(";", "")
                         .split("\\s+")[1])
                 .filter(importDeclaration -> importDeclaration.endsWith(s)).findAny().orElse(null);
     }
+
     public static List<FieldDeclaration> getFields(TypeDeclaration<?> cu) {
         return cu.getFields().stream().filter(f -> isProperty(f)).collect(Collectors.toList());
     }
@@ -101,10 +112,11 @@ public class JavaLexer {
         }
         return javaAnnotation;
     }
-    private static String trimString(Expression expression){
+
+    private static String trimString(Expression expression) {
         String s = expression.toString();
-        if(s.startsWith("\"") && s.endsWith("\""))
-            s=s.substring(1,s.length()-1);
+        if (s.startsWith("\"") && s.endsWith("\""))
+            s = s.substring(1, s.length() - 1);
         return s;
     }
 
@@ -120,8 +132,9 @@ public class JavaLexer {
     }
 
     public static void addComment(Node node, String s) {
-        addComment(node,true,s);
+        addComment(node, true, s);
     }
+
     public static void addComment(Node node, boolean append, String s) {
         Validate.notNull(node, "node can't be null");
         if (!node.getComment().isPresent())

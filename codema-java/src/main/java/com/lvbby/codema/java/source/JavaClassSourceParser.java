@@ -1,9 +1,9 @@
 package com.lvbby.codema.java.source;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaClassUtils;
-import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 
 /**
@@ -22,14 +22,18 @@ public class JavaClassSourceParser implements SourceLoader<JavaClass> {
     }
 
     /***
-     * ´ÓÏîÄ¿Ä¿Â¼Àï°´ÕÕÈ«ÀàÃû¼ÓÔØ
+     * ä»é¡¹ç›®ç›®å½•é‡ŒæŒ‰ç…§å…¨ç±»ååŠ è½½
      * @param classFullName
      * @return
      * @throws Exception
      */
     public static JavaClassSourceParser fromClassFullName(String classFullName) throws Exception {
+        return fromClassSrc(JavaSrcLoader.getJavaSrcCompilationUnit(classFullName));
+    }
+
+    public static JavaClassSourceParser fromClassSrc(CompilationUnit compilationUnit) throws Exception {
         return new JavaClassSourceParser(
-                JavaClassUtils.convert(JavaSrcLoader.getJavaSrcCompilationUnit(classFullName)));
+                JavaClassUtils.convert(compilationUnit));
     }
 
     @Override

@@ -72,6 +72,11 @@ public class JavaClass {
         return collect.get(0);
     }
 
+    public String javaSrc(){
+        return src.toString();
+    }
+
+
     public String classFullName() {
         return StringUtils.isBlank(pack) ? name : (pack + "." + name);
     }
