@@ -13,7 +13,6 @@ import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaMdTemplateResult;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaLexer;
-import com.lvbby.codema.java.tool.JavaSrcLoader;
 
 import java.util.stream.Collectors;
 
@@ -28,10 +27,10 @@ public class JavaMdDocCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocC
         config.handle(codemaContext,
                 JavaMdTemplateResult.ofResource(config, loadResourceAsString("mdJavaDoc.md"), cu)
                         .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
-                        .bind("result", printParam(cu.getSrc(), method.getReturnType()))
+                        .bind("result", printParam(cu, method.getReturnType()))
                         .bind("parameters", method.getArgs().stream().map(JavaArg::getType)
                                 .filter(javaType -> !javaType.bePrimitive())
-                                .map(javaType -> printParam(cu.getSrc(), javaType))
+                                .map(javaType -> printParam(cu, javaType))
                                 .filter(s -> s != null)
                                 .collect(
                                         Collectors.toList()))
@@ -46,19 +45,17 @@ public class JavaMdDocCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocC
                 JavaLexer.getClass(compilationUnit).get().getNameAsString(), declarationAsString);
     }
 
-    private JavaClass printParam(CompilationUnit compilationUnit, JavaType javaType) {
+    private JavaClass printParam(JavaClass javaClass, JavaType javaType) {
         if (javaType == null || javaType.beVoid())
             return null;
-        String className = javaType.getName();
-        String fullClassNameForSymbol = JavaLexer
-                .getFullClassNameForSymbol(compilationUnit, className);
-        if (fullClassNameForSymbol == null) {
+        JavaClass target = javaClass.parseSymbolAsClass(javaType.getName());
+        if(target==null)
             return null;
-        }
-        return printParam(JavaSrcLoader.getJavaSrcCompilationUnit(fullClassNameForSymbol));
+        return printParam(target.getSrc());
     }
 
-    private JavaClass printParam(CompilationUnit compilationUnit) {
+    private JavaClass printParam(CompilationUnit cu) {
+       CompilationUnit compilationUnit=cu.clone();
         ClassOrInterfaceDeclaration paramClz = JavaLexer.getClass(compilationUnit).get();
         for (MethodDeclaration methodDeclaration : paramClz.getMethods()) {
             paramClz.remove(methodDeclaration);

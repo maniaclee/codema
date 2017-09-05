@@ -1,8 +1,10 @@
 package com.lvbby.codema.java.entity;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +72,38 @@ public class JavaClass {
         }
         Validate.isTrue(collect.size()==1,"multi method found : %s" , method);
         return collect.get(0);
+    }
+
+
+    public String  parseSymbolAsFullClassName(String classSymbol){
+        if(StringUtils.isBlank(classSymbol))
+            return null;
+        //全路径名，直接返回
+        if (classSymbol.contains("."))
+            return classSymbol;
+        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = JavaLexer.getClass(src).get();
+        //类型就是自己
+        if (StringUtils.equals(classSymbol, classOrInterfaceDeclaration.getNameAsString())) {
+            return classFullName();
+        }
+        return src.getImports().stream()
+                .map(importDeclaration -> importDeclaration.toString().trim().replaceAll(";", "")
+                        .split("\\s+")[1])
+                .filter(importDeclaration -> importDeclaration.endsWith(classSymbol)).findAny().orElse(null);
+    }
+
+    public JavaClass parseSymbolAsClass(String classSymbol){
+        String s = parseSymbolAsFullClassName(classSymbol);
+        if(s==null)
+            return null;
+        if(StringUtils.equals(s,classFullName())){
+            return this;
+        }
+        try {
+            return JavaClassSourceParser.fromClassFullName(s).loadSource();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String javaSrc(){
