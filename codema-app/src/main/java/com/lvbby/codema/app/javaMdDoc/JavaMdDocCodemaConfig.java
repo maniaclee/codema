@@ -3,8 +3,6 @@ package com.lvbby.codema.app.javaMdDoc;
 import com.lvbby.codema.core.config.ConfigBind;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 
-import java.util.List;
-
 /**
  * Created by dushang.lp on 2017/8/16.
  */
@@ -12,7 +10,7 @@ import java.util.List;
 public class JavaMdDocCodemaConfig extends JavaBasicCodemaConfig {
     private String method;
     /**
-     * ±êÌâµÄ¼¶±ð£¬Ä¬ÈÏÊÇ2¼¶±êÌâ
+     * æ ‡é¢˜çš„çº§åˆ«ï¼Œé»˜è®¤æ˜¯2çº§æ ‡é¢˜
      */
     private int    titleLevel = 2;
 

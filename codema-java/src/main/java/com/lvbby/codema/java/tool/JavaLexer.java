@@ -57,29 +57,6 @@ public class JavaLexer {
     }
 
 
-    /***
-     * 获取一个类的全类名
-     * @param compilationUnit
-     * @param s
-     * @return
-     */
-    public static String getFullClassNameForSymbol(CompilationUnit compilationUnit, String s) {
-        if(StringUtils.isBlank(s))
-            return null;
-        //全路径名，直接返回
-        if (s.contains("."))
-            return s;
-        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = JavaLexer.getClass(compilationUnit).get();
-        //类型就是自己
-        if (StringUtils.equals(s, classOrInterfaceDeclaration.getNameAsString())) {
-            return compilationUnit.getPackageDeclaration().map(packageDeclaration -> packageDeclaration.getNameAsString()).map(s1 -> s1 + "." + s).orElse(s);
-        }
-        return compilationUnit.getImports().stream()
-                .map(importDeclaration -> importDeclaration.toString().trim().replaceAll(";", "")
-                        .split("\\s+")[1])
-                .filter(importDeclaration -> importDeclaration.endsWith(s)).findAny().orElse(null);
-    }
-
     public static List<FieldDeclaration> getFields(TypeDeclaration<?> cu) {
         return cu.getFields().stream().filter(f -> isProperty(f)).collect(Collectors.toList());
     }
