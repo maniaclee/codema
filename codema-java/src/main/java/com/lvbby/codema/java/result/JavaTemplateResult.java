@@ -2,7 +2,9 @@ package com.lvbby.codema.java.result;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.CodemaContextHolder;
+import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.render.TemplateEngineResult;
+import com.lvbby.codema.core.result.MergeCapableFileResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -10,15 +12,18 @@ import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 import com.lvbby.codema.java.template.TemplateContext;
 import com.lvbby.codema.java.tool.AutoImport;
 import com.lvbby.codema.java.tool.JavaClassUtils;
+import com.lvbby.codema.java.tool.JavaCompilationMerger;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.templateEngine.CodemaJavaSourcePrinter;
+import org.apache.commons.io.IOUtils;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
  * Created by lipeng on 17/1/6.
  */
-public class JavaTemplateResult extends TemplateEngineResult {
+public class JavaTemplateResult extends TemplateEngineResult implements MergeCapableFileResult{
     private TemplateContext templateContext;
     private CompilationUnit compilationUnit;
 
@@ -82,4 +87,8 @@ public class JavaTemplateResult extends TemplateEngineResult {
         return (JavaTemplateResult) super.bind(key, value);
     }
 
+    @Override
+    public String parseMergeResult(InputStream dest, ResultContext resultContext) throws Exception {
+        return new JavaCompilationMerger(IOUtils.toString(dest), JavaLexer.read(getString())).merge().toString();
+    }
 }

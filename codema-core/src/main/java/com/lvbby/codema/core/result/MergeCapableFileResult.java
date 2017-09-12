@@ -13,5 +13,5 @@ public interface MergeCapableFileResult extends FileResult {
     /***
      *获取merge后的result
      */
-    String parseMergeResult(InputStream dest, ResultContext resultContext);
+    String parseMergeResult(InputStream dest, ResultContext resultContext) throws Exception;
 }

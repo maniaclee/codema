@@ -1,19 +1,23 @@
 package com.lvbby.codema.java.result;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
-import com.lvbby.codema.core.result.FileResult;
+import com.lvbby.codema.core.result.MergeCapableFileResult;
 import com.lvbby.codema.core.result.PrintableResult;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
+import com.lvbby.codema.java.tool.JavaCompilationMerger;
 import com.lvbby.codema.java.tool.JavaLexer;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * Created by lipeng on 2017/1/3.
  */
-public class JavaResult implements PrintableResult, FileResult {
+public class JavaResult implements PrintableResult, MergeCapableFileResult {
 
     private CompilationUnit unit;
     private JavaBasicCodemaConfig config;
@@ -50,5 +54,11 @@ public class JavaResult implements PrintableResult, FileResult {
     @Override
     public String getString() {
         return unit.toString();
+    }
+
+
+    @Override
+    public String parseMergeResult(InputStream dest, ResultContext resultContext) throws Exception {
+        return new JavaCompilationMerger(IOUtils.toString(dest), unit).merge().toString();
     }
 }
