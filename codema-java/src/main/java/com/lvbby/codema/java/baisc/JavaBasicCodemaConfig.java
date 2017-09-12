@@ -1,16 +1,15 @@
 package com.lvbby.codema.java.baisc;
 
-import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.CodemaContextHolder;
-import com.lvbby.codema.core.CodemaMachine;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
-import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
-import com.lvbby.codema.java.result.JavaTemplateResult;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.Serializable;
-import java.util.List;
+import com.google.common.collect.*;
+import com.lvbby.codema.core.*;
+import com.lvbby.codema.core.config.*;
+import com.lvbby.codema.java.entity.*;
+import com.lvbby.codema.java.machine.*;
+import com.lvbby.codema.java.result.*;
+import java.io.*;
+import java.util.*;
+import java.util.stream.*;
+import org.apache.commons.lang3.*;
 
 /**
  * Created by lipeng on 2016/12/22.
@@ -36,7 +35,7 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
      */
     private String fromPackage;
     private boolean toBeInterface = false;
-    private List<String> implementInterfaces;
+    private List<JavaClassNameParser>  implementInterfaces = Lists.newLinkedList();
     private String parentClass;
 
     public JavaBasicCodemaConfig addSubDestPackage(String pack) {
@@ -89,6 +88,16 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
                 (JavaClass) CodemaContextHolder.getCodemaContext().getSource(),javaClass);
     }
 
+    public JavaBasicCodemaConfig addImplementInterface(JavaClassNameParser javaClassNameParser){
+        implementInterfaces.add(javaClassNameParser);
+        return this;
+    }
+
+    public String findImplementInterfacesAsString(JavaClass from) {
+        return implementInterfaces.stream().map(javaClassNameParser1 -> javaClassNameParser1.getClassName(
+                (JavaClass) CodemaContextHolder.getCodemaContext().getSource(), from)).collect(Collectors.joining(","));
+    }
+
     public boolean isToBeInterface() {
         return toBeInterface;
     }
@@ -129,11 +138,11 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         this.fromPackage = fromPackage;
     }
 
-    public List<String> getImplementInterfaces() {
+    public List<JavaClassNameParser> getImplementInterfaces() {
         return implementInterfaces;
     }
 
-    public void setImplementInterfaces(List<String> implementInterfaces) {
+    public void setImplementInterfaces(List<JavaClassNameParser> implementInterfaces) {
         this.implementInterfaces = implementInterfaces;
     }
 

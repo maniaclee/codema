@@ -7,12 +7,12 @@ import com.lvbby.codema.java.template.annotaion.Sentence;
 /**
  * Created by lipeng on 2016/12/24.
  */
-@Sentence("var Interface = @config.parseDestClassName(from)+'Service';")
+@Sentence("var Interface = @config.parseDestClassName(from);")
 public interface $Interface_ {
 
 
     // <%
-    // for( m in src.methods){
+    // for( m in from.methods){
     //var invoke = m.name;
     //var Class1 = m.returnType;
     //var class = @m.getArgsInvoke();

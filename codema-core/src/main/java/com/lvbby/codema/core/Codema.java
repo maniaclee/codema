@@ -1,13 +1,10 @@
 package com.lvbby.codema.core;
 
-import com.lvbby.codema.core.config.CommonCodemaConfig;
-import com.lvbby.codema.core.config.ConfigBind;
-import com.lvbby.codema.core.config.NotBlank;
-import com.lvbby.codema.core.source.SourceLoader;
-import com.lvbby.codema.core.utils.ReflectionUtils;
-import org.apache.commons.lang3.Validate;
-
-import java.lang.reflect.Field;
+import com.lvbby.codema.core.config.*;
+import com.lvbby.codema.core.source.*;
+import com.lvbby.codema.core.utils.*;
+import java.lang.reflect.*;
+import org.apache.commons.lang3.*;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -68,7 +65,11 @@ public class Codema {
                 for (CommonCodemaConfig config : codemaContext.getRunMap().get(codemaMachine)) {
                     //初始化config
                     config.init();
-                    codemaMachine.code(codemaContext, config);
+                    try {
+                        codemaMachine.code(codemaContext, config);
+                    } catch (Error e) {
+                        throw new RuntimeException(String.format("error machine[%s], error[%s]", codemaMachine.getClass().getName(),e.getMessage()),e);
+                    }
                 }
             }
         } finally {

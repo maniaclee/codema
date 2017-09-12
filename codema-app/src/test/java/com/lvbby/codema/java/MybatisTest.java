@@ -1,25 +1,23 @@
 package com.lvbby.codema.java;
 
-import com.google.common.collect.Lists;
-import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
-import com.lvbby.codema.app.convert.JavaConvertCodemaConfig;
-import com.lvbby.codema.app.mvn.MavenConfig;
-import com.lvbby.codema.app.mybatis.JavaMybatisCodemaConfig;
-import com.lvbby.codema.app.repository.JavaRepositoryCodemaConfig;
-import com.lvbby.codema.core.Codema;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
-import com.lvbby.codema.core.handler.FileWriterResultHandler;
-import com.lvbby.codema.core.handler.PrintResultHandler;
-import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
-import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
-import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
-import com.lvbby.codema.java.result.JavaRegisterResultHandler;
-import com.lvbby.codema.java.source.JavaClassSourceParser;
-import com.lvbby.codema.java.tool.JavaSrcLoader;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
+import com.google.common.collect.*;
+import com.lvbby.codema.app.bean.*;
+import com.lvbby.codema.app.convert.*;
+import com.lvbby.codema.app.delegate.*;
+import com.lvbby.codema.app.interfaces.*;
+import com.lvbby.codema.app.mvn.*;
+import com.lvbby.codema.app.mybatis.*;
+import com.lvbby.codema.app.repository.*;
+import com.lvbby.codema.core.*;
+import com.lvbby.codema.core.config.*;
+import com.lvbby.codema.core.handler.*;
+import com.lvbby.codema.core.tool.mysql.entity.*;
+import com.lvbby.codema.java.baisc.*;
+import com.lvbby.codema.java.result.*;
+import com.lvbby.codema.java.source.*;
+import com.lvbby.codema.java.tool.*;
+import java.io.*;
+import org.junit.*;
 
 /**
  * Created by dushang.lp on 2017/6/26.
@@ -85,6 +83,16 @@ public class MybatisTest extends BaseTest {
         repo.setFromPackage(mybatis.getDestPackage());
         repo.setConvertUtilsClass(convert.getDestClassName());
 
+        JavaInterfaceCodemaConfig service = java.copy(JavaInterfaceCodemaConfig.class);
+        service.setFromPackage(repo.getDestPackage());
+        service.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Service"));
+        service.addSubDestPackage("service");
+
+        JavaDelegateCodemaConfig serviceImpl = java.copy(JavaDelegateCodemaConfig.class);
+        serviceImpl.setFromPackage(repo.getDestPackage());
+        serviceImpl.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("ServiceImpl"));
+        serviceImpl.addSubDestPackage("service").addSubDestPackage("impl");
+        serviceImpl.addImplementInterface(service.getJavaClassNameParser());
 
         new Codema()
                 .source(JavaClassSourceParser.fromClass(SqlColumn.class))
@@ -94,6 +102,8 @@ public class MybatisTest extends BaseTest {
                 .bind(convert)
                 .bind(mybatis)
                 .bind(repo)
+                .bind(service)
+                .bind(serviceImpl)
                 .run();
     }
 
