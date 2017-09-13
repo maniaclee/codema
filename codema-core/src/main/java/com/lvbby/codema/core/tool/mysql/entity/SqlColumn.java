@@ -72,7 +72,7 @@ public class SqlColumn {
 
     public void setDbType(String dbType) {
         dbType = StringUtils.trimToNull(dbType);
-        Validate.notNull(dbType, "invalid db type ");
+        Validate.notNull(dbType, "invalid db type %s",dbType);
         dbType = dbType.replaceAll("\\s+\\S+", "");
         this.dbType = dbType;
     }

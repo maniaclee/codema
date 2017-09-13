@@ -2,6 +2,7 @@ package com.lvbby.codema.core.tool.mysql;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -50,12 +51,18 @@ public class SqlType {
 
 
         java2jdbcMap.put(Integer.class, "INT");
+        java2jdbcMap.put(int.class, "INT");
+        java2jdbcMap.put(Short.class, "INT");
+        java2jdbcMap.put(short.class, "INT");
         java2jdbcMap.put(Long.class, "BIGINT");
+        java2jdbcMap.put(long.class, "BIGINT");
         java2jdbcMap.put(Float.class, "FLOAT");
+        java2jdbcMap.put(float.class, "FLOAT");
         java2jdbcMap.put(Double.class, "DOUBLE");
+        java2jdbcMap.put(double.class, "DOUBLE");
         java2jdbcMap.put(BigDecimal.class, "DECIMAL");
         java2jdbcMap.put(Date.class, "DATETIME");
-        java2jdbcMap.put(String.class, "VARCHAR");
+        java2jdbcMap.put(String.class, "VARCHAR(256)");
 
 
     }
@@ -71,8 +78,7 @@ public class SqlType {
 
     public static String getJdbcType(Class clz, Function<String, String> function) {
         String s = java2jdbcMap.get(clz);
-        if (StringUtils.isBlank(s))
-            return null;
+        Validate.notBlank(s,"unknown db type for : %s" , clz.getName());
         return function == null ? s : function.apply(s);
     }
 }

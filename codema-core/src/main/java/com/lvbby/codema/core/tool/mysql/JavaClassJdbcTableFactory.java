@@ -27,6 +27,7 @@ public class JavaClassJdbcTableFactory implements JdbcTableFactory {
     private static SqlTable to(Class clz) {
         SqlTable instance = SqlTable.instance(clz.getSimpleName());
         instance.setFields(ReflectionUtils.getAllProperties(clz).stream().map(field -> SqlColumn.from(field)).collect(Collectors.toList()));
+        instance.buildPrimaryKeyField("id");
         return instance;
     }
 

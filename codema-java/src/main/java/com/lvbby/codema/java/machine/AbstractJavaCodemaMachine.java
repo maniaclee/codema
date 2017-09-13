@@ -17,11 +17,9 @@ public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig>
     @Override
     public void code(CodemaContext context, T config) throws Exception {
         preCode(context, config);
-        //根据包名从source里面捞取
-        if (context.getSource() instanceof JavaClass) {
-            for (JavaClass javaClass : findTargetJavaClasses(context, config)) {
-                codeEach(context, config, javaClass);
-            }
+        //根据from捞取要处理的bean作为入口对象
+        for (JavaClass javaClass : findTargetJavaClasses(context, config)) {
+            codeEach(context, config, javaClass);
         }
     }
 
@@ -31,6 +29,9 @@ public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig>
     protected void preCode(CodemaContext context, T config) throws Exception {
     }
 
+    /***
+     * 如果from为空，取source，否则从容器里取
+     */
     private List<JavaClass> findTargetJavaClasses(CodemaContext context, T config) {
         String fromPackage = config.getFromPackage();
         if (StringUtils.isBlank(fromPackage))

@@ -6,6 +6,7 @@ import com.lvbby.codema.app.convert.JavaConvertCodemaConfig;
 import com.lvbby.codema.app.delegate.JavaDelegateCodemaConfig;
 import com.lvbby.codema.app.interfaces.JavaInterfaceCodemaConfig;
 import com.lvbby.codema.app.mvn.MavenConfig;
+import com.lvbby.codema.app.mysql.MysqlSchemaCodemaConfig;
 import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
@@ -14,7 +15,9 @@ import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.source.SourceLoader;
+import com.lvbby.codema.core.tool.mysql.JavaClassJdbcTableFactory;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
+import com.lvbby.codema.java.entity.Bean;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -43,7 +46,6 @@ public class CodemaMachineTest extends BaseTest {
             e.printStackTrace();
         }
     }
-
 
     private void exec(CommonCodemaConfig config) throws Exception {
         Codema.exec(config, sourceLoader);
@@ -97,8 +99,15 @@ public class CodemaMachineTest extends BaseTest {
         config.setGroupId("lvbby");
         config.setArtifactId("lvbby-maven");
         config.setDestRootDir("~/temp");
-        config.setResultHandlers(Lists.newArrayList(new PrintResultHandler(),new FileWriterResultHandler()));
+        config.setResultHandlers(
+            Lists.newArrayList(new PrintResultHandler(), new FileWriterResultHandler()));
         exec(config);
+    }
+
+    @Test
+    public void mysql() throws Exception {
+        new Codema().withSource(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
+            .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
     }
 
     @Test
@@ -106,17 +115,17 @@ public class CodemaMachineTest extends BaseTest {
         //配置
         JavaBeanCodemaConfig config = new JavaBeanCodemaConfig();
         config.setAuthor("lee");
-        config.setResultHandlers(Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
+        config.setResultHandlers(
+            Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
         config.setDestPackage("com.lvbby");
         config.setDestClassName("DestBean");
 
         //以JavaMockTestCodemaConfig.class为模板
-        JavaClassSourceParser sourceLoader = JavaClassSourceParser.fromClass(JavaMockTestCodemaConfig.class);
+        JavaClassSourceParser sourceLoader = JavaClassSourceParser
+            .fromClass(JavaMockTestCodemaConfig.class);
 
         //执行
         Codema.exec(config, sourceLoader);
-
     }
-
 
 }

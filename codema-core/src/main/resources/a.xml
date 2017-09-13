@@ -5,5 +5,11 @@
 
     <bean id = "3">
         <a>sdfsdf</a>
+        <conflict>
+            <a id = "xx">xx</a>
+        </conflict>
+    </bean>
+    <bean id = "5">
+        <ab>sdfsdf</ab>
     </bean>
 </beans>

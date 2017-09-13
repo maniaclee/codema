@@ -5,7 +5,9 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.google.common.collect.Lists;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
+import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -84,5 +87,26 @@ public class JavaClassUtils {
     public static boolean hasGetterSetter(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, String field) {
         return CollectionUtils.isNotEmpty(classOrInterfaceDeclaration.getMethodsByName(JavaCodeUtils.genGetter(field)))
                 && CollectionUtils.isNotEmpty(classOrInterfaceDeclaration.getMethodsByName(JavaCodeUtils.genSetter(field)));
+    }
+
+    public static List<JavaClass> convert(List<SqlTable> tables) {
+        if (tables == null)
+            return Lists.newArrayList();
+        return tables.stream().map(sqlTable -> convert(sqlTable)).collect(Collectors.toList());
+    }
+
+    public static JavaClass convert(SqlTable sqlTable) {
+        JavaClass javaClass = new JavaClass();
+        javaClass.setPack("");
+        javaClass.setName(sqlTable.getName());
+        javaClass.setFields(sqlTable.getFields().stream().map(sqlColumn -> {
+            JavaField javaField = new JavaField();
+            javaField.setName(sqlColumn.getNameCamel());
+            javaField.setType(JavaType.ofClass(sqlColumn.getJavaType()));
+            javaField.setProperty(true);
+            return javaField;
+        }).collect(Collectors.toList()));
+        javaClass.setFrom(sqlTable);
+        return javaClass;
     }
 }

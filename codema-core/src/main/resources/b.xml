@@ -6,6 +6,9 @@
     <bean id = "3">
         <a>xxxx</a>
         <x>xxxx</x>
+        <conflict>
+            <a id = "shit">sdfsf</a>
+        </conflict>
     </bean>
-    <other></other>
+    <other>x</other>
 </beans>
