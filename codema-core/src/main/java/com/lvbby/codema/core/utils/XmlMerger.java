@@ -42,7 +42,7 @@ public class XmlMerger {
 
     private void merge(Element src, Element parent) {
         Element element = find(src, parent);
-        //加入
+        //鍔犲叆
         if (element == null || isEmpty(src)) {
             parent.add((Element) src.clone());
         } else {
@@ -90,9 +90,9 @@ public class XmlMerger {
             OutputFormat format = OutputFormat.createPrettyPrint();
             //            format.setEncoding("gb2312");
             StringWriter writer = new StringWriter();
-            // 格式化输出流
+            // 鏍煎紡鍖栬緭鍑烘祦
             XMLWriter xmlWriter = new XMLWriter(writer, format);
-            // 将document写入到输出流
+            // 灏哾ocument鍐欏叆鍒拌緭鍑烘祦
             xmlWriter.write(document);
             xmlWriter.close();
             return writer.toString();
