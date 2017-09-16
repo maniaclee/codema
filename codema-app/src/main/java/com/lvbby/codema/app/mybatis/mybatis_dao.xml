@@ -48,7 +48,7 @@
         )
         </foreach>
     </insert>
-    <select id="queryByIds" resultMap="resultMap" resultType="${@from.classFullName()}">
+    <select id="queryByIds" resultType="${@from.classFullName()}">
         <include refid="sqlSelect"/>
         WHERE ${table.primaryKeyField.nameInDb}
         IN

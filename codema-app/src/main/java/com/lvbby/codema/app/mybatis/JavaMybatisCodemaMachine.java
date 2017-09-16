@@ -31,13 +31,12 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
         TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $Dao_.class, cu)
                 .bind("table", sqlTable);
         config.handle(codemaContext, daoTemplateResult);
-
         String xml = IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
         config.handle(codemaContext,
                 JavaXmlTemplateResult.ofResource(config, xml, cu)
                         .bind("table", sqlTable)
                         .bind("dao", daoTemplateResult.getResult())
-                        .filePath(config.getDestResourceRoot(), config.getMapperDir(), String.format("%sMapper.xml", cu.getName()))
+                        .filePath(config.getDestResourceRoot(), config.getMapperDir(), String.format("%sMapper.xml", ((JavaClass)codemaContext.getSource()).getName()))
         );
     }
 

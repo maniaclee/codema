@@ -13,7 +13,7 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
  * Created by lipeng on 2016/12/24.
  */
 @Component
-@Sentence("var Repository = @config.parseDestClassName(from)+'Repository';")
+@Sentence("var Repository = @config.parseDestClassName(from);")
 public class $Repository_ {
     @Sentence("var TemplateClass = srcClassName;")
     @Sentence("var templateClass = srcClassNameUncapitalized;")

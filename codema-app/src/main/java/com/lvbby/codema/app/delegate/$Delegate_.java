@@ -3,13 +3,17 @@ package com.lvbby.codema.app.delegate;
 import com.lvbby.codema.java.template.*;
 import static com.lvbby.codema.java.template.$Symbols_.*;
 import com.lvbby.codema.java.template.annotaion.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by lipeng on 2016/12/24.
  */
 @Sentence("var Delegate = @config.parseDestClassName(from);")
 @Sentence("var Interface0 = @config.findImplementInterfacesAsString(from);")
+@Service
 public class $Delegate_  implements $Interface0_ {
+    @Autowired
     @Sentence("var TemplateClass = srcClassName;")
     @Sentence("var templateClass = srcClassNameUncapitalized;")
     private $TemplateClass_ $templateClass_;
