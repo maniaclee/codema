@@ -55,7 +55,14 @@ public class JavaTemplateResult extends TemplateEngineResult implements MergeCap
 
     @Override
     protected void afterRender() {
-        CompilationUnit cu = JavaLexer.read(getString());
+        CompilationUnit cu = null;
+        try {
+            cu = JavaLexer.read(getString());
+        } catch (Exception e) {
+            System.out.println("============");
+            System.out.println(getString());
+            throw e;
+        }
         //自动import
         AutoImport autoImport = new AutoImport(cu);
         //import beanFactory里的bean

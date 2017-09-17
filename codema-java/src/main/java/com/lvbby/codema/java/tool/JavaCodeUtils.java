@@ -44,6 +44,10 @@ public class JavaCodeUtils {
         put("bigdecimal", "BigDecimal.ZERO");
     }};
 
+    public static boolean isNumber(String className){
+        return numbers.contains(className.toLowerCase());
+    }
+
 
     private static boolean isEqual(JavaArg javaArg, Parameter parameter) {
         return parameter.getType().toString().equals(javaArg.getType().getName()) || parameter.getType().toString().equals(javaArg.getType().getFullName());

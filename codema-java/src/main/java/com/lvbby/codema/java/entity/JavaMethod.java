@@ -49,6 +49,9 @@ public class JavaMethod {
         return returnType.beVoid();
     }
 
+    public boolean hasParameter(){
+        return CollectionUtils.isNotEmpty(getArgs());
+    }
     /**
      * (arg1,arg2)  -->  arg1,arg2
      */

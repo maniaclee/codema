@@ -1,15 +1,20 @@
 package com.lvbby.codema.java.baisc;
 
-import com.google.common.collect.*;
-import com.lvbby.codema.core.*;
-import com.lvbby.codema.core.config.*;
-import com.lvbby.codema.java.entity.*;
-import com.lvbby.codema.java.machine.*;
-import com.lvbby.codema.java.result.*;
-import java.io.*;
-import java.util.*;
-import java.util.stream.*;
-import org.apache.commons.lang3.*;
+import com.google.common.collect.Lists;
+import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.CodemaContextHolder;
+import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.utils.FileUtils;
+import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
+import com.lvbby.codema.java.result.JavaTemplateResult;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lipeng on 2016/12/22.
@@ -55,6 +60,13 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
             }
         }
         return subPackage;
+    }
+    public String relativeFile(String subFile){
+        Validate.notBlank(getDestRootDir(),"destRootDir can't blank when using relativeFile : %s",subFile);
+        if(StringUtils.isBlank(subFile)){
+            return getDestRootDir();
+        }
+        return FileUtils.parseFile(getDestRootDir(), subFile).getAbsolutePath();
     }
 
     @Override public CodemaMachine loadCodemaMachine() {

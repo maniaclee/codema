@@ -2,6 +2,7 @@ package com.lvbby.codema.java.entity;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.tool.JavaCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -80,6 +81,18 @@ public class JavaType {
         return getName();//TODO
     }
 
+    /***
+     * default null value for a type
+     * @return
+     */
+    public Object defaultNullValue(){
+        if(bePrimitive()){
+            if(JavaCodeUtils.isNumber(name)){
+                return 0;
+            }
+        }
+        return null;
+    }
 
     public static void main(String[] args) {
         //        GenericClass re = GenericClass.of("Map<Map<String,String>,String>");

@@ -1,7 +1,3 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2017 All Rights Reserved.
- */
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
@@ -31,7 +27,7 @@ import java.io.File;
 /**
  *
  * @author dushang.lp
- * @version $Id: LvbbyAppTest.java, v 0.1 2017-09-15 ÉÏÎç10:13 dushang.lp Exp $
+ * @version $Id: LvbbyAppTest.java, v 0.1 2017-09-15 10:13 dushang.lp Exp $
  */
 public class LvbbyAppTest extends BaseTest {
 
@@ -48,7 +44,6 @@ public class LvbbyAppTest extends BaseTest {
     }
     @Test
     public void mybatis() throws Exception {
-
         CommonCodemaConfig config = new CommonCodemaConfig();
         config.setAuthor("lee");
         config.addResultHandler(PrintResultHandler.class)
@@ -57,9 +52,9 @@ public class LvbbyAppTest extends BaseTest {
 
         JavaBasicCodemaConfig java = config.copy(JavaBasicCodemaConfig.class);
         java.setDestPackage("com.lvbby.garfield");
-        java.setDestRootDir("/Users/dushang.lp/workspace/project/lvbby-service/lvbby-service-biz/");
-        java.setDestResourceRoot("/Users/dushang.lp/workspace/project/lvbby-service/lvbby-service-biz/src/main/resources");
-        java.setDestSrcRoot("/Users/dushang.lp/workspace/project/lvbby-service/lvbby-service-biz/src/main/java");
+        java.setDestRootDir("/Users/lipeng/workspace/lvbby-service/lvbby-service-biz");
+        java.setDestResourceRoot(java.relativeFile("src/main/resources"));
+        java.setDestSrcRoot(java.relativeFile("src/main/java"));
 
         //entity
         JavaBeanCodemaConfig beanCodemaConfig = java.copy(JavaBeanCodemaConfig.class);
@@ -69,7 +64,7 @@ public class LvbbyAppTest extends BaseTest {
         //dto
         JavaBeanCodemaConfig dtoBeanCodemaConfig = java.copy(JavaBeanCodemaConfig.class);
         dtoBeanCodemaConfig.addSubDestPackage("api.dto");
-        dtoBeanCodemaConfig.setDestSrcRoot("/Users/dushang.lp/workspace/project/lvbby-service/lvbby-service-api/src/main/java");
+        dtoBeanCodemaConfig.setDestSrcRoot(dtoBeanCodemaConfig.relativeFile("../lvbby-service-api/src/main/java"));
         dtoBeanCodemaConfig.setJavaClassNameParser(JavaClassNameParserFactory.fromSuffix("DTO"));
 
         //bean ---> DTO
@@ -110,6 +105,13 @@ public class LvbbyAppTest extends BaseTest {
         new Codema().withSource(source())
             .bind(beanCodemaConfig).bind(dtoBeanCodemaConfig).bind(convert).bind(mybatis).bind(repo)
             .bind(service).bind(serviceImpl).run();
+    }
+
+    @Test
+    public void name() throws Exception {
+        File parentFile = new File(System.getProperty("user.dir")).getParentFile().getParentFile();
+        File dest = new File(parentFile, "lvbby-service");
+        System.out.println(dest);
     }
 
 }
