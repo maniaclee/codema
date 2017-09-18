@@ -41,7 +41,7 @@ public class $Repository_ {
     //}
     // var class1Object = null;
     //    if(!@m.returnVoid()){
-    // class1Object = @m.getReturnType().defaultNullValue();
+    // class1Object = @m.getReturnType().defaultNullValueAsString();
     //    }
     // %>
     public $Class1_ $invoke_($Null_ $signature_) {
@@ -51,8 +51,14 @@ public class $Repository_ {
                     //return;
                 }
             } else {
-                if ($class2Object_ == null) {
-                    return $class1Object_;
+                if ($TemplateUtils_.isTrue("@m.getReturnType().isCollectionType()")) {
+                    if($class2Object_==null || $class2Object_.isEmpty()){
+                        return null;
+                    }
+                } else {
+                    if ($class2Object_ == null) {
+                        return $class1Object_;
+                    }
                 }
             }
         }

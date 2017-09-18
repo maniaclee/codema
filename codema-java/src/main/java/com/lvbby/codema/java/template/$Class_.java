@@ -1,9 +1,12 @@
 package com.lvbby.codema.java.template;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * Created by lipeng on 17/1/5.
  */
-public class $Class_ {
+public class $Class_  implements Collection{
 
     public static String $Method_ = "$Method_";
 
@@ -49,5 +52,70 @@ public class $Class_ {
 
     public void setClass2_($Class2_ class2_) {
         this.class2_ = class2_;
+    }
+
+    @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return false;
+    }
+
+    @Override
+    public Iterator iterator() {
+        return null;
+    }
+
+    @Override
+    public Object[] toArray() {
+        return new Object[0];
+    }
+
+    @Override
+    public boolean add(Object o) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(Collection c) {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public boolean retainAll(Collection c) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAll(Collection c) {
+        return false;
+    }
+
+    @Override
+    public boolean containsAll(Collection c) {
+        return false;
+    }
+
+    @Override
+    public Object[] toArray(Object[] a) {
+        return new Object[0];
     }
 }

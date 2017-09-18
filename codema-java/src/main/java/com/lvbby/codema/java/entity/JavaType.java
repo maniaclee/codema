@@ -93,6 +93,17 @@ public class JavaType {
         }
         return null;
     }
+    public Object defaultNullValueAsString(){
+        Object re = defaultNullValue();
+        if(re==null){
+            return "null";
+        }
+        return re.toString();
+    }
+
+    public boolean isCollectionType(){
+        return Lists.newArrayList("List","Collection","Queue").contains(name.toLowerCase());
+    }
 
     public static void main(String[] args) {
         //        GenericClass re = GenericClass.of("Map<Map<String,String>,String>");

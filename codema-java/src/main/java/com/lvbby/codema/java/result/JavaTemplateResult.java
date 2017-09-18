@@ -51,6 +51,7 @@ public class JavaTemplateResult extends TemplateEngineResult implements MergeCap
                 matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
         super.beforeRender(bindingParameters);
         template(JavaSrcTemplateParser.prepareTemplate(template));
+        System.err.println(template);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class JavaTemplateResult extends TemplateEngineResult implements MergeCap
         try {
             cu = JavaLexer.read(getString());
         } catch (Exception e) {
-            System.out.println("============");
+            System.out.println("==============");
             System.out.println(getString());
             throw e;
         }
