@@ -55,11 +55,17 @@ public class FileWriterResultHandler extends AbstractResultHandler<FileResult> {
                 write(result.getString(), new FileOutputStream(file, true), file);
                 return;
             case write_mode_merge:
+                //不支持merge，用覆写的形式
+                if(!(result instanceof MergeCapableFileResult)){
+                    write(result.getString(), new FileOutputStream(file), file);
+                    return;
+                }
                 Validate.isTrue(result instanceof MergeCapableFileResult, "result[%s] doesn't support merge mode for file:%s", result.getClass().getName(), result.getFile());
                 FileInputStream dest = new FileInputStream(file);
                 String s = ((MergeCapableFileResult) result).parseMergeResult(dest, resultContext);
                 IOUtils.closeQuietly(dest);
                 write(s, new FileOutputStream(file), file);
+                return;
             default:
                 throw new IllegalArgumentException(String.format("unsupported write mode for : %s", writeMode));
         }

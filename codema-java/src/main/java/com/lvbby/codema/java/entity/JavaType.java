@@ -102,7 +102,10 @@ public class JavaType {
     }
 
     public boolean isCollectionType(){
-        return Lists.newArrayList("List","Collection","Queue").contains(name.toLowerCase());
+        if (name.contains("<")) {
+            name = name.substring(0, name.indexOf("<"));
+        }
+        return Lists.newArrayList("List","Collection","Queue").contains(name);
     }
 
     public static void main(String[] args) {

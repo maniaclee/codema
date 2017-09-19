@@ -6,6 +6,9 @@ package com.lvbby.codema.java.template;
 public class $Class2_ extends $Class_ {
 
     public static final $Class2_ $class2Object_ = new $Class2_();
+    public static final $Class2_ $class2_ = new $Class2_();
+    public static final $Class2_ $class2Instance_ = new $Class2_();
+
     public static $GenericTypeArg_ $Method2_($GenericTypeArg_ arg) {
         $GenericTypeArg_ re = new $GenericTypeArg_();
         return re;

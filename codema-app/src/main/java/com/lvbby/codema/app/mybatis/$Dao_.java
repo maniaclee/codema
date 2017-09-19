@@ -1,6 +1,7 @@
 package com.lvbby.codema.app.mybatis;
 
 import com.lvbby.codema.java.template.$Class1_;
+import com.lvbby.codema.java.template.$Class2_;
 import com.lvbby.codema.java.template.$Class_;
 import com.lvbby.codema.java.template.annotaion.Sentence;
 import org.apache.ibatis.annotations.Param;
@@ -19,10 +20,11 @@ public interface $Dao_ {
     // var Class = from.name;
     // var class=lee.unCapital(from.name);
     // var Class1=id.javaTypeName;
+    // var Class2=table.primaryKeyField.javaTypeName;
     // %>
-    long insert(@Param("entity") $Class_ $class_);
+    $Class2_ insert(@Param("entity") $Class_ $class_);
 
-    void inserts(@Param("entity") List<$Class_> $class_s);
+    int inserts(@Param("entity") List<$Class_> $class_s);
 
     @Select("select * from ${table.nameInDb} where ${id.nameInDb} = #{id}")
     $Class_ queryById(@Param("id") $Class1_ id);

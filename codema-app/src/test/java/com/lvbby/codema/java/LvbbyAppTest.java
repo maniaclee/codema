@@ -47,12 +47,12 @@ public class LvbbyAppTest extends BaseTest {
         CommonCodemaConfig config = new CommonCodemaConfig();
         config.setAuthor("lee");
         config.addResultHandler(PrintResultHandler.class)
-            .addResultHandler(FileWriterResultHandler.class)
+            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_merge))
             .addResultHandler(JavaRegisterResultHandler.class);
 
         JavaBasicCodemaConfig java = config.copy(JavaBasicCodemaConfig.class);
         java.setDestPackage("com.lvbby.garfield");
-        java.setDestRootDir("/Users/lipeng/workspace/lvbby-service/lvbby-service-biz");
+        java.setDestRootDir("/Users/dushang.lp/workspace/project/lvbby-service/lvbby-service-biz");
         java.setDestResourceRoot(java.relativeFile("src/main/resources"));
         java.setDestSrcRoot(java.relativeFile("src/main/java"));
 
@@ -79,7 +79,7 @@ public class LvbbyAppTest extends BaseTest {
         mybatis.setIdQuery(javaClass -> javaClass.getFields().stream()
             .filter(javaField -> javaField.getName().equals("nameCamel")).findAny().orElse(null));
         mybatis.setMapperDir("mapper");
-        mybatis.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Dao"));
+        mybatis.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Mapper"));
         mybatis.setFromPackage(beanCodemaConfig.getDestPackage());
         mybatis.setConfigPackage(mybatis.relativePackage("config"));
         mybatis.addSubDestPackage("dao");

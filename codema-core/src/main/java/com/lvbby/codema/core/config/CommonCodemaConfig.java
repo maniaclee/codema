@@ -127,6 +127,11 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         this.resultHandlers.add(ReflectionUtils.instance(resultHandler));
         return this;
     }
+    public CommonCodemaConfig addResultHandler(ResultHandler resultHandler) {
+        Validate.notNull(resultHandler,"result handler can't be null");
+        this.resultHandlers.add(resultHandler);
+        return this;
+    }
 
     public List<ResultHandler> getResultHandlers() {
         return resultHandlers;

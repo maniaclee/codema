@@ -11,7 +11,7 @@
         from ${table.nameInDb}
     </sql>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="${table.primaryKeyField.nameCamel}">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="entity.${table.primaryKeyField.nameCamel}">
         INSERT INTO ${table.nameInDb}
         (
         <!--

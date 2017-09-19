@@ -239,13 +239,21 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
             printlnTemplateEngineContent("}");
         } else {
             printlnTemplateEngineContent("else{");
-            println(removeBlock(elseStatement));
+            removeBlockQuote(elseStatement, arg);
             printlnTemplateEngineContent("}");
         }
     }
 
     private String removeBlock(Statement statement) {
         return removeFirstAndEnd(statement.toString(), "{", "}");
+    }
+
+    private void removeBlockQuote(Statement statement,Void arg) {
+        if(statement instanceof BlockStmt){
+            for (Statement s : ((BlockStmt) statement).getStatements()) {
+                s.accept(this,arg);
+            }
+        }
     }
 
     private void processSentence(NodeWithAnnotations node) {

@@ -6,11 +6,13 @@ import static com.lvbby.codema.java.template.$Class2_.$class2Object_;
 import com.lvbby.codema.java.template.$Null_;
 import com.lvbby.codema.java.template.$TemplateClass_;
 import com.lvbby.codema.java.template.$TemplateUtils_;
+import com.lvbby.codema.java.template.annotaion.Foreach;
 import com.lvbby.codema.java.template.annotaion.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.lvbby.codema.java.template.$Symbols_.$class_;
+import static com.lvbby.codema.java.template.$Symbols_.re;
 
 /**
  * Created by lipeng on 2016/12/24.
@@ -24,41 +26,38 @@ public class $Repository_ {
     private $TemplateClass_ $templateClass_;
 
 
-    // <%
-    // for( rm in  methods){
-    // var m = rm.javaMethod;
-    //var invoke = m.name;
-    //var Class1 = m.returnType.name;
-    //var class = @m.getArgsInvoke();
-    //var signature = @m.getArgsSignature();
-    // var pm = @rm.getBuildParameterMethods().isEmpty()?null:@rm.getBuildParameterMethods().get(0);
-    // if (rm.buildReturnMethod !=null){
-    // Class1=rm.buildReturnMethod.returnType.name;
-    // }
-    // var class2Object = null;
-    // if(@m.hasParameter() && @m.getArgs().size()==1){
-    // class2Object = @m.getArgs().get(0).getName();
-    //}
-    // var class1Object = null;
-    //    if(!@m.returnVoid()){
-    // class1Object = @m.getReturnType().defaultNullValueAsString();
-    //    }
-    // %>
+    @Foreach(value = "rm in  methods", body = { " var m = rm.javaMethod;",
+                                                "var signature = @m.getArgsSignature();",
+                                                "var invoke = m.name;",
+                                                "var Class1 = m.returnType.name;",
+                                                "var class = @m.getArgsInvoke();",
+                                                " var pm = @rm.getBuildParameterMethods().isEmpty()?null:@rm.getBuildParameterMethods().get(0);",
+                                                " if (rm.buildReturnMethod !=null){",
+                                                "      Class1=rm.buildReturnMethod.returnType.name;",
+                                                " }", })
     public $Class1_ $invoke_($Null_ $signature_) {
+        /*#
+        <%
+         var class2Object = null;
+         var isCollection = false;
+         if(@m.hasParameter() && @m.getArgs().size()==1){
+              class2Object = @m.getArgs().get(0).getName();
+              isCollection = @m.getArgs().get(0).getType().isCollectionType();
+        }
+         var class1Object = '';
+         if(!@m.returnVoid()){
+              class1Object = @m.getReturnType().defaultNullValueAsString();
+         }
+        %>
+        */
         if ($TemplateUtils_.isTrue("class2Object!=null")) {
-            if ($TemplateUtils_.isTrue("@m.returnVoid()")) {
-                if ($class2Object_ == null) {
-                    //return;
+            if ($TemplateUtils_.isTrue("isCollection")) {
+                if ($class2Object_ == null || $class2Object_.isEmpty()) {
+                    return $class1Object_;
                 }
             } else {
-                if ($TemplateUtils_.isTrue("@m.getReturnType().isCollectionType()")) {
-                    if($class2Object_==null || $class2Object_.isEmpty()){
-                        return null;
-                    }
-                } else {
-                    if ($class2Object_ == null) {
-                        return $class1Object_;
-                    }
+                if ($class2Object_ == null) {
+                    return $class1Object_;
                 }
             }
         }
@@ -78,6 +77,5 @@ public class $Repository_ {
         return re;
         //<%}%>
     }
-    // <% }%>
 
 }

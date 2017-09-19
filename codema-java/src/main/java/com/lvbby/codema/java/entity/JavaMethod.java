@@ -44,6 +44,13 @@ public class JavaMethod {
         return this;
     }
 
+    public String signature(){
+        String result = name;
+        if(hasParameter()){
+            return String.format("%s.(%s)", name,args.stream().map(javaArg -> javaArg.getType().getName()).collect(Collectors.joining(",")));
+        }
+        return result;
+    }
 
     public boolean returnVoid() {
         return returnType.beVoid();

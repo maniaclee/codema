@@ -14,6 +14,7 @@ import com.lvbby.codema.java.tool.AutoImport;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaCompilationMerger;
 import com.lvbby.codema.java.tool.JavaLexer;
+import com.lvbby.codema.java.tool.JavaMerger;
 import com.lvbby.codema.java.tool.templateEngine.CodemaJavaSourcePrinter;
 import org.apache.commons.io.IOUtils;
 
@@ -97,6 +98,6 @@ public class JavaTemplateResult extends TemplateEngineResult implements MergeCap
 
     @Override
     public String parseMergeResult(InputStream dest, ResultContext resultContext) throws Exception {
-        return new JavaCompilationMerger(IOUtils.toString(dest), JavaLexer.read(getString())).merge().toString();
+        return new JavaMerger(IOUtils.toString(dest), JavaLexer.read(getString())).merge().toString();
     }
 }
