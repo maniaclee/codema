@@ -106,6 +106,39 @@ public class LvbbyAppTest extends BaseTest {
             .bind(beanCodemaConfig).bind(dtoBeanCodemaConfig).bind(convert).bind(mybatis).bind(repo)
             .bind(service).bind(serviceImpl).run();
     }
+    @Test
+    public void entity() throws Exception {
+        CommonCodemaConfig config = new CommonCodemaConfig();
+        config.setAuthor("lee");
+        config.addResultHandler(PrintResultHandler.class)
+            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_merge))
+            .addResultHandler(JavaRegisterResultHandler.class);
+
+        JavaBasicCodemaConfig java = config.copy(JavaBasicCodemaConfig.class);
+        java.setDestPackage("com.lvbby.garfield");
+        java.setDestRootDir("/Users/dushang.lp/workspace/project/lvbby-service/lvbby-service-biz");
+        java.setDestResourceRoot(java.relativeFile("src/main/resources"));
+        java.setDestSrcRoot(java.relativeFile("src/main/java"));
+
+        //entity
+        JavaBeanCodemaConfig beanCodemaConfig = java.copy(JavaBeanCodemaConfig.class);
+        beanCodemaConfig.addSubDestPackage("entity");
+        beanCodemaConfig.setJavaClassNameParser(JavaClassNameParserFactory.fromSuffix("Entity"));
+
+        //dao & xml mapper & dal config & mybatis xml config
+        JavaMybatisCodemaConfig mybatis = java.copy(JavaMybatisCodemaConfig.class);
+        mybatis.setIdQuery(javaClass -> javaClass.getFields().stream()
+            .filter(javaField -> javaField.getName().equals("nameCamel")).findAny().orElse(null));
+        mybatis.setMapperDir("mapper");
+        mybatis.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Mapper"));
+        mybatis.setFromPackage(beanCodemaConfig.getDestPackage());
+        mybatis.setConfigPackage(mybatis.relativePackage("config"));
+        mybatis.addSubDestPackage("dao");
+
+        new Codema().withSource(source())
+            .bind(beanCodemaConfig).bind(mybatis)
+            .run();
+    }
 
     @Test
     public void name() throws Exception {

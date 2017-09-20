@@ -109,6 +109,11 @@ public class CodemaMachineTest extends BaseTest {
         new Codema().withSource(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
             .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
     }
+    @Test
+    public void mysqlFromString() throws Exception {
+        new Codema().withSource(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
+            .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
+    }
 
     @Test
     public void quickStart() throws Exception {

@@ -49,8 +49,10 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
         );
 
         /** dal config */
-        config.handle(codemaContext, new JavaTemplateResult(new TemplateContext(DalConfig.class, config)
-                .pack(config.getConfigPackage())));
+        if (config.isNeedConfigClass()) {
+            config.handle(codemaContext, new JavaTemplateResult(
+                new TemplateContext(DalConfig.class, config).pack(config.getConfigPackage())));
+        }
     }
 
     private SqlTable getSqlTable(JavaClass cu, Function<JavaClass, JavaField> idQuery) {

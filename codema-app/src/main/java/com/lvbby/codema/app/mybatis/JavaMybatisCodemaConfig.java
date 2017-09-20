@@ -15,6 +15,7 @@ import java.util.function.Function;
 public class JavaMybatisCodemaConfig extends JavaBasicCodemaConfig {
     private String mapperDir;
     private String configPackage;
+    private boolean needConfigClass=false;
     //指定id的值，指定一个java bean里哪个属性作为id
     private Function<JavaClass, JavaField> idQuery = javaClass -> javaClass.getFields().stream().
             filter(javaField -> Objects.equals(javaField.getName(), "id"))
@@ -24,6 +25,12 @@ public class JavaMybatisCodemaConfig extends JavaBasicCodemaConfig {
         return idQuery;
     }
 
+    public void setNeedConfigClass(boolean needConfigClass){
+        this.needConfigClass = needConfigClass;
+    }
+    public boolean isNeedConfigClass(){
+        return this.needConfigClass;
+    }
     public void setIdQuery(Function<JavaClass, JavaField> idQuery) {
         this.idQuery = idQuery;
     }
@@ -43,4 +50,5 @@ public class JavaMybatisCodemaConfig extends JavaBasicCodemaConfig {
     public void setMapperDir(String mapperDir) {
         this.mapperDir = mapperDir;
     }
+
 }
