@@ -2,6 +2,7 @@ package com.lvbby.codema.core.tool.mysql.entity;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -30,7 +31,10 @@ public class SqlTable {
 
 
     public void buildPrimaryKeyField(String primaryKeyColumn) {
-        this.primaryKeyField = fields.stream().filter(f -> Objects.equals(f.getNameInDb(), primaryKeyColumn)).findFirst().orElse(null);
+        if(StringUtils.isBlank(primaryKeyColumn))
+            return;
+        String pk=CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,primaryKeyColumn);
+        this.primaryKeyField = fields.stream().filter(f -> Objects.equals(f.getNameInDb(), pk)).findFirst().orElse(null);
     }
 
     public SqlColumn getPrimaryKeyField() {

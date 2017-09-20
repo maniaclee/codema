@@ -27,7 +27,6 @@ public class SqlColumn {
         SqlColumn sqlColumn = new SqlColumn();
         sqlColumn.setJavaType(field.getType());
         sqlColumn.setDbType(SqlType.getJdbcType(sqlColumn.getJavaType()));
-        sqlColumn.setJavaTypeName(sqlColumn.getJavaType().getSimpleName());
 
         sqlColumn.setNameCamel(field.getName());
         sqlColumn.setNameInDb(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.getName()));

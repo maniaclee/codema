@@ -105,12 +105,18 @@ public class CodemaMachineTest extends BaseTest {
     }
 
     @Test
-    public void mysql() throws Exception {
-        new Codema().withSource(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
-            .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
+    public void mysqlFromString() throws Exception {
+        String src = " public   class TimeEvent {\n" + "        private long startDate;\n"
+                     + "        private long endDate;\n" + "        //history,holiday\n"
+                     + "        private String type;\n" + "        private String body;\n"
+                     + "        private String extra;}";
+        MysqlSchemaCodemaConfig config = new MysqlSchemaCodemaConfig();
+        config.setPrimaryKey("startDate");
+        new Codema().source(JavaClassSourceParser.fromClassSrcString(src))
+            .bind(config.addResultHandler(PrintResultHandler.class)).run();
     }
     @Test
-    public void mysqlFromString() throws Exception {
+    public void mysql() throws Exception {
         new Codema().withSource(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
             .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
     }

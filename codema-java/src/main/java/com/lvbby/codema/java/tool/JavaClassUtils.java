@@ -5,17 +5,22 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
+import com.lvbby.codema.core.tool.mysql.SqlType;
+import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -108,5 +113,36 @@ public class JavaClassUtils {
         }).collect(Collectors.toList()));
         javaClass.setFrom(sqlTable);
         return javaClass;
+    }
+
+    public static SqlTable convertToSqlTable(JavaClass javaClass ){
+        return convertToSqlTable(javaClass,null);
+    }
+
+    public static SqlTable convertToSqlTable(JavaClass javaClass , Function<SqlColumn,Boolean> primaryKeySelector){
+        SqlTable re =   SqlTable.instance(javaClass.getName());
+        re.setFields(javaClass.getFields().stream().map(javaField -> {
+            SqlColumn column = new SqlColumn();
+            column.setNameCamel(javaField.getName());
+            column.setNameInDb(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,javaField.getName()));
+            column.setJavaType(javaField.getType().getJavaType());
+            column.setDbType(SqlType.getJdbcType(column.getJavaType()));
+            column.setComment("");
+            return column;
+        }).collect(Collectors.toList()));
+        //primary key
+        if (primaryKeySelector != null) {
+            List<SqlColumn> collect = re.getFields().stream()
+                .filter(javaField -> primaryKeySelector.apply(javaField))
+                .collect(Collectors.toList());
+            Validate.isTrue(collect.size() <= 1);
+            if (collect.size() == 1) {
+                re.setPrimaryKeyField(collect.get(0));
+                collect.get(0).setPrimaryKey(true);
+            } else {
+                re.buildPrimaryKeyField("id");
+            }
+        }
+        return re;
     }
 }

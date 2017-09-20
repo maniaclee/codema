@@ -46,6 +46,7 @@ public class Codema {
     }
 
     public Codema withSource(Object object) {
+        Validate.isTrue(!(object instanceof SourceLoader),"SourceLoader");
         codemaContext.setSource(object);
         return this;
     }

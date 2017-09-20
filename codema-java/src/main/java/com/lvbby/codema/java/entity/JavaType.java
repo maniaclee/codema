@@ -1,6 +1,8 @@
 package com.lvbby.codema.java.entity;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.tool.JavaCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -9,9 +11,16 @@ import org.apache.commons.lang3.StringUtils;
 import sun.reflect.generics.reflectiveObjects.WildcardTypeImpl;
 
 import java.lang.reflect.*;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,6 +30,53 @@ import java.util.stream.Stream;
 public class JavaType {
     private static final String VOID = "void";
     private static final JavaType VOID_TYPE = new JavaType(VOID);
+    /**
+     * 根据字符串映射到常用java类
+     */
+    public static Map<String,Class> javaTypeSymbolMap= Maps.newHashMap();
+    public static Set<Class>         primitives        = Sets.newHashSet(
+            int.class,
+            short.class,
+            long.class,
+            byte.class,
+            double.class,
+            float.class,
+            char.class);
+    public static Set<Class>         boxingTypes        = Sets.newHashSet(
+            Integer.class,
+            Short.class,
+            Long.class,
+            Byte.class,
+            Double.class,
+            Float.class);
+    public static Set<Class>         collection        = Sets.newHashSet(
+            Map.class,
+            Set.class,
+            Queue.class,
+            Stack.class,
+            List.class,
+            Collection.class
+    );
+    public static Set<Class>         common        = Sets.newHashSet(
+            Date.class,
+            BigDecimal.class,
+            String.class
+    );
+    static {
+        addJavaSymbols(common);
+        addJavaSymbols(collection);
+        addJavaSymbols(boxingTypes);
+        addJavaSymbols(primitives);
+    }
+
+    private static void addJavaSymbols(Collection<Class> classes){
+        for (Class clz : classes) {
+            addJavaSymbol(clz);
+        }
+    }
+    public static void addJavaSymbol(Class clz){
+        javaTypeSymbolMap.put(clz.getSimpleName(),clz);
+    }
     /**
      * 具体类型,rawType
      */
@@ -63,7 +119,6 @@ public class JavaType {
     public Class getJavaType() {
         return type;
     }
-
 
     public boolean beVoid() {
         return VOID.equals(getName());
@@ -149,7 +204,10 @@ public class JavaType {
             throw new IllegalArgumentException("invalid class name:" + s);
         return re;
     }
-
+    
+    private static Class guess(String s) {
+        return javaTypeSymbolMap.get(s);
+    }
     public static JavaType ofClassName(String className) {
         if (StringUtils.isBlank(className) || VOID.equalsIgnoreCase(className))
             return VOID_TYPE;
@@ -157,11 +215,14 @@ public class JavaType {
         javaType.pack = ReflectionUtils.getPackage(className);
         String name = ReflectionUtils.getSimpleClassName(className);
         javaType.name = name;
-        if (!name.contains("<"))
+        if (!name.contains("<")){
+            javaType.type=guess(name);
             return javaType;
+        }
         int start = name.indexOf('<');
         int end = name.lastIndexOf('>');
         if (start > 0 && end > start) {
+            javaType.type=guess(name.substring(0,start));
             List<String> genericTypes = splitGeneric(name.substring(start + 1, end));
             javaType.genericTypes = genericTypes.stream().map(t -> ofClassName(t)).collect(Collectors.toList());
             return javaType;

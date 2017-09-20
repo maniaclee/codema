@@ -29,6 +29,16 @@ public class JavaClassSourceParser implements SourceLoader<JavaClass> {
     }
 
     /***
+     * 从一段java代码解析
+     * @param javaSrc
+     * @return
+     * @throws Exception
+     */
+    public static JavaClassSourceParser fromClassSrcString(String javaSrc ) throws Exception {
+        return new JavaClassSourceParser(JavaClassUtils.convert(JavaLexer.read(javaSrc)));
+    }
+
+    /***
      * 从项目目录里按照全类名加载
      * @param classFullName
      * @return

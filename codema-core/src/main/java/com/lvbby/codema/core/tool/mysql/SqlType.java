@@ -73,12 +73,9 @@ public class SqlType {
     }
 
     public static String getJdbcType(Class clz) {
-        return getJdbcType(clz, null);
-    }
-
-    public static String getJdbcType(Class clz, Function<String, String> function) {
+        Validate.notNull(clz);
         String s = java2jdbcMap.get(clz);
         Validate.notBlank(s,"unknown db type for : %s" , clz.getName());
-        return function == null ? s : function.apply(s);
+        return s;
     }
 }
