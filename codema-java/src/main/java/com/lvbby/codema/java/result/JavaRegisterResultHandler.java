@@ -16,6 +16,8 @@ public class JavaRegisterResultHandler implements ResultHandler {
             return;
         Object result = resultContext.getResult().getResult();
         if (result instanceof JavaClass)
-            resultContext.getCodemaContext().getCodemaBeanFactory().register(new JavaClassResource((JavaClass) resultContext.getResult().getResult()));
+            resultContext.getCodemaContext().getCodemaBeanFactory().register(
+                    new JavaClassResource((JavaClass) resultContext.getResult().getResult())
+                            .bindConfig(resultContext.getConfig()));
     }
 }

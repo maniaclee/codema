@@ -1,7 +1,9 @@
 package com.lvbby.codema.core.tool.mysql.entity;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.utils.CaseFormatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -24,8 +26,8 @@ public class SqlTable {
 
     public static SqlTable instance(String table) {
         SqlTable sqlTable = new SqlTable();
-        sqlTable.setNameInDb(table);
-        sqlTable.setName(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL,table));
+        sqlTable.setName(CaseFormatUtils.toCaseFormat(CaseFormat.UPPER_CAMEL,table));
+        sqlTable.setNameInDb(CaseFormatUtils.toCaseFormat(CaseFormat.LOWER_UNDERSCORE,table));
         return sqlTable;
     }
 
@@ -33,8 +35,11 @@ public class SqlTable {
     public void buildPrimaryKeyField(String primaryKeyColumn) {
         if(StringUtils.isBlank(primaryKeyColumn))
             return;
-        String pk=CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,primaryKeyColumn);
-        this.primaryKeyField = fields.stream().filter(f -> Objects.equals(f.getNameInDb(), pk)).findFirst().orElse(null);
+        Function<String,String> format=input -> input.replaceAll("-|_","").toLowerCase();
+        this.primaryKeyField = fields.stream().filter(f -> Objects.equals(format.apply(f.getNameInDb()), format.apply(primaryKeyColumn))).findFirst().orElse(null);
+        if(this.primaryKeyField!=null){
+            primaryKeyField.setPrimaryKey(true);
+        }
     }
 
     public SqlColumn getPrimaryKeyField() {

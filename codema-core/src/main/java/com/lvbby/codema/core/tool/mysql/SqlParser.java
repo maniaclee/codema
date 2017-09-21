@@ -35,8 +35,7 @@ public class SqlParser {
     }
 
     private static SqlColumn buildColumn(MySqlSQLColumnDefinition column) {
-        SqlColumn sqlColumn = new SqlColumn();
-        sqlColumn.setNameInDb(column.getName().getSimpleName());
+        SqlColumn sqlColumn =  SqlColumn.instance(column.getName().getSimpleName());
         sqlColumn.setComment(column.getComment().toString());
         sqlColumn.setNullable(!hasConstrain(column, NotNullConstraint.class));
         sqlColumn.setPrimaryKey(hasConstrain(column, SQLColumnPrimaryKey.class));

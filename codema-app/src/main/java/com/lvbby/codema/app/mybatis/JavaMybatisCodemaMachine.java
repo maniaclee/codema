@@ -62,13 +62,9 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
     }
 
     private SqlTable guessFromJavaClass(JavaClass javaClass, Function<JavaClass, JavaField> idQuery) {
-        SqlTable re = new SqlTable();
-        re.setName(javaClass.getName());
-        re.setNameInDb(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, javaClass.getName()));
+        SqlTable re =  SqlTable.instance(javaClass.getName());
         re.setFields(javaClass.getFields().stream().map(javaField -> {
-            SqlColumn sqlColumn = new SqlColumn();
-            sqlColumn.setNameInDb(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, javaField.getName()));
-            sqlColumn.setNameCamel(javaField.getName());
+            SqlColumn sqlColumn =SqlColumn.instance(javaField.getName());
             sqlColumn.setJavaType(javaField.getType().getJavaType());
             sqlColumn.setJavaTypeName(javaField.getType().getName());
             sqlColumn.setPrimaryKey(javaField.getName().equalsIgnoreCase("id"));

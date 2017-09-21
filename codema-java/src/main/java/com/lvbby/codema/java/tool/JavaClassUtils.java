@@ -122,9 +122,7 @@ public class JavaClassUtils {
     public static SqlTable convertToSqlTable(JavaClass javaClass , Function<SqlColumn,Boolean> primaryKeySelector){
         SqlTable re =   SqlTable.instance(javaClass.getName());
         re.setFields(javaClass.getFields().stream().map(javaField -> {
-            SqlColumn column = new SqlColumn();
-            column.setNameCamel(javaField.getName());
-            column.setNameInDb(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,javaField.getName()));
+            SqlColumn column = SqlColumn.instance(javaField.getName());
             column.setJavaType(javaField.getType().getJavaType());
             column.setDbType(SqlType.getJdbcType(column.getJavaType()));
             column.setComment("");

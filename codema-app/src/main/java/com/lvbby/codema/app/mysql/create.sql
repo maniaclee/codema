@@ -3,7 +3,7 @@ CREATE TABLE ${table.nameInDb} (
   #   var nullable = "";
   #   if (f.nullable){nullable = "NOT NULL";}
   #   var auto_inc = "";
-  #   if(f.primaryKey && @f.getDbType().equals("INT")){
+  #   if(f.primaryKey && (@f.getDbType().equals("INT") ||@f.getDbType().equals("BIGINT"))){
   #     auto_inc = "AUTO_INCREMENT";
   #   }
   # %>

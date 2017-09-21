@@ -2,6 +2,7 @@ package com.lvbby.codema.core.tool.mysql.entity;
 
 import com.google.common.base.CaseFormat;
 import com.lvbby.codema.core.tool.mysql.SqlType;
+import com.lvbby.codema.core.utils.CaseFormatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -23,13 +24,16 @@ public class SqlColumn {
     private boolean hasIndex = false;
     private boolean unique = false;
 
-    public static SqlColumn from(Field field) {
+    public static SqlColumn instance(String name){
         SqlColumn sqlColumn = new SqlColumn();
+        sqlColumn.setNameCamel(CaseFormatUtils.toCaseFormat(CaseFormat.LOWER_CAMEL,name));
+        sqlColumn.setNameInDb(CaseFormatUtils.toCaseFormat(CaseFormat.LOWER_UNDERSCORE, name));
+        return sqlColumn;
+    }
+    public static SqlColumn from(Field field) {
+        SqlColumn sqlColumn =  instance(field.getName());
         sqlColumn.setJavaType(field.getType());
         sqlColumn.setDbType(SqlType.getJdbcType(sqlColumn.getJavaType()));
-
-        sqlColumn.setNameCamel(field.getName());
-        sqlColumn.setNameInDb(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.getName()));
 
         //just try
         sqlColumn.setPrimaryKey(sqlColumn.getNameInDb().equalsIgnoreCase("id"));
@@ -62,7 +66,6 @@ public class SqlColumn {
 
     public void setNameInDb(String nameInDb) {
         this.nameInDb = nameInDb;
-        this.nameCamel = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, nameInDb);//设置nameCamel
     }
 
     public String getDbType() {

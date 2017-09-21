@@ -79,8 +79,7 @@ public class UrlJdbcTableFactory implements JdbcTableFactory {
         DatabaseMetaData meta = conn.getMetaData();
         ResultSet rs = meta.getColumns(null, null, SqlTable.getName(), "%");
         while (rs.next()) {
-            SqlColumn f = new SqlColumn();
-            f.setNameInDb(rs.getString(4));
+            SqlColumn f = SqlColumn.instance(rs.getString(4));
             //            f.setDbType(rs.getString(5));
             f.setDbType(rs.getString(6));
             f.setJavaType(SqlType.getJavaType(f.getDbType()));

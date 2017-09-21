@@ -26,10 +26,15 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     /**
      * 最终输出文件的根目录,必须存在，支持~ / ../ ./
      */
-    private String destRootDir;
+    private String              destRootDir;
     private List<ResultHandler> resultHandlers = Lists.newLinkedList();
+    //选取源：某个config对应的codemaMachine的输出
+    private CommonCodemaConfig  fromConfig;
+    //从source中获取
+    private boolean             fromSource     = false;
 
-    private boolean inited = false;
+    private boolean             inited         = false;
+
 
     public <T extends CommonCodemaConfig> T copy(Class<T> targetConfigClass){
         T re = ReflectionUtils.instance(targetConfigClass);
@@ -114,6 +119,11 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         return null;
     }
 
+    public CommonCodemaConfig fromSource(boolean fromSource){
+        setFromSource(true);
+        return this;
+    }
+
     public String getAuthor() {
         return author;
     }
@@ -148,4 +158,31 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     public void setDestRootDir(String destRootDir) {
         this.destRootDir = destRootDir;
     }
+
+    /**
+     * Getter method for property   fromConfig.
+     *
+     * @return property value of fromConfig
+     */
+    public CommonCodemaConfig getFromConfig() {
+        return fromConfig;
+    }
+
+    /**
+     * Setter method for property   fromConfig .
+     *
+     * @param fromConfig  value to be assigned to property fromConfig
+     */
+    public void setFromConfig(CommonCodemaConfig fromConfig) {
+        this.fromConfig = fromConfig;
+    }
+    public boolean isFromSource() {
+        return fromSource;
+    }
+
+    public void setFromSource(boolean fromSource) {
+        this.fromSource = fromSource;
+    }
+
+
 }

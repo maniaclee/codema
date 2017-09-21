@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Created by dushang.lp on 2017/6/26.
@@ -76,6 +77,10 @@ public class CodemaMachineTest extends BaseTest {
     @Test
     public void delegate() throws Exception {
         JavaDelegateCodemaConfig config = _newConfig(JavaDelegateCodemaConfig.class);
+        config.setImplementInterfaces(Lists.newArrayList(
+                JavaClassNameParserFactory.className(Serializable.class.getSimpleName()),
+                JavaClassNameParserFactory.className("Test")
+                ));
         exec(config);
     }
 
@@ -106,10 +111,10 @@ public class CodemaMachineTest extends BaseTest {
 
     @Test
     public void mysqlFromString() throws Exception {
-        String src = " public   class TimeEvent {\n" + "        private long startDate;\n"
-                     + "        private long endDate;\n" + "        //history,holiday\n"
-                     + "        private String type;\n" + "        private String body;\n"
-                     + "        private String extra;}";
+        String src = "public   class TimeEvent {\n" + "\n" + "        private long id;\n"
+                     + "        private long startDate;\n" + "        private long endDate;\n"
+                     + "        //history,holiday\n" + "        private String type;\n"
+                     + "        private String body;\n" + "        private String extra;}";
         MysqlSchemaCodemaConfig config = new MysqlSchemaCodemaConfig();
         config.setPrimaryKey("startDate");
         new Codema().source(JavaClassSourceParser.fromClassSrcString(src))

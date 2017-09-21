@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
  */
 @Sentence("var Delegate = @config.parseDestClassName(from);")
 @Sentence("var Interface0 = @config.findImplementInterfacesAsString(from);")
+@Sentence("if(strutil.length(Interface0)>0){Delegate = Delegate + ' implements ' + Interface0;}")
 @Service
-public class $Delegate_  implements $Interface0_ {
+public class $Delegate_{
     @Autowired
     @Sentence("var TemplateClass = srcClassName;")
     @Sentence("var templateClass = srcClassNameUncapitalized;")

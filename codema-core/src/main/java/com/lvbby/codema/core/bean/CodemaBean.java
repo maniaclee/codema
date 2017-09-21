@@ -1,6 +1,7 @@
 package com.lvbby.codema.core.bean;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,9 +17,15 @@ public class CodemaBean {
     private String id;
     private Object resource;
     private List<Class> types;
+    private CommonCodemaConfig config;
 
     public CodemaBean(Object obj) {
         setResource(obj);
+    }
+
+    public CodemaBean bindConfig(CommonCodemaConfig config){
+        setConfig(config);
+        return this;
     }
 
     public void initType(boolean includeSuperClass, boolean includeInterface) {
@@ -72,5 +79,23 @@ public class CodemaBean {
 
     public boolean match(String id, Class cLass) {
         return match(id) && match(cLass);
+    }
+
+    /**
+     * Getter method for property   config.
+     *
+     * @return property value of config
+     */
+    public CommonCodemaConfig getConfig() {
+        return config;
+    }
+
+    /**
+     * Setter method for property   config .
+     *
+     * @param config  value to be assigned to property config
+     */
+    public void setConfig(CommonCodemaConfig config) {
+        this.config = config;
     }
 }

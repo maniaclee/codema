@@ -17,6 +17,7 @@ import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
+import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
@@ -47,7 +48,7 @@ public class LvbbyAppTest extends BaseTest {
         CommonCodemaConfig config = new CommonCodemaConfig();
         config.setAuthor("lee");
         config.addResultHandler(PrintResultHandler.class)
-            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_merge))
+//            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_merge))
             .addResultHandler(JavaRegisterResultHandler.class);
 
         JavaBasicCodemaConfig java = config.copy(JavaBasicCodemaConfig.class);
@@ -111,7 +112,7 @@ public class LvbbyAppTest extends BaseTest {
         CommonCodemaConfig config = new CommonCodemaConfig();
         config.setAuthor("lee");
         config.addResultHandler(PrintResultHandler.class)
-            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_merge))
+//            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_merge))
             .addResultHandler(JavaRegisterResultHandler.class);
 
         JavaBasicCodemaConfig java = config.copy(JavaBasicCodemaConfig.class);
@@ -127,15 +128,17 @@ public class LvbbyAppTest extends BaseTest {
 
         //dao & xml mapper & dal config & mybatis xml config
         JavaMybatisCodemaConfig mybatis = java.copy(JavaMybatisCodemaConfig.class);
-        mybatis.setIdQuery(javaClass -> javaClass.getFields().stream()
-            .filter(javaField -> javaField.getName().equals("nameCamel")).findAny().orElse(null));
         mybatis.setMapperDir("mapper");
         mybatis.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Mapper"));
         mybatis.setFromPackage(beanCodemaConfig.getDestPackage());
         mybatis.setConfigPackage(mybatis.relativePackage("config"));
         mybatis.addSubDestPackage("dao");
 
-        new Codema().withSource(source())
+        String javaSrc = " public   class TimeEvent {\n" + "        private long startDate;\n"
+                         + "        private long endDate;\n" + "        //history,holiday\n"
+                         + "        private String type;\n" + "        private String body;\n"
+                         + "        private String extra;}";
+        new Codema().source(JavaClassSourceParser.fromClassSrcString(javaSrc))
             .bind(beanCodemaConfig).bind(mybatis)
             .run();
     }

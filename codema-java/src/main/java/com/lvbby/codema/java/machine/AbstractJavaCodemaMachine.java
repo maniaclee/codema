@@ -5,6 +5,7 @@ import com.lvbby.codema.core.AbstractCodemaMachine;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -17,9 +18,23 @@ public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig>
     @Override
     public void code(CodemaContext context, T config) throws Exception {
         preCode(context, config);
-        //根据from捞取要处理的bean作为入口对象
-        for (JavaClass javaClass : findTargetJavaClasses(context, config)) {
-            codeEach(context, config, javaClass);
+        //捞取
+        if (StringUtils.isBlank(config.getFromPackage())) {
+            List<JavaClass> beans = context.getCodemaBeanFactory().getBeans(JavaClass.class,
+                codemaBean -> codemaBean.getId().startsWith(config.getFromPackage()));
+            for (JavaClass javaClass : beans) {
+                codeEach(context, config, javaClass);
+            }
+            return;
+        }
+        List froms = super.loadFrom(context, config);
+        if(CollectionUtils.isNotEmpty(froms)){
+            for (Object from : froms) {
+                if(from instanceof JavaClass){
+                    codeEach(context, config, (JavaClass) from);
+                }
+            }
+            return;
         }
     }
 
@@ -35,7 +50,7 @@ public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig>
     private List<JavaClass> findTargetJavaClasses(CodemaContext context, T config) {
         String fromPackage = config.getFromPackage();
         if (StringUtils.isBlank(fromPackage))
-            return Lists.newArrayList((JavaClass) context.getSource());
+            return Lists.newArrayList();
         return context.getCodemaBeanFactory().getBeans(JavaClass.class,
             codemaBean -> codemaBean.getId().startsWith(fromPackage));
     }
