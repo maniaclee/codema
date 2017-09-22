@@ -42,6 +42,7 @@ public class JavaSrcTemplateParser {
         map.put("config", config);
         map.put(_getInnerTemplateClassVar($Null_.class), "");
         map.put(_getInnerTemplateClassVar($NullAnnotation_.class), "");
+        map.put("javautil",  new JavaTemplateEngineUtils());
         return map;
     }
 

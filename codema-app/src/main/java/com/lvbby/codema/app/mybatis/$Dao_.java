@@ -29,6 +29,7 @@ public interface $Dao_ {
     @Select("select * from ${table.nameInDb} where ${id.nameInDb} = #{id}")
     $Class_ queryById(@Param("id") $Class1_ id);
 
+    @Sentence("Class1 = @javautil.getBoxingType(table.primaryKeyField.javaType);")
     List<$Class_> queryByIds(List<$Class1_> ids);
     //<%%>
 }

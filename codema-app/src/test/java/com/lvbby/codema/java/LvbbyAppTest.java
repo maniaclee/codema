@@ -134,7 +134,9 @@ public class LvbbyAppTest extends BaseTest {
         mybatis.setConfigPackage(mybatis.relativePackage("config"));
         mybatis.addSubDestPackage("dao");
 
-        String javaSrc = " public   class TimeEvent {\n" + "        private long startDate;\n"
+        String javaSrc = " public   class TimeEvent {\n" + "        "
+                         +"        private long id;\n"
+                         + "private long startDate;\n"
                          + "        private long endDate;\n" + "        //history,holiday\n"
                          + "        private String type;\n" + "        private String body;\n"
                          + "        private String extra;}";

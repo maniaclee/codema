@@ -31,7 +31,7 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     //选取源：某个config对应的codemaMachine的输出
     private CommonCodemaConfig  fromConfig;
     //从source中获取
-    private boolean             fromSource     = false;
+    private boolean             fromSource     = true;
 
     private boolean             inited         = false;
 

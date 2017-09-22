@@ -28,9 +28,11 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
     public void codeEach(CodemaContext codemaContext, JavaMybatisCodemaConfig config, JavaClass cu) throws Exception {
         SqlTable sqlTable = getSqlTable(cu, config.getIdQuery());
         validate(sqlTable);
+
         TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $Dao_.class, cu)
                 .bind("table", sqlTable);
         config.handle(codemaContext, daoTemplateResult);
+
         String xml = IOUtils.toString(JavaMybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
         config.handle(codemaContext,
                 JavaXmlTemplateResult.ofResource(config, xml, cu)
@@ -67,7 +69,6 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
             SqlColumn sqlColumn =SqlColumn.instance(javaField.getName());
             sqlColumn.setJavaType(javaField.getType().getJavaType());
             sqlColumn.setJavaTypeName(javaField.getType().getName());
-            sqlColumn.setPrimaryKey(javaField.getName().equalsIgnoreCase("id"));
             return sqlColumn;
         }).collect(Collectors.toList()));
         //id field
@@ -81,6 +82,9 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
                     idColumns.get(0).setPrimaryKey(true);
                 }
             }
+        }
+        if(re.getPrimaryKeyField()==null){
+            re.buildPrimaryKeyField("id");
         }
 
         re.setPrimaryKeyField(re.getFields().stream().filter(SqlColumn::isPrimaryKey).findFirst().orElse(null));

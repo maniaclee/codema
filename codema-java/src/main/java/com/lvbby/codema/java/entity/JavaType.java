@@ -14,6 +14,7 @@ import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,21 +36,18 @@ public class JavaType {
      * 根据字符串映射到常用java类
      */
     public static Map<String,Class> javaTypeSymbolMap= Maps.newHashMap();
-    public static Set<Class>         primitives        = Sets.newHashSet(
-            int.class,
-            short.class,
-            long.class,
-            byte.class,
-            double.class,
-            float.class,
-            char.class);
-    public static Set<Class>         boxingTypes        = Sets.newHashSet(
-            Integer.class,
-            Short.class,
-            Long.class,
-            Byte.class,
-            Double.class,
-            Float.class);
+    public static Map<Class, Class>  primitives        = new HashMap<Class, Class>() {
+                                                           {
+                                                               put(int.class, Integer.class);
+                                                               put(short.class, Short.class);
+                                                               put(long.class, Long.class);
+                                                               put(byte.class, Byte.class);
+                                                               put(double.class, Double.class);
+                                                               put(float.class, Float.class);
+                                                               put(char.class, null);
+                                                           }
+                                                       };
+    public static Set<Class>         boxingTypes        = primitives.values().stream().filter(aClass -> aClass!=null).collect(Collectors.toSet());
     public static Set<Class>         collection        = Sets.newHashSet(
             Map.class,
             Set.class,
@@ -63,17 +62,20 @@ public class JavaType {
             String.class
     );
     static {
-        addJavaSymbols(common);
-        addJavaSymbols(collection);
-        addJavaSymbols(boxingTypes);
-        addJavaSymbols(primitives);
+        Consumer<Collection<Class>> addJavaSymbols = classes -> classes.forEach(a->addJavaSymbol(a));
+        addJavaSymbols.accept(common);
+        addJavaSymbols.accept(collection);
+        addJavaSymbols.accept(boxingTypes);
+        addJavaSymbols.accept(primitives.keySet());
     }
 
-    private static void addJavaSymbols(Collection<Class> classes){
-        for (Class clz : classes) {
-            addJavaSymbol(clz);
-        }
+
+    public static Class  getBoxingType(Class clz){
+        if(!clz.isPrimitive())
+            return clz;
+        return primitives.get(clz);
     }
+
     public static void addJavaSymbol(Class clz){
         javaTypeSymbolMap.put(clz.getSimpleName(),clz);
     }
