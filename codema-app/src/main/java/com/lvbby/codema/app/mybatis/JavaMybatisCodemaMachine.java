@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMybatisCodemaConfig> {
 
     public void codeEach(CodemaContext codemaContext, JavaMybatisCodemaConfig config, JavaClass cu) throws Exception {
-        SqlTable sqlTable = getSqlTable(cu, config.getIdQuery());
+        SqlTable sqlTable = getSqlTable((JavaClass) codemaContext.getSource(), config.getIdQuery());
         validate(sqlTable);
 
         TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $Dao_.class, cu)

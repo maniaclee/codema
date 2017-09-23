@@ -113,6 +113,7 @@ public class LvbbyAppTest extends BaseTest {
         config.setAuthor("lee");
         config.addResultHandler(PrintResultHandler.class)
 //            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_merge))
+            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_direct))
             .addResultHandler(JavaRegisterResultHandler.class);
 
         JavaBasicCodemaConfig java = config.copy(JavaBasicCodemaConfig.class);
@@ -122,15 +123,15 @@ public class LvbbyAppTest extends BaseTest {
         java.setDestSrcRoot(java.relativeFile("src/main/java"));
 
         //entity
-        JavaBeanCodemaConfig beanCodemaConfig = java.copy(JavaBeanCodemaConfig.class);
-        beanCodemaConfig.addSubDestPackage("entity");
-        beanCodemaConfig.setJavaClassNameParser(JavaClassNameParserFactory.fromSuffix("Entity"));
+        JavaBeanCodemaConfig bean = java.copy(JavaBeanCodemaConfig.class);
+        bean.addSubDestPackage("entity");
+        bean.setJavaClassNameParser(JavaClassNameParserFactory.fromSuffix("Entity"));
 
         //dao & xml mapper & dal config & mybatis xml config
         JavaMybatisCodemaConfig mybatis = java.copy(JavaMybatisCodemaConfig.class);
         mybatis.setMapperDir("mapper");
         mybatis.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Mapper"));
-        mybatis.setFromPackage(beanCodemaConfig.getDestPackage());
+        mybatis.setFromConfig(bean);
         mybatis.setConfigPackage(mybatis.relativePackage("config"));
         mybatis.addSubDestPackage("dao");
 
@@ -139,9 +140,12 @@ public class LvbbyAppTest extends BaseTest {
                          + "private long startDate;\n"
                          + "        private long endDate;\n" + "        //history,holiday\n"
                          + "        private String type;\n" + "        private String body;\n"
-                         + "        private String extra;}";
+                         + "        private String extra;\n"
+                         + "        private Date addTime ;\n"
+                         + "        private Date updateTime ;\n"
+                         + "}";
         new Codema().source(JavaClassSourceParser.fromClassSrcString(javaSrc))
-            .bind(beanCodemaConfig).bind(mybatis)
+            .bind(bean).bind(mybatis)
             .run();
     }
 
