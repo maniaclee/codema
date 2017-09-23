@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by lipeng on 2016/12/24.
  */
-@Sentence("var Convert = config.destClassName;")
+@Sentence("var Convert = destClassName;")
 public class $Convert_ {
 
     // <%

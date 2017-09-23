@@ -28,13 +28,12 @@ public class JavaSrcTemplateParser {
 
     public Map getArgs4te(JavaClass src, JavaBasicCodemaConfig config) {
         HashMap<Object, Object> map = Maps.newHashMap();
-        map.put("destClassName", config.getDestClassName());
         if (src != null) {
             map.put("source", CodemaContextHolder.getCodemaContext().getSource());
             map.put("from", src);
             map.put("srcClassName", src.getName());
             map.put("srcClassNameUncapitalized", JavaLexer.camel(src.getName()));
-            if (StringUtils.isBlank(config.getDestClassName()) && config.getJavaClassNameParser() != null) {
+            if (config.getJavaClassNameParser() != null) {
                 map.put("destClassName", config.getJavaClassNameParser().getClassName(
                         (JavaClass) CodemaContextHolder.getCodemaContext().getSource(),src));
             }

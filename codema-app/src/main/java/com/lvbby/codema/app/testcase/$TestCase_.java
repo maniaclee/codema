@@ -21,20 +21,19 @@ import static com.lvbby.codema.java.template.$Symbols_.$class_;
  * Created by lipeng on 2016/12/24.
  * 朕心甚慰！！！！
  */
-//<% if(springBootConfig!=null){ %>
+@Sentence("var TestCase = destClassName;")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootApplication
 @EnableAspectJAutoProxy
-@ContextConfiguration(classes = {$src__name_Test.class})
-// <%}%>
-public class $src__name_Test {
+@ContextConfiguration(classes = { $TestCase_.class})
+public class $TestCase_ {
 
     @Sentence("var TemplateClass = srcClassName;")
     @Sentence("var templateClass = srcClassNameUncapitalized;")
     @Autowired
     private $TemplateClass_ $templateClass_;
 
-    @Foreach(value = " m in src.methods", body = {
+    @Foreach(value = " m in from.methods", body = {
             "var invoke = m.name",
             "var Class1 = m.returnType",
             "var class = @m.getArgsDefaultValue()",
@@ -59,7 +58,7 @@ public class $src__name_Test {
         assert re != null;
         //<%}%>
 
-        System.out.println(JSON.toJSONString("[$src__name_.${invoke} return ===>]  " + re));
+        System.out.println(JSON.toJSONString("[$TestCase_.${invoke} return ===>]  " + re));
         //<%}else{%>
         $templateClass_.$invoke_($class_);
         //<%}%>

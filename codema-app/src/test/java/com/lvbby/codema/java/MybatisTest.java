@@ -65,7 +65,7 @@ public class MybatisTest extends BaseTest {
         //bean ---> DTO
         JavaConvertCodemaConfig convert = java.copy(JavaConvertCodemaConfig.class);
         convert.addSubDestPackage("util");
-        convert.setDestClassName("BuildUtils");
+        convert.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
         convert.setFromPackage(beanCodemaConfig.getDestPackage());
         convert.setConvertToClassNameParser(JavaClassNameParserFactory.sourceSuffix("DTO"));//convert to DTO
 
@@ -81,7 +81,7 @@ public class MybatisTest extends BaseTest {
         JavaRepositoryCodemaConfig repo = java.copy(JavaRepositoryCodemaConfig.class);
         repo.addSubDestPackage("repo");
         repo.setFromPackage(mybatis.getDestPackage());
-        repo.setConvertUtilsClass(convert.getDestClassName());
+        repo.setConvertUtilsClass(convert.getJavaClassNameParser());
 
         JavaInterfaceCodemaConfig service = java.copy(JavaInterfaceCodemaConfig.class);
         service.setFromPackage(repo.getDestPackage());

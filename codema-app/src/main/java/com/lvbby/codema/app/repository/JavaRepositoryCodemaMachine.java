@@ -2,6 +2,7 @@ package com.lvbby.codema.app.repository;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
@@ -20,7 +21,8 @@ import java.util.stream.Collectors;
 public class JavaRepositoryCodemaMachine extends AbstractJavaCodemaMachine<JavaRepositoryCodemaConfig> {
 
     public void codeEach(CodemaContext codemaContext, JavaRepositoryCodemaConfig config, JavaClass javaClass) throws Exception {
-        JavaClass buildUtil = codemaContext.findBeanBlur(JavaClass.class,config.getConvertUtilsClass());
+        JavaClass buildUtil = codemaContext.findBeanBlur(JavaClass.class,config.getConvertUtilsClass().getClassName(
+                (JavaClass) codemaContext.getSource(),javaClass));
         Validate.notNull(buildUtil, "buildClass not found");
 
         List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> new RepositoryMethod(javaMethod, buildUtil)).collect(Collectors.toList());

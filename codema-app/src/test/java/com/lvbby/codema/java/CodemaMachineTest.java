@@ -16,6 +16,7 @@ import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.core.tool.mysql.JavaClassJdbcTableFactory;
+import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.Bean;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
@@ -134,7 +135,7 @@ public class CodemaMachineTest extends BaseTest {
         config.setResultHandlers(
             Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
         config.setDestPackage("com.lvbby");
-        config.setDestClassName("DestBean");
+        config.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("DestBean"));
 
         //以JavaMockTestCodemaConfig.class为模板
         JavaClassSourceParser sourceLoader = JavaClassSourceParser

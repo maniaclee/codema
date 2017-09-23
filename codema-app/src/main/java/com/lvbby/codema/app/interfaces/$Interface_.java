@@ -7,7 +7,7 @@ import com.lvbby.codema.java.template.annotaion.Sentence;
 /**
  * Created by lipeng on 2016/12/24.
  */
-@Sentence("var Interface = @config.parseDestClassName(from);")
+@Sentence("var Interface = destClassName;")
 public interface $Interface_ {
 
 

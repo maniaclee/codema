@@ -19,7 +19,7 @@ public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig>
     public void code(CodemaContext context, T config) throws Exception {
         preCode(context, config);
         //捞取
-        if (StringUtils.isBlank(config.getFromPackage())) {
+        if (StringUtils.isNotBlank(config.getFromPackage())) {
             List<JavaClass> beans = context.getCodemaBeanFactory().getBeans(JavaClass.class,
                 codemaBean -> codemaBean.getId().startsWith(config.getFromPackage()));
             for (JavaClass javaClass : beans) {

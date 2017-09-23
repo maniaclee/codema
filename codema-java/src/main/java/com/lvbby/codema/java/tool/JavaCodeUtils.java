@@ -103,7 +103,6 @@ public class JavaCodeUtils {
      * <code>
      * JavaBasicCodemaConfig javaBasicCodemaConfig = new JavaBasicCodemaConfig();
      * javaBasicCodemaConfig.setAuthor("");
-     * javaBasicCodemaConfig.setDestClassName("");
      * javaBasicCodemaConfig.setDestFile("");
      * </code>
      *

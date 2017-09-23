@@ -71,8 +71,8 @@ public class LvbbyAppTest extends BaseTest {
         //bean ---> DTO
         JavaConvertCodemaConfig convert = java.copy(JavaConvertCodemaConfig.class);
         convert.addSubDestPackage("utils");
-        convert.setDestClassName("BuildUtils");
-        convert.setFromPackage(beanCodemaConfig.getDestPackage());
+        convert.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
+        convert.setFromConfig(beanCodemaConfig);
         convert.setConvertToClassNameParser(JavaClassNameParserFactory.sourceSuffix("DTO"));//convert to DTO
 
         //dao & xml mapper & dal config & mybatis xml config
@@ -81,24 +81,24 @@ public class LvbbyAppTest extends BaseTest {
             .filter(javaField -> javaField.getName().equals("nameCamel")).findAny().orElse(null));
         mybatis.setMapperDir("mapper");
         mybatis.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Mapper"));
-        mybatis.setFromPackage(beanCodemaConfig.getDestPackage());
+        mybatis.setFromConfig(beanCodemaConfig);
         mybatis.setConfigPackage(mybatis.relativePackage("config"));
         mybatis.addSubDestPackage("dao");
 
         JavaRepositoryCodemaConfig repo = java.copy(JavaRepositoryCodemaConfig.class);
         repo.addSubDestPackage("repo");
         repo.setFromPackage(mybatis.getDestPackage());
-        repo.setConvertUtilsClass(convert.getDestClassName());
+        repo.setConvertUtilsClass(convert.getJavaClassNameParser());
         repo.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Repository"));
 
         JavaInterfaceCodemaConfig service = java.copy(JavaInterfaceCodemaConfig.class);
         service.setDestSrcRoot(dtoBeanCodemaConfig.getDestSrcRoot());
-        service.setFromPackage(repo.getDestPackage());
+        service.setFromConfig(repo);
         service.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Service"));
         service.addSubDestPackage("api.service");
 
         JavaDelegateCodemaConfig serviceImpl = java.copy(JavaDelegateCodemaConfig.class);
-        serviceImpl.setFromPackage(repo.getDestPackage());
+        serviceImpl.setFromConfig(repo);
         serviceImpl.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("ServiceImpl"));
         serviceImpl.addSubDestPackage("service");
         serviceImpl.addImplementInterface(service.getJavaClassNameParser());

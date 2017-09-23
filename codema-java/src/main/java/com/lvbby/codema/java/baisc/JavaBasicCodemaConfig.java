@@ -29,8 +29,6 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
      */
     private String destSrcRoot;
     private String destResourceRoot;
-
-    private String destClassName;
     /***
      * 获取目标bean的名称
      */
@@ -93,9 +91,6 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
      * @return
      */
     public String parseDestClassName(JavaClass javaClass){
-        if(StringUtils.isNotBlank(destClassName)){
-            return destClassName;
-        }
         return javaClassNameParser.getClassName(
                 (JavaClass) CodemaContextHolder.getCodemaContext().getSource(),javaClass);
     }
@@ -132,14 +127,6 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
 
     public void setDestPackage(String destPackage) {
         this.destPackage = destPackage;
-    }
-
-    public String getDestClassName() {
-        return destClassName;
-    }
-
-    public void setDestClassName(String destClassName) {
-        this.destClassName = destClassName;
     }
 
     public String getFromPackage() {

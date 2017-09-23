@@ -53,13 +53,11 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         if (inited) {
             return;
         }
-//        if (StringUtils.isNotBlank(destRootDir)) {
-//            //转化为标准路径
-//            File file = FileUtils.parseFileRoot(destRootDir);
-//            Validate.isTrue(file.exists(), String.format("dest root dir not exist:%s", destRootDir));
-//            destRootDir = file.getAbsolutePath();
-//        }
+        doInit();
         inited = true;
+    }
+
+    protected void doInit() {
     }
 
     protected String parseFileWithParent(String parent, String sub, String message) {

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
  * Created by lipeng on 2016/12/24.
  */
-@Sentence("var Delegate = @config.parseDestClassName(from);")
+@Sentence("var Delegate = destClassName;")
 @Sentence("var Interface0 = @config.findImplementInterfacesAsString(from);")
 @Sentence("if(strutil.length(Interface0)>0){Delegate = Delegate + ' implements ' + Interface0;}")
 @Service

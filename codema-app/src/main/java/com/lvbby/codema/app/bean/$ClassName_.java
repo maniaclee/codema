@@ -11,8 +11,7 @@ import java.io.Serializable;
  */
 @Sentence("var ClassName  = destClassName;")
 public class $ClassName_ implements Serializable {
-
-
+    private static final long serialVersionUID = -1;
     @Foreach(value = "f in from.fields", body = {
             "var Class1 = f.type",
             "var class1 = f.name"
