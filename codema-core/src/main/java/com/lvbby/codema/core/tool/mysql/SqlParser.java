@@ -14,6 +14,7 @@ import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +37,7 @@ public class SqlParser {
 
     private static SqlColumn buildColumn(MySqlSQLColumnDefinition column) {
         SqlColumn sqlColumn =  SqlColumn.instance(column.getName().getSimpleName());
-        sqlColumn.setComment(column.getComment().toString());
+        sqlColumn.setComment(Optional.ofNullable(column.getComment()).map(sqlExpr -> sqlExpr.toString()).orElse(null));
         sqlColumn.setNullable(!hasConstrain(column, NotNullConstraint.class));
         sqlColumn.setPrimaryKey(hasConstrain(column, SQLColumnPrimaryKey.class));
         sqlColumn.setUnique(hasConstrain(column, SQLColumnUniqueKey.class));
