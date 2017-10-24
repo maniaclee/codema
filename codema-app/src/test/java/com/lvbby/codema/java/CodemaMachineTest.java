@@ -88,8 +88,8 @@ public class CodemaMachineTest extends BaseTest {
     @Test
     public void convert() throws Exception {
         JavaConvertCodemaConfig config = _newConfig(JavaConvertCodemaConfig.class);
-        config.setConvertToClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
-        exec(config);
+        config.setConvertToClassNameParser(JavaClassNameParserFactory.className("RtSubjectQuestionRelVo"));
+        Codema.exec(config, JavaClassSourceParser.fromFile(new File("/Users/dushang.lp/workspace/finrtcenter/app/common/dal/src/main/java/com/alipay/finrtcenter/common/dal/zcbconfig/dataobject/RtSubjectQuestionRelDO.java")));
     }
 
     @Test
