@@ -25,6 +25,7 @@ public class SqlColumn {
     private boolean unique = false;
 
     public static SqlColumn instance(String name){
+        name=name.replaceAll("`","");
         SqlColumn sqlColumn = new SqlColumn();
         sqlColumn.setNameCamel(CaseFormatUtils.toCaseFormat(CaseFormat.LOWER_CAMEL,name));
         sqlColumn.setNameInDb(CaseFormatUtils.toCaseFormat(CaseFormat.LOWER_UNDERSCORE, name));
