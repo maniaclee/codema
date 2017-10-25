@@ -25,6 +25,7 @@ public class SqlTable {
     private SqlColumn primaryKeyField;
 
     public static SqlTable instance(String table) {
+        table=table.replace("`","");
         SqlTable sqlTable = new SqlTable();
         sqlTable.setName(CaseFormatUtils.toCaseFormat(CaseFormat.UPPER_CAMEL,table));
         sqlTable.setNameInDb(CaseFormatUtils.toCaseFormat(CaseFormat.LOWER_UNDERSCORE,table));
