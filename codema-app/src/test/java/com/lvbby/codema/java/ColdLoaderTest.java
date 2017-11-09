@@ -3,9 +3,7 @@ package com.lvbby.codema.java;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.common.collect.Lists;
-import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.app.testcase.JavaTestcaseCodemaMachine;
-import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.app.testcase.mock.MockMethod;
 import com.lvbby.codema.core.Codema;
@@ -45,24 +43,7 @@ public class ColdLoaderTest {
         CodemaGlobalContext.set(CodemaGlobalContextKey.directoryRoot, Lists.newArrayList(f.getAbsolutePath()));
     }
 
-    @Test
-    public void codemaApi() throws Exception {
-        JavaTestcaseCodemaConfig config = new JavaTestcaseCodemaConfig();
-        config.setAuthor("maniaclee");
-        config.setSpring(true);
-        //        config.setFrom("java://file//Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/testcase/JavaTestcaseCodemaConfig.java");
-//        config.setFrom("java://file//Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/mybatis/JavaMybatisCodemaConfig.java");
-        config.setResultHandlers(Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
-        config.setDestPackage("com.lvbby");
-        Codema.exec(config);
-    }
 
-    @Test
-    public void templateEngineTest() throws Exception {
-        JavaTestcaseCodemaConfig config = _newConfig(JavaTestcaseCodemaConfig.class);
-        config.setSpring(true);
-        Codema.exec(config);
-    }
 
     private <T extends JavaBasicCodemaConfig> T _newConfig(Class<T> clz) throws Exception {
         T config = clz.newInstance();
@@ -73,11 +54,6 @@ public class ColdLoaderTest {
         return config;
     }
 
-    @Test
-    public void mockTest() throws Exception {
-        JavaMockTestCodemaConfig config = _newConfig(JavaMockTestCodemaConfig.class);
-        Codema.exec(config);
-    }
 
     @Test
     public void mockUnitTest() throws Exception {

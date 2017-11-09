@@ -1,29 +1,44 @@
 package com.lvbby.codema.core;
 
-import com.lvbby.codema.core.config.*;
-import com.lvbby.codema.core.source.*;
-import com.lvbby.codema.core.utils.*;
-import java.lang.reflect.*;
-import org.apache.commons.lang3.*;
+import com.google.common.collect.Lists;
+import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.config.NotBlank;
+import com.lvbby.codema.core.source.SourceLoader;
+import com.lvbby.codema.core.utils.ReflectionUtils;
+import org.apache.commons.lang3.Validate;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * Created by lipeng on 16/12/23.
  */
 public class Codema {
-    private CodemaContext codemaContext = new CodemaContext();
+    /***
+     * 根据source分批的任务
+     */
+    private List<CodemaJob> jobs = Lists.newLinkedList();
 
-    public static <T extends CommonCodemaConfig> void exec(T config) throws Exception {
-        new Codema().bind(config).run();
+    public static <T extends CommonCodemaConfig> void exec(T config, SourceLoader sourceLoader)
+            throws Exception {
+        sourceLoader(sourceLoader).bind(config).run();
     }
 
-    public static <T extends CommonCodemaConfig> void exec(T config, SourceLoader... sourceLoaders) throws Exception {
-        Codema codema = new Codema().bind(config);
-        if (sourceLoaders != null) {
-            for (SourceLoader sourceLoader : sourceLoaders) {
-                codema.source(sourceLoader);
+    public static Codema source(Object source) {
+        Codema codema = new Codema();
+        if (source instanceof List) {
+            for (Object s : ((List) source)) {
+                codema.jobs.add(new CodemaJob(s));
             }
+        } else {
+            codema.jobs.add(new CodemaJob(source));
         }
-        codema.run();
+        return codema;
+    }
+
+    public static Codema sourceLoader(SourceLoader sourceLoader) throws Exception {
+        return source(sourceLoader.loadSource());
     }
 
     /***
@@ -34,58 +49,93 @@ public class Codema {
      * @return
      */
     public <T extends CommonCodemaConfig> Codema bind(CodemaMachine<T> configBinder, T config) {
-        codemaContext.getRunMap().put(configBinder, config);
+        for (CodemaJob job : jobs) {
+            job.codemaContext.getRunMap().put(configBinder, config);
+        }
         return this;
     }
 
     public <T extends CommonCodemaConfig> Codema bind(T config) {
-        CodemaMachine instance = config.loadCodemaMachine();
-        Validate.notNull(instance, "no codema machine found for config %s", config.getClass().getSimpleName());
-        codemaContext.getRunMap().put(instance, config);
+        for (CodemaJob job : jobs) {
+            CodemaMachine instance = config.loadCodemaMachine();
+            Validate.notNull(instance, "no codema machine found for config %s",
+                    config.getClass().getSimpleName());
+            job.codemaContext.getRunMap().put(instance, config);
+        }
         return this;
     }
 
-    public Codema withSource(Object object) {
-        Validate.isTrue(!(object instanceof SourceLoader),"SourceLoader");
-        codemaContext.setSource(object);
-        return this;
-    }
-
-    public Codema source(SourceLoader sourceLoader) throws Exception {
-        withSource(sourceLoader.loadSource());
-         return this;
-    }
-
+    /***
+     * 根据source，分批执行
+     * @throws Exception
+     */
     public void run() throws Exception {
-        CodemaContextHolder.setCodemaContext(codemaContext);
-        try {
-            Validate.notNull(codemaContext.getSource(),"no source found");
-            checkConfig();
-            /** 执行 */
-            for (CodemaMachine codemaMachine : codemaContext.getRunMap().keySet()) {
-                for (CommonCodemaConfig config : codemaContext.getRunMap().get(codemaMachine)) {
-                    //初始化config
-                    config.init();
-                    try {
-                        codemaMachine.code(codemaContext, config);
-                    } catch (Error e) {
-                        throw new RuntimeException(String.format("error machine[%s], error[%s]", codemaMachine.getClass().getName(),e.getMessage()),e);
-                    }
-                }
-            }
-        } finally {
-            CodemaContextHolder.clear();
+        for (CodemaJob job : jobs) {
+            job.run();
         }
     }
-    private void checkConfig() throws Exception {
-        for (CommonCodemaConfig commonCodemaConfig : codemaContext.getRunMap().values()) {
-            //NotBlank
-            for (Field field : ReflectionUtils.getAllFields(commonCodemaConfig.getClass(),
-                    field -> field.isAnnotationPresent(NotBlank.class))) {
-                field.setAccessible(true);
-                Object o = field.get(commonCodemaConfig);
-                if (o instanceof String) {
-                    Validate.notBlank(o.toString(), "%s.%s can't be blank");
+
+    /***
+     * 并发执行，注意异常
+     * @param executor
+     */
+    public void runParallel(Executor executor) {
+        for (CodemaJob job : jobs) {
+            executor.execute(() -> {
+                try {
+                    job.run();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+    }
+
+    private static class CodemaJob {
+        private CodemaContext codemaContext = new CodemaContext();
+
+        public CodemaJob(Object source) {
+            codemaContext.setSource(source);
+        }
+
+        public CodemaContext getCodemaContext() {
+            return codemaContext;
+        }
+
+        public void run() throws Exception {
+            CodemaContextHolder.setCodemaContext(codemaContext);
+            try {
+                Validate.notNull(codemaContext.getSource(), "no source found");
+                checkConfig();
+                /** 执行 */
+                for (CodemaMachine codemaMachine : codemaContext.getRunMap().keySet()) {
+                    for (CommonCodemaConfig config : codemaContext.getRunMap().get(codemaMachine)) {
+                        //初始化config
+                        config.init();
+                        try {
+                            codemaMachine.code(codemaContext, config);
+                        } catch (Error e) {
+                            throw new RuntimeException(String.format("error machine[%s], error[%s]",
+                                    codemaMachine.getClass().getName(), e.getMessage()), e);
+                        }
+                    }
+                }
+            } finally {
+                CodemaContextHolder.clear();
+            }
+        }
+
+        private void checkConfig() throws Exception {
+            for (CommonCodemaConfig commonCodemaConfig : codemaContext.getRunMap().values()) {
+                //NotBlank
+                for (Field field : ReflectionUtils.getAllFields(commonCodemaConfig.getClass(),
+                        field -> field.isAnnotationPresent(NotBlank.class))) {
+                    field.setAccessible(true);
+                    Object o = field.get(commonCodemaConfig);
+                    if (o instanceof String) {
+                        Validate.notBlank(o.toString(), "%s.%s can't be blank");
+                    }
                 }
             }
         }

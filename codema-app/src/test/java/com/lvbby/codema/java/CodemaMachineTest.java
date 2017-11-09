@@ -16,7 +16,6 @@ import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.core.tool.mysql.JavaClassJdbcTableFactory;
-import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.Bean;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
@@ -118,12 +117,12 @@ public class CodemaMachineTest extends BaseTest {
                      + "        private String body;\n" + "        private String extra;}";
         MysqlSchemaCodemaConfig config = new MysqlSchemaCodemaConfig();
         config.setPrimaryKey("startDate");
-        new Codema().source(JavaClassSourceParser.fromClassSrcString(src))
+        Codema.sourceLoader(JavaClassSourceParser.fromClassSrcString(src))
             .bind(config.addResultHandler(PrintResultHandler.class)).run();
     }
     @Test
     public void mysql() throws Exception {
-        new Codema().withSource(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
+         Codema.source(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
             .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
     }
 

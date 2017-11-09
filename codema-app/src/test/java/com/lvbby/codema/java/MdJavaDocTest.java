@@ -34,8 +34,7 @@ public class MdJavaDocTest extends BaseTest {
         md.addResultHandler(PrintResultHandler.class).addResultHandler(ClipBoardResultHandler.class);
         md.setMethod(method);
 
-        new Codema()
-                .source(JavaClassSourceParser.fromClassFullName(service))
+        Codema.sourceLoader(JavaClassSourceParser.fromClassFullName(service))
                 .bind(md)
                 .run();
     }

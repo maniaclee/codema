@@ -3,6 +3,7 @@ package com.lvbby.codema.java.result;
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
+import com.lvbby.codema.core.result.AbstractFileResult;
 import com.lvbby.codema.core.result.MergeCapableFileResult;
 import com.lvbby.codema.core.result.PrintableResult;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
@@ -17,7 +18,7 @@ import java.io.InputStream;
 /**
  * Created by lipeng on 2017/1/3.
  */
-public class JavaResult implements PrintableResult, MergeCapableFileResult {
+public class JavaResult extends AbstractFileResult implements PrintableResult, MergeCapableFileResult {
 
     private CompilationUnit unit;
     private JavaBasicCodemaConfig config;

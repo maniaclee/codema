@@ -1,8 +1,7 @@
 package com.lvbby.codema.java.source;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.lvbby.codema.core.source.SourceLoader;
-import com.lvbby.codema.core.tool.mysql.SqlParser;
+import com.lvbby.codema.core.source.SingleSourceLoader;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -13,12 +12,11 @@ import java.io.File;
 /**
  * Created by lipeng on 17/1/9.
  */
-public class JavaClassSourceParser implements SourceLoader<JavaClass> {
+public class JavaClassSourceParser extends SingleSourceLoader<JavaClass> {
 
-    private JavaClass clz;
 
     private JavaClassSourceParser(JavaClass clz) {
-        this.clz = clz;
+        setSource(clz);
     }
 
     public static JavaClassSourceParser fromClass(Class clz) throws Exception {
@@ -53,8 +51,4 @@ public class JavaClassSourceParser implements SourceLoader<JavaClass> {
                 JavaClassUtils.convert(compilationUnit));
     }
 
-    @Override
-    public JavaClass loadSource() throws Exception {
-        return clz;
-    }
 }

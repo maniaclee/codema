@@ -1,9 +1,9 @@
 package com.lvbby.codema.app.mybatis;
 
-import com.google.common.base.CaseFormat;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.BasicResult;
+import com.lvbby.codema.core.result.WriteMode;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -48,12 +48,14 @@ public class JavaMybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaMyba
         config.handle(codemaContext,
                 new BasicResult().result(loadResourceAsString("mybatis.xml"))
                         .filePath(config.getDestResourceRoot(), "mybatis.xml")
+                .writeMode(WriteMode.writeIfNoExist)
         );
 
         /** dal config */
         if (config.isNeedConfigClass()) {
             config.handle(codemaContext, new JavaTemplateResult(
-                new TemplateContext(DalConfig.class, config).pack(config.getConfigPackage())));
+                    new TemplateContext(DalConfig.class, config).pack(config.getConfigPackage()))
+                    .writeMode(WriteMode.writeIfNoExist));
         }
     }
 

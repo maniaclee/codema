@@ -68,7 +68,7 @@ public class JavaMdDocCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocC
         paramClz.getFields().stream().filter(fieldDeclaration -> fieldDeclaration.isStatic())
                 .forEach(fieldDeclaration -> paramClz.remove(fieldDeclaration));
         try {
-            return JavaClassSourceParser.fromClassSrc(compilationUnit).loadSource();
+            return JavaClassSourceParser.fromClassSrc(compilationUnit).loadSource().get(0);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

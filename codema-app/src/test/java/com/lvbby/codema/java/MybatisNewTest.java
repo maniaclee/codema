@@ -26,7 +26,7 @@ import java.io.File;
 /**
  * Created by dushang.lp on 2017/6/26.
  */
-public class MybatisTest extends BaseTest {
+public class MybatisNewTest extends BaseTest {
 
     @Before
     public void init() {

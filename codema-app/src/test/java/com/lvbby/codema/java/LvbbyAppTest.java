@@ -103,7 +103,7 @@ public class LvbbyAppTest extends BaseTest {
         serviceImpl.addSubDestPackage("service");
         serviceImpl.addImplementInterface(service.getJavaClassNameParser());
 
-        new Codema().withSource(source())
+        Codema.source(source())
             .bind(beanCodemaConfig).bind(dtoBeanCodemaConfig).bind(convert).bind(mybatis).bind(repo)
             .bind(service).bind(serviceImpl).run();
     }
@@ -113,7 +113,7 @@ public class LvbbyAppTest extends BaseTest {
         config.setAuthor("lee");
         config.addResultHandler(PrintResultHandler.class)
 //            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_merge))
-            .addResultHandler(new FileWriterResultHandler(FileWriterResultHandler.write_mode_direct))
+            .addResultHandler(new FileWriterResultHandler())
             .addResultHandler(JavaRegisterResultHandler.class);
 
         JavaBasicCodemaConfig java = config.copy(JavaBasicCodemaConfig.class);
@@ -144,7 +144,7 @@ public class LvbbyAppTest extends BaseTest {
                          + "        private Date addTime ;\n"
                          + "        private Date updateTime ;\n"
                          + "}";
-        new Codema().source(JavaClassSourceParser.fromClassSrcString(javaSrc))
+        Codema.sourceLoader(JavaClassSourceParser.fromClassSrcString(javaSrc))
             .bind(bean).bind(mybatis)
             .run();
     }

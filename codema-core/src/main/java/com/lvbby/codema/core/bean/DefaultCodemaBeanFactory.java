@@ -28,6 +28,16 @@ public class DefaultCodemaBeanFactory implements CodemaBeanFactory {
     }
 
     @Override
+    public void register(CodemaBeanRegister register) {
+        List<CodemaBean> objects = register.getObjects();
+        if(CollectionUtils.isNotEmpty(objects)){
+            for (CodemaBean bean : objects) {
+                register(bean);
+            }
+        }
+    }
+
+    @Override
     public <T> T getBean(String id) {
         if (StringUtils.isBlank(id))
             return null;

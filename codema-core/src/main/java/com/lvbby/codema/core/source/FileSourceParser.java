@@ -8,14 +8,10 @@ import java.io.FileInputStream;
 /**
  * Created by lipeng on 17/1/4.
  */
-public class FileSourceParser extends AbstractSourceLoader<String> {
+public class FileSourceParser extends SingleSourceLoader<String> {
 
     public FileSourceParser(File file) throws Exception {
-        setInputStream(new FileInputStream(file));
+        setSource(IOUtils.toString(new FileInputStream(file)));
     }
 
-    @Override
-    public String loadSource() throws Exception {
-        return IOUtils.toString(inputStream);
-    }
 }

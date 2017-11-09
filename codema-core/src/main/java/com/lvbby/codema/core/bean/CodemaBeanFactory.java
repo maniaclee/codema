@@ -8,7 +8,17 @@ import java.util.function.Predicate;
  */
 public interface CodemaBeanFactory {
 
+    /**
+     * ×¢Èëbean
+     * @param resource
+     */
     void register(CodemaBean resource);
+
+    /***
+     * ×¢Èëbean
+     * @param register
+     */
+    void register(CodemaBeanRegister register);
 
     <T> T getBean(String id);
 

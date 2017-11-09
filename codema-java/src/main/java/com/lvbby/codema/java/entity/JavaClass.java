@@ -100,7 +100,7 @@ public class JavaClass {
             return this;
         }
         try {
-            return JavaClassSourceParser.fromClassFullName(s).loadSource();
+            return JavaClassSourceParser.fromClassFullName(s).loadSource().get(0);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -17,6 +17,8 @@ public class CodemaBean {
     private String id;
     private Object resource;
     private List<Class> types;
+    //这里应该是一个纯粹的BeanFactory，不应该和codema绑定
+    @Deprecated
     private CommonCodemaConfig config;
 
     public CodemaBean(Object obj) {

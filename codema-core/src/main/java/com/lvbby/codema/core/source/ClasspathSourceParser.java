@@ -5,8 +5,7 @@ import org.apache.commons.io.IOUtils;
 /**
  * Created by lipeng on 17/1/4.
  */
-public class ClasspathSourceParser extends AbstractSourceLoader<String> {
-
+public class ClasspathSourceParser extends SingleSourceLoader<String> {
     public ClasspathSourceParser(String resource) throws Exception {
         this(null, resource);
     }
@@ -15,11 +14,7 @@ public class ClasspathSourceParser extends AbstractSourceLoader<String> {
         if (classLoader == null) {
             classLoader = getClass().getClassLoader();
         }
-        setInputStream(classLoader.getResourceAsStream(resource));
+        setSource(IOUtils.toString(classLoader.getResourceAsStream(resource)));
     }
 
-    @Override
-    public String loadSource() throws Exception {
-        return IOUtils.toString(inputStream);
-    }
 }
