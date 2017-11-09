@@ -48,7 +48,7 @@ public class UrlJdbcTableFactory implements JdbcTableFactory {
         init();
         List<SqlTable> re = Lists.newLinkedList();
         for (String s : getTableNames()) {
-            SqlTable instance = SqlTable.instance(s);
+            SqlTable instance = SqlTable.dbName(s);
             instance.setFields(getFields(instance));
             instance.buildPrimaryKeyField(getPrimaryKey(instance.getNameInDb()));
             re.add(instance);
@@ -84,7 +84,7 @@ public class UrlJdbcTableFactory implements JdbcTableFactory {
     private List<SqlColumn> getFields(SqlTable SqlTable) throws SQLException {
         List<SqlColumn> re = Lists.newArrayList();
         DatabaseMetaData meta = conn.getMetaData();
-        ResultSet rs = meta.getColumns(null, null, SqlTable.getName(), "%");
+        ResultSet rs = meta.getColumns(null, null, SqlTable.getNameInDb(), "%");
         while (rs.next()) {
             SqlColumn f = SqlColumn.instance(rs.getString(4));
             //            f.setDbType(rs.getString(5));

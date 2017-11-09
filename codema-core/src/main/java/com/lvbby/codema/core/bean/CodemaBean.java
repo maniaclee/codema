@@ -23,6 +23,9 @@ public class CodemaBean {
 
     public CodemaBean(Object obj) {
         setResource(obj);
+        //Ä¬ÈÏ×ö·¨
+        initType(true,true);
+        setId(obj.getClass().getSimpleName());
     }
 
     public CodemaBean bindConfig(CommonCodemaConfig config){
@@ -37,7 +40,7 @@ public class CodemaBean {
     private static List<Class> extractTypes(Class clz, boolean includeSuperClass, boolean includeInterface) {
         ArrayList<Class> re = Lists.newArrayList(clz);
         if (includeSuperClass)
-            for (Class parent = clz; parent != null; re.add(clz), clz = clz.getSuperclass()) ;
+            for (Class parent = clz; parent != null&&parent.equals(Object.class); re.add(parent), parent = parent.getSuperclass()) ;
         if (includeInterface)
             re.addAll(Arrays.asList(clz.getInterfaces()));
         return re;

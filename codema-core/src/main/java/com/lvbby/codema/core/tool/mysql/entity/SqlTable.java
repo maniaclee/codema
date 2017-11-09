@@ -24,11 +24,29 @@ public class SqlTable {
     List<SqlColumn> fields = Lists.newLinkedList();
     private SqlColumn primaryKeyField;
 
+    /**
+     * 从Java class name解析
+     * @param table
+     * @return
+     */
     public static SqlTable instance(String table) {
         table=table.replace("`","");
         SqlTable sqlTable = new SqlTable();
         sqlTable.setName(CaseFormatUtils.toCaseFormat(CaseFormat.UPPER_CAMEL,table));
         sqlTable.setNameInDb(CaseFormatUtils.toCaseFormat(CaseFormat.LOWER_UNDERSCORE,table));
+        return sqlTable;
+    }
+
+    /***
+     * 从db table的名称解析
+     * @param table
+     * @return
+     */
+    public static SqlTable dbName(String table) {
+        table=table.replace("`","");
+        SqlTable sqlTable = new SqlTable();
+        sqlTable.setName(CaseFormatUtils.toCaseFormat(CaseFormat.UPPER_CAMEL,table));
+        sqlTable.setNameInDb(table);
         return sqlTable;
     }
 

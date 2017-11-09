@@ -26,8 +26,16 @@ public class Codema {
         sourceLoader(sourceLoader).bind(config).run();
     }
 
+    public static Codema instance() {
+        return source(null);
+    }
     public static Codema source(Object source) {
         Codema codema = new Codema();
+        //source可以为空
+        if(source==null){
+            codema.jobs.add(new CodemaJob(null));
+            return codema;
+        }
         if (source instanceof List) {
             for (Object s : ((List) source)) {
                 codema.jobs.add(new CodemaJob(s));
@@ -39,6 +47,9 @@ public class Codema {
     }
 
     public static Codema sourceLoader(SourceLoader sourceLoader) throws Exception {
+        if(sourceLoader==null){
+            return instance();
+        }
         List source = sourceLoader.loadSource();
         Codema codema = new Codema();
         for (Object o : source) {
