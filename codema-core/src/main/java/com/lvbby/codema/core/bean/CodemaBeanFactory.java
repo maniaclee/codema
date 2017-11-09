@@ -14,12 +14,6 @@ public interface CodemaBeanFactory {
      */
     void register(CodemaBean resource);
 
-    /***
-     * ×¢Èëbean
-     * @param register
-     */
-    void register(CodemaBeanRegister register);
-
     <T> T getBean(String id);
 
     <T> List<T> getBeans( Class<T> clz,Predicate<CodemaBean> predicate);

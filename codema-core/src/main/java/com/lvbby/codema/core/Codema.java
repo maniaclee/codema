@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.core.source.SourceLoader;
+import com.lvbby.codema.core.source.SourceLoaderCallback;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -38,7 +39,17 @@ public class Codema {
     }
 
     public static Codema sourceLoader(SourceLoader sourceLoader) throws Exception {
-        return source(sourceLoader.loadSource());
+        List source = sourceLoader.loadSource();
+        Codema codema = new Codema();
+        for (Object o : source) {
+            CodemaJob e = new CodemaJob(o);
+            //处理回调
+            if(sourceLoader instanceof SourceLoaderCallback){
+                ((SourceLoaderCallback) sourceLoader).process(o,e.codemaContext);
+            }
+            codema.jobs.add(e);
+        }
+        return codema;
     }
 
     /***
@@ -93,6 +104,7 @@ public class Codema {
     }
 
     private static class CodemaJob {
+        /**每个job持有一个context，为了线程安全和ThreadLocal*/
         private CodemaContext codemaContext = new CodemaContext();
 
         public CodemaJob(Object source) {
