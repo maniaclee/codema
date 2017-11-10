@@ -19,7 +19,7 @@ public class MybatisCodemaConfig extends JavaBasicCodemaConfig {
     /***
      * 表名到mapper xml的映射关系
      */
-    private Function<String,String> table2mapperName = s -> s;
+    private Function<String,String> table2mapperName = s -> s+".xml";
 
     public void setNeedConfigClass(boolean needConfigClass) {
         this.needConfigClass = needConfigClass;

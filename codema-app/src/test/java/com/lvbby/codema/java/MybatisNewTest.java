@@ -8,6 +8,7 @@ import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
+import com.lvbby.codema.core.resource.ClassPathResource;
 import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
@@ -67,8 +68,9 @@ public class MybatisNewTest extends BaseTest {
         mybatis.setFromPackage(beanCodemaConfig.getDestPackage());
         mybatis.setConfigPackage(mybatis.relativePackage("config"));
         mybatis.addSubDestPackage("dao");
+        mybatis.setMapperXmlTemplates(Lists.newArrayList(new ClassPathResource("article.xml")));
 
-        Codema.sourceLoader(new JavaDbSourceParser("jdbc:mysql://localhost:3306/test?characterEncoding=UTF-8","root","","rt_user_detail"))
+        Codema.sourceLoader(new JavaDbSourceParser("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8","root","","article"))
                 .bind(mavenConfig)
                 .bind(beanCodemaConfig)
                 .bind(mybatis)

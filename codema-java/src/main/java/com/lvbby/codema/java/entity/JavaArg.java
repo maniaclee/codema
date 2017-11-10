@@ -9,6 +9,13 @@ public class JavaArg {
     private String name;
     private JavaType type;
 
+    public static JavaArg of(String name, JavaType type) {
+        JavaArg javaArg = new JavaArg();
+        javaArg.name = name;
+        javaArg.type = type;
+        return javaArg;
+    }
+
     public String getDefaultValue() {
         return JavaLexer.newInstanceForDefaultValue(type.getName()).toString();
     }

@@ -1,0 +1,188 @@
+﻿<!-- ===================================================================== -->
+<!-- Table configuration file for auto-generation of iwallet dal. -->
+<!-- $Id: air_task_mutex.xml,v 1.00 2010/03/25 15:20:06 Toby Exp $ -->
+<!-- ===================================================================== -->
+
+<!-- 评测问卷-->
+<table sqlname="rt_subject" dummypk="id">
+    <!-- 插入 -->
+	<operation name="insert" paramtype="object">
+		<sql>
+		<![CDATA[
+			insert into rt_subject (
+				id,
+				 subject_code,
+				 status,
+				 version,
+				 expire_time,
+				 release_time,
+				 scoring_type,
+				 need_send_msg,
+				 event_code,
+				 sub_task_id,
+				 subject_type,
+				 user_type,
+				 title,
+				 description,
+				 max_score,
+				 gmt_create,
+				 gmt_modified)
+			values (
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 ?,
+				 CURRENT_TIMESTAMP,
+				 CURRENT_TIMESTAMP
+				 );
+	   ]]>
+		</sql>
+	</operation>
+	
+	<!--根据问卷ID查询-->
+	<operation name="selectById">
+		<sql>
+		<![CDATA[
+			select id,
+				 subject_code,
+				 status,
+				 version,
+				 expire_time,
+				 release_time,
+				 scoring_type,
+				 need_send_msg,
+				 event_code,
+				 sub_task_id,
+				 subject_type,
+				 user_type,
+				 title,
+				 description,
+				 max_score,
+				 gmt_create,
+				 gmt_modified
+			  from rt_subject
+			where id = ?
+		]]>
+		</sql>
+	</operation>
+	
+	<!--根据SubjectCode和status来查询记录-->
+	<operation name="selectBySubjectCodeAndStatus" multiplicity="many">
+		<extraparams>
+			<param name="subjectCode" javatype="java.lang.String" />
+			<param name="status" javatype="java.lang.String" />
+		</extraparams>
+		<sql>
+			select * from rt_subject where subject_code = ''
+		</sql>
+		<sqlmap>
+		<![CDATA[
+			select id,
+				 subject_code,
+				 status,
+				 version,
+				 expire_time,
+				 release_time,
+				 scoring_type,
+				 need_send_msg,
+				 event_code,
+				 sub_task_id,
+				 subject_type,
+				 user_type,
+				 title,
+				 description,
+				 max_score,
+				 gmt_create,
+				 gmt_modified
+			from rt_subject
+			where subject_code = #subjectCode#
+			<isNotEmpty  property="status">
+				and status=#status#
+			</isNotEmpty>
+			order by version desc
+		]]>
+		</sqlmap>
+	</operation>
+
+	<operation name="update" paramtype="object">
+		<sqlmap>
+			<![CDATA[
+			update rt_subject set
+			<isNotEmpty  property="subjectCode">
+				subject_code = #subjectCode#,
+			</isNotEmpty>
+			<isNotEmpty  property="status">
+				status = #status#,
+			</isNotEmpty>
+			<isNotEmpty  property="version">
+				version = #version#,
+			</isNotEmpty>
+			<isNotEmpty  property="expireTime">
+				expire_time = #expireTime#,
+			</isNotEmpty>
+			<isNotEmpty  property="releaseTime">
+				release_time = #releaseTime#,
+			</isNotEmpty>
+			<isNotEmpty  property="scoringType">
+				scoring_type = #scoringType#,
+			</isNotEmpty>
+			<isNotEmpty  property="needSendMsg">
+				need_send_msg = #needSendMsg#,
+			</isNotEmpty>
+			<isNotEmpty  property="eventCode">
+				event_code = #eventCode#,
+			</isNotEmpty>
+			<isNotEmpty  property="subTaskId">
+				sub_task_id = #subTaskId#,
+			</isNotEmpty>
+			<isNotEmpty  property="subjectType">
+				subject_type = #subjectType#,
+			</isNotEmpty>
+			<isNotEmpty  property="userType">
+				user_type = #userType#,
+			</isNotEmpty>
+			<isNotEmpty  property="title">
+				title = #title#,
+			</isNotEmpty>
+			<isNotEmpty  property="description">
+				description = #description#,
+			</isNotEmpty>
+			gmt_modified = CURRENT_TIMESTAMP
+			where id = #id#
+			]]>
+		</sqlmap>
+		<sql>
+			update rt_subject set  gmt_modified = CURRENT_TIMESTAMP where id = ''
+		</sql>
+	</operation>
+	<operation name="queryByPage" multiplicity="many">
+		<extraparams>
+			<param name="offset" javatype="int"/>
+			<param name="size" javatype="int"/>
+		</extraparams>
+		<sql>
+			select * from rt_subject where id = ''
+		</sql>
+		<sqlmap>
+			select * from rt_subject
+			order by gmt_modified desc limit #offset#,#size#
+		</sqlmap>
+	</operation>
+	<operation name="selectCount">
+		<sql>
+			select count(*) from rt_subject;
+		</sql>
+	</operation>
+
+</table>

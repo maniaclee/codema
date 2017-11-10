@@ -5,7 +5,7 @@ package com.lvbby.codema.core.resource;
  * @author dushang.lp
  * @version $Id: AbstractNamedResource.java, v 0.1 2017-11-09 下午11:36 dushang.lp Exp $$
  */
-public abstract class AbstractNamedResource implements NamedResource{
+public abstract class AbstractNamedResource implements  Resource{
     private String resourceName;
 
     public void setResourceName(String resourceName) {

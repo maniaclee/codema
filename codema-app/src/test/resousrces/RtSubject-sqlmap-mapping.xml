@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="finrtcenter">
+    <!-- ============================================= -->
+    <!-- RESULT MAPS                                   -->
+    <!-- ============================================= -->
+
+    <!-- result maps for database table rt_subject -->
+    <resultMap id="RM-RT-SUBJECT" class="com.alipay.finrtcenter.common.dal.zcbconfig.dataobject.RtSubjectDO">
+        <result property="id" column="id" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="subjectCode" column="subject_code" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="status" column="status" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="version" column="version" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="expireTime" column="expire_time" javaType="java.util.Date" jdbcType="timestamp"/>
+        <result property="releaseTime" column="release_time" javaType="java.util.Date" jdbcType="timestamp"/>
+        <result property="scoringType" column="scoring_type" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="needSendMsg" column="need_send_msg" javaType="int" jdbcType="int" nullValue="0"/>
+        <result property="eventCode" column="event_code" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="subTaskId" column="sub_task_id" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="subjectType" column="subject_type" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="userType" column="user_type" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="gmtCreate" column="gmt_create" javaType="java.util.Date" jdbcType="timestamp"/>
+        <result property="gmtModified" column="gmt_modified" javaType="java.util.Date" jdbcType="timestamp"/>
+        <result property="title" column="title" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="description" column="description" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="maxScore" column="max_score" javaType="int" jdbcType="int" nullValue="0"/>
+    </resultMap>
+
+
+    <!-- ============================================= -->
+    <!-- mapped statements for IbatisRtSubjectDAO -->
+    <!-- ============================================= -->
+    <!-- mapped statement for IbatisRtSubjectDAO.insert -->
+    <insert id="MS-RT-SUBJECT-INSERT">
+    <![CDATA[
+        insert /*MS-FINRTCENTER-RT-SUBJECT-INSERT*/ into rt_subject(id,subject_code,status,version,expire_time,release_time,scoring_type,need_send_msg,event_code,sub_task_id,subject_type,user_type,title,description,max_score,gmt_create,gmt_modified) values (#id#, #subjectCode#, #status#, #version#, #expireTime#, #releaseTime#, #scoringType#, #needSendMsg#, #eventCode#, #subTaskId#, #subjectType#, #userType#, #title#, #description#, #maxScore#, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    ]]>
+    </insert>
+
+    <!-- mapped statement for IbatisRtSubjectDAO.selectById -->
+    <select id="MS-RT-SUBJECT-SELECT-BY-ID" resultMap="RM-RT-SUBJECT">
+    <![CDATA[
+        select /*MS-FINRTCENTER-RT-SUBJECT-SELECT-BY-ID*/ id, subject_code, status, version, expire_time, release_time, scoring_type, need_send_msg, event_code, sub_task_id, subject_type, user_type, title, description, max_score, gmt_create, gmt_modified from rt_subject where (id = #value#)
+    ]]>
+    </select>
+
+    <!-- mapped statement for IbatisRtSubjectDAO.selectBySubjectCodeAndStatus -->
+    <select id="MS-RT-SUBJECT-SELECT-BY-SUBJECT-CODE-AND-STATUS" resultMap="RM-RT-SUBJECT">
+        select /*MS-FINRTCENTER-RT-SUBJECT-SELECT-BY-SUBJECT-CODE-AND-STATUS*/ id,
+				 subject_code,
+				 status,
+				 version,
+				 expire_time,
+				 release_time,
+				 scoring_type,
+				 need_send_msg,
+				 event_code,
+				 sub_task_id,
+				 subject_type,
+				 user_type,
+				 title,
+				 description,
+				 max_score,
+				 gmt_create,
+				 gmt_modified
+			from rt_subject
+			where subject_code = #subjectCode#
+			<isNotEmpty  property="status">
+				and status=#status#
+			</isNotEmpty>
+			order by version desc
+    </select>
+
+    <!-- mapped statement for IbatisRtSubjectDAO.update -->
+    <update id="MS-RT-SUBJECT-UPDATE">
+        update /*MS-FINRTCENTER-RT-SUBJECT-UPDATE*/ rt_subject set
+			<isNotEmpty  property="subjectCode">
+				subject_code = #subjectCode#,
+			</isNotEmpty>
+			<isNotEmpty  property="status">
+				status = #status#,
+			</isNotEmpty>
+			<isNotEmpty  property="version">
+				version = #version#,
+			</isNotEmpty>
+			<isNotEmpty  property="expireTime">
+				expire_time = #expireTime#,
+			</isNotEmpty>
+			<isNotEmpty  property="releaseTime">
+				release_time = #releaseTime#,
+			</isNotEmpty>
+			<isNotEmpty  property="scoringType">
+				scoring_type = #scoringType#,
+			</isNotEmpty>
+			<isNotEmpty  property="needSendMsg">
+				need_send_msg = #needSendMsg#,
+			</isNotEmpty>
+			<isNotEmpty  property="eventCode">
+				event_code = #eventCode#,
+			</isNotEmpty>
+			<isNotEmpty  property="subTaskId">
+				sub_task_id = #subTaskId#,
+			</isNotEmpty>
+			<isNotEmpty  property="subjectType">
+				subject_type = #subjectType#,
+			</isNotEmpty>
+			<isNotEmpty  property="userType">
+				user_type = #userType#,
+			</isNotEmpty>
+			<isNotEmpty  property="title">
+				title = #title#,
+			</isNotEmpty>
+			<isNotEmpty  property="description">
+				description = #description#,
+			</isNotEmpty>
+			gmt_modified = CURRENT_TIMESTAMP
+			where id = #id#
+    </update>
+
+    <!-- mapped statement for IbatisRtSubjectDAO.queryByPage -->
+    <select id="MS-RT-SUBJECT-QUERY-BY-PAGE" resultMap="RM-RT-SUBJECT">
+        select /*MS-FINRTCENTER-RT-SUBJECT-QUERY-BY-PAGE*/ * from rt_subject
+			order by gmt_modified desc limit #offset#,#size#
+    </select>
+
+    <!-- mapped statement for IbatisRtSubjectDAO.selectCount -->
+    <select id="MS-RT-SUBJECT-SELECT-COUNT" resultClass="long">
+    <![CDATA[
+        select /*MS-FINRTCENTER-RT-SUBJECT-SELECT-COUNT*/ COUNT(*) from rt_subject
+    ]]>
+    </select>
+
+</sqlMap>
