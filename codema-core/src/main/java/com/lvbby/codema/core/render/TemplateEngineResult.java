@@ -46,22 +46,30 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
 
     @Override
     public String getString() {
-        if (!rendered) {
-            beforeRender(parameters);
-            render();
-            rendered = true;
-            afterRender();
-        }
+        render();
         return string;
     }
 
+    /***
+     * Ç¿ÖÆäÖÈ¾
+     * @return
+     */
     public TemplateEngineResult render() {
+        if (!rendered) {
+            beforeRender(parameters);
+            doRender();
+            rendered = true;
+            afterRender();
+        }
+        return this;
+    }
+
+    private void doRender() {
         TemplateEngine templateEngine = TemplateEngineFactory.create(template);
         for (Object o : parameters.keySet()) {
             templateEngine.bind(o.toString(), parameters.get(o));
         }
         string = templateEngine.render();
-        return this;
     }
 
     public TemplateEngineResult template(String template) {

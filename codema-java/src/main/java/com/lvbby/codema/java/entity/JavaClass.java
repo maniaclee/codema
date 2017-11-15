@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 17/1/5.
  */
-public class JavaClass {
+public class JavaClass extends AnnotationType{
     private String pack;
     private String name;
     private List<JavaField> fields;

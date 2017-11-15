@@ -5,7 +5,7 @@ import com.lvbby.codema.java.tool.JavaLexer;
 /**
  * Created by lipeng on 17/1/5.
  */
-public class JavaArg {
+public class JavaArg extends AnnotationType{
     private String name;
     private JavaType type;
 
@@ -56,6 +56,6 @@ public class JavaArg {
 
     @Override
     public String toString() {
-        return String.format("%s %s",type,name);
+        return String.format("%s%s %s",super.toString(),type,name);
     }
 }

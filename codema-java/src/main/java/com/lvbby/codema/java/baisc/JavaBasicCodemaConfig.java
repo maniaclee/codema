@@ -76,7 +76,7 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
                     @Override protected void codeEach(CodemaContext context,
                                                       JavaBasicCodemaConfig config,
                                                       JavaClass javaClass) throws Exception {
-                        config.handle(context, new JavaTemplateResult(config, annotation.value(), javaClass));
+                        config.handle(context, new JavaTemplateResult(config, annotation.value(), javaClass).render());
                     }
 
                 };

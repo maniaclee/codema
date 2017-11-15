@@ -8,6 +8,7 @@ import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.result.WriteMode;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.entity.JavaAnnotation;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
@@ -49,44 +50,37 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
         }
         //mapper template xml
         Document mapper = new SAXReader().read(mapperTemplate.getInputStream());
-        parseMethods(mapper, cu, sqlTable);
-        TemplateEngineResult daoTemplateResult = new JavaTemplateResult(config, $Dao_.class, cu)
-                .bind("table", sqlTable);
-        config.handle(codemaContext, daoTemplateResult);
-
-        String xml = IOUtils
-                .toString(MybatisCodemaMachine.class.getResourceAsStream("mybatis_dao.xml"));
-        config.handle(codemaContext,
-                JavaXmlTemplateResult.ofResource(config, xml, cu).bind("table", sqlTable)
-                        .bind("dao", daoTemplateResult.getResult())
-                        .filePath(config.getDestResourceRoot(), config.getMapperDir(),
-                                String.format("%sMapper.xml",
-                                        ((JavaClass) codemaContext.getSource()).getName())));
+        List<JavaMethod> javaMethods = parseMethods(mapper, cu, sqlTable);
+        javaMethods.forEach(System.out::println);
     }
 
     private List<JavaMethod> parseMethods(Document document, JavaClass entity, SqlTable sqlTable) {
+        List<JavaMethod> re = Lists.newArrayList();
         for (Object o : document.getRootElement().elements()) {
             Element element = (Element) o;
             String sqlType = element.getName();
             JavaMethod javaMethod = new JavaMethod();
+            //method name
             javaMethod.setName(element.attributeValue("id"));
-            if (StringUtils.equalsIgnoreCase(sqlType, "insert")) {
-                JavaArg javaArg = new JavaArg();
-                javaArg.setName(entity.getNameCamel());
-                javaArg.setType(JavaType.ofClassName(entity.getName()));
-                javaMethod.setArgs(Lists.newArrayList(javaArg));
-                javaMethod.setReturnType(
-                        JavaType.ofClass(sqlTable.getPrimaryKeyField().getJavaType()));
-            }
-            if (StringUtils.equalsIgnoreCase(sqlType, "select")) {
-                javaMethod.setArgs(parseArgs(element,entity,sqlTable));
-                javaMethod.setReturnType(
-                        JavaType.ofClass(sqlTable.getPrimaryKeyField().getJavaType()));
-            }
+            //method return type
+            javaMethod.setReturnType(parseReturnType(element,entity,sqlTable));
+            javaMethod.setArgs(parseArgs(element,entity,sqlTable));
+            re.add(javaMethod);
         }
-        return null;
+        return re;
     }
 
+    private JavaType parseReturnType(Element element, JavaClass entity, SqlTable sqlTable) {
+        String resultType = element.attributeValue("resultType");
+        String sqlType = element.getName();
+        if(Lists.newArrayList("insert","update","delete").contains(sqlType)){
+            return JavaType.ofClass(int.class);
+        }
+        if(StringUtils.isNotBlank(resultType)){
+            return JavaType.ofClassName(resultType);
+        }
+        return JavaType.ofClassName(entity.getName());
+    }
     private List<JavaArg> parseArgs(Element element, JavaClass entity, SqlTable sqlTable) {
         String parameterType = element.attributeValue("parameterType");
         if (StringUtils.isNotBlank(parameterType)) {
@@ -94,20 +88,28 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
                 return Lists.newArrayList(
                         JavaArg.of(entity.getNameCamel(), JavaType.ofClassName(entity.getName())));
             }
+            if (StringUtils.equalsIgnoreCase(parameterType, "map")) {
+                parseArgsAsMap(element, entity);
+            }
             return Lists.newArrayList(
                     JavaArg.of(entity.getNameCamel(), JavaType.ofClassName(parameterType)));
         }
-        Pattern.compile("[#$]\\{([#\\{\\}]+)\\}").matcher(element.getText());
+        return parseArgsAsMap(element, entity);
+
+    }
+
+    private List<JavaArg> parseArgsAsMap(Element element, JavaClass entity) {
+        //查找所有#{}变量
         List<String> args = ReflectionUtils
-                .findAll(element.getText(), "[#$]\\{([#\\{\\}]+)\\}", matcher -> matcher.group(1));
-        if (CollectionUtils.isEmpty(args)) {
-            return null;
-        }
+                .findAll(element.getText(), "#\\{([^#\\{\\}]+)\\}", matcher -> matcher.group(1));
+
         return args.stream().map(arg -> {
             JavaType type = entity.getFields().stream().filter(field -> field.getName().equals(arg))
                     .map(JavaField::getType).findAny().orElseThrow(() -> new RuntimeException(
                             String.format("unknown arg:%s", arg)));
-            return JavaArg.of(type.getName(), type);
+            JavaArg re = JavaArg.of(arg, type);
+            re.addAnnotation(new JavaAnnotation("Param").add("value",arg));
+            return re;
         }).collect(Collectors.toList());
     }
 

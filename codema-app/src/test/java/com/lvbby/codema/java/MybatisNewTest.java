@@ -38,8 +38,9 @@ public class MybatisNewTest extends BaseTest {
 
         CommonCodemaConfig config = new CommonCodemaConfig();
         config.setAuthor("lee");
-        config.addResultHandler(PrintResultHandler.class)
-                .addResultHandler(FileWriterResultHandler.class)
+        config
+//                .addResultHandler(PrintResultHandler.class)
+//                .addResultHandler(FileWriterResultHandler.class)
                 .addResultHandler(JavaRegisterResultHandler.class)
         ;
 
@@ -76,34 +77,4 @@ public class MybatisNewTest extends BaseTest {
                 .bind(mybatis)
                 .run();
     }
-
-
-    @Test
-    public   void getConnAndTableStruct(){
-        Connection connection = null;
-        PreparedStatement pstmt = null;
-        ResultSetMetaData rsmd = null;
-        try {
-            //mysql连接
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/test", "root", "");
-            //oracle连接
-            //            Class.forName("oracle.jdbc.driver.OracleDriver");
-            //            String url="jdbc:oracle:thin:@173.10.2.11:1521:test";
-            //             connection=DriverManager.getConnection(url,"root","root");
-            pstmt = (PreparedStatement) connection.prepareStatement("select * from rt_user_detail limit 1");
-            pstmt.execute();  //这点特别要注意:如果是Oracle而对于mysql可以不用加.
-            rsmd = (ResultSetMetaData) pstmt.getMetaData();
-            for (int i = 1; i < rsmd.getColumnCount() + 1; i++) {
-                System.out.println(rsmd.getColumnName(i)+ "  " +rsmd.getColumnTypeName(i)
-                                   +"  " +rsmd.getColumnClassName(i)+ "  "+rsmd.getTableName(i));
-            }
-        }
-        catch ( Exception cnfex) {
-            cnfex.printStackTrace();
-        }
-
-    }
-
 }

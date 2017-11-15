@@ -53,4 +53,31 @@ public class JavaAnnotation {
     public void setProperties(Multimap<String, Object> properties) {
         this.properties = properties;
     }
+
+    private String parseValue(Object s ){
+        if(s instanceof String){
+            return String.format("\"%s\"", s);
+        }
+        if(s instanceof Class){
+            return String.format("%s.class", ((Class) s).getName());
+        }
+        return s.toString();
+    }
+    @Override public String toString() {
+        if(properties.isEmpty()){
+            return String.format("@%s", name);
+        }
+        String re = properties.keySet().stream().map(s -> {
+            Collection<Object> objects = properties.get(s);
+            if (CollectionUtils.isNotEmpty(objects)) {
+                if (objects.size() == 1) {
+                    return String.format("%s=%s", s, parseValue(objects.iterator().next()));
+                }
+                return String.format("%s={%s}", s,
+                        objects.stream().map(v->parseValue(v)).collect(Collectors.joining(",")));
+            }
+            return "";
+        }).collect(Collectors.joining(","));
+        return String.format("@%s(%s)", name,re);
+    }
 }

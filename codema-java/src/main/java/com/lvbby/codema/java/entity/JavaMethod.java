@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 17/1/5.
  */
-public class JavaMethod {
+public class JavaMethod extends AnnotationType{
     public String name;
     public JavaType returnType;
     public List<JavaArg> args;
