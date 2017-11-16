@@ -4,6 +4,7 @@ import com.lvbby.codema.core.AbstractCodemaMachine;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.render.XmlTemplateResult;
 import com.lvbby.codema.core.result.BasicResult;
+import com.lvbby.codema.core.result.WriteMode;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -30,6 +31,7 @@ public class MavenCodemaMachine extends AbstractCodemaMachine<MavenConfig> {
                         .bind("config", c)
                         .destFile("pom.xml")
                         .config(c)
+//                        .writeMode(WriteMode.writeIfNoExist)
         );
         if (CollectionUtils.isNotEmpty(c.getModules())) {
             for (MavenConfig mavenConfig : c.getModules()) {

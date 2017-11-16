@@ -22,21 +22,26 @@
             now()
         )
     </insert>
-    <select id="queryByIds" resultType="${resultClass}" >
+    <select id="queryByIds" resultType="${resultClass}" parameterType="List(Long)">
         select * from article
-        where id in
-        <foreach item="item" collection="list" open="(" separator="," close=")">
+        where  id in
+        <foreach item="item" collection="ids" open="(" separator="," close=")">
             #{item}
         </foreach>
+
     </select>
-    <select id="queryByUser" resultType="${resultClass}">
+
+    <select id="queryByUser" resultType="List(${resultClass})">
         select * from article
         where user_id = #{userId}
         order by  update_time desc
     </select>
-    <select id="queryMap"  parameterType="int" resultType="${resultClass}">
+    <select id="queryMap"   resultType="${resultClass}">
         select * from article
         where user_id = #{userId}
+        <if test="title">
+            and title = #{title}
+        </if>
         order by  update_time desc
     </select>
     <update id="update">

@@ -68,7 +68,8 @@ public class JavaSrcTemplateParser {
      * @return
      */
     public static String prepareTemplate(String s) {
-        String re = s.replaceAll("//\\s*", "");
+        //删除行注释符号//
+        String re = ReflectionUtils.replace(s,"(\\s+)(//)\\s*",matcher -> matcher.group(1));
         re = re.replaceAll("\\(\\s+", "(");
         re = filterBlockComment(re);
         re = expr(re);
