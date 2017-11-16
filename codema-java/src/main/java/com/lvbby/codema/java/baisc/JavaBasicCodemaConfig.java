@@ -94,6 +94,9 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         return javaClassNameParser.getClassName(
                 (JavaClass) CodemaContextHolder.getCodemaContext().getSource(),javaClass);
     }
+    public String parseDestClassFullName(JavaClass javaClass){
+        return String.format("%s.%s", getDestPackage(),parseDestClassName(javaClass));
+    }
 
     public JavaBasicCodemaConfig addImplementInterface(JavaClassNameParser javaClassNameParser){
         implementInterfaces.add(javaClassNameParser);

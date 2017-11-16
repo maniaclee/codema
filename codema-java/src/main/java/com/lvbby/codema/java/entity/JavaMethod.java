@@ -135,7 +135,7 @@ public class JavaMethod extends AnnotationType{
 
     @Override
     public String toString() {
-        return String.format("[%s %s(%s)]",
+        return String.format("%s %s(%s)",
                 returnType,
                 getName(),
                 (CollectionUtils.isEmpty(args) ? "" : args.stream().map(JavaArg::toString).collect(Collectors.joining(","))));

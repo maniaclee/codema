@@ -25,7 +25,7 @@ public class JavaMdDocCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocC
                          JavaClass cu) throws Exception {
         JavaMethod method = cu.findMethodByName(config.getMethod());
         config.handle(codemaContext,
-                JavaMdTemplateResult.ofResource(config, loadResourceAsString("mdJavaDoc.md"), cu)
+                new JavaMdTemplateResult(config, loadResourceAsString("mdJavaDoc.md"), cu)
                         .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
                         .bind("result", printParam(cu, method.getReturnType()))
                         .bind("parameters", method.getArgs().stream().map(JavaArg::getType)

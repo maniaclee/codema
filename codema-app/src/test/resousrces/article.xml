@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lvbby.garfield.dao.ArticleMapper">
+<mapper namespace="${mapper}">
     <insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="object" >
         INSERT INTO article
         (
@@ -22,16 +22,24 @@
             now()
         )
     </insert>
-    <select id="queryByIds" resultType="com.lvbby.garfield.entity.ArticleEntity" >
+    <select id="queryByIds" resultType="${resultClass}" >
         select * from article
         where id in
         <foreach item="item" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>
     </select>
-    <select id="queryByUser" resultType="com.lvbby.garfield.entity.ArticleEntity">
+    <select id="queryByUser" resultType="${resultClass}">
         select * from article
         where user_id = #{userId}
         order by  update_time desc
     </select>
+    <select id="queryMap"  parameterType="int" resultType="${resultClass}">
+        select * from article
+        where user_id = #{userId}
+        order by  update_time desc
+    </select>
+    <update id="update">
+        update article set user_id = #{userId} where id =#{id}
+    </update>
 </mapper>

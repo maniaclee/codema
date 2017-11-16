@@ -39,8 +39,8 @@ public class MybatisNewTest extends BaseTest {
         CommonCodemaConfig config = new CommonCodemaConfig();
         config.setAuthor("lee");
         config
-//                .addResultHandler(PrintResultHandler.class)
-//                .addResultHandler(FileWriterResultHandler.class)
+                .addResultHandler(PrintResultHandler.class)
+                .addResultHandler(FileWriterResultHandler.class)
                 .addResultHandler(JavaRegisterResultHandler.class)
         ;
 

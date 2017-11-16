@@ -12,10 +12,10 @@ import com.lvbby.codema.java.template.JavaSrcTemplateParser;
  */
 public class JavaMdTemplateResult extends TemplateEngineResult {
 
-    public static JavaMdTemplateResult ofResource(JavaBasicCodemaConfig config, String resource, JavaClass javaClass) {
-        JavaMdTemplateResult re = TemplateEngineResult.of(JavaMdTemplateResult.class, resource);
-        if (javaClass != null)
-            re.bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
-        return re;
+    public JavaMdTemplateResult(JavaBasicCodemaConfig config, String template, JavaClass javaClass) {
+        super(template);
+        if (javaClass != null){
+            bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));
+        }
     }
 }

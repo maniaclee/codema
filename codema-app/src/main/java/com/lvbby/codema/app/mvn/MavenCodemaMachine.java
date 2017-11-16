@@ -26,8 +26,7 @@ public class MavenCodemaMachine extends AbstractCodemaMachine<MavenConfig> {
 
     private void process(CodemaContext codemaContext, MavenConfig c) throws Exception {
         c.handle(codemaContext,
-                new XmlTemplateResult()
-                        .template(loadResourceAsString("pom.xml"))
+                new XmlTemplateResult(loadResourceAsString("pom.xml"))
                         .bind("config", c)
                         .destFile("pom.xml")
                         .config(c)

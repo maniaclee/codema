@@ -16,6 +16,13 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
     private Map parameters = Maps.newHashMap();
     private transient boolean rendered = false;
 
+    protected TemplateEngineResult() {
+    }
+
+    public TemplateEngineResult(String template) {
+        this.template = template;
+    }
+
     public static <T extends TemplateEngineResult> T of(Class<T> t, String template) {
         try {
             T re = t.newInstance();
