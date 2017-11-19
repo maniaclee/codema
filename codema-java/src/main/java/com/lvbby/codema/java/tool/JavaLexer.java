@@ -1,15 +1,31 @@
 package com.lvbby.codema.java.tool;
 
-import com.github.javaparser.*;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.JavaToken;
+import com.github.javaparser.Position;
+import com.github.javaparser.Token;
+import com.github.javaparser.TokenRange;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.*;
+import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.BlockComment;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.LineComment;
-import com.github.javaparser.ast.expr.*;
+import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.ArrayInitializerExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.google.common.collect.Lists;
@@ -21,8 +37,10 @@ import org.apache.commons.lang3.Validate;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -217,6 +235,25 @@ public class JavaLexer {
         return m.getParameters().stream().map(p -> newInstanceForDefaultValue(p.getType().toString())).collect(Collectors.toList());
     }
 
+
+    private static Map<String,String> defaultValueMap = new HashMap(){
+        {
+            put(int.class.getSimpleName(),"0");
+            put(short.class.getSimpleName(),"0");
+            put(double.class.getSimpleName(),"0");
+            put(float.class.getSimpleName(),"0f");
+            put(byte.class.getSimpleName(),"0");
+            put(Integer.class.getSimpleName(),"0");
+            put(long.class.getSimpleName(),"0l");
+            put(Long.class.getSimpleName(),"0l");
+            put(boolean.class.getSimpleName(),"true");
+            put(BigDecimal.class.getSimpleName(),"BigDecimal.ZERO");
+            put(String.class.getSimpleName(),"\"\"");
+            put("collection","new ArrayList()");
+            put("list","new ArrayList()");
+            put("iterable","new ArrayList()");
+        }
+    };
     /***
      * gen instance for given type : like String ->"" , int -> 1, List -> new ArrayList()
      *
@@ -224,18 +261,11 @@ public class JavaLexer {
      * @return
      */
     public static Expression newInstanceForDefaultValue(String type) {
-        String lowerCase = type.toLowerCase().replaceAll("<[^>]+>", "");//remove generic type
-        if ("boolean".equalsIgnoreCase(lowerCase))
-            return new NameExpr("true");
-        List<String> numbers = Lists.newArrayList("int", "Integer", "short", "double", "float", "byte", "long", "boolean");
-        if (numbers.contains(lowerCase)) {
-            return new NameExpr("1");
+        String lowerCase = type.toLowerCase().replaceAll("<[^>]+>", "").trim();//remove generic type
+        String defaultValue = defaultValueMap.get(lowerCase);
+        if(defaultValue!=null){
+            return new NameExpr(defaultValue);
         }
-        if ("String".equalsIgnoreCase(lowerCase))
-            return new NameExpr("\"\"");
-        ArrayList<String> collections = Lists.newArrayList("collection", "list", "iterable");
-        if (collections.contains(lowerCase))
-            return new NameExpr("new ArrayList()");
         return newVar(type(type));
     }
 

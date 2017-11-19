@@ -2,7 +2,7 @@ package com.lvbby.codema.app.testcase.mock;
 
 import com.lvbby.codema.java.template.$Class1_;
 import com.lvbby.codema.java.template.$Class_;
-import com.lvbby.codema.java.template.$TemplateUtils_;
+import com.lvbby.codema.java.template.__TemplateUtils_;
 import com.lvbby.codema.java.template.annotaion.Foreach;
 import com.lvbby.codema.java.template.annotaion.Sentence;
 import org.junit.Assert;
@@ -43,11 +43,11 @@ public class $Mock_Test {
     })
     @Test
     public void $method_Test() throws Exception {
-        for (String s : $TemplateUtils_.varList("deps")) {
-            $TemplateUtils_.print("${s}");
+        for (String s : __TemplateUtils_.varList("deps")) {
+            __TemplateUtils_.print("${s}");
         }
-        if ($TemplateUtils_.isTrue("returnVoid")) {
-            $TemplateUtils_.println("${GenericTypeArgInstance}");
+        if (__TemplateUtils_.isTrue("returnVoid")) {
+            __TemplateUtils_.println("${GenericTypeArgInstance}");
         } else {
             Assert.assertNotNull($GenericTypeArgInstance_);
         }

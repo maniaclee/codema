@@ -9,7 +9,6 @@ import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -20,7 +19,7 @@ import com.github.javaparser.printer.PrettyPrintVisitor;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.java.entity.JavaAnnotation;
-import com.lvbby.codema.java.template.$TemplateUtils_;
+import com.lvbby.codema.java.template.__TemplateUtils_;
 import com.lvbby.codema.java.template.annotaion.Foreach;
 import com.lvbby.codema.java.template.annotaion.Sentence;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -43,7 +42,7 @@ import java.util.stream.Collectors;
  */
 public class MyPrintVisitory extends PrettyPrintVisitor {
 
-    private static final CodemaTemplateUtilsClassHelper utilsClassHelper = new CodemaTemplateUtilsClassHelper($TemplateUtils_.class);
+    private static final CodemaTemplateUtilsClassHelper utilsClassHelper = new CodemaTemplateUtilsClassHelper(__TemplateUtils_.class);
 
     public MyPrintVisitory(PrettyPrinterConfiguration prettyPrinterConfiguration) {
         super(prettyPrinterConfiguration);
@@ -89,7 +88,7 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
                     printTrimString(parameter);
                 } else
                     throw new IllegalArgumentException(
-                            "unknown method in :" + $TemplateUtils_.class.getName());
+                            "unknown method in :" + __TemplateUtils_.class.getName());
                 return;
             }
         }
@@ -196,7 +195,7 @@ public class MyPrintVisitory extends PrettyPrintVisitor {
             parameter = trimVar(parameter);
 
             //$TemplateUtils_.isTrue()
-            if ($TemplateUtils_.class.getSimpleName().equals(callerClass)) {
+            if (__TemplateUtils_.class.getSimpleName().equals(callerClass)) {
                 /***
                  * if 语句上面必须为block comment，如果line comment的话只能输出一行！！！！
                  */

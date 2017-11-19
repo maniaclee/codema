@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by lipeng on 2017/7/25.
  */
-public class $TemplateUtils_ {
+public class __TemplateUtils_ {
 
     /***
      *在java code里为模板引擎打的戳，让codema去翻译成模板语言

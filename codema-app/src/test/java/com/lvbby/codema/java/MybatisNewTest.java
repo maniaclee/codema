@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
 import com.lvbby.codema.app.mvn.MavenConfig;
 import com.lvbby.codema.app.mybatis.MybatisCodemaConfig;
+import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
@@ -14,14 +15,10 @@ import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaDbSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
-import com.mysql.jdbc.PreparedStatement;
-import com.mysql.jdbc.ResultSetMetaData;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
 
 /**
  * Created by dushang.lp on 2017/6/26.
@@ -71,10 +68,17 @@ public class MybatisNewTest extends BaseTest {
         mybatis.addSubDestPackage("dao");
         mybatis.setMapperXmlTemplates(Lists.newArrayList(new ClassPathResource("article.xml")));
 
+        JavaTestcaseCodemaConfig testcaseCodemaConfig = java.copy(JavaTestcaseCodemaConfig.class);
+        testcaseCodemaConfig.setSpring(true);
+        testcaseCodemaConfig.setFromPackage(mybatis.getDestPackage());
+        testcaseCodemaConfig.setDestPackage("com.lvbby.codema.test.mybatis");
+        testcaseCodemaConfig.setDestSrcRoot(mavenConfig.getDestTestSrcRoot());
+
         Codema.sourceLoader(new JavaDbSourceParser("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8","root","","article"))
                 .bind(mavenConfig)
                 .bind(beanCodemaConfig)
                 .bind(mybatis)
+                .bind(testcaseCodemaConfig)
                 .run();
     }
 }

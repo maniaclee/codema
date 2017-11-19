@@ -4,20 +4,22 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.lvbby.codema.java.entity.JavaClass;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * @author dushang.lp
@@ -40,6 +42,10 @@ public class AutoImport extends VoidVisitorAdapter {
         addGlobalCandidate(Map.class);
         addGlobalCandidate(Set.class);
         addGlobalCandidate(Timestamp.class);
+        addGlobalCandidate(ArrayList.class);
+        addGlobalCandidate(LinkedList.class);
+        addGlobalCandidate(HashMap.class);
+        addGlobalCandidate(BigDecimal.class);
     }
 
     public static void addGlobalCandidate(Class clz) {

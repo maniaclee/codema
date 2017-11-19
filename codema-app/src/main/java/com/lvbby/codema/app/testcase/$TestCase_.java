@@ -2,30 +2,29 @@ package com.lvbby.codema.app.testcase;
 
 import com.alibaba.fastjson.JSON;
 import com.lvbby.codema.java.template.$Class1_;
+import static com.lvbby.codema.java.template.$Symbols_.$class_;
 import com.lvbby.codema.java.template.$TemplateClass_;
-import com.lvbby.codema.java.template.$TemplateUtils_;
+import com.lvbby.codema.java.template.__TemplateUtils_;
 import com.lvbby.codema.java.template.annotaion.Foreach;
 import com.lvbby.codema.java.template.annotaion.Sentence;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import static com.lvbby.codema.java.template.$Symbols_.$class_;
 
 
 /**
  * Created by lipeng on 2016/12/24.
  * 朕心甚慰！！！！
  */
-@Sentence("var TestCase = destClassName;")
+@Sentence("var TestCase = destClassName+'Test';")
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootApplication
 @EnableAspectJAutoProxy
 @ContextConfiguration(classes = { $TestCase_.class})
+@ComponentScan("$componentScan_")
 public class $TestCase_ {
 
     @Sentence("var TemplateClass = srcClassName;")
@@ -41,27 +40,21 @@ public class $TestCase_ {
     })
     @Test
     public void $invoke_() throws Exception {
-        // <% if (!@m.returnVoid()){ %>
-        $Class1_ re = $templateClass_.$invoke_($class_);
-
-        if ($TemplateUtils_.isTrue("isPrimitive")) {
-            String a = "";
-            System.out.println(a);
-        } else if (true) {
-            System.out.println("shit");
+        if (__TemplateUtils_.isFalse("@m.returnVoid()")) {
+            $Class1_ re = $templateClass_.$invoke_($class_);
+            if (__TemplateUtils_.isTrue("isPrimitive")) {
+                __TemplateUtils_.print("assert re > 0 ");
+            } else {
+                assert re != null;
+            }
+            println(re);
         } else {
-            re = null;
+            $templateClass_.$invoke_($class_);
         }
-        /*# <% if (isPrimitive){ %>
-        assert re >0 ;
-        <%}else{%> */
-        assert re != null;
-        //<%}%>
+    }
 
-        System.out.println(JSON.toJSONString("[$TestCase_.${invoke} return ===>]  " + re));
-        //<%}else{%>
-        $templateClass_.$invoke_($class_);
-        //<%}%>
+    private void println(Object o){
+        System.out.println(JSON.toJSONString(o));
     }
 
 }

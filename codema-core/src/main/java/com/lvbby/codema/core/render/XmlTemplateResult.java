@@ -28,25 +28,25 @@ public class XmlTemplateResult extends TemplateEngineResult implements MergeCapa
 
     public static String format(Document document) {
         try {
-            //´´½¨×Ö·û´®»º³åÇø
+            //åˆ›å»ºå­—ç¬¦ä¸²ç¼“å†²åŒº
             StringWriter stringWriter = new StringWriter();
-            //ÉèÖÃÎÄ¼ş±àÂë
+            //è®¾ç½®æ–‡ä»¶ç¼–ç 
             OutputFormat xmlFormat = new OutputFormat();
             xmlFormat.setEncoding("UTF-8");
-            // ÉèÖÃ»»ĞĞ
+            // è®¾ç½®æ¢è¡Œ
             xmlFormat.setNewlines(true);
-            // Éú³ÉËõ½ø
+            // ç”Ÿæˆç¼©è¿›
             xmlFormat.setIndent(true);
-            // Ê¹ÓÃ4¸ö¿Õ¸ñ½øĞĞËõ½ø, ¿ÉÒÔ¼æÈİÎÄ±¾±à¼­Æ÷
+            // ä½¿ç”¨4ä¸ªç©ºæ ¼è¿›è¡Œç¼©è¿›, å¯ä»¥å…¼å®¹æ–‡æœ¬ç¼–è¾‘å™¨
             xmlFormat.setIndent("    ");
 
-            //´´½¨Ğ´ÎÄ¼ş·½·¨
+            //åˆ›å»ºå†™æ–‡ä»¶æ–¹æ³•
             XMLWriter xmlWriter = new XMLWriter(stringWriter, xmlFormat);
-            //Ğ´ÈëÎÄ¼ş
+            //å†™å…¥æ–‡ä»¶
             xmlWriter.write(document);
-            //¹Ø±Õ
+            //å…³é—­
             xmlWriter.close();
-            // Êä³öxml
+            // è¾“å‡ºxml
             return stringWriter.toString();
         } catch (IOException e) {
             e.printStackTrace();

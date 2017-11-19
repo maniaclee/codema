@@ -5,14 +5,13 @@ import static com.lvbby.codema.java.template.$Class1_.$class1Object_;
 import static com.lvbby.codema.java.template.$Class2_.$class2Object_;
 import com.lvbby.codema.java.template.$Null_;
 import com.lvbby.codema.java.template.$TemplateClass_;
-import com.lvbby.codema.java.template.$TemplateUtils_;
+import com.lvbby.codema.java.template.__TemplateUtils_;
 import com.lvbby.codema.java.template.annotaion.Foreach;
 import com.lvbby.codema.java.template.annotaion.Sentence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.lvbby.codema.java.template.$Symbols_.$class_;
-import static com.lvbby.codema.java.template.$Symbols_.re;
 
 /**
  * Created by lipeng on 2016/12/24.
@@ -50,8 +49,8 @@ public class $Repository_ {
          }
         %>
         */
-        if ($TemplateUtils_.isTrue("class2Object!=null")) {
-            if ($TemplateUtils_.isTrue("isCollection")) {
+        if (__TemplateUtils_.isTrue("class2Object!=null")) {
+            if (__TemplateUtils_.isTrue("isCollection")) {
                 if ($class2Object_ == null || $class2Object_.isEmpty()) {
                     return $class1Object_;
                 }
