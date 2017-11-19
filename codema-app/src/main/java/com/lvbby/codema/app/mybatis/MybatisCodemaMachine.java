@@ -16,21 +16,18 @@ import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
-import com.lvbby.codema.java.result.JavaXmlTemplateResult;
 import com.lvbby.codema.java.template.TemplateContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.xml.sax.SAXException;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,24 +49,25 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
         if (mapperTemplate == null) {
             return;
         }
-        //mapper template xml
-        Document document = read(mapperTemplate.getInputStream());
-        /** 1. mapper xml */
-        BasicResult mapperXml = new XmlTemplateResult(document)
+        /** 1. 渲染mapper xml ， 替换变量*/
+        String renderXml = new XmlTemplateResult(read(mapperTemplate.getInputStream()))
                 .bind("mapper", config.parseDestClassFullName(cu))
-                .bind("resultClass", cu.classFullName())
+                .bind("resultClass", cu.classFullName()).getString();
+
+        Document document = read(renderXml);
+        List<JavaMethod> javaMethods = parseMethods(document, cu, sqlTable);
+        javaMethods.forEach(System.out::println);
+
+        /** 2. 根据mapper xml 生成mapper */
+        BasicResult mapperXml = new XmlTemplateResult(document)
                 .filePath(config.getDestResourceRoot(), config.getMapperDir(),
                         String.format("%sMapper.xml",
                                 ((JavaClass) codemaContext.getSource()).getName()));
         config.handle(codemaContext, mapperXml);
 
-        /** 2. 根据mapper xml 生成mapper */
-        List<JavaMethod> javaMethods = parseMethods(read(mapperXml.getString()), cu, sqlTable);
-        javaMethods.forEach(System.out::println);
-        /** mapper interface */
-        JavaTemplateResult mapper = new JavaTemplateResult(config, $Mapper_.class, cu)
-                .bind("methods", javaMethods);
-        config.handle(codemaContext,mapper);
+        /** 3. 生成mapper interface */
+        config.handle(codemaContext,
+                new JavaTemplateResult(config, $Mapper_.class, cu).bind("methods", javaMethods));
     }
 
     /***
@@ -94,7 +92,7 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
 
     private List<JavaMethod> parseMethods(Document document, JavaClass entity, SqlTable sqlTable) {
         List<JavaMethod> re = Lists.newArrayList();
-        for (Object o : document.getRootElement().elements()) {
+        for(Object o : document.getRootElement().elements()){
             Element element = (Element) o;
             JavaMethod javaMethod = new JavaMethod();
             //method name
@@ -108,14 +106,27 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
         return re;
     }
 
+    /***
+     * 1. 如果是insert/update/delete --->  int
+     * 2. return标签 --> 解析return后直接使用
+     * 3. resultType的mybatis标签
+     * 3. 缺省是entity
+     * @param element
+     * @param entity
+     * @param sqlTable
+     * @return
+     */
     private JavaType parseReturnType(Element element, JavaClass entity, SqlTable sqlTable) {
-        String resultType = element.attributeValue("resultType");
-        String sqlType = element.getName();
-        if(Lists.newArrayList("insert","update","delete").contains(sqlType)){
+        String returnType = element.attributeValue("return");
+        if(Lists.newArrayList("insert","update","delete").contains(element.getName())){
             return JavaType.ofClass(int.class);
         }
+        if(StringUtils.isNotBlank(returnType)){
+            return JavaType.ofClassName(escape(returnType));
+        }
+        String resultType = _innerXmlAttribute(element,"return");
         if(StringUtils.isNotBlank(resultType)){
-            return JavaType.ofClassName(escape(resultType));
+            return JavaType.ofClassName(resultType);
         }
         return JavaType.ofClassName(entity.getName());
     }
@@ -123,7 +134,18 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
         return s.replace("(","<").replace(")",">");
     }
 
+    /***
+     * 1. args标签
+     */
     private List<JavaArg> parseArgs(Element element, JavaClass entity, SqlTable sqlTable) {
+        String args = _innerXmlAttribute(element,"args");
+        if(args!=null){
+            return Arrays.stream(args.trim().split(",")).map(s -> {
+                String[] split = s.trim().split("\\s+");
+                return JavaArg.of(split[1], JavaType.ofClassName(split[0]));
+            }).collect(Collectors.toList());
+        }
+
         String parameterType = element.attributeValue("parameterType");
         if (StringUtils.isNotBlank(parameterType)) {
             if (StringUtils.equalsIgnoreCase(parameterType, "object")) {
@@ -138,6 +160,19 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
             return Lists.newArrayList(argWithParam(vars.get(0), JavaType.ofClassName(escape(parameterType))));
         }
         return parseArgsAsMap(element, entity,sqlTable);
+    }
+
+    /***
+     * 解析内部标签后然后删除
+     */
+    private String _innerXmlAttribute(Element element,String s ){
+        Attribute attribute = element.attribute(s);
+        if(attribute!=null){
+            String value = attribute.getValue();
+            element.remove(attribute);
+            return escape(value);
+        }
+        return null;
     }
 
     /***
@@ -206,6 +241,5 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
     }
 
     public static void main(String[] args) throws Exception {
-        new SAXReader().read(new FileInputStream("/Users/dushang.lp/workspace/test-codema/src/main/resources/mapper/ArticleMapper.xml"));
     }
 }

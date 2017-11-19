@@ -22,16 +22,15 @@
             now()
         )
     </insert>
-    <select id="queryByIds" resultType="${resultClass}" parameterType="List(Long)">
+    <select id="queryByIds"   return="List(Long)" args="List(Long) ids">
         select * from article
         where  id in
         <foreach item="item" collection="ids" open="(" separator="," close=")">
             #{item}
         </foreach>
-
     </select>
 
-    <select id="queryByUser" resultType="List(${resultClass})">
+    <select id="queryByUser" return="List(${resultClass})">
         select * from article
         where user_id = #{userId}
         order by  update_time desc
