@@ -6,6 +6,7 @@ import com.lvbby.codema.core.render.XmlTemplateResult;
 import com.lvbby.codema.core.resource.Resource;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.result.WriteMode;
+import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaAnnotation;
@@ -23,6 +24,7 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.dom4j.tree.DefaultElement;
 import org.xml.sax.SAXException;
 
 import java.io.FileInputStream;
@@ -59,6 +61,8 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
         List<JavaMethod> javaMethods = parseMethods(document, cu, sqlTable);
 
         /** 2. 根据mapper xml 生成mapper */
+        //预设的模板处理
+        processPresetTemplate(document,sqlTable);
         BasicResult mapperXml = new XmlTemplateResult(document)
                 .filePath(config.getDestResourceRoot(), config.getMapperDir(),
                         String.format("%sMapper.xml",
@@ -243,18 +247,44 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
         Validate.notNull(sqlTable.getPrimaryKeyField(),
                 "no primary key found for table : " + sqlTable.getNameInDb());
     }
-
-    public static void main(String[] args) throws Exception {
-        MybatisCodemaMachine m = new MybatisCodemaMachine();
-        Document read = m.read(new FileInputStream("/Users/lipeng/workspace/codema/codema-app/src/test/resousrces/article.xml"));
-        for (Object o : read.getRootElement().elements()) {
-            Element e = (Element) o;
-            if (StringUtils.equals(e.attributeValue("id"), "queryByIds")) {
-                Attribute aReturn = e.attribute("return");
-                e.remove(aReturn);
-                System.out.println("remove");
-            }
+    protected void processPresetTemplate(Document document,SqlTable table){
+        Element rootElement = document.getRootElement();
+        Element insert = rootElement.element("insert");
+        //insert
+        if(insert!=null && StringUtils.isBlank(insert.getText())){
+            String insertSql = String.format("insert into %s(%s) values(%s)",
+                    table.getNameInDb(),
+                    table.getFields().stream().map(SqlColumn::getNameInDb).collect(Collectors.joining(",")),
+                    table.getFields().stream().map(sqlColumn -> String.format("#{%s}",sqlColumn.getNameCamel())).collect(Collectors.joining(","))
+            );
+            insert.setText(insertSql);
         }
-        System.out.println(read.asXML());
+        Element update = rootElement.element("update");
+        //update
+        if(update!=null && StringUtils.isBlank(update.getText())){
+            update.setText(String.format("\nupdate %s set\n", table.getNameInDb()));
+            table.getFields().stream()
+                    .forEach(sqlColumn -> {
+                        DefaultElement result = new DefaultElement("if");
+                        result.addAttribute("test", String.format("%s !=null", sqlColumn.getNameCamel()));
+                        result.setText(String.format("%s = #{%s}", sqlColumn.getNameInDb(),sqlColumn.getNameCamel()));
+                        update.add(result);
+                    });
+        }
+        //resultMap
+        Element resultMap = rootElement.element("resultMap");
+        if(resultMap!=null && StringUtils.isBlank(resultMap.getText())){
+                    //"<result property=\"%s\" column=\"%s\" javaType=\"%s\" jdbcType=\"%s\"/>"
+             table.getFields().stream()
+                .forEach(sqlColumn -> {
+                    DefaultElement result = new DefaultElement("result");
+                    result.addAttribute("property", sqlColumn.getNameCamel());
+                    result.addAttribute("column", sqlColumn.getNameInDb());
+                    result.addAttribute("javaType", sqlColumn.getJavaType().getName());
+                    result.addAttribute("jdbcType", sqlColumn.getDbType());
+                    resultMap.add(result);
+                });
+        }
     }
+
 }
