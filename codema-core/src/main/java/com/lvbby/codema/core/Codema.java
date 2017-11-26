@@ -70,7 +70,7 @@ public class Codema {
      * @param <T>
      * @return
      */
-    public <T extends CommonCodemaConfig> Codema bind(CodemaMachine<T> configBinder, T config) {
+    public <T extends CommonCodemaConfig> Codema machine(CodemaMachine<T> configBinder, T config) {
         for (CodemaJob job : jobs) {
             job.codemaContext.getRunMap().put(configBinder, config);
         }

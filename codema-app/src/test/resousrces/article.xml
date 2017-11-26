@@ -18,7 +18,7 @@
         where user_id = #{userId}
         order by  update_time desc
     </select>
-    <select id="queryMap"   resultType="${resultClass}">
+    <select id="queryMap"   resultMap="resultMap">
         select * from article
         where user_id = #{userId}
         <if test="title">
@@ -28,4 +28,6 @@
     </select>
     <update id="update">
     </update>
+    <select id="selectById">
+    </select>
 </mapper>

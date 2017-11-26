@@ -8,4 +8,10 @@ import java.util.List;
 public interface SourceLoader<T> {
 
     List<T> loadSource() throws Exception;
+
+    /***
+     * 获取解析出来的source类型
+     * @return
+     */
+    Class<T> getType();
 }

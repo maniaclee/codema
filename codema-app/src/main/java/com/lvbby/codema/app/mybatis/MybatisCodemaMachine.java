@@ -18,6 +18,7 @@ import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.template.TemplateContext;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.dom4j.Attribute;
@@ -27,18 +28,32 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultElement;
 import org.xml.sax.SAXException;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lipeng on 16/12/23.
  * 产生dao和mapper.xml
  */
 public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodemaConfig> {
+
+    public static final String tag_select="select";
+    public static final String tag_update="update";
+    public static final String tag_delete="delete";
+    public static final String tag_insert="insert";
+    public static final List<String> tags=Lists.newArrayList(tag_delete,tag_insert,tag_select,tag_update);
+    public static final List<String> tags_transaction=Lists.newArrayList(tag_delete,tag_insert,tag_update);
+    public static final String attribute_parameterType="parameterType";
+    public static final String attribute_resultMap="resultMap";
+    public static final String attribute_resultType="resultType";
+    public static final String attribute_id="id";
+    public static final String attribute_inner_return="return";
+    public static final String attribute_inner_args="args";
 
     public void codeEach(CodemaContext codemaContext, MybatisCodemaConfig config, JavaClass cu)
             throws Exception {
@@ -58,20 +73,22 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
                 .bind("resultClass", cu.classFullName()).getString();
 
         Document document = read(renderXml);
+        /** 处理预设模板 */
+        processPresetTemplate(document,cu,sqlTable);
+
         List<JavaMethod> javaMethods = parseMethods(document, cu, sqlTable);
+        /** 3. 生成mapper interface */
+        config.handle(codemaContext,
+                new JavaTemplateResult(config, $Mapper_.class, cu).bind("methods", javaMethods));
 
         /** 2. 根据mapper xml 生成mapper */
         //预设的模板处理
-        processPresetTemplate(document,sqlTable);
         BasicResult mapperXml = new XmlTemplateResult(document)
                 .filePath(config.getDestResourceRoot(), config.getMapperDir(),
                         String.format("%sMapper.xml",
                                 ((JavaClass) codemaContext.getSource()).getName()));
         config.handle(codemaContext, mapperXml);
 
-        /** 3. 生成mapper interface */
-        config.handle(codemaContext,
-                new JavaTemplateResult(config, $Mapper_.class, cu).bind("methods", javaMethods));
     }
 
     public void preCode(CodemaContext codemaContext, MybatisCodemaConfig config)
@@ -114,19 +131,18 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
 
 
     private List<JavaMethod> parseMethods(Document document, JavaClass entity, SqlTable sqlTable) {
-        List<JavaMethod> re = Lists.newArrayList();
-        for (Object o : document.getRootElement().elements()) {
-            Element element = (Element) o;
-            JavaMethod javaMethod = new JavaMethod();
-            //method name
-            javaMethod.setName(element.attributeValue("id"));
-            //method return type
-            javaMethod.setReturnType(parseReturnType(element, entity, sqlTable));
-            //args
-            javaMethod.setArgs(parseArgs(element, entity, sqlTable));
-            re.add(javaMethod);
-        }
-        return re;
+       return visitElements(document.getRootElement())
+                .filter(element -> tags.contains(element.getName()))
+                .map(element -> {
+                    JavaMethod javaMethod = new JavaMethod();
+                    //method name
+                    javaMethod.setName(id(element));
+                    //method return type
+                    javaMethod.setReturnType(parseReturnType(document,element, entity, sqlTable));
+                    //args
+                    javaMethod.setArgs(parseArgs(element, entity, sqlTable));
+                    return javaMethod;
+                }).collect(Collectors.toList());
     }
 
     /***
@@ -134,20 +150,33 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
      * 2. return标签 --> 解析return后直接使用
      * 3. resultType的mybatis标签
      * 3. 缺省是entity
+     *
+     * @param document
      * @param element
      * @param entity
      * @param sqlTable
      * @return
      */
-    private JavaType parseReturnType(Element element, JavaClass entity, SqlTable sqlTable) {
-        String returnType = _innerXmlAttribute(element, "return");
-        if (Lists.newArrayList("insert", "update", "delete").contains(element.getName())) {
+    private JavaType parseReturnType(Document document, Element element, JavaClass entity, SqlTable sqlTable) {
+        //提取resultMap信息
+        Element resultMap = document.getRootElement().element(attribute_resultMap);
+        String resultMapName = Optional.ofNullable(resultMap).map(element1 -> element1.attributeValue("id")).orElse(null);
+        String resultMapType = Optional.ofNullable(resultMap).map(element1 -> element1.attributeValue("type")).orElse(null);
+
+        String returnType = _innerXmlAttribute(element, attribute_inner_return);
+        if (tags_transaction.contains(element.getName())) {
             return JavaType.ofClass(int.class);
         }
         if (StringUtils.isNotBlank(returnType)) {
             return JavaType.ofClassName(escape(returnType));
         }
-        String resultType = element.attributeValue("resultType");
+
+        String resultMapValue = element.attributeValue(attribute_resultMap);
+        if (StringUtils.equals(resultMapName, resultMapValue)) {
+            return JavaType.ofClassName(resultMapType);
+        }
+
+        String resultType = element.attributeValue(attribute_resultType);
         if (StringUtils.isNotBlank(resultType)) {
             return JavaType.ofClassName(resultType);
         }
@@ -162,7 +191,7 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
      * 1. args标签
      */
     private List<JavaArg> parseArgs(Element element, JavaClass entity, SqlTable sqlTable) {
-        String args = _innerXmlAttribute(element, "args");
+        String args = _innerXmlAttribute(element, attribute_inner_args);
         if (args != null) {
             return Arrays.stream(args.trim().split(",")).map(s -> {
                 String[] split = s.trim().split("\\s+");
@@ -170,7 +199,7 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
             }).collect(Collectors.toList());
         }
 
-        String parameterType = element.attributeValue("parameterType");
+        String parameterType = element.attributeValue(attribute_parameterType);
         if (StringUtils.isNotBlank(parameterType)) {
             if (StringUtils.equalsIgnoreCase(parameterType, "object")) {
                 return Lists.newArrayList(
@@ -247,10 +276,10 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
         Validate.notNull(sqlTable.getPrimaryKeyField(),
                 "no primary key found for table : " + sqlTable.getNameInDb());
     }
-    protected void processPresetTemplate(Document document,SqlTable table){
+    protected void processPresetTemplate(Document document, JavaClass cu, SqlTable table){
         Element rootElement = document.getRootElement();
-        Element insert = rootElement.element("insert");
         //insert
+        Element insert = rootElement.element(tag_insert);
         if(insert!=null && StringUtils.isBlank(insert.getText())){
             String insertSql = String.format("insert into %s(%s) values(%s)",
                     table.getNameInDb(),
@@ -259,8 +288,8 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
             );
             insert.setText(insertSql);
         }
-        Element update = rootElement.element("update");
         //update
+        Element update = rootElement.element(tag_update);
         if(update!=null && StringUtils.isBlank(update.getText())){
             update.setText(String.format("\nupdate %s set\n", table.getNameInDb()));
             table.getFields().stream()
@@ -270,9 +299,10 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
                         result.setText(String.format("%s = #{%s}", sqlColumn.getNameInDb(),sqlColumn.getNameCamel()));
                         update.add(result);
                     });
+            update.addAttribute(attribute_parameterType,"object");
         }
         //resultMap
-        Element resultMap = rootElement.element("resultMap");
+        Element resultMap = rootElement.element(attribute_resultMap);
         if(resultMap!=null && StringUtils.isBlank(resultMap.getText())){
                     //"<result property=\"%s\" column=\"%s\" javaType=\"%s\" jdbcType=\"%s\"/>"
              table.getFields().stream()
@@ -285,6 +315,36 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
                     resultMap.add(result);
                 });
         }
+        //springData style
+        visitElements(rootElement)
+                .filter(element -> CollectionUtils.isEmpty(element.elements())&&StringUtils.isBlank(element.getText()))
+                .forEach(element -> {
+                    System.out.println(element);
+                    SqlBuilder sql = SqlBuilder
+                            .parseFromSpringDataStyle(id(element));
+                    element.setText(sql.getSql(table.getNameInDb()));
+                    if(StringUtils.isBlank(element.attributeValue(attribute_resultMap))&&StringUtils.isBlank(element.attributeValue("resultType"))){
+                        if(resultMap!=null){
+                            element.addAttribute(attribute_resultMap,id(resultMap));
+                        }else{
+                            element.addAttribute(attribute_resultType,cu.classFullName());
+                        }
+                    }
+                });
+    }
+
+    private String id(Element element){
+        return element.attributeValue(attribute_id);
+    }
+
+    private Stream<Element> visitElements(Element element){
+        List<Element> re = Lists.newLinkedList();
+        if(element!=null){
+            for (Object o : element.elements()) {
+                re.add((Element) o);
+            }
+        }
+        return re.stream();
     }
 
 }

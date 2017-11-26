@@ -1,6 +1,7 @@
 package com.lvbby.codema.core.source;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.utils.TypeCapable;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * @author dushang.lp
  * @version $Id: SingleSourceLoader.java, v 0.1 2017-11-09 上午8:44 dushang.lp Exp $
  */
-public class SingleSourceLoader<T> implements SourceLoader<T> {
+public class SingleSourceLoader<T> extends TypeCapable<T> implements SourceLoader<T> {
     private T source;
 
     protected void setSource(T source) {

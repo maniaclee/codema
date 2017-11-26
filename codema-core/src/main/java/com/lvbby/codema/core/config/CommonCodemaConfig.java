@@ -108,6 +108,10 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
         handle(ResultContext.of(codemaContext, this, result));
     }
 
+    /***
+     * 查找绑定codemaMachine
+     * @return
+     */
     public CodemaMachine loadCodemaMachine() {
         ConfigBind annotation = getClass().getAnnotation(ConfigBind.class);
         if (annotation != null && annotation.value() != null

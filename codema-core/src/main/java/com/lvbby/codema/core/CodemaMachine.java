@@ -9,4 +9,10 @@ import com.lvbby.codema.core.config.CommonCodemaConfig;
 public interface CodemaMachine<T extends CommonCodemaConfig> {
 
     void code(CodemaContext codemaContext, T config) throws Exception;
+
+    /***
+     * 获取绑定的config类型
+     * @return
+     */
+     Class<T> getConfigType();
 }

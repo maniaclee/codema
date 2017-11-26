@@ -3,6 +3,7 @@ package com.lvbby.codema.core;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.core.utils.TypeCapable;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,13 +13,19 @@ import java.util.List;
  * @author dushang.lp
  * @version $Id: AbstractCodemaMachine.java, v 0.1 2017-08-24 3:32 dushang.lp Exp $
  */
-public abstract class AbstractCodemaMachine<T extends CommonCodemaConfig>
+public abstract class AbstractCodemaMachine<T extends CommonCodemaConfig> extends TypeCapable<T>
                                            implements CodemaMachine<T> {
 
     protected String loadResourceAsString(String resourceName) throws IOException {
         return ReflectionUtils.loadResource(getClass(), resourceName);
     }
 
+    /***
+     * 获取数据来源：from、beanFactory
+     * @param context
+     * @param config
+     * @return
+     */
     protected List loadFrom(CodemaContext context, T config) {
         if (config.getFromConfig() != null) {
             //根据config筛选bean，这里的config使用引用比较，因为一个config class 可能对应多个实例
@@ -30,5 +37,9 @@ public abstract class AbstractCodemaMachine<T extends CommonCodemaConfig>
             return Lists.newArrayList(context.getSource());
         }
         return Lists.newLinkedList();
+    }
+
+    @Override public Class<T> getConfigType() {
+        return getType();
     }
 }

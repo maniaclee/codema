@@ -1,12 +1,14 @@
 package com.lvbby.codema.core.source;
 
+import com.lvbby.codema.core.utils.TypeCapable;
+
 import java.util.List;
 
 /**
  * @author dushang.lp
  * @version $Id: AbstractSourceLoader.java, v 0.1 2017-08-23 下午8:08 dushang.lp Exp $
  */
-public abstract class AbstractSourceLoader<T> implements SourceLoader<T> {
+public abstract class AbstractSourceLoader<T> extends TypeCapable<T> implements SourceLoader<T> {
 
     protected List<T> source;
 
