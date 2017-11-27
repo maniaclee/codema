@@ -21,13 +21,21 @@ public class MdJavaDocTest extends BaseTest {
     @Before
     public void init() {
         JavaSrcLoader.initJavaSrcRoots(
-            Lists.newArrayList(new File(System.getProperty("user.home"), "workspace")));
+            Lists.newArrayList(new File(System.getProperty("user.home"), "workspace")),6);
     }
 
     public void mdJavaDoc(String reference) throws Exception {
-        String[] split = reference.split("[#,]");
-        String service = split[0];
-        String method = split[1];
+        String service;
+        String method;
+        if(reference.matches(".*(\\.[a-z].*)$")){
+            int i = reference.lastIndexOf(".");
+            service=reference.substring(0,i);
+            method=reference.substring(i+1);
+        }else {
+            String[] split = reference.split("[#,]");
+            service = split[0];
+            method = split.length > 1 ? split[1] : null;
+        }
 
         JavaMdDocCodemaConfig md = new JavaMdDocCodemaConfig();
         md.setAuthor("lee");
@@ -40,6 +48,22 @@ public class MdJavaDocTest extends BaseTest {
     }
 
     @Test public void testMdJavaDoc() throws Exception {
-        mdJavaDoc("com.lvbby.codema.core.result.BasicResult#config");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryAppointmentPeriods");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductCount");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductList");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AssetQueryFacade#queryAssetStatistic");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryUserAppointmentStatistic");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AssetQueryFacade#queryAssetList");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryUserAppointmentList");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryAppointmentDetail");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AssetQueryFacade#queryAssetDetail");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentFacade#applyAppointment");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentFacade#cancelAppointment");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProduct");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#userPurchase");
+//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryOrder");
+//        mdJavaDoc("com.alipay.zcbprod.common.service.facade.asset.service.AssetQueryFacade#queryAssetProfitList");
+//        mdJavaDoc("com.alipay.zcbprod.common.service.facade.appointment.service.AppointmentQueryFacade#queryAppointmentHistoryList");
+        mdJavaDoc("com.alipay.zcbprod.common.service.facade.asset.service.AssetQueryFacade.queryUserRedeemAssetList");
     }
 }

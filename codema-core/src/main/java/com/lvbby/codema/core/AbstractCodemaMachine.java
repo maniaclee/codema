@@ -20,15 +20,9 @@ public abstract class AbstractCodemaMachine<T extends CommonCodemaConfig> extend
         return ReflectionUtils.loadResource(getClass(), resourceName);
     }
 
-    /***
-     * 获取数据来源：from、beanFactory
-     * @param context
-     * @param config
-     * @return
-     */
     protected List loadFrom(CodemaContext context, T config) {
         if (config.getFromConfig() != null) {
-            //根据config筛选bean，这里的config使用引用比较，因为一个config class 可能对应多个实例
+            //鏍规嵁config鏉ユ煡鎵綽ean
             List<Object> beans = context.getCodemaBeanFactory().getBeans(Object.class,
                 codemaBean -> codemaBean.getConfig() != null && config.getFromConfig()==codemaBean.getConfig());
             return beans;

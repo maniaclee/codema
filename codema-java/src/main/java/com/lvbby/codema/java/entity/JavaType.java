@@ -134,8 +134,8 @@ public class JavaType {
      * 如果是泛型，返回泛型里的具体类
      * @return
      */
-    public String getSpecificType() {
-        return getName();//TODO
+    public JavaType getSpecificType() {
+        return CollectionUtils.isNotEmpty(genericTypes)?genericTypes.get(0):null;
     }
 
     /***

@@ -6,7 +6,7 @@ import org.junit.Test;
 /**
  * Created by lipeng on 2016/12/24.
  */
-public class ParserTest extends BaseTest {
+public class SqlBuilderTest extends BaseTest {
 
     @Test
     public void name() throws Exception {
