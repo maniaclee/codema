@@ -27,7 +27,7 @@ public class MdJavaDocTest extends BaseTest {
     public void mdJavaDoc(String reference) throws Exception {
         String service;
         String method;
-        if(reference.matches(".*(\\.[a-z].*)$")){
+        if(reference.matches(".*(\\.[a-z][^\\.]+)$")){
             int i = reference.lastIndexOf(".");
             service=reference.substring(0,i);
             method=reference.substring(i+1);
@@ -64,6 +64,10 @@ public class MdJavaDocTest extends BaseTest {
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryOrder");
 //        mdJavaDoc("com.alipay.zcbprod.common.service.facade.asset.service.AssetQueryFacade#queryAssetProfitList");
 //        mdJavaDoc("com.alipay.zcbprod.common.service.facade.appointment.service.AppointmentQueryFacade#queryAppointmentHistoryList");
-        mdJavaDoc("com.alipay.zcbprod.common.service.facade.asset.service.AssetQueryFacade.queryUserRedeemAssetList");
+//        mdJavaDoc("com.alipay.zcbprod.common.service.facade.asset.service.AssetQueryFacade.queryUserRedeemAssetList");
+//        mdJavaDoc("com.alipay.zcbprod.common.service.facade.common.BaseMultiSourcePageRequest");
+//        mdJavaDoc("com.alipay.zcbprod.common.service.facade.common.BaseMultiSourcePageResult");
+//        mdJavaDoc("com.alipay.zcbprod.common.service.facade.cash.service.ZCBCashingQueryFacade#queryCashingRecord");
+        mdJavaDoc("com.alipay.finfiprod.common.service.facade.model.During");
     }
 }
