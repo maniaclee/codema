@@ -58,8 +58,7 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
     }
 
     /***
-     * Ç¿ÖÆäÖÈ¾
-     * @return
+     *  æ¸²æŸ“
      */
     public TemplateEngineResult render() {
         if (!rendered) {

@@ -2,6 +2,7 @@ package com.lvbby.codema.app.testcase;
 
 import com.lvbby.codema.app.springboot.JavaSpringBootConfig;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
@@ -14,12 +15,11 @@ import java.util.regex.Pattern;
  */
 public class JavaTestcaseCodemaMachine extends AbstractJavaCodemaMachine<JavaTestcaseCodemaConfig> {
 
-    public void codeEach(CodemaContext codemaContext, JavaTestcaseCodemaConfig config, JavaClass cu) throws Exception {
-        config.handle(codemaContext,
-                new JavaTemplateResult(config, $TestCase_.class, cu)
-                        .bind("springBootConfig", codemaContext.findConfig(JavaSpringBootConfig.class))
-                        .bind("componentScan",parseComponentScanPackage(config.getDestPackage()))
-        );
+    @Override
+    public Result<JavaClass> codeEach(JavaTestcaseCodemaConfig config,
+        return new JavaTemplateResult(config, $TestCase_.class, cu)
+                .bind("springBootConfig", codemaContext.findConfig(JavaSpringBootConfig.class))
+                .bind("componentScan",parseComponentScanPackage(config.getDestPackage());
     }
     private String parseComponentScanPackage(String pack){
         Matcher matcher = Pattern.compile("^[^\\.]+\\.[^\\.]+").matcher(pack);

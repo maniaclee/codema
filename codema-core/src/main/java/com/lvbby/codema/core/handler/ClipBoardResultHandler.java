@@ -1,6 +1,5 @@
 package com.lvbby.codema.core.handler;
 
-import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.PrintableResult;
 import com.lvbby.codema.core.result.Result;
@@ -14,8 +13,7 @@ import java.awt.datatransfer.StringSelection;
  */
 public class ClipBoardResultHandler implements ResultHandler {
     @Override
-    public void handle(ResultContext resultContext) throws Exception {
-        Result result = resultContext.getResult();
+    public void handle(Result result ) throws Exception {
         if (result instanceof PrintableResult) {
             Clipboard sysClb = null;
             sysClb = Toolkit.getDefaultToolkit().getSystemClipboard();

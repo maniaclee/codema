@@ -1,18 +1,17 @@
 package com.lvbby.codema.app.mvn;
 
-import com.lvbby.codema.core.AbstractCodemaMachine;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.VoidCodemaMachine;
 import com.lvbby.codema.core.render.XmlTemplateResult;
 import com.lvbby.codema.core.result.BasicResult;
-import com.lvbby.codema.core.result.WriteMode;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Created by lipeng on 16/12/23.
  */
-public class MavenCodemaMachine extends AbstractCodemaMachine<MavenConfig> {
+public class MavenCodemaMachine extends VoidCodemaMachine<MavenConfig> {
 
-    public void code(CodemaContext codemaContext, MavenConfig config) throws Exception {
+    public void code(MavenConfig config,Object,Object) throws Exception {
         config.init();
         //创建目录，写入pom.xml,.gitignore
         process(codemaContext, config);

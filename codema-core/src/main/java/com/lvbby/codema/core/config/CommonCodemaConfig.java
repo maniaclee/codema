@@ -1,9 +1,7 @@
 package com.lvbby.codema.core.config;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
-import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.ResultHandler;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.FileUtils;
@@ -98,14 +96,10 @@ public class CommonCodemaConfig implements Serializable, ResultHandler {
     }
 
     @Override
-    public void handle(ResultContext resultContext) throws Exception {
+    public void handle(Result result) throws Exception {
         for (ResultHandler handler : resultHandlers) {
-            handler.handle(resultContext);
+            handler.handle(result);
         }
-    }
-
-    public void handle(CodemaContext codemaContext, Result result) throws Exception {
-        handle(ResultContext.of(codemaContext, this, result));
     }
 
     /***

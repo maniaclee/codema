@@ -1,6 +1,5 @@
 package com.lvbby.codema.core.handler;
 
-import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.result.PrintableResult;
 
 /**
@@ -8,7 +7,7 @@ import com.lvbby.codema.core.result.PrintableResult;
  */
 public class PrintResultHandler extends AbstractResultHandler<PrintableResult> {
     @Override
-    protected void process(ResultContext resultContext, PrintableResult result) {
+    protected void process( PrintableResult result) {
         System.out.println(result.getString());
     }
 }

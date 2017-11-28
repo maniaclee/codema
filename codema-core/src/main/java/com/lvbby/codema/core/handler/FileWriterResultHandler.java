@@ -1,6 +1,5 @@
 package com.lvbby.codema.core.handler;
 
-import com.lvbby.codema.core.ResultContext;
 import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.result.MergeCapableFileResult;
 import com.lvbby.codema.core.result.WriteMode;
@@ -14,7 +13,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Optional;
 
 /**
  * 支持各种模式的文件写入
@@ -31,7 +29,7 @@ public class FileWriterResultHandler extends AbstractResultHandler<FileResult> {
     public FileWriterResultHandler() {
     }
 
-    @Override protected void process(ResultContext resultContext, FileResult result)
+    @Override protected void process(FileResult result)
             throws Exception {
         File file = result.getFile();
         if (file == null)
@@ -70,7 +68,7 @@ public class FileWriterResultHandler extends AbstractResultHandler<FileResult> {
                         "result[%s] doesn't support merge mode for file:%s",
                         result.getClass().getName(), result.getFile());
                 FileInputStream dest = new FileInputStream(file);
-                String s = ((MergeCapableFileResult) result).parseMergeResult(dest, resultContext);
+                String s = ((MergeCapableFileResult) result).parseMergeResult(dest);
                 IOUtils.closeQuietly(dest);
                 write(s, new FileOutputStream(file), file);
                 return;

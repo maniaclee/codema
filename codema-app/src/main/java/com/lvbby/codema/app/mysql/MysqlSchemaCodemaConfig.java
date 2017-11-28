@@ -5,7 +5,6 @@
 package com.lvbby.codema.app.mysql;
 
 import com.lvbby.codema.core.AbstractCodemaMachine;
-import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.render.SqlTemplateResult;
@@ -18,7 +17,7 @@ import org.apache.commons.lang3.Validate;
 /**
  *
  * @author dushang.lp
- * @version $Id: MysqlSchemaCodemaConfig.java, v 0.1 2017-09-13 ÏÂÎç5:07 dushang.lp Exp $
+ * @version $Id: MysqlSchemaCodemaConfig.java, v 0.1 2017-09-13  dushang.lp Exp $
  */
 public class MysqlSchemaCodemaConfig extends CommonCodemaConfig {
     private String primaryKey;
@@ -28,9 +27,7 @@ public class MysqlSchemaCodemaConfig extends CommonCodemaConfig {
 
         return new AbstractCodemaMachine() {
             @Override
-            public void code(CodemaContext codemaContext,
-                             CommonCodemaConfig config) throws Exception {
-                Object source = codemaContext.getSource();
+            public void code(CommonCodemaConfig config,Object source) throws Exception {
                 SqlTable table=null;
                 if (source instanceof SqlTable) {
                     table= (SqlTable) source;
@@ -43,7 +40,7 @@ public class MysqlSchemaCodemaConfig extends CommonCodemaConfig {
                         table.buildPrimaryKeyField(primaryKey);
                     }
                     Validate.notNull(table.getPrimaryKeyField(), "primary id can't be null");
-                    config.handle(codemaContext, new SqlTemplateResult()
+                    config.handle(new SqlTemplateResult()
                         .template(loadResourceAsString("create.sql")).bind("table", table));
                 }
             }

@@ -73,10 +73,10 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
             JavaTemplateResource annotation = getClass().getAnnotation(JavaTemplateResource.class);
             if(annotation!=null && annotation.value()!=null){
                 return new AbstractJavaCodemaMachine() {
-                    @Override protected void codeEach(CodemaContext context,
+                    @Override protected void codeEach(
                                                       JavaBasicCodemaConfig config,
                                                       JavaClass javaClass) throws Exception {
-                        config.handle(context, new JavaTemplateResult(config, annotation.value(), javaClass).render());
+                        config.handle(new JavaTemplateResult(config, annotation.value(), javaClass).render());
                     }
 
                 };

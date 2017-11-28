@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by lipeng on 17/1/9.
  */
-public class BasicResult<T> extends AbstractFileResult implements PrintableResult {
+public class BasicResult<T> extends AbstractFileResult<T> {
 
     protected static Logger logger = LoggerFactory.getLogger(BasicResult.class);
     /***
