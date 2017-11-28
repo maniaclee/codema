@@ -1,6 +1,8 @@
 package com.lvbby.codema.app.mybatis;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.AbstractBaseCodemaMachine;
+import com.lvbby.codema.core.AbstractCodemaMachine;
 import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.render.XmlTemplateResult;
 import com.lvbby.codema.core.resource.Resource;
@@ -16,6 +18,7 @@ import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaInputCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.template.TemplateContext;
 import org.apache.commons.collections.CollectionUtils;
@@ -40,7 +43,8 @@ import java.util.stream.Stream;
  * Created by lipeng on 16/12/23.
  * 产生dao和mapper.xml
  */
-public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodemaConfig> {
+public class MybatisCodemaMachine extends
+                                  AbstractBaseCodemaMachine<MybatisCodemaConfig,JavaClass,Object> {
 
     public static final String tag_select="select";
     public static final String tag_update="update";
@@ -55,11 +59,11 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
     public static final String attribute_inner_return="return";
     public static final String attribute_inner_args="args";
 
-    public void codeEach(CodemaContext codemaContext, MybatisCodemaConfig config, JavaClass cu)
+    public void code(MybatisCodemaConfig config, JavaClass cu)
             throws Exception {
         SqlTable sqlTable = codemaContext.getCodemaBeanFactory().getBean(SqlTable.class);
         validate(sqlTable);
-
+        preCode(config);
         Resource mapperTemplate = config.getMapperXmlTemplates().stream()
                 .filter(resource -> StringUtils
                         .equals(config.getTable2mapperName().apply(sqlTable.getNameInDb()),
@@ -78,7 +82,7 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
 
         List<JavaMethod> javaMethods = parseMethods(document, cu, sqlTable);
         /** 3. 生成mapper interface */
-        config.handle(codemaContext,
+        config.handle(
                 new JavaTemplateResult(config, $Mapper_.class, cu).bind("methods", javaMethods));
 
         /** 2. 根据mapper xml 生成mapper */
@@ -87,21 +91,21 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<MybatisCodem
                 .filePath(config.getDestResourceRoot(), config.getMapperDir(),
                         String.format("%sMapper.xml",
                                 ((JavaClass) codemaContext.getSource()).getName()));
-        config.handle(codemaContext, mapperXml);
+        config.handle(mapperXml);
 
     }
 
-    public void preCode(CodemaContext codemaContext, MybatisCodemaConfig config)
+    public void preCode( MybatisCodemaConfig config)
             throws Exception {
         /**mybatis config*/
 
-        config.handle(codemaContext, new BasicResult().result(loadResourceAsString("mybatis.xml"))
+        config.handle(new BasicResult().result(loadResourceAsString("mybatis.xml"))
                 .filePath(config.getDestResourceRoot(), "mybatis.xml")
                 .writeMode(WriteMode.writeIfNoExist));
 
         /** dal config */
         if (StringUtils.isNotBlank(config.getConfigPackage())) {
-            config.handle(codemaContext,
+            config.handle(
                     new JavaTemplateResult(
                             new TemplateContext(DalConfig.class, config).pack(config.getConfigPackage()))
                             .writeMode(WriteMode.writeIfNoExist));

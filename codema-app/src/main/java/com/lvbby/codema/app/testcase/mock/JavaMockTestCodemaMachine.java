@@ -2,6 +2,7 @@ package com.lvbby.codema.app.testcase.mock;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
@@ -20,13 +21,13 @@ import java.util.stream.Collectors;
  */
 public class JavaMockTestCodemaMachine extends AbstractJavaCodemaMachine<JavaMockTestCodemaConfig> {
 
-    public void codeEach(CodemaContext codemaContext, JavaMockTestCodemaConfig config, JavaClass cu) throws Exception {
-        config.handle(codemaContext,
-                new JavaTemplateResult(config, $Mock_Test.class, cu)
-                        .bind("Mock", cu.getName() + "Test")
-                        .bind("injectFields", extractAllInjectFields(cu, config.getDependencyAnnotation()))
-                        .bind("methods", MockMethod.parseMockMethods(cu, javaField -> javaField.getType().beOutterClass()))
-        );
+    public Result<JavaClass> codeEach(JavaMockTestCodemaConfig config, JavaClass cu)
+            throws Exception {
+        return new JavaTemplateResult(config, $Mock_Test.class, cu)
+                .bind("Mock", cu.getName() + "Test")
+                .bind("injectFields", extractAllInjectFields(cu, config.getDependencyAnnotation()))
+                .bind("methods", MockMethod
+                        .parseMockMethods(cu, javaField -> javaField.getType().beOutterClass()));
     }
 
     public static List<JavaField> extractAllInjectFields(JavaClass javaClass, List annotations) {

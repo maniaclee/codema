@@ -12,15 +12,4 @@ import com.lvbby.codema.java.entity.JavaClass;
 public abstract class AbstractJavaCodemaMachine<T extends JavaBasicCodemaConfig>
         extends AbstractCodemaMachine<T, JavaClass, JavaClass> {
 
-    @Override public void code(T config, JavaClass javaClass) throws Exception {
-        //result
-        Result<JavaClass> re = codeEach(config,javaClass);
-        //设置result
-        setResult(re);
-        //调用handler处理
-        config.handle(re);
-    }
-
-    protected abstract Result<JavaClass> codeEach(T config, JavaClass javaClass) throws Exception;
-
 }

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by lipeng on 2017/1/3.
  */
-@ConfigBind(MavenCodemaMachine.class)
+@ConfigBind(MavenCodemaMachineAbstract.class)
 public class MavenConfig extends CommonCodemaConfig {
 
     private String name;

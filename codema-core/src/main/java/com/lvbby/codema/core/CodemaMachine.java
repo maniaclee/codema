@@ -9,9 +9,27 @@ import com.lvbby.codema.core.result.Result;
  */
 public interface CodemaMachine<T extends CommonCodemaConfig, S, O> {
 
-    void code(T config, S source) throws Exception;
+    <T> T getArg(TypedKey<T> key);
+
+    void code(S source) throws Exception;
 
     Result<O> getResult();
+
+    /**
+     * 连接下一个CodemaMachine
+     * @param next
+     */
+     CodemaMachine<T , S, O> next(CodemaMachine next);
+    /**
+     * 连接下一个CodemaMachine,类型必须一致
+     * @param next
+     */
+     <ConfigOther extends CommonCodemaConfig,Output> CodemaMachine<T , S, O> nextWithCheck(CodemaMachine<ConfigOther,O,Output> next);
+
+    T getConfig();
+
+    CodemaMachine<T , S, O> setConfig(T config);
+
     /***
      * 获取绑定的config类型
      * @return

@@ -17,11 +17,15 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
+import com.lvbby.codema.app.es.JavaEsCodemaMachine;
+import com.lvbby.codema.app.javaMdDoc.JavaMdDocInterfaceCodemaMachine;
+import com.lvbby.codema.app.springboot.JavaSpringBootCodemaMachine;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.io.IOUtils;
 import org.joor.Reflect;
@@ -264,5 +268,13 @@ public class SimpleTest {
         }
 
 
+    }
+
+    @Test public void tst() throws Exception {
+        JavaMdDocInterfaceCodemaMachine md = new JavaMdDocInterfaceCodemaMachine();
+        System.out.println(md);
+        Codema.source(new JavaClass())
+                .machine(md .nextWithCheck(md).nextWithCheck(new JavaSpringBootCodemaMachine()))
+                .run();
     }
 }

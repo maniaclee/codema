@@ -5,6 +5,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.lvbby.codema.core.CodemaContext;
+import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
@@ -23,22 +24,21 @@ import java.util.stream.Collectors;
 public class JavaMdDocInterfaceCodemaMachine extends AbstractJavaCodemaMachine<JavaMdDocCodemaConfig> {
 
     private String templateResource="mdJavaDoc.md";
-    public void codeEach(CodemaContext codemaContext, JavaMdDocCodemaConfig config,
-                         JavaClass cu) throws Exception {
+    public Result<JavaClass> codeEach(JavaMdDocCodemaConfig config,
+                           JavaClass cu) throws Exception {
 
         String template = loadResourceAsString(templateResource);
         JavaMethod method = StringUtils.isBlank(config.getMethod())?null:cu.findMethodByName(config.getMethod());
         if(method!=null) {
-            config.handle(codemaContext,
-                    new JavaMdTemplateResult(config, template, cu)
-                            .bind("javaMethod", method)
-                            .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
-                            .bind("result", printParam(cu, method.getReturnType()))
-                            .bind("parameters", method.getArgs().stream().map(JavaArg::getType)
-                                    .filter(javaType -> !javaType.bePrimitive())
-                                    .map(javaType -> printParam(cu, javaType))
-                                    .filter(s -> s != null)
-                                    .collect(Collectors.toList())));
+            return                     new JavaMdTemplateResult(config, template, cu)
+                    .bind("javaMethod", method)
+                    .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
+                    .bind("result", printParam(cu, method.getReturnType()))
+                    .bind("parameters", method.getArgs().stream().map(JavaArg::getType)
+                            .filter(javaType -> !javaType.bePrimitive())
+                            .map(javaType -> printParam(cu, javaType))
+                            .filter(s -> s != null)
+                            .collect(Collectors.toList()));
         }else{
             //class
             CompilationUnit clone = cu.getSrc().clone();
@@ -47,11 +47,10 @@ public class JavaMdDocInterfaceCodemaMachine extends AbstractJavaCodemaMachine<J
             ClassOrInterfaceDeclaration clz = JavaLexer.getClass(clone).get();
             clz.getFields().stream().filter(fieldDeclaration -> fieldDeclaration.isStatic()).forEach(fieldDeclaration -> clz.remove(fieldDeclaration));
             clz.getMethods().stream().filter(m -> m.isStatic()||m.getNameAsString().matches("(set|get).*")).forEach(f->clz.remove(f));
-            config.handle(codemaContext,
-                    new JavaMdTemplateResult(config, template, cu)
-                            .bind("type", clone)
-                            .bind("javaMethod", method)
-            );
+            return                     new JavaMdTemplateResult(config, template, cu)
+                    .bind("type", clone)
+                    .bind("javaMethod", method);
+
         }
     }
 

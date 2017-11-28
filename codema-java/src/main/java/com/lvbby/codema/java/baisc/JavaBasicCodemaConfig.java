@@ -5,10 +5,12 @@ import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import javassist.compiler.Javac;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -72,13 +74,12 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
         if(codemaMachine==null){
             JavaTemplateResource annotation = getClass().getAnnotation(JavaTemplateResource.class);
             if(annotation!=null && annotation.value()!=null){
-                return new AbstractJavaCodemaMachine() {
-                    @Override protected void codeEach(
-                                                      JavaBasicCodemaConfig config,
-                                                      JavaClass javaClass) throws Exception {
-                        config.handle(new JavaTemplateResult(config, annotation.value(), javaClass).render());
-                    }
+                return new AbstractJavaCodemaMachine<JavaBasicCodemaConfig>() {
+                    @Override protected Result<JavaClass> codeEach(JavaBasicCodemaConfig config, JavaClass source)
+                            throws Exception {
+                        return new JavaTemplateResult(config, annotation.value(), source);
 
+                    }
                 };
             }
         }
@@ -170,22 +171,5 @@ public class JavaBasicCodemaConfig extends CommonCodemaConfig implements Seriali
 
     public void setJavaClassNameParser(JavaClassNameParser javaClassNameParser) {
         this.javaClassNameParser = javaClassNameParser;
-    }
-
-
-    /***
-     * 将Java template class 转为codemaMachine
-     * @param clz
-     * @return
-     */
-    protected CodemaMachine load(Class clz) {
-        return new AbstractJavaCodemaMachine() {
-            @Override
-            protected void codeEach(CodemaContext context, JavaBasicCodemaConfig config,
-                                    JavaClass javaClass) throws Exception {
-
-                config.handle(context, new JavaTemplateResult(config, clz, javaClass));
-            }
-        };
     }
 }
