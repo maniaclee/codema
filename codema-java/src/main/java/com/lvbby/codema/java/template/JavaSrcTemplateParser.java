@@ -2,20 +2,19 @@ package com.lvbby.codema.java.template;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,19 +25,16 @@ import java.util.regex.Pattern;
 public class JavaSrcTemplateParser {
     public static JavaSrcTemplateParser instance = new JavaSrcTemplateParser();
 
-    public Map getArgs4te(JavaClass src, JavaBasicCodemaConfig config) {
+    public Map getArgs4te(JavaClass src, AbstractJavaCodemaMachine config) {
         HashMap<Object, Object> map = Maps.newHashMap();
         if (src != null) {
-            map.put("source", CodemaContextHolder.getCodemaContext().getSource());
             map.put("from", src);
             map.put("srcClassName", src.getName());
             map.put("srcClassNameUncapitalized", JavaLexer.camel(src.getName()));
             if (config.getJavaClassNameParser() != null) {
-                map.put("destClassName", config.getJavaClassNameParser().getClassName(
-                        (JavaClass) CodemaContextHolder.getCodemaContext().getSource(),src));
+                map.put("destClassName", config.getJavaClassNameParser().getClassName(src));
             }
         }
-        map.put("config", config);
         map.put(_getInnerTemplateClassVar($Null_.class), "");
         map.put(_getInnerTemplateClassVar($NullAnnotation_.class), "");
         map.put("javautil",  new JavaTemplateEngineUtils());
@@ -50,14 +46,15 @@ public class JavaSrcTemplateParser {
         return clz.getSimpleName().replaceAll("[$_]", "");
     }
 
-
-    public CompilationUnit loadSrcTemplateRaw(TemplateContext context) {
-        JavaBasicCodemaConfig javaBasicCodemaConfig = context.getJavaBasicCodemaConfig();
-        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(context.getTemplateClass());
+    public CompilationUnit loadSrcTemplateRaw(AbstractJavaCodemaMachine config,
+                                              Class<?> javaSrcTemplate) {
+        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(javaSrcTemplate);
         filterImport(cu);
-        cu.setPackageDeclaration(StringUtils.isNotBlank(context.getPack()) ? context.getPack() : javaBasicCodemaConfig.getDestPackage());
+        cu.setPackageDeclaration(config.getDestPackage());
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
-            classOrInterfaceDeclaration.setJavadocComment(String.format("\n * Created by %s on %s.\n ", javaBasicCodemaConfig.getAuthor(), new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
+            classOrInterfaceDeclaration.setJavadocComment(
+                    String.format("\n * Created by sdfsd on %s.\n ",
+                            new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
         });
         return cu;
     }

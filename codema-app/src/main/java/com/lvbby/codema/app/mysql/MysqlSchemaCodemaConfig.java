@@ -4,9 +4,7 @@
  */
 package com.lvbby.codema.app.mysql;
 
-import com.lvbby.codema.core.AbstractCodemaMachine;
-import com.lvbby.codema.core.CodemaMachine;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.AbstractBaseCodemaMachine;
 import com.lvbby.codema.core.render.SqlTemplateResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -19,32 +17,26 @@ import org.apache.commons.lang3.Validate;
  * @author dushang.lp
  * @version $Id: MysqlSchemaCodemaConfig.java, v 0.1 2017-09-13  dushang.lp Exp $
  */
-public class MysqlSchemaCodemaConfig extends CommonCodemaConfig {
+public class MysqlSchemaCodemaConfig extends AbstractBaseCodemaMachine<Object, String> {
     private String primaryKey;
 
-    @Override
-    public CodemaMachine loadCodemaMachine() {
-
-        return new AbstractCodemaMachine() {
-            @Override
-            public void code(CommonCodemaConfig config,Object source) throws Exception {
-                SqlTable table=null;
-                if (source instanceof SqlTable) {
-                    table= (SqlTable) source;
-                }
-                if (source instanceof JavaClass) {
-                    table = JavaClassUtils.convertToSqlTable((JavaClass) source);
-                }
-                if (table != null) {
-                    if (StringUtils.isNotBlank(primaryKey)) {
-                        table.buildPrimaryKeyField(primaryKey);
-                    }
-                    Validate.notNull(table.getPrimaryKeyField(), "primary id can't be null");
-                    config.handle(new SqlTemplateResult()
-                        .template(loadResourceAsString("create.sql")).bind("table", table));
-                }
+    @Override public void doCode() throws Exception {
+        SqlTable table = null;
+        if (source instanceof SqlTable) {
+            table = (SqlTable) source;
+        }
+        if (source instanceof JavaClass) {
+            table = JavaClassUtils.convertToSqlTable((JavaClass) source);
+        }
+        if (table != null) {
+            if (StringUtils.isNotBlank(primaryKey)) {
+                table.buildPrimaryKeyField(primaryKey);
             }
-        };
+            Validate.notNull(table.getPrimaryKeyField(), "primary id can't be null");
+            handle(new SqlTemplateResult().template(loadResourceAsString("create.sql"))
+                    .bind("table", table));
+        }
+
     }
 
     /**
@@ -64,4 +56,5 @@ public class MysqlSchemaCodemaConfig extends CommonCodemaConfig {
     public void setPrimaryKey(String primaryKey) {
         this.primaryKey = primaryKey;
     }
+
 }

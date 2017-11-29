@@ -5,10 +5,9 @@ import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.MergeCapableFileResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.baisc.JavaBasicCodemaConfig;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
-import com.lvbby.codema.java.template.TemplateContext;
 import com.lvbby.codema.java.tool.AutoImport;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -23,24 +22,13 @@ import java.util.Map;
  * Created by lipeng on 17/1/6.
  */
 public class JavaTemplateResult extends TemplateEngineResult implements MergeCapableFileResult{
-    private TemplateContext templateContext;
     private CompilationUnit compilationUnit;
 
-    public JavaTemplateResult(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate) {
-        this(config, javaSrcTemplate, null);
-    }
-
-    public JavaTemplateResult(JavaBasicCodemaConfig config, Class<?> javaSrcTemplate, JavaClass javaClass) {
-        this(new TemplateContext(javaSrcTemplate, config, javaClass));
-    }
-
-    public JavaTemplateResult(TemplateContext templateContext) {
-        compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(templateContext);
-        this.templateContext = templateContext;
+    public JavaTemplateResult(AbstractJavaCodemaMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
+        compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(config,javaSrcTemplate);
         //bind默认的参数
-        bind(JavaSrcTemplateParser.instance.getArgs4te(templateContext.getSource(),
-            templateContext.getJavaBasicCodemaConfig()));
-        filePath(templateContext.getJavaBasicCodemaConfig().getDestSrcRoot());
+        bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass,config));
+        filePath(config.getDestRootDir());
     }
 
     @Override
@@ -73,8 +61,6 @@ public class JavaTemplateResult extends TemplateEngineResult implements MergeCap
         setString(cu.toString());
 
         JavaClass javaClass = JavaClassUtils.convert(JavaLexer.read(getString()));
-        if (templateContext.getSource() != null)
-            javaClass.setFrom(templateContext.getSource().getFrom());
         //注册result
         result(javaClass);
         //处理dest file

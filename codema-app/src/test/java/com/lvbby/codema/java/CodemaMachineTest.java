@@ -1,22 +1,16 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
-import com.lvbby.codema.app.convert.JavaConvertCodemaConfig;
-import com.lvbby.codema.app.delegate.JavaDelegateCodemaConfig;
-import com.lvbby.codema.app.interfaces.JavaInterfaceCodemaConfig;
 import com.lvbby.codema.app.mvn.MavenConfig;
 import com.lvbby.codema.app.mysql.MysqlSchemaCodemaConfig;
-import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
+import com.lvbby.codema.app.testcase.JavaTestcaseCodemaMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaConfig;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
 import com.lvbby.codema.core.Codema;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
+import com.lvbby.codema.core.CodemaMachine;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
-import com.lvbby.codema.core.source.SourceLoader;
 import com.lvbby.codema.core.tool.mysql.JavaClassJdbcTableFactory;
-import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.Bean;
 import com.lvbby.codema.java.result.JavaRegisterResultHandler;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
@@ -25,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.Serializable;
 
 /**
  * Created by dushang.lp on 2017/6/26.
@@ -48,53 +41,49 @@ public class CodemaMachineTest extends BaseTest {
         }
     }
 
-    private void exec(CommonCodemaConfig config) throws Exception {
-        Codema.exec(config, sourceLoader);
-    }
-
-    private void exec(CommonCodemaConfig config, SourceLoader sourceLoader) throws Exception {
-        Codema.exec(config, sourceLoader);
+    private void exec(CodemaMachine machine) throws Exception {
+        machine
+                .resultHandlers(Lists.newArrayList(new PrintResultHandler()))
+                .source(sourceLoader.loadSource().get(0))
+                .code();
     }
 
     @Test
     public void mock() throws Exception {
-        JavaMockTestCodemaConfig config = _newConfig(JavaMockTestCodemaConfig.class);
-        exec(config);
+        exec(new JavaMockTestCodemaMachine());
     }
 
     @Test
     public void bean() throws Exception {
-        JavaBeanCodemaConfig config = _newConfig(JavaBeanCodemaConfig.class);
-        exec(config);
+//        exec(config);
     }
 
     @Test
     public void testcase() throws Exception {
-        JavaTestcaseCodemaConfig config = _newConfig(JavaTestcaseCodemaConfig.class);
-        exec(config);
+        exec(new JavaTestcaseCodemaMachine());
     }
 
     @Test
     public void delegate() throws Exception {
-        JavaDelegateCodemaConfig config = _newConfig(JavaDelegateCodemaConfig.class);
-        config.setImplementInterfaces(Lists.newArrayList(
-                JavaClassNameParserFactory.className(Serializable.class.getSimpleName()),
-                JavaClassNameParserFactory.className("Test")
-                ));
-        exec(config);
+//        JavaDelegateCodemaConfig config = _newConfig(JavaDelegateCodemaConfig.class);
+//        config.setImplementInterfaces(Lists.newArrayList(
+//                JavaClassNameParserFactory.className(Serializable.class.getSimpleName()),
+//                JavaClassNameParserFactory.className("Test")
+//                ));
+//        exec(config);
     }
 
     @Test
     public void convert() throws Exception {
-        JavaConvertCodemaConfig config = _newConfig(JavaConvertCodemaConfig.class);
-        config.setConvertToClassNameParser(JavaClassNameParserFactory.className("RtSubjectQuestionRelVo"));
-        Codema.exec(config, JavaClassSourceParser.fromFile(new File("/Users/dushang.lp/workspace/finrtcenter/app/common/dal/src/main/java/com/alipay/finrtcenter/common/dal/zcbconfig/dataobject/RtSubjectQuestionRelDO.java")));
+//        JavaConvertCodemaConfig config = _newConfig(JavaConvertCodemaConfig.class);
+//        config.setConvertToClassNameParser(JavaClassNameParserFactory.className("RtSubjectQuestionRelVo"));
+//        Codema.exec(config, JavaClassSourceParser.fromFile(new File("/Users/dushang.lp/workspace/finrtcenter/app/common/dal/src/main/java/com/alipay/finrtcenter/common/dal/zcbconfig/dataobject/RtSubjectQuestionRelDO.java")));
     }
 
     @Test
     public void interfaces() throws Exception {
-        JavaInterfaceCodemaConfig config = _newConfig(JavaInterfaceCodemaConfig.class);
-        exec(config);
+//        JavaInterfaceCodemaConfig config = _newConfig(JavaInterfaceCodemaConfig.class);
+//        exec(config);
     }
 
     @Test
@@ -126,22 +115,5 @@ public class CodemaMachineTest extends BaseTest {
             .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
     }
 
-    @Test
-    public void quickStart() throws Exception {
-        //配置
-        JavaBeanCodemaConfig config = new JavaBeanCodemaConfig();
-        config.setAuthor("lee");
-        config.setResultHandlers(
-            Lists.newArrayList(new JavaRegisterResultHandler(), new PrintResultHandler()));
-        config.setDestPackage("com.lvbby");
-        config.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("DestBean"));
-
-        //以JavaMockTestCodemaConfig.class为模板
-        JavaClassSourceParser sourceLoader = JavaClassSourceParser
-            .fromClass(JavaMockTestCodemaConfig.class);
-
-        //执行
-        Codema.exec(config, sourceLoader);
-    }
 
 }

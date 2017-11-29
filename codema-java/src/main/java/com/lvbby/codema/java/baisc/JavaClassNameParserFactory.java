@@ -13,26 +13,17 @@ public class JavaClassNameParserFactory {
      * @return
      */
     public static JavaClassNameParser className(String clzName) {
-        return (source, from) -> clzName;
+        return (source) -> clzName;
     }
 
-    /***
-     * 后缀形式
-     * from.name + suffix
-     * @param suffix
-     * @return
-     */
-    public static JavaClassNameParser fromSuffix(String suffix) {
-        return (source, from) -> from.getName() + suffix;
-    }
     /***
      * 后缀形式
      * bean.name + suffix
      * @param suffix
      * @return
      */
-    public static JavaClassNameParser sourceSuffix(String suffix) {
-        return (source, from) -> source.getName() + suffix;
+    public static JavaClassNameParser suffix(String suffix) {
+        return source -> source.getName() + suffix;
     }
 
     /***
@@ -40,6 +31,6 @@ public class JavaClassNameParserFactory {
      * @return
      */
     public static JavaClassNameParser defaultInstance() {
-        return (source, from) -> from.getName();
+        return source -> source.getName();
     }
 }

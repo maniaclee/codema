@@ -1,6 +1,5 @@
 package com.lvbby.codema.app.mvn;
 
-import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.config.ConfigBind;
 import org.apache.commons.collections.CollectionUtils;
@@ -82,23 +81,6 @@ public class MavenConfig extends CommonCodemaConfig {
      */
     private String _getId() {
         return String.format("%s[%s]", getClass().getSimpleName(), name);
-    }
-
-    public static void main(String[] args) {
-        MavenConfig parent = new MavenConfig();
-        parent.setName("lee");
-        parent.setDestRootDir("~");
-
-        MavenConfig child = new MavenConfig();
-        child.setName("child");
-        parent.setModules(Lists.newArrayList(child));
-        parent.init();
-        System.out.println(parent.getDestRootDir());
-        System.out.println(parent.getDestSrcRoot());
-        System.out.println(child.getDestRootDir());
-        System.out.println(child.getDestResourceRoot());
-        System.out.println(child.getDestTestResourceRoot());
-
     }
 
     public MavenConfig getParent() {

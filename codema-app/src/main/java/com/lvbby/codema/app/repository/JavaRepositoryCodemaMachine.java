@@ -9,6 +9,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaInputCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import org.apache.commons.lang3.Validate;
 
@@ -19,15 +20,15 @@ import java.util.stream.Collectors;
 /**
  * Created by lipeng on 16/12/23.
  */
-public class JavaRepositoryCodemaMachine extends AbstractJavaCodemaMachine<JavaRepositoryCodemaConfig> {
+public class JavaRepositoryCodemaMachine extends AbstractJavaInputCodemaMachine {
 
-    public Result<JavaClass> codeEach(JavaRepositoryCodemaConfig config, JavaClass javaClass) throws Exception {
+    public Result<JavaClass> codeEach(JavaClass javaClass) throws Exception {
         JavaClass buildUtil = codemaContext.findBeanBlur(JavaClass.class,config.getConvertUtilsClass().getClassName(
                 (JavaClass) codemaContext.getSource(),javaClass));
         Validate.notNull(buildUtil, "buildClass not found");
 
         List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> new RepositoryMethod(javaMethod, buildUtil)).collect(Collectors.toList());
-        return new JavaTemplateResult(config, $Repository_.class, javaClass)
+        return new JavaTemplateResult(this, $Repository_.class, javaClass)
                 .bind("methods", collect)
                 .bind("buildUtilClass", buildUtil);
     }

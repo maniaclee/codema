@@ -12,17 +12,14 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
+import com.lvbby.codema.app.bean.JavaBeanCodemaMachine;
 import com.lvbby.codema.app.es.JavaEsCodemaMachine;
 import com.lvbby.codema.app.javaMdDoc.JavaMdDocInterfaceCodemaMachine;
 import com.lvbby.codema.app.springboot.JavaSpringBootCodemaMachine;
 import com.lvbby.codema.core.Codema;
-import com.lvbby.codema.core.CodemaMachine;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -37,9 +34,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Created by lipeng on 2016/12/24.
@@ -206,9 +201,9 @@ public class SimpleTest {
 
     @Test
     public void reflection() throws Exception {
-        JavaBeanCodemaConfig javaBeanCodemaConfig = new JavaBeanCodemaConfig();
-        javaBeanCodemaConfig.setAuthor("sdf");
-        Object destSrcRoot = Reflect.on(javaBeanCodemaConfig).field("author").get();
+        JavaBeanCodemaMachine javaBeanCodemaMachine = new JavaBeanCodemaMachine();
+        javaBeanCodemaMachine.setAuthor("sdf");
+        Object destSrcRoot = Reflect.on(javaBeanCodemaMachine).field("author").get();
         System.out.println(destSrcRoot);
 
     }

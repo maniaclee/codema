@@ -11,8 +11,7 @@ public interface JavaClassNameParser {
     /***
      *
      * @param source 来源
-     * @param from  要处理的JavaClass
      * @return
      */
-    String getClassName(JavaClass source , JavaClass from);
+    String getClassName(JavaClass source );
 }

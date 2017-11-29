@@ -1,7 +1,7 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.app.bean.JavaBeanCodemaConfig;
+import com.lvbby.codema.app.bean.JavaBeanCodemaMachine;
 import com.lvbby.codema.app.mvn.MavenConfig;
 import com.lvbby.codema.app.mybatis.MybatisCodemaConfig;
 import com.lvbby.codema.app.testcase.JavaTestcaseCodemaConfig;
@@ -38,7 +38,6 @@ public class MybatisNewTest extends BaseTest {
         config
                 .addResultHandler(PrintResultHandler.class)
                 .addResultHandler(FileWriterResultHandler.class)
-                .addResultHandler(JavaRegisterResultHandler.class)
         ;
 
         MavenConfig mavenConfig = config.copy(MavenConfig.class);
@@ -55,14 +54,14 @@ public class MybatisNewTest extends BaseTest {
         java.setDestSrcRoot(mavenConfig.getDestSrcRoot());
 
         //entity
-        JavaBeanCodemaConfig beanCodemaConfig = java.copy(JavaBeanCodemaConfig.class);
+        JavaBeanCodemaMachine beanCodemaConfig = java.copy(JavaBeanCodemaMachine.class);
         beanCodemaConfig.addSubDestPackage("entity");
         beanCodemaConfig.setJavaClassNameParser(JavaClassNameParserFactory.fromSuffix("Entity"));
 
         //dao & xml mapper & dal config & mybatis xml config
         MybatisCodemaConfig mybatis = java.copy(MybatisCodemaConfig.class);
         mybatis.setMapperDir("mapper");
-        mybatis.setJavaClassNameParser(JavaClassNameParserFactory.sourceSuffix("Dao"));
+        mybatis.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Dao"));
         mybatis.setFromPackage(beanCodemaConfig.getDestPackage());
         mybatis.setConfigPackage(mybatis.relativePackage("config"));
         mybatis.addSubDestPackage("dao");

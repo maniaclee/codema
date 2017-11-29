@@ -1,7 +1,6 @@
 package com.lvbby.codema.core.result;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,12 +30,6 @@ public class BasicResult<T> extends AbstractFileResult<T> {
      * 目标文件
      */
     private String destFile;
-
-
-    public BasicResult config(CommonCodemaConfig config) {
-        filePath(config.getDestRootDir());
-        return this;
-    }
 
     public BasicResult filePath(String... paths) {
         if (paths != null && paths.length > 0) {

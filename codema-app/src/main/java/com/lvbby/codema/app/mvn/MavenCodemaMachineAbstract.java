@@ -9,17 +9,16 @@ import org.apache.commons.collections.CollectionUtils;
 /**
  * Created by lipeng on 16/12/23.
  */
-public class MavenCodemaMachineAbstract extends AbstractVoidCodemaMachine<MavenConfig> {
+public class MavenCodemaMachineAbstract extends AbstractVoidCodemaMachine{
 
-    public void codeEach(MavenConfig config) throws Exception {
-        config.init();
+    public void doCode() throws Exception {
+//        config.init();
         //创建目录，写入pom.xml,.gitignore
         process(config);
 
         /** .git ignore */
-        config.handle(new BasicResult()
+        handle(new BasicResult()
                 .result(loadResourceAsString(".gitignore"))
-                .config(config)
                 .destFile(".gitignore")
         );
     }

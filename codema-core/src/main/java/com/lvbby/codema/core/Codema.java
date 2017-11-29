@@ -21,9 +21,9 @@ public class Codema<S> {
     private List<S> sources=Lists.newLinkedList();
     private List<CodemaMachine> machines = Lists.newLinkedList();
 
-    public static <T extends CommonCodemaConfig> void exec(T config, SourceLoader sourceLoader)
+    public static <T extends CommonCodemaConfig> void exec( SourceLoader sourceLoader)
             throws Exception {
-        sourceLoader(sourceLoader).bind(config).run();
+        sourceLoader(sourceLoader).run();
     }
 
     public static <S> Codema<S> instance() {
@@ -59,24 +59,13 @@ public class Codema<S> {
      * @param <T>
      * @return
      */
-    public <T extends CommonCodemaConfig,O> Codema machine(CodemaMachine<T,S,O> machine) {
+    public <O> Codema machine(CodemaMachine<S,O> machine) {
         return machine(machine,null);
     }
-    public <T extends CommonCodemaConfig,O> Codema machine(CodemaMachine<T,S,O> machine, T config) {
+    public <T extends CommonCodemaConfig,O> Codema machine(CodemaMachine<S,O> machine, T config) {
         if(machine!=null){
-            if(config!=null){
-                machine.setConfig(config);
-            }
             machines.add(machine);
         }
-        return this;
-    }
-
-    public <T extends CommonCodemaConfig> Codema bind(T config) {
-        CodemaMachine instance = config.loadCodemaMachine();
-        Validate.notNull(instance, "no codema machine found for config %s",
-                config.getClass().getSimpleName());
-        machines.add(instance.setConfig(config));
         return this;
     }
 
@@ -87,7 +76,8 @@ public class Codema<S> {
     public void run() throws Exception {
         for (S source : sources) {
             for (CodemaMachine machine : machines) {
-                machine.code(source);
+                machine.source(source);
+                machine.code();
             }
         }
     }
@@ -101,7 +91,8 @@ public class Codema<S> {
             for (CodemaMachine machine : machines) {
                 executor.execute(() -> {
                     try {
-                        machine.code(source);
+                        machine.source(source);
+                        machine.code();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
