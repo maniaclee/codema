@@ -1,7 +1,6 @@
 package com.lvbby.codema.java.machine;
 
 import com.lvbby.codema.core.result.Result;
-import com.lvbby.codema.core.utils.FunctionAdaptor;
 import com.lvbby.codema.java.entity.JavaClass;
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,8 +10,8 @@ import java.util.function.Supplier;
  * 入参JavaClass
  * Created by dushang.lp on 2017/8/16.
  */
-public abstract class AbstractJavaInputCodemaMachine
-        extends AbstractJavaCodemaMachine<JavaClass, JavaClass> {
+public abstract class AbstractJavaInputMachine
+        extends AbstractJavaMachine<JavaClass, JavaClass> {
 
     @Override protected void doCode() throws Exception {
         handle(codeEach(source));

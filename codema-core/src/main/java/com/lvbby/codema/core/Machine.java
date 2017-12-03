@@ -8,14 +8,14 @@ import java.util.List;
  * Created by lipeng on 16/12/23.
  * 代码机的处理器，只处理
  */
-public interface CodemaMachine<S, O> {
+public interface Machine<S, O> {
 
     /***
      * 设置source
      * @param source
      * @return
      */
-    CodemaMachine<S, O> source(S source);
+    Machine<S, O> source(S source);
 
     S getSource();
     /***
@@ -23,13 +23,13 @@ public interface CodemaMachine<S, O> {
      * @param handlers
      * @return
      */
-    CodemaMachine<S, O> resultHandlers(List<ResultHandler> handlers);
+    Machine<S, O> resultHandlers(List<ResultHandler> handlers);
 
     void code() throws Exception;
 
     Result<O> getResult();
 
-    CodemaMachine<S, O> depend(CodemaMachine supplier);
+    Machine<S, O> depend(Machine supplier);
 
     <T> T getDependency();
 
@@ -37,12 +37,12 @@ public interface CodemaMachine<S, O> {
      * 连接下一个CodemaMachine
      * @param next
      */
-     CodemaMachine< S, O> next(CodemaMachine next);
+     Machine< S, O> next(Machine next);
     /**
      * 连接下一个CodemaMachine,类型必须一致
      * @param next
      */
-     <Output> CodemaMachine<S, O> nextWithCheck(CodemaMachine<O,Output> next);
+     <Output> Machine<S, O> nextWithCheck(Machine<O,Output> next);
 
     /***
      * 获取source类型

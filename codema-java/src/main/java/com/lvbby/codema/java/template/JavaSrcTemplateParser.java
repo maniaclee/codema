@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaMachine;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 public class JavaSrcTemplateParser {
     public static JavaSrcTemplateParser instance = new JavaSrcTemplateParser();
 
-    public Map getArgs4te(JavaClass src, AbstractJavaCodemaMachine config) {
+    public Map getArgs4te(JavaClass src, AbstractJavaMachine config) {
         HashMap<Object, Object> map = Maps.newHashMap();
         if (src != null) {
             map.put("source", src);
@@ -48,7 +48,7 @@ public class JavaSrcTemplateParser {
         return clz.getSimpleName().replaceAll("[$_]", "");
     }
 
-    public CompilationUnit loadSrcTemplateRaw(AbstractJavaCodemaMachine config,
+    public CompilationUnit loadSrcTemplateRaw(AbstractJavaMachine config,
                                               Class<?> javaSrcTemplate) {
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(javaSrcTemplate);
         filterImport(cu);

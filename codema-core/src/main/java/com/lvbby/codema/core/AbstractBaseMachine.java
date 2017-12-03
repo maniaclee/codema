@@ -27,19 +27,19 @@ import java.util.stream.Collectors;
  * @author dushang.lp
  * @version $Id: AbstractCodemaMachine.java, v 0.1 2017-08-24 3:32 dushang.lp Exp $
  */
-public abstract class AbstractBaseCodemaMachine<S, O> implements CodemaMachine<S, O> {
-    static Logger logger = LoggerFactory.getLogger(AbstractBaseCodemaMachine.class);
+public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
+    static Logger logger = LoggerFactory.getLogger(AbstractBaseMachine.class);
     protected Result<O>           result;
-    protected List<CodemaMachine> machines;
-    protected AbstractBaseCodemaMachine       parent;
+    protected List<Machine>       machines;
+    protected AbstractBaseMachine parent;
     protected S                   source;
     protected List<ResultHandler> handlers;
     @ConfigProperty
     protected String              destRootDir;
-    private CodemaMachine dependency;
-    private Supplier param;
+    private   Machine             dependency;
+    private   Supplier            param;
 
-    @Override public CodemaMachine<S, O> source(S source) {
+    @Override public Machine<S, O> source(S source) {
         this.source = source;
         return this;
     }
@@ -63,11 +63,11 @@ public abstract class AbstractBaseCodemaMachine<S, O> implements CodemaMachine<S
         //触发后续的machine
         if (CollectionUtils.isNotEmpty(machines) && getResult() != null
             && getResult().getResult() != null) {
-            for (CodemaMachine codemaMachine : machines) {
+            for (Machine machine : machines) {
                 //设置source
-                codemaMachine.source(getResult().getResult());
+                machine.source(getResult().getResult());
                 //run
-                codemaMachine.code();
+                machine.code();
             }
         }
     }
@@ -98,7 +98,7 @@ public abstract class AbstractBaseCodemaMachine<S, O> implements CodemaMachine<S
         List<ResultHandler> hs = handlers;
         //如果handlers为空，一直找父亲节点的handlers
         if (CollectionUtils.isEmpty(hs)) {
-            for (AbstractBaseCodemaMachine p = parent; p != null; p = p.parent) {
+            for (AbstractBaseMachine p = parent; p != null; p = p.parent) {
                 if (CollectionUtils.isNotEmpty(p.handlers)) {
                     hs = p.handlers;
                     break;
@@ -126,10 +126,10 @@ public abstract class AbstractBaseCodemaMachine<S, O> implements CodemaMachine<S
     }
 
     protected <T>  T findBeanAny(Class<T> clz , Predicate<T> predicate){
-        return CodemaBeanFactorytHolder.get().getCodemaBeanFactory().getBeans(clz).stream().filter(predicate).findAny().orElse(null);
+        return CodemaContextHolder.get().getCodemaBeanFactory().getBeans(clz).stream().filter(predicate).findAny().orElse(null);
     }
     protected <T>  List<T> findBean(Class<T> clz , Predicate<T> predicate){
-        return CodemaBeanFactorytHolder.get().getCodemaBeanFactory().getBeans(clz).stream().filter(predicate).collect(
+        return CodemaContextHolder.get().getCodemaBeanFactory().getBeans(clz).stream().filter(predicate).collect(
                 Collectors.toList());
     }
     protected String parseFileWithParent(String parent, String sub, String message) {
@@ -171,7 +171,7 @@ public abstract class AbstractBaseCodemaMachine<S, O> implements CodemaMachine<S
     }
 
 
-    @Override public CodemaMachine<S, O> next(CodemaMachine next) {
+    @Override public Machine<S, O> next(Machine next) {
         Validate.notNull(next, "can't be null");
         if (machines == null) {
             machines = Lists.newLinkedList();
@@ -183,24 +183,24 @@ public abstract class AbstractBaseCodemaMachine<S, O> implements CodemaMachine<S
 //                next.sourceType().getSimpleName());
         machines.add(next);
         //如果子machine的handlers为空，使用父machine的handler
-        if(next instanceof AbstractBaseCodemaMachine){
-            AbstractBaseCodemaMachine nextMachine = (AbstractBaseCodemaMachine) next;
+        if(next instanceof AbstractBaseMachine){
+            AbstractBaseMachine nextMachine = (AbstractBaseMachine) next;
             nextMachine.parent = this;
         }
         return this;
     }
 
-    @Override public <Output> CodemaMachine<S, O> nextWithCheck(CodemaMachine<O, Output> next) {
+    @Override public <Output> Machine<S, O> nextWithCheck(Machine<O, Output> next) {
         next(next);
         return this;
     }
 
-    @Override public CodemaMachine<S, O> resultHandlers(List<ResultHandler> handlers) {
+    @Override public Machine<S, O> resultHandlers(List<ResultHandler> handlers) {
         this.handlers=handlers;
         return this;
     }
 
-    @Override public CodemaMachine<S, O> depend(CodemaMachine machine) {
+    @Override public Machine<S, O> depend(Machine machine) {
         this.dependency = machine;
         return this;
     }
@@ -250,7 +250,7 @@ public abstract class AbstractBaseCodemaMachine<S, O> implements CodemaMachine<S
         this.destRootDir = destRootDir;
     }
 
-    public AbstractBaseCodemaMachine<S, O> destRootDir(String destRootDir) {
+    public AbstractBaseMachine<S, O> destRootDir(String destRootDir) {
         this.destRootDir = destRootDir;
         return this;
     }

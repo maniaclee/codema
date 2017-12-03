@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  *
  * @author dushang.lp
- * @version $Id: JavaMerger.java, v 0.1 2017-09-18 下午1:04 dushang.lp Exp $
+ * @version $Id: JavaMerger.java, v 0.1 2017-09-18 涓嬪崍1:04 dushang.lp Exp $
  */
 public class JavaMerger {
 
@@ -47,7 +47,7 @@ public class JavaMerger {
 
     private void mergeMethod(ClassOrInterfaceDeclaration srcClass,
                              ClassOrInterfaceDeclaration destClass) {
-        //方法签名
+        //鏂规硶绛惧悕
         Function<MethodDeclaration, String> methodIdFunc = methodDeclaration -> {
             String result = methodDeclaration.getNameAsString();
             if(methodDeclaration.getParameters()!=null && methodDeclaration.getParameters().isNonEmpty()){
@@ -67,7 +67,7 @@ public class JavaMerger {
                 if(!mergeExisted){
                     continue;
                 }
-                //删除改节点，覆写
+                //鍒犻櫎鏀硅妭鐐癸紝瑕嗗啓
                 destClass.getMembers().remove(existed);
             }
             destClass.addMember(mSrc.clone());

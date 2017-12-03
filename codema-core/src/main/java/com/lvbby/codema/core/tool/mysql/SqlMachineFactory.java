@@ -1,7 +1,7 @@
 package com.lvbby.codema.core.tool.mysql;
 
-import com.lvbby.codema.core.AbstractBaseCodemaMachine;
-import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.AbstractBaseMachine;
+import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 
@@ -15,22 +15,22 @@ import java.util.stream.Collectors;
  */
 public class SqlMachineFactory {
 
-    public static List<CodemaMachine<SqlTable, SqlTable>> fromSqlCreate(String sqlCreate) {
+    public static List<Machine<SqlTable, SqlTable>> fromSqlCreate(String sqlCreate) {
         return SqlParser.fromSql(sqlCreate).stream().map(table -> fromTable(table))
                 .collect(Collectors.toList());
     }
 
-    public static CodemaMachine<SqlTable, SqlTable> fromTable(SqlTable sqlTable) {
-        return new AbstractBaseCodemaMachine<SqlTable, SqlTable>() {
+    public static Machine<SqlTable, SqlTable> fromTable(SqlTable sqlTable) {
+        return new AbstractBaseMachine<SqlTable, SqlTable>() {
             @Override protected void doCode() throws Exception {
                 setResult(BasicResult.instance(source));
             }
         }.source(sqlTable);
     }
 
-    public static List<CodemaMachine<SqlTable, SqlTable>> fromJdbcUrl(String url, String userName,
-                                                                      String password,
-                                                                      String filter)
+    public static List<Machine<SqlTable, SqlTable>> fromJdbcUrl(String url, String userName,
+                                                                String password,
+                                                                String filter)
             throws Exception {
         List<SqlTable> tables = UrlJdbcTableFactory.of(url, userName, password)
                 .tableRegularFilter(filter).getTables();

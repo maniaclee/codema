@@ -1,12 +1,12 @@
 package com.lvbby.codema.java.result;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.lvbby.codema.core.CodemaBeanFactorytHolder;
+import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.MergeCapableFileResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaMachine;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 import com.lvbby.codema.java.tool.AutoImport;
 import com.lvbby.codema.java.tool.JavaClassUtils;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implements MergeCapableFileResult<JavaClass>{
     private CompilationUnit compilationUnit;
 
-    public JavaTemplateResult(AbstractJavaCodemaMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
+    public JavaTemplateResult(AbstractJavaMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
         compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(config,javaSrcTemplate);
         //bind默认的参数
         bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass,config));
@@ -62,7 +62,7 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
         //自动import
         AutoImport autoImport = new AutoImport(cu);
         //import beanFactory里的bean
-        CodemaBeanFactorytHolder.get().getCodemaBeanFactory().getBeans(JavaClass.class)
+        CodemaContextHolder.get().getCodemaBeanFactory().getBeans(JavaClass.class)
             .forEach(javaClass -> autoImport.addCandidate(javaClass));
         autoImport.parse();
 

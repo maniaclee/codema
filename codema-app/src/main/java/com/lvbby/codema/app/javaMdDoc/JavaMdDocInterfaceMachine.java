@@ -4,15 +4,13 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
-import com.lvbby.codema.java.machine.AbstractJavaInputCodemaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaInputMachine;
 import com.lvbby.codema.java.result.JavaMdTemplateResult;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Created by dushang.lp on 2017/8/16.
  */
-public class JavaMdDocInterfaceCodemaMachine extends AbstractJavaInputCodemaMachine {
+public class JavaMdDocInterfaceMachine extends AbstractJavaInputMachine {
     private String templateResource="mdJavaDoc.md";
     @ConfigProperty
     private String method;

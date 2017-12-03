@@ -2,7 +2,7 @@ package com.lvbby.codema.java.result;
 
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaMachine;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 
 /**
@@ -12,7 +12,7 @@ import com.lvbby.codema.java.template.JavaSrcTemplateParser;
  */
 public class JavaMdTemplateResult extends TemplateEngineResult {
 
-    public JavaMdTemplateResult(AbstractJavaCodemaMachine config, String template, JavaClass javaClass) {
+    public JavaMdTemplateResult(AbstractJavaMachine config, String template, JavaClass javaClass) {
         super(template);
         if (javaClass != null){
             bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));

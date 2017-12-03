@@ -12,10 +12,10 @@ import java.util.concurrent.Executor;
  */
 public class Codema<S> {
 
-    private List<S>             sources  = Lists.newLinkedList();
-    private List<CodemaMachine> machines = Lists.newLinkedList();
+    private List<S>       sources  = Lists.newLinkedList();
+    private List<Machine> machines = Lists.newLinkedList();
 
-    public <O> Codema<S> addMachine(CodemaMachine<S,O>machine){
+    public <O> Codema<S> addMachine(Machine<S,O> machine){
         machines.add(machine);
         return this;
     }
@@ -60,13 +60,13 @@ public class Codema<S> {
     public void run() throws Exception {
         try {
             for (S source : sources) {
-                for (CodemaMachine machine : machines) {
+                for (Machine machine : machines) {
                     machine.source(source);
                     machine.code();
                 }
             }
         } finally {
-            CodemaBeanFactorytHolder.clear();
+            CodemaContextHolder.clear();
         }
     }
 
@@ -76,7 +76,7 @@ public class Codema<S> {
      */
     public void runParallel(Executor executor) {
         for (S source : sources) {
-            for (CodemaMachine machine : machines) {
+            for (Machine machine : machines) {
                 executor.execute(() -> {
                     try {
                         machine.source(source);

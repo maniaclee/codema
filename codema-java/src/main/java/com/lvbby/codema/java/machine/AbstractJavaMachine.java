@@ -1,8 +1,8 @@
 package com.lvbby.codema.java.machine;
 
-import com.lvbby.codema.core.AbstractBaseCodemaMachine;
-import com.lvbby.codema.core.CodemaBeanFactorytHolder;
-import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.AbstractBaseMachine;
+import com.lvbby.codema.core.CodemaContextHolder;
+import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.result.Result;
@@ -18,8 +18,8 @@ import java.util.List;
  * 具有java的配置信息
  * Created by dushang.lp on 2017/8/16.
  */
-public abstract class AbstractJavaCodemaMachine<S,O>
-        extends AbstractBaseCodemaMachine<S, O> {
+public abstract class AbstractJavaMachine<S,O>
+        extends AbstractBaseMachine<S, O> {
 
     /**
      * 目标package
@@ -37,7 +37,7 @@ public abstract class AbstractJavaCodemaMachine<S,O>
         super.handle(result);
         //注册java class 到容器
         if(result!=null && result.getResult()!=null && result.getResult()instanceof JavaClass){
-            CodemaBeanFactorytHolder.get().getCodemaBeanFactory().register(new CodemaBean((JavaClass)result.getResult(),o -> o.classFullName()));
+            CodemaContextHolder.get().getCodemaBeanFactory().register(new CodemaBean((JavaClass)result.getResult(), o -> o.classFullName()));
         }
     }
 
@@ -69,7 +69,7 @@ public abstract class AbstractJavaCodemaMachine<S,O>
             return bean;
         }
         //2. 从本地找
-        CodemaMachine<String, JavaClass> sourceMachine = JavaClassMachineFactory.fromClassFullName()
+        Machine<String, JavaClass> sourceMachine = JavaClassMachineFactory.fromClassFullName()
                 .source(classFullName);
         sourceMachine.code();
         Result<JavaClass> result = sourceMachine.getResult();
@@ -92,7 +92,7 @@ public abstract class AbstractJavaCodemaMachine<S,O>
     public void setDestPackage(String destPackage) {
         this.destPackage = destPackage;
     }
-    public AbstractJavaCodemaMachine<S, O> destPackage(String destPackage) {
+    public AbstractJavaMachine<S, O> destPackage(String destPackage) {
         this.destPackage = destPackage;
         return this;
     }
@@ -104,7 +104,7 @@ public abstract class AbstractJavaCodemaMachine<S,O>
     public void setJavaClassNameParser(JavaClassNameParser javaClassNameParser) {
         this.javaClassNameParser = javaClassNameParser;
     }
-    public AbstractJavaCodemaMachine<S, O>javaClassNameParser(JavaClassNameParser javaClassNameParser) {
+    public AbstractJavaMachine<S, O> javaClassNameParser(JavaClassNameParser javaClassNameParser) {
         this.javaClassNameParser = javaClassNameParser;
         return this;
     }

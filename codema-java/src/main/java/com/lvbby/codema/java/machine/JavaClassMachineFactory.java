@@ -1,8 +1,7 @@
 package com.lvbby.codema.java.machine;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.lvbby.codema.core.AbstractBaseCodemaMachine;
-import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.CodemaMachineUtils;
@@ -24,7 +23,7 @@ public class JavaClassMachineFactory {
      * @return
      * @throws Exception
      */
-    public static CodemaMachine<Class, JavaClass> fromClass() throws Exception {
+    public static Machine<Class, JavaClass> fromClass() throws Exception {
         return buildJavaMachine(s -> JavaClass.from(s));
     }
 
@@ -33,27 +32,27 @@ public class JavaClassMachineFactory {
      * @return
      * @throws Exception
      */
-    public static CodemaMachine<File, JavaClass> fromFile()  {
+    public static Machine<File, JavaClass> fromFile()  {
         return buildJavaMachine(s -> JavaClassUtils.convert(JavaLexer.read(s)));
     }
 
     /***
      * 从一段java代码解析
      */
-    public static CodemaMachine<String, JavaClass> fromSrc()  {
+    public static Machine<String, JavaClass> fromSrc()  {
         return buildJavaMachine(s -> JavaClassUtils.convert(JavaLexer.read(s)));
     }
 
-    public static CodemaMachine<String, JavaClass> fromClassFullName()  {
+    public static Machine<String, JavaClass> fromClassFullName()  {
         return buildJavaMachine(
                 s -> JavaClassUtils.convert(JavaSrcLoader.getJavaSrcCompilationUnit(s)));
     }
-    public static CodemaMachine<SqlTable, JavaClass> fromSqlTable()  {
+    public static Machine<SqlTable, JavaClass> fromSqlTable()  {
         return buildJavaMachine(
                 s -> JavaClassUtils.convert(s));
     }
 
-    public static CodemaMachine<CompilationUnit, JavaClass> fromUnit(){
+    public static Machine<CompilationUnit, JavaClass> fromUnit(){
         return buildJavaMachine(s -> JavaClassUtils.convert(s));
     }
 
@@ -63,7 +62,7 @@ public class JavaClassMachineFactory {
      * @param <S>
      * @return
      */
-    private static <S> CodemaMachine<S, JavaClass> buildJavaMachine(
+    private static <S> Machine<S, JavaClass> buildJavaMachine(
             FunctionAdaptor<S, JavaClass> functionAdaptor) {
         return CodemaMachineUtils
                 .build(source -> BasicResult.instance(functionAdaptor.apply(source)));

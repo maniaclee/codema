@@ -1,12 +1,10 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.app.javaMdDoc.JavaMdDocInterfaceCodemaMachine;
-import com.lvbby.codema.core.Codema;
+import com.lvbby.codema.app.javaMdDoc.JavaMdDocInterfaceMachine;
 import com.lvbby.codema.core.handler.ClipBoardResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.java.machine.JavaClassMachineFactory;
-import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +36,7 @@ public class MdJavaDocTest extends BaseTest {
             method = split.length > 1 ? split[1] : null;
         }
 
-        JavaMdDocInterfaceCodemaMachine md = new JavaMdDocInterfaceCodemaMachine();
+        JavaMdDocInterfaceMachine md = new JavaMdDocInterfaceMachine();
         md.resultHandlers(Lists.newArrayList(new PrintResultHandler(),new ClipBoardResultHandler()));
         md.setMethod(method);
         JavaClassMachineFactory.fromClassFullName().source(service).next(md).code();

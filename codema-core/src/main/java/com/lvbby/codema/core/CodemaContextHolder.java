@@ -5,7 +5,7 @@ import com.lvbby.codema.core.bean.CodemaBean;
 /**
  * Created by lipeng on 2017/1/18.
  */
-public class CodemaBeanFactorytHolder {
+public class CodemaContextHolder {
     private static ThreadLocal<CodemaContext> beanFactoryThreadLocal = ThreadLocal
             .withInitial(() -> new CodemaContext());
 

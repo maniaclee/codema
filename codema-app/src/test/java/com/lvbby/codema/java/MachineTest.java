@@ -1,17 +1,14 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.app.bean.JavaBeanCodemaMachine;
-import com.lvbby.codema.app.convert.JavaConvertCodemaMachine;
-import com.lvbby.codema.app.interfaces.JavaInterfaceCodemaMachine;
-import com.lvbby.codema.app.mvn.MavenCodemaMachine;
-import com.lvbby.codema.app.mybatis.DalConfig;
-import com.lvbby.codema.app.mybatis.MybatisCodemaMachine;
-import com.lvbby.codema.app.mysql.MysqlSchemaCodemaMachine;
-import com.lvbby.codema.app.testcase.JavaTestcaseCodemaMachine;
-import com.lvbby.codema.app.testcase.mock.JavaMockTestCodemaMachine;
-import com.lvbby.codema.core.Codema;
-import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.app.bean.JavaBeanMachine;
+import com.lvbby.codema.app.convert.JavaConvertMachine;
+import com.lvbby.codema.app.interfaces.JavaInterfaceMachine;
+import com.lvbby.codema.app.mvn.MavenMachine;
+import com.lvbby.codema.app.mysql.MysqlSchemaMachine;
+import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
+import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
+import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
@@ -27,12 +24,12 @@ import java.io.File;
 /**
  * Created by dushang.lp on 2017/6/26.
  */
-public class CodemaMachineTest extends BaseTest {
+public class MachineTest extends BaseTest {
     JavaClassSourceParser sourceLoader;
 
     @Before
     public void init() throws Exception {
-        File f = new File(JavaMockTestCodemaMachine.class.getResource("/").getPath());
+        File f = new File(JavaMockTestMachine.class.getResource("/").getPath());
         f = f.getParentFile().getParentFile();//codema-app
         f = f.getParentFile();//codema
 
@@ -46,7 +43,7 @@ public class CodemaMachineTest extends BaseTest {
         }
     }
 
-    private void exec(CodemaMachine machine) throws Exception {
+    private void exec(Machine machine) throws Exception {
         JavaClassMachineFactory.fromClass()
                 .source(CodemaBean.class)
                 .next(machine
@@ -56,17 +53,17 @@ public class CodemaMachineTest extends BaseTest {
 
     @Test
     public void mock() throws Exception {
-        exec(new JavaMockTestCodemaMachine());
+        exec(new JavaMockTestMachine());
     }
 
     @Test
     public void bean() throws Exception {
-        exec(new JavaBeanCodemaMachine());
+        exec(new JavaBeanMachine());
     }
 
     @Test
     public void testcase() throws Exception {
-        JavaTestcaseCodemaMachine machine = new JavaTestcaseCodemaMachine();
+        JavaTestcaseMachine machine = new JavaTestcaseMachine();
         machine.setDestPackage("com.lvbby.test.pack");
         exec(machine);
     }
@@ -74,7 +71,7 @@ public class CodemaMachineTest extends BaseTest {
 
     @Test
     public void convert() throws Exception {
-        JavaConvertCodemaMachine machine = new JavaConvertCodemaMachine();
+        JavaConvertMachine machine = new JavaConvertMachine();
         machine.setDestPackage("com.lvbby.test.pack");
         machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("Shit"));
         exec(machine);
@@ -92,14 +89,14 @@ public class CodemaMachineTest extends BaseTest {
 
     @Test
     public void interfaces() throws Exception {
-        JavaInterfaceCodemaMachine machine = new JavaInterfaceCodemaMachine();
+        JavaInterfaceMachine machine = new JavaInterfaceMachine();
         machine.setDestPackage("com.lvbby.test.pack");
         exec(machine);
     }
 
     @Test
     public void maven() throws Exception {
-        MavenCodemaMachine config = new MavenCodemaMachine();
+        MavenMachine config = new MavenMachine();
         config.setName("lvbby-maven-project");
         config.setGroupId("lvbby");
         config.setArtifactId("lvbby-maven");
@@ -115,7 +112,7 @@ public class CodemaMachineTest extends BaseTest {
                      + "        private long startDate;\n" + "        private long endDate;\n"
                      + "        private String type;\n"
                      + "        private String body;\n" + "        private String extra;}";
-        MysqlSchemaCodemaMachine config = new MysqlSchemaCodemaMachine();
+        MysqlSchemaMachine config = new MysqlSchemaMachine();
         config.setPrimaryKey("startDate");
         exec(config);
     }

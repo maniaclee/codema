@@ -16,7 +16,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,7 +48,7 @@ import java.util.stream.Stream;
  * 4. DalConfig.java
  * Created by lipeng on 16/12/23.
  */
-public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<SqlTable,VoidType> {
+public class MybatisMachine extends AbstractJavaMachine<SqlTable,VoidType> {
 
     public static final String tag_select="select";
     public static final String tag_update="update";

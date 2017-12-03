@@ -1,10 +1,6 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2017 All Rights Reserved.
- */
 package com.lvbby.codema.app.mysql;
 
-import com.lvbby.codema.core.AbstractBaseCodemaMachine;
+import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.render.SqlTemplateResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -17,7 +13,7 @@ import org.apache.commons.lang3.Validate;
  * @author dushang.lp
  * @version $Id: MysqlSchemaCodemaConfig.java, v 0.1 2017-09-13  dushang.lp Exp $
  */
-public class MysqlSchemaCodemaMachine extends AbstractBaseCodemaMachine<Object, String> {
+public class MysqlSchemaMachine extends AbstractBaseMachine<Object, String> {
     private String primaryKey;
 
     @Override public void doCode() throws Exception {

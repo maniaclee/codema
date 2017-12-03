@@ -1,8 +1,8 @@
 package com.lvbby.codema.app.mvn;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.AbstractBaseCodemaMachine;
-import com.lvbby.codema.core.CodemaMachine;
+import com.lvbby.codema.core.AbstractBaseMachine;
+import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.render.XmlTemplateResult;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.result.WriteMode;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by lipeng on 16/12/23.
  */
-public class MavenCodemaMachine extends AbstractBaseCodemaMachine<MavenCodemaMachine,MavenCodemaMachine>{
+public class MavenMachine extends AbstractBaseMachine<MavenMachine,MavenMachine> {
     private String name;
     private String artifactId;
     private String groupId;
@@ -30,10 +30,10 @@ public class MavenCodemaMachine extends AbstractBaseCodemaMachine<MavenCodemaMac
     private String destTestResourceRoot = "src/test/resources";
 
     private transient boolean mavenInitialized = false;
-    private List<MavenCodemaMachine> modules;
+    private List<MavenMachine> modules;
 
-    @Override public CodemaMachine<MavenCodemaMachine, MavenCodemaMachine> source(
-            MavenCodemaMachine source) {
+    @Override public Machine<MavenMachine, MavenMachine> source(
+            MavenMachine source) {
         //把自己加入到parent的modules里
         if(source!=null ){
             if(source.modules==null){
@@ -48,7 +48,7 @@ public class MavenCodemaMachine extends AbstractBaseCodemaMachine<MavenCodemaMac
         //创建目录，写入pom.xml,.gitignore
         initMaven();
         //设置result，传递给子maven
-        setResult(new BasicResult<MavenCodemaMachine>().of(this));
+        setResult(new BasicResult<MavenMachine>().of(this));
         /** .git ignore */
         handleSimple(new BasicResult()
                 .result(loadResourceAsString(".gitignore"))
@@ -87,7 +87,7 @@ public class MavenCodemaMachine extends AbstractBaseCodemaMachine<MavenCodemaMac
         setDestTestResourceRoot(parseFileWithParent(getDestRootDir(), getDestTestResourceRoot(), String.format("%s.destTestResourceRoot", _getId(), name)));
         mavenInitialized =true;
     }
-    public MavenCodemaMachine getParent() {
+    public MavenMachine getParent() {
         return source;
     }
     /**
@@ -266,7 +266,7 @@ public class MavenCodemaMachine extends AbstractBaseCodemaMachine<MavenCodemaMac
      *
      * @return property value of modules
      */
-    public List<MavenCodemaMachine> getModules() {
+    public List<MavenMachine> getModules() {
         return modules;
     }
 
