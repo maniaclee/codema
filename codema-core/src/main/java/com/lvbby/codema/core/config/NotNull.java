@@ -7,11 +7,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * String类型的属性，不能为空
+ * 非空
  * Created by lipeng on 2016/12/22.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface NotBlank {
+public @interface NotNull {
 }

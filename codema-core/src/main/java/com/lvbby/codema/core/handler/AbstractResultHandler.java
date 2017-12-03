@@ -12,11 +12,8 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractResultHandler<C> extends TypeCapable<C> implements ResultHandler {
     protected static Logger logger = LoggerFactory.getLogger(AbstractResultHandler.class);
 
-    @Override
-    public void handle(Result result) throws Exception {
-        if (isType(result.getResultType())) {
-            process( (C) result);
-        }
+    @Override public void handle(Result result) throws Exception {
+        process((C) result);
     }
 
     protected abstract void process(C result) throws Exception;

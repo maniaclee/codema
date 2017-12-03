@@ -35,7 +35,6 @@ public class DalConfig {
     @Bean
     public SqlSessionFactoryBean sqlSessionFactory(DataSource dataSource) {
         SqlSessionFactoryBean ssfb = new SqlSessionFactoryBean();
-        ssfb.setTypeAliasesPackage("${config.fromPackage}");
         ssfb.setDataSource(dataSource);
         ssfb.setMapperLocations(resources);
         ssfb.setConfigLocation(mybatisConfig);

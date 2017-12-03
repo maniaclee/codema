@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
+import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +58,19 @@ public class JavaClass extends AnnotationType{
     }
 
     public JavaClass() {
+    }
+
+    /***
+     * 设置name和package
+     * @param s
+     * @return
+     */
+    public JavaClass name(String s){
+        if(StringUtils.isNotBlank(s)) {
+            setName(ReflectionUtils.getSimpleClassName(s));
+            setPack(ReflectionUtils.getPackage(s));
+        }
+        return this;
     }
 
     /***

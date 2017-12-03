@@ -253,10 +253,10 @@ public class JavaType {
             re.genericTypes = Stream.of(parameterizedType.getActualTypeArguments()).map(t -> ofType(t)).collect(Collectors.toList());
             return re;
         }
-        //        if (type instanceof TypeVariable) {
-        //            GenericDeclaration genericDeclaration = ((TypeVariable) type).getGenericDeclaration();
-        //            if (genericDeclaration instanceof Method)
-        //        }
+//                if (type instanceof TypeVariable) {
+//                    GenericDeclaration genericDeclaration = ((TypeVariable) type).getGenericDeclaration();
+////                    if (genericDeclaration instanceof Method)
+//                }
         if (type instanceof WildcardTypeImpl) {
             return new JavaType("?");
         }

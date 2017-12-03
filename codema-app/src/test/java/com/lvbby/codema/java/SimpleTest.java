@@ -16,7 +16,6 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.lvbby.codema.app.bean.JavaBeanCodemaMachine;
-import com.lvbby.codema.app.es.JavaEsCodemaMachine;
 import com.lvbby.codema.app.javaMdDoc.JavaMdDocInterfaceCodemaMachine;
 import com.lvbby.codema.app.springboot.JavaSpringBootCodemaMachine;
 import com.lvbby.codema.core.Codema;
@@ -200,15 +199,6 @@ public class SimpleTest {
     }
 
     @Test
-    public void reflection() throws Exception {
-        JavaBeanCodemaMachine javaBeanCodemaMachine = new JavaBeanCodemaMachine();
-        javaBeanCodemaMachine.setAuthor("sdf");
-        Object destSrcRoot = Reflect.on(javaBeanCodemaMachine).field("author").get();
-        System.out.println(destSrcRoot);
-
-    }
-
-    @Test
     public void template() throws Exception {
         System.out.println(TemplateEngineFactory.create("\\${abc}").render());
     }
@@ -266,10 +256,10 @@ public class SimpleTest {
     }
 
     @Test public void tst() throws Exception {
-        JavaMdDocInterfaceCodemaMachine md = new JavaMdDocInterfaceCodemaMachine();
-        System.out.println(md);
-        Codema.source(new JavaClass())
-                .machine(md .nextWithCheck(md).nextWithCheck(new JavaSpringBootCodemaMachine()))
-                .run();
+//        JavaMdDocInterfaceCodemaMachine md = new JavaMdDocInterfaceCodemaMachine();
+//        System.out.println(md);
+//        Codema.source(new JavaClass())
+//                .machine(md .nextWithCheck(md).nextWithCheck(new JavaSpringBootCodemaMachine()))
+//                .run();
     }
 }

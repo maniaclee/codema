@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 public interface CodemaBeanFactory {
 
     /**
-     * ×¢Èëbean
+     * æ³¨å…¥bean
      * @param resource
      */
     void register(CodemaBean resource);

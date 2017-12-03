@@ -17,7 +17,7 @@ import org.apache.commons.lang3.Validate;
  * @author dushang.lp
  * @version $Id: MysqlSchemaCodemaConfig.java, v 0.1 2017-09-13  dushang.lp Exp $
  */
-public class MysqlSchemaCodemaConfig extends AbstractBaseCodemaMachine<Object, String> {
+public class MysqlSchemaCodemaMachine extends AbstractBaseCodemaMachine<Object, String> {
     private String primaryKey;
 
     @Override public void doCode() throws Exception {

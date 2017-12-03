@@ -1,6 +1,5 @@
 package com.lvbby.codema.core;
 
-import com.lvbby.codema.core.config.CommonCodemaConfig;
 import com.lvbby.codema.core.result.Result;
 
 import java.util.List;
@@ -18,6 +17,7 @@ public interface CodemaMachine<S, O> {
      */
     CodemaMachine<S, O> source(S source);
 
+    S getSource();
     /***
      * 设置handlers
      * @param handlers
@@ -25,11 +25,13 @@ public interface CodemaMachine<S, O> {
      */
     CodemaMachine<S, O> resultHandlers(List<ResultHandler> handlers);
 
-
-
     void code() throws Exception;
 
     Result<O> getResult();
+
+    CodemaMachine<S, O> depend(CodemaMachine supplier);
+
+    <T> T getDependency();
 
     /**
      * 连接下一个CodemaMachine

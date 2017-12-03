@@ -1,14 +1,13 @@
 package com.lvbby.codema.app.repository;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.CodemaContext;
-import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.baisc.JavaClassNameParser;
+import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.machine.AbstractJavaInputCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import org.apache.commons.lang3.Validate;
@@ -17,14 +16,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
+/** 代理dao interface生成repository， 进行source到convert的转化
  * Created by lipeng on 16/12/23.
  */
 public class JavaRepositoryCodemaMachine extends AbstractJavaInputCodemaMachine {
+    private JavaClassNameParser convertUtilsClass = JavaClassNameParserFactory.className("BuildUtils");
 
     public Result<JavaClass> codeEach(JavaClass javaClass) throws Exception {
-        JavaClass buildUtil = codemaContext.findBeanBlur(JavaClass.class,config.getConvertUtilsClass().getClassName(
-                (JavaClass) codemaContext.getSource(),javaClass));
+        JavaClass buildUtil = findJavaBean(convertUtilsClass.getClassName(javaClass));
         Validate.notNull(buildUtil, "buildClass not found");
 
         List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> new RepositoryMethod(javaMethod, buildUtil)).collect(Collectors.toList());

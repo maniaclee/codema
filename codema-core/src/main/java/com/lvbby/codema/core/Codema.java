@@ -1,15 +1,9 @@
 package com.lvbby.codema.core;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
-import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.core.source.SourceLoader;
-import com.lvbby.codema.core.source.SourceLoaderCallback;
-import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.Validate;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -18,55 +12,45 @@ import java.util.concurrent.Executor;
  */
 public class Codema<S> {
 
-    private List<S> sources=Lists.newLinkedList();
+    private List<S>             sources  = Lists.newLinkedList();
     private List<CodemaMachine> machines = Lists.newLinkedList();
 
-    public static <T extends CommonCodemaConfig> void exec( SourceLoader sourceLoader)
-            throws Exception {
+    public <O> Codema<S> addMachine(CodemaMachine<S,O>machine){
+        machines.add(machine);
+        return this;
+    }
+
+    public static void exec(SourceLoader sourceLoader) throws Exception {
         sourceLoader(sourceLoader).run();
     }
 
     public static <S> Codema<S> instance() {
         return source(null);
     }
-    public static <S>Codema<S> source(S source) {
+
+    public static <S> Codema<S> source(S source) {
         Codema<S> codema = new Codema();
         //source可以为空
-        if(source!=null) {
+        if (source != null) {
             codema.sources.add(source);
         }
         return codema;
     }
-    public static <S>Codema<S> source(List<S> source) {
+
+    public static <S> Codema<S> source(List<S> source) {
         Codema<S> codema = new Codema();
         //source可以为空
-        if(CollectionUtils.isNotEmpty(source)) {
+        if (CollectionUtils.isNotEmpty(source)) {
             codema.sources.addAll(source);
         }
         return codema;
     }
 
-    public static <S>Codema<S> sourceLoader(SourceLoader<S> sourceLoader) throws Exception {
-        if(sourceLoader==null){
+    public static <S> Codema<S> sourceLoader(SourceLoader<S> sourceLoader) throws Exception {
+        if (sourceLoader == null) {
             return instance();
         }
         return source(sourceLoader.loadSource());
-    }
-
-    /***
-     *
-     * @param machine
-     * @param <T>
-     * @return
-     */
-    public <O> Codema machine(CodemaMachine<S,O> machine) {
-        return machine(machine,null);
-    }
-    public <T extends CommonCodemaConfig,O> Codema machine(CodemaMachine<S,O> machine, T config) {
-        if(machine!=null){
-            machines.add(machine);
-        }
-        return this;
     }
 
     /***
@@ -74,11 +58,15 @@ public class Codema<S> {
      * @throws Exception
      */
     public void run() throws Exception {
-        for (S source : sources) {
-            for (CodemaMachine machine : machines) {
-                machine.source(source);
-                machine.code();
+        try {
+            for (S source : sources) {
+                for (CodemaMachine machine : machines) {
+                    machine.source(source);
+                    machine.code();
+                }
             }
+        } finally {
+            CodemaBeanFactorytHolder.clear();
         }
     }
 

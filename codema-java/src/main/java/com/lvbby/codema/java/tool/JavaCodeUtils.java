@@ -90,6 +90,9 @@ public class JavaCodeUtils {
 
 
     public static boolean isOuterClass(Class clz) {
+        if(clz==null){
+            return true;
+        }
         return !clz.isPrimitive() && !clz.getPackage().getName().startsWith("java");
     }
 

@@ -32,7 +32,7 @@ public class $TestCase_ {
     @Autowired
     private $TemplateClass_ $templateClass_;
 
-    @Foreach(value = " m in from.methods", body = {
+    @Foreach(value = " m in source.methods", body = {
             "var invoke = m.name",
             "var Class1 = m.returnType",
             "var class = @m.getArgsDefaultValue()",

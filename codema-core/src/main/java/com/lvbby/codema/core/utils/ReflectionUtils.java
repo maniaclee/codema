@@ -288,6 +288,9 @@ public class ReflectionUtils {
 
     public static List<Field> getAllFields(Class obj, Predicate<Field> predicate) {
         Field[] fields = obj.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+        }
         List<Field> re = Stream.of(fields).filter(field -> !Modifier.isStatic(field.getModifiers()) && (predicate == null || predicate.test(field))).collect(Collectors.toList());
         if (obj.getSuperclass() != null && !obj.getSuperclass().equals(Object.class))
             re.addAll(getAllFields(obj.getSuperclass(), predicate));

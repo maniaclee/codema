@@ -1,6 +1,8 @@
 package com.lvbby.codema.app.mybatis;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.VoidType;
+import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.render.XmlTemplateResult;
 import com.lvbby.codema.core.resource.Resource;
 import com.lvbby.codema.core.result.BasicResult;
@@ -16,6 +18,7 @@ import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import com.lvbby.codema.java.tool.JavaClassUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -32,15 +35,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * 输入一个JavaBeanEntity，依赖一个SqlTable
+ * 生成：
+ * 1. dao interface
+ * 2. mapper xml
+ * 3. mybatis.xml
+ * 4. DalConfig.java
  * Created by lipeng on 16/12/23.
- * 产生dao和mapper.xml
  */
-public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaClass,Object> {
+public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<SqlTable,VoidType> {
 
     public static final String tag_select="select";
     public static final String tag_update="update";
@@ -55,27 +63,35 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaClass,Ob
     public static final String attribute_inner_return="return";
     public static final String attribute_inner_args="args";
 
-    private String mapperDir;
-    private String configPackage;
-    private List<Resource> mapperXmlTemplates;
+    /***
+     * mapper xml 的路径
+     */
+    @ConfigProperty
+    private String   mapperDir;
+    @ConfigProperty
+    private String   configPackage;
+    @ConfigProperty
+    private String   mybatisConfigXmlDir;
+    @ConfigProperty
+    private Resource mapperXmlTemplate;
+    /** entity，数据库对应的java实体类 */
+    @ConfigProperty
+    private Supplier<String> javaBeanClassFullName;
     /***
      * 表名到mapper xml的映射关系
      */
+    @ConfigProperty
     private Function<String,String> table2mapperName = s -> s + ".xml";
+
     @Override protected void doCode() throws Exception {
-        JavaClass cu = source;
-        SqlTable sqlTable = codemaContext.getCodemaBeanFactory().getBean(SqlTable.class);
+        SqlTable sqlTable = source;
+        JavaClass cu = JavaClassUtils.convert(source).name(javaBeanClassFullName.get());
         validate(sqlTable);
-        preCode();
-        Resource mapperTemplate = getMapperXmlTemplates().stream()
-                .filter(resource -> StringUtils
-                        .equals(getTable2mapperName().apply(sqlTable.getNameInDb()),
-                                resource.getResourceName())).findAny().orElse(null);
-        if (mapperTemplate == null) {
+        if (mapperXmlTemplate == null) {
             return;
         }
         /** 1. 渲染mapper xml ， 替换变量*/
-        String renderXml = new XmlTemplateResult(read(mapperTemplate.getInputStream()))
+        String renderXml = new XmlTemplateResult(read(mapperXmlTemplate.getInputStream()))
                 .bind("mapper", parseDestClassFullName(cu))
                 .bind("resultClass", cu.classFullName()).getString();
 
@@ -84,32 +100,29 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaClass,Ob
         processPresetTemplate(document,cu,sqlTable);
 
         List<JavaMethod> javaMethods = parseMethods(document, cu, sqlTable);
-        /** 3. 生成mapper interface */
+        /** 2. 生成mapper interface */
         handle(
                 new JavaTemplateResult(this, $Mapper_.class, cu).bind("methods", javaMethods));
 
-        /** 2. 根据mapper xml 生成mapper */
+        /** 3. 根据mapper xml 生成mapper */
         //预设的模板处理
         BasicResult mapperXml = new XmlTemplateResult(document)
-                .filePath(getDestResourceRoot(), getMapperDir(),
+                .filePath(getMapperDir(),
                         String.format("%s.xml",sqlTable.getName()));
         handle(mapperXml);
 
-    }
-
-    public void preCode()
-            throws Exception {
         /**mybatis config*/
-
-        handle(new BasicResult().result(loadResourceAsString("mybatis.xml"))
-                .filePath(getDestResourceRoot(), "mybatis.xml")
-                .writeMode(WriteMode.writeIfNoExist));
-
+        if (StringUtils.isNotBlank(mybatisConfigXmlDir)) {
+            handle(new BasicResult().result(loadResourceAsString("mybatis.xml"))
+                    .filePath(mybatisConfigXmlDir, "mybatis.xml").writeMode(WriteMode.writeIfNoExist));
+        }
         /** dal config */
         if (StringUtils.isNotBlank(getConfigPackage())) {
-            handle( new JavaTemplateResult( this,DalConfig.class,source)
-                            .writeMode(WriteMode.writeIfNoExist));
+            handle( new JavaTemplateResult( this,DalConfig.class,null)
+                    .pack(getConfigPackage())
+                    .writeMode(WriteMode.writeIfNoExist));
         }
+
     }
 
     /***
@@ -388,21 +401,21 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaClass,Ob
     }
 
     /**
-     * Getter method for property   mapperXmlTemplates.
+     * Getter method for property   mapperXmlTemplate.
      *
-     * @return property value of mapperXmlTemplates
+     * @return property value of mapperXmlTemplate
      */
-    public List<Resource> getMapperXmlTemplates() {
-        return mapperXmlTemplates;
+    public Resource getMapperXmlTemplate() {
+        return mapperXmlTemplate;
     }
 
     /**
-     * Setter method for property   mapperXmlTemplates .
+     * Setter method for property   mapperXmlTemplate .
      *
-     * @param mapperXmlTemplates  value to be assigned to property mapperXmlTemplates
+     * @param mapperXmlTemplate  value to be assigned to property mapperXmlTemplate
      */
-    public void setMapperXmlTemplates(List<Resource> mapperXmlTemplates) {
-        this.mapperXmlTemplates = mapperXmlTemplates;
+    public void setMapperXmlTemplate(Resource mapperXmlTemplate) {
+        this.mapperXmlTemplate = mapperXmlTemplate;
     }
 
     /**
@@ -421,5 +434,41 @@ public class MybatisCodemaMachine extends AbstractJavaCodemaMachine<JavaClass,Ob
      */
     public void setTable2mapperName(Function<String, String> table2mapperName) {
         this.table2mapperName = table2mapperName;
+    }
+
+    /**
+     * Getter method for property   javaBeanClassFullName.
+     *
+     * @return property value of javaBeanClassFullName
+     */
+    public Supplier<String> getJavaBeanClassFullName() {
+        return javaBeanClassFullName;
+    }
+
+    /**
+     * Setter method for property   javaBeanClassFullName .
+     *
+     * @param javaBeanClassFullName  value to be assigned to property javaBeanClassFullName
+     */
+    public void setJavaBeanClassFullName(Supplier<String> javaBeanClassFullName) {
+        this.javaBeanClassFullName = javaBeanClassFullName;
+    }
+
+    /**
+     * Getter method for property   mybatisConfigXmlDir.
+     *
+     * @return property value of mybatisConfigXmlDir
+     */
+    public String getMybatisConfigXmlDir() {
+        return mybatisConfigXmlDir;
+    }
+
+    /**
+     * Setter method for property   mybatisConfigXmlDir .
+     *
+     * @param mybatisConfigXmlDir  value to be assigned to property mybatisConfigXmlDir
+     */
+    public void setMybatisConfigXmlDir(String mybatisConfigXmlDir) {
+        this.mybatisConfigXmlDir = mybatisConfigXmlDir;
     }
 }

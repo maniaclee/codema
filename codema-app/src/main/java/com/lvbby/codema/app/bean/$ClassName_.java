@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Sentence("var ClassName  = destClassName;")
 public class $ClassName_ implements Serializable {
     private static final long serialVersionUID = -1;
-    @Foreach(value = "f in from.fields", body = {
+    @Foreach(value = "f in source.fields", body = {
             "var Class1 = f.type",
             "var class1 = f.name"
 
@@ -20,7 +20,7 @@ public class $ClassName_ implements Serializable {
     private $Class1_ $class1_;
 
     // <%
-    // for( f in from.fields){
+    // for( f in source.fields){
     // var Class1 = f.type;
     // var class1 = f.name;
     // var capital = lee.capital(f.name);

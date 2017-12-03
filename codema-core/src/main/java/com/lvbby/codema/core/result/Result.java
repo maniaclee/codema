@@ -9,4 +9,5 @@ public interface Result<T> {
     T getResult();
 
     Class<T> getResultType();
+
 }

@@ -15,8 +15,8 @@ import java.util.List;
 public class $Convert_ {
 
     // <%
-    // var Class = from.name;
-    // var Class1= @config.getConvertToClassNameParser().getClassName(source,from);
+    // var Class = source.name;
+    // var Class1= @config.getConvertToClassNameParser().getClassName(source);
     // %>
     public static $Class1_ build$Class1_($Class_ from) {
         if (from == null) {
@@ -25,7 +25,7 @@ public class $Convert_ {
         $Class1_ re = new $Class1_();
         /**#
          <%
-         for( f in  from.fields){
+         for( f in  source.fields){
          var name =f.name;
          var nameUpper = lee.capital(name);
          %>
@@ -52,7 +52,7 @@ public class $Convert_ {
         $Class_ re = new $Class_();
         /**#
          <%
-         for( f in  from.fields){
+         for( f in  source.fields){
          var name =f.name;
          var nameUpper = lee.capital(name);
          %>

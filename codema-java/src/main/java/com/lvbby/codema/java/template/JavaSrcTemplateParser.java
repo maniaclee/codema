@@ -9,6 +9,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,13 +29,14 @@ public class JavaSrcTemplateParser {
     public Map getArgs4te(JavaClass src, AbstractJavaCodemaMachine config) {
         HashMap<Object, Object> map = Maps.newHashMap();
         if (src != null) {
-            map.put("from", src);
+            map.put("source", src);
             map.put("srcClassName", src.getName());
             map.put("srcClassNameUncapitalized", JavaLexer.camel(src.getName()));
             if (config.getJavaClassNameParser() != null) {
                 map.put("destClassName", config.getJavaClassNameParser().getClassName(src));
             }
         }
+        map.put("config",config);
         map.put(_getInnerTemplateClassVar($Null_.class), "");
         map.put(_getInnerTemplateClassVar($NullAnnotation_.class), "");
         map.put("javautil",  new JavaTemplateEngineUtils());
@@ -50,7 +52,9 @@ public class JavaSrcTemplateParser {
                                               Class<?> javaSrcTemplate) {
         CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(javaSrcTemplate);
         filterImport(cu);
-        cu.setPackageDeclaration(config.getDestPackage());
+        if(StringUtils.isNotBlank(config.getDestPackage())) {
+            cu.setPackageDeclaration(config.getDestPackage());
+        }
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
             classOrInterfaceDeclaration.setJavadocComment(
                     String.format("\n * Created by sdfsd on %s.\n ",

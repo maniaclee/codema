@@ -1,10 +1,11 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.app.javaMdDoc.JavaMdDocCodemaConfig;
+import com.lvbby.codema.app.javaMdDoc.JavaMdDocInterfaceCodemaMachine;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.handler.ClipBoardResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
+import com.lvbby.codema.java.machine.JavaClassMachineFactory;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
@@ -27,28 +28,24 @@ public class MdJavaDocTest extends BaseTest {
     public void mdJavaDoc(String reference) throws Exception {
         String service;
         String method;
-        if(reference.matches(".*(\\.[a-z].*)$")){
+        if(reference.matches(".*(\\.[a-z][^\\.]+)$")){
             int i = reference.lastIndexOf(".");
             service=reference.substring(0,i);
             method=reference.substring(i+1);
         }else {
-            String[] split = reference.split("[#,]");
+            String[] split = reference.split("[#]");
             service = split[0];
             method = split.length > 1 ? split[1] : null;
         }
 
-        JavaMdDocCodemaConfig md = new JavaMdDocCodemaConfig();
-        md.setAuthor("lee");
-        md.addResultHandler(PrintResultHandler.class).addResultHandler(ClipBoardResultHandler.class);
+        JavaMdDocInterfaceCodemaMachine md = new JavaMdDocInterfaceCodemaMachine();
+        md.resultHandlers(Lists.newArrayList(new PrintResultHandler(),new ClipBoardResultHandler()));
         md.setMethod(method);
-
-        Codema.sourceLoader(JavaClassSourceParser.fromClassFullName(service))
-                .bind(md)
-                .run();
+        JavaClassMachineFactory.fromClassFullName().source(service).next(md).code();
     }
 
     @Test public void testMdJavaDoc() throws Exception {
-//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryAppointmentPeriods");
+        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryAppointmentPeriods");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductCount");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductList");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AssetQueryFacade#queryAssetStatistic");
@@ -64,6 +61,6 @@ public class MdJavaDocTest extends BaseTest {
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryOrder");
 //        mdJavaDoc("com.alipay.zcbprod.common.service.facade.asset.service.AssetQueryFacade#queryAssetProfitList");
 //        mdJavaDoc("com.alipay.zcbprod.common.service.facade.appointment.service.AppointmentQueryFacade#queryAppointmentHistoryList");
-        mdJavaDoc("com.alipay.zcbprod.common.service.facade.common.BaseMultiSourcePageRequest");
+//        mdJavaDoc("com.alipay.zcbprod.common.service.facade.common.BaseMultiSourcePageRequest");
     }
 }

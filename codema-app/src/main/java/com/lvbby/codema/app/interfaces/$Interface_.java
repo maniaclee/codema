@@ -12,7 +12,7 @@ public interface $Interface_ {
 
 
     // <%
-    // for( m in from.methods){
+    // for( m in source.methods){
     //var invoke = m.name;
     //var Class1 = m.returnType;
     //var class = @m.getArgsInvoke();

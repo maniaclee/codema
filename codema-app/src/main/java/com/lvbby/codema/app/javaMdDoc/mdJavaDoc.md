@@ -1,7 +1,7 @@
 <%if(javaMethod !=null){%>
 #### 接口
 ##### 接口定义
-`${@from.classFullName()}#${javaMethod.name}`
+`${@source.classFullName()}#${javaMethod.name}`
 ```java
 ${method}
 ```

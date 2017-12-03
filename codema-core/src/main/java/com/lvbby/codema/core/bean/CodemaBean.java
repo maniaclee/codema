@@ -1,7 +1,6 @@
 package com.lvbby.codema.core.bean;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.config.CommonCodemaConfig;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Created by lipeng on 2016/12/31.
@@ -17,20 +17,20 @@ public class CodemaBean {
     private String id;
     private Object resource;
     private List<Class> types;
-    //这里应该是一个纯粹的BeanFactory，不应该和codema绑定
-    @Deprecated
-    private CommonCodemaConfig config;
+    //杩欓噷搴旇鏄竴涓函绮圭殑BeanFactory锛屼笉搴旇鍜宑odema缁戝畾
 
     public CodemaBean(Object obj) {
-        setResource(obj);
-        //默认做法
-        initType(true,true);
-        setId(obj.getClass().getSimpleName());
+        this(obj,null);
     }
-
-    public CodemaBean bindConfig(CommonCodemaConfig config){
-        setConfig(config);
-        return this;
+    public <T> CodemaBean(T obj, Function<T,String> id) {
+        setResource(obj);
+        //榛樿鍋氭硶
+        initType(true,true);
+        if(id!=null){
+            setId(id.apply(obj));
+        }else {
+            setId(obj.getClass().getSimpleName());
+        }
     }
 
     public void initType(boolean includeSuperClass, boolean includeInterface) {
@@ -86,21 +86,4 @@ public class CodemaBean {
         return match(id) && match(cLass);
     }
 
-    /**
-     * Getter method for property   config.
-     *
-     * @return property value of config
-     */
-    public CommonCodemaConfig getConfig() {
-        return config;
-    }
-
-    /**
-     * Setter method for property   config .
-     *
-     * @param config  value to be assigned to property config
-     */
-    public void setConfig(CommonCodemaConfig config) {
-        this.config = config;
-    }
 }

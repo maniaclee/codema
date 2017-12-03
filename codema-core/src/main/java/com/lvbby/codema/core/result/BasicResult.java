@@ -56,6 +56,9 @@ public class BasicResult<T> extends AbstractFileResult<T> {
     public static Result ofResource(Class clz, String resourceName) throws IOException {
         return new BasicResult().result(ReflectionUtils.loadResource(clz, resourceName));
     }
+    public static <T> Result<T> instance(T object) {
+        return new BasicResult().result(object);
+    }
 
     @Override
     public T getResult() {

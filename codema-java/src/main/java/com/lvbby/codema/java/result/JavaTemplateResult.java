@@ -1,7 +1,7 @@
 package com.lvbby.codema.java.result;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.lvbby.codema.core.CodemaContextHolder;
+import com.lvbby.codema.core.CodemaBeanFactorytHolder;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.MergeCapableFileResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;
@@ -14,6 +14,7 @@ import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaMerger;
 import com.lvbby.codema.java.tool.templateEngine.CodemaJavaSourcePrinter;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.Map;
 /**
  * Created by lipeng on 17/1/6.
  */
-public class JavaTemplateResult extends TemplateEngineResult implements MergeCapableFileResult{
+public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implements MergeCapableFileResult<JavaClass>{
     private CompilationUnit compilationUnit;
 
     public JavaTemplateResult(AbstractJavaCodemaMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
@@ -29,6 +30,13 @@ public class JavaTemplateResult extends TemplateEngineResult implements MergeCap
         //bind默认的参数
         bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass,config));
         filePath(config.getDestRootDir());
+    }
+
+    public JavaTemplateResult pack(String pack){
+        if(StringUtils.isNotBlank(pack)){
+            compilationUnit.setPackageDeclaration(pack);
+        }
+        return this;
     }
 
     @Override
@@ -54,7 +62,7 @@ public class JavaTemplateResult extends TemplateEngineResult implements MergeCap
         //自动import
         AutoImport autoImport = new AutoImport(cu);
         //import beanFactory里的bean
-        CodemaContextHolder.getCodemaContext().getCodemaBeanFactory().getBeans(JavaClass.class)
+        CodemaBeanFactorytHolder.get().getCodemaBeanFactory().getBeans(JavaClass.class)
             .forEach(javaClass -> autoImport.addCandidate(javaClass));
         autoImport.parse();
 

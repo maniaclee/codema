@@ -1,12 +1,10 @@
 package com.lvbby.codema.app.testcase.mock;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.CodemaContext;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
-import com.lvbby.codema.java.machine.AbstractJavaCodemaMachine;
 import com.lvbby.codema.java.machine.AbstractJavaInputCodemaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaCodeUtils;

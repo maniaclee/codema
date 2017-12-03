@@ -9,6 +9,7 @@ import com.lvbby.codema.core.utils.TypeCapable;
  */
 public abstract class AbstractResult<T> extends TypeCapable<T> implements PrintableResult<T> {
     private T result;
+    private boolean needHandle=true;
 
     @Override public Result<T> of(T t) {
         this.result = t;

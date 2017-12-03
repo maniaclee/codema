@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  *
  * @author dushang.lp
- * @version $Id: JavaTemplateResource.java, v 0.1 2017-09-01 ÏÂÎç3:54 dushang.lp Exp $$
+ * @version $Id: JavaTemplateResource.java, v 0.1 2017-09-01 ä¸‹åˆ3:54 dushang.lp Exp $$
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
