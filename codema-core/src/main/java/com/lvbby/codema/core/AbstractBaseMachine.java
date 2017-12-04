@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.core.config.NotNull;
+import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
@@ -32,8 +33,9 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
     protected Result<O>           result;
     protected List<Machine>       machines;
     protected AbstractBaseMachine parent;
+    @ConfigProperty
     protected S                   source;
-    protected List<ResultHandler> handlers;
+    protected List<ResultHandler> handlers=Lists.newArrayList(ResultHandlerFactory.print);
     @ConfigProperty
     protected String              destRootDir;
     private   Machine             dependency;

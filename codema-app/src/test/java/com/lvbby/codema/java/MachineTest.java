@@ -12,6 +12,8 @@ import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
+import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
+import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.machine.JavaClassMachineFactory;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
@@ -112,9 +114,12 @@ public class MachineTest extends BaseTest {
                      + "        private long startDate;\n" + "        private long endDate;\n"
                      + "        private String type;\n"
                      + "        private String body;\n" + "        private String extra;}";
-        MysqlSchemaMachine config = new MysqlSchemaMachine();
-        config.setPrimaryKey("startDate");
-        exec(config);
+        MysqlSchemaMachine sqlCreate = new MysqlSchemaMachine();
+        sqlCreate.setPrimaryKey("startDate");
+        JavaClassMachineFactory.fromSrc()
+                .source(src)
+                .next(sqlCreate)
+                .code();
     }
     @Test
     public void mysql() throws Exception {

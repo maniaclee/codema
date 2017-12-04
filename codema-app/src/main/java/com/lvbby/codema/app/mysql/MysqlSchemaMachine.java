@@ -29,6 +29,7 @@ public class MysqlSchemaMachine extends AbstractBaseMachine<Object, String> {
                 table.buildPrimaryKeyField(primaryKey);
             }
             Validate.notNull(table.getPrimaryKeyField(), "primary id can't be null");
+            //TODO TemplateResult result 模型有问题，太复杂
             handle(new SqlTemplateResult().template(loadResourceAsString("create.sql"))
                     .bind("table", table));
         }

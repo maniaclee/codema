@@ -4,6 +4,8 @@ import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.result.Result;
 
+import java.util.function.Consumer;
+
 /**
  *
  * @author dushang.lp
@@ -14,6 +16,13 @@ public class CodemaMachineUtils {
         return new AbstractBaseMachine<S, O>() {
             @Override protected void doCode() throws Exception {
                 setResult(functionAdaptor.apply(this.source));
+            }
+        };
+    }
+    public static <S, O> Machine<S, O> buildUsingConsumer(Consumer<S> functionAdaptor) {
+        return new AbstractBaseMachine<S, O>() {
+            @Override protected void doCode() throws Exception {
+                functionAdaptor.accept(source);
             }
         };
     }

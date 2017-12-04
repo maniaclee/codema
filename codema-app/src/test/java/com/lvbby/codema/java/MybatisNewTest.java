@@ -62,7 +62,7 @@ public class MybatisNewTest extends BaseTest {
             mybatis.setMapperXmlTemplate(
                     new ClassPathResource(String.format("%s.xml", sql.getSource().getName())));
 
-            sql.resultHandlers(Lists.newArrayList(ResultHandlerFactory.printResultHandler,ResultHandlerFactory.fileResultHandler))
+            sql.resultHandlers(Lists.newArrayList(ResultHandlerFactory.print,ResultHandlerFactory.fileWrite))
                     .nextWithCheck(JavaClassMachineFactory.fromSqlTable().nextWithCheck(bean))
                     .nextWithCheck(mybatis).code();
         }

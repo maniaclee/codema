@@ -25,7 +25,7 @@ public class SqlTable {
     private SqlColumn primaryKeyField;
 
     /**
-     * ´ÓJava class name½âÎö
+     * ä»Java class nameè§£æ
      * @param table
      * @return
      */
@@ -38,7 +38,7 @@ public class SqlTable {
     }
 
     /***
-     * ´Ódb tableµÄÃû³Æ½âÎö
+     * ä»db tableçš„åç§°è§£æ
      * @param table
      * @return
      */

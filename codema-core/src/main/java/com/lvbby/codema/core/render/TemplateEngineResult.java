@@ -57,6 +57,11 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
         return string;
     }
 
+    @Override public T getResult() {
+        render();
+        return super.getResult();
+    }
+
     /***
      *  渲染
      */
