@@ -5,6 +5,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.lvbby.codema.core.config.ConfigProperty;
+import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -30,15 +31,16 @@ public class JavaMdDocInterfaceMachine extends AbstractJavaInputMachine {
         String template = loadResourceAsString(templateResource);
         JavaMethod method = StringUtils.isBlank(getMethod())?null:cu.findMethodByName( getMethod());
         if(method!=null) {
-            return                     new JavaMdTemplateResult(this, template, cu)
+            TemplateEngineResult result = new JavaMdTemplateResult(this, template, cu)
                     .bind("javaMethod", method)
                     .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
                     .bind("result", printParam(cu, method.getReturnType()))
-                    .bind("parameters", method.getArgs().stream().map(JavaArg::getType)
-                            .filter(javaType -> !javaType.bePrimitive())
-                            .map(javaType -> printParam(cu, javaType))
-                            .filter(s -> s != null)
-                            .collect(Collectors.toList()));
+                    .bind("parameters",
+                            method.getArgs().stream().map(JavaArg::getType)
+                                    .filter(javaType -> !javaType.bePrimitive())
+                                    .map(javaType -> printParam(cu, javaType))
+                                    .filter(s -> s != null).collect(Collectors.toList()));
+            return result;
         }else{
             //class
             CompilationUnit clone = cu.getSrc().clone();

@@ -13,6 +13,7 @@ import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -100,10 +101,27 @@ public class JavaClass extends AnnotationType{
         if (StringUtils.equals(classSymbol, classOrInterfaceDeclaration.getNameAsString())) {
             return classFullName();
         }
-        return src.getImports().stream()
+        //从imports中找
+        String result = src.getImports().stream()
                 .map(importDeclaration -> importDeclaration.toString().trim().replaceAll(";", "")
                         .split("\\s+")[1])
-                .filter(importDeclaration -> importDeclaration.endsWith(classSymbol)).findAny().orElse(null);
+                .filter(importDeclaration -> importDeclaration.endsWith(classSymbol)).findAny()
+                .orElse(null);
+        if(result==null){
+            //从同级包内查找
+            CompilationUnit javaSrcCompilationUnit = JavaSrcLoader
+                    .getJavaSrcCompilationUnit(String.format("%s.%s", getPack(), classSymbol));
+            if(javaSrcCompilationUnit!=null){
+                Optional<ClassOrInterfaceDeclaration> clz = JavaLexer.getClass(javaSrcCompilationUnit);
+                if(!clz.isPresent()){
+                    return null;
+                }
+                String clzName = clz.get().getNameAsString();
+                return javaSrcCompilationUnit.getPackageDeclaration().map(packageDeclaration -> String
+                        .format("%s.%s", packageDeclaration.getNameAsString(),clzName)).orElse(null);
+            }
+        }
+        return result;
     }
 
     public JavaClass parseSymbolAsClass(String classSymbol){
