@@ -1,7 +1,7 @@
 package com.lvbby.codema.core.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.lvbby.codema.core.ResultHandler;
+import com.lvbby.codema.core.result.PrintableResult;
 
 /**
  *
@@ -10,9 +10,7 @@ import com.lvbby.codema.core.ResultHandler;
  */
 public class ResultHandlerFactory {
 
-    public static final ResultHandler print           = resultContext -> System.out.println(resultContext.getResult());
-    public static final ResultHandler printJson       = resultContext -> System.out.println(JSON.toJSONString(resultContext.getResult()));
-    public static final ResultHandler printJsonPretty = resultContext -> System.out.println(JSON.toJSONString(resultContext.getResult(),true));
+    public static final ResultHandler print           = new PrintResultHandler();
     public static final ResultHandler fileWrite       = new FileWriterResultHandler();
     public static final ResultHandler clipBoard       = new ClipBoardResultHandler();
 }
