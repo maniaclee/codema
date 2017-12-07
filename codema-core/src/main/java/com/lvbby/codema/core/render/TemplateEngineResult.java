@@ -44,6 +44,12 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
         parameters.put(key, value);
         return this;
     }
+    public TemplateEngineResult bindIf(boolean expr,String key, Object value) {
+        if(expr){
+            bind(key,value);
+        }
+        return this;
+    }
 
     protected void beforeRender(Map bindingParameters) {
     }

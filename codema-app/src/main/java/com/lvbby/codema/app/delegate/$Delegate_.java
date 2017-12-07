@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
  * Created by lipeng on 2016/12/24.
  */
 @Sentence("var Delegate = destClassName;")
-@Sentence("var Interface0 = @config.findImplementInterfacesAsString(from);")
-@Sentence("if(strutil.length(Interface0)>0){Delegate = Delegate + ' implements ' + Interface0;}")
 @Service
 public class $Delegate_{
     @Autowired
@@ -19,7 +17,7 @@ public class $Delegate_{
     @Sentence("var templateClass = srcClassNameUncapitalized;")
     private $TemplateClass_ $templateClass_;
 
-    @Foreach(value = " m in from.methods", body = {
+    @Foreach(value = " m in source.methods", body = {
             "var invoke = m.name;",
             "var Class1 = m.returnType;",
             "var class = @m.getArgsInvoke();",

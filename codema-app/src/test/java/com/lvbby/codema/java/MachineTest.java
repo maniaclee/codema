@@ -3,6 +3,7 @@ package com.lvbby.codema.java;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanMachine;
 import com.lvbby.codema.app.convert.JavaConvertMachine;
+import com.lvbby.codema.app.delegate.JavaDelegateMachine;
 import com.lvbby.codema.app.interfaces.JavaInterfaceMachine;
 import com.lvbby.codema.app.mvn.MavenMachine;
 import com.lvbby.codema.app.mysql.MysqlSchemaMachine;
@@ -12,8 +13,6 @@ import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
-import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
-import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.machine.JavaClassMachineFactory;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
@@ -81,12 +80,9 @@ public class MachineTest extends BaseTest {
     @Test
     public void delegate() throws Exception {
 
-//        JavaDelegateCodemaConfig config = _newConfig(JavaDelegateCodemaConfig.class);
-//        config.setImplementInterfaces(Lists.newArrayList(
-//                JavaClassNameParserFactory.className(Serializable.class.getSimpleName()),
-//                JavaClassNameParserFactory.className("Test")
-//                ));
-//        exec(config);
+        JavaDelegateMachine config =  new JavaDelegateMachine();
+        config.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Impl"));
+        exec(config);
     }
 
     @Test

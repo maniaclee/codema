@@ -57,7 +57,7 @@ public class JavaSrcTemplateParser {
         }
         JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
             classOrInterfaceDeclaration.setJavadocComment(
-                    String.format("\n * Created by sdfsd on %s.\n ",
+                    String.format("\n * Created by %s on %s.\n ",config.getAuthor(),
                             new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
         });
         return cu;

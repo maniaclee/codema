@@ -26,6 +26,11 @@ public abstract class AbstractJavaMachine<S,O>
      */
     @ConfigProperty
     private String destPackage;
+    /**
+     * 目标package
+     */
+    @ConfigProperty
+    private String author = System.getProperty("user.name");
 
     /***
      * 获取目标bean的名称
@@ -109,4 +114,21 @@ public abstract class AbstractJavaMachine<S,O>
         return this;
     }
 
+    /**
+     * Getter method for property   author.
+     *
+     * @return property value of author
+     */
+    public String getAuthor() {
+        return author;
+    }
+
+    /**
+     * Setter method for property   author .
+     *
+     * @param author  value to be assigned to property author
+     */
+    public void setAuthor(String author) {
+        this.author = author;
+    }
 }
