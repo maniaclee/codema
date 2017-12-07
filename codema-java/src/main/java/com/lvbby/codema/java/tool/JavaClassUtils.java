@@ -5,13 +5,16 @@ import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.tool.mysql.SqlType;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
-import com.lvbby.codema.java.entity.*;
+import com.lvbby.codema.java.entity.JavaArg;
+import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaField;
+import com.lvbby.codema.java.entity.JavaMethod;
+import com.lvbby.codema.java.entity.JavaType;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -61,6 +64,7 @@ public class JavaClassUtils {
         ClassOrInterfaceDeclaration clz = JavaLexer.getClass(cu).orElseThrow(() -> new CodemaRuntimeException("no class found"));
         re.setName(clz.getNameAsString());
         re.setImports(JavaLexer.getImports(cu));
+        re.setBeInterface(clz.isInterface());
         re.setFields(JavaLexer.getFields(cu).stream().map(fieldDeclaration -> {
             VariableDeclarator variable = fieldDeclaration.getVariable(0);
             JavaField javaField = new JavaField();

@@ -5,7 +5,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
-import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +33,7 @@ public class JavaClass extends AnnotationType{
      */
     private transient CompilationUnit src;
     private Class type;
+    private boolean beInterface = false;
 
     /**
      * 缓存
@@ -54,6 +54,7 @@ public class JavaClass extends AnnotationType{
         re.setFields(JavaField.from(clz));
         re.setMethods(JavaMethod.from(clz).stream().map(method -> method.src(JavaLexer.getClass(src).orElse(null))).collect(Collectors.toList()));
         re.setSrc(src);
+        re.setBeInterface(clz.isInterface());
         cache.put(clz, re);
         return re;
     }
@@ -213,6 +214,14 @@ public class JavaClass extends AnnotationType{
 
     public void setType(Class type) {
         this.type = type;
+    }
+
+    public boolean isBeInterface() {
+        return beInterface;
+    }
+
+    public void setBeInterface(boolean beInterface) {
+        this.beInterface = beInterface;
     }
 
     @Override

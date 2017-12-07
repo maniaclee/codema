@@ -15,6 +15,11 @@ import java.util.stream.Collectors;
  */
 public class JavaDelegateMachine extends AbstractJavaInputMachine {
     private List<JavaClassNameParser>  interfaces;
+    /***
+     * 如果source是一个interface，实现它
+     */
+    private boolean detectInterface = false;
+
 
     @Override public Result<JavaClass> codeEach(JavaClass cu) throws Exception {
         JavaTemplateResult javaTemplateResult = new JavaTemplateResult(this, $Delegate_.class, cu);
