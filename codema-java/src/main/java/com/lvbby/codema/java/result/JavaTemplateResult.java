@@ -12,11 +12,14 @@ import com.lvbby.codema.java.tool.AutoImport;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaMerger;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import com.lvbby.codema.java.tool.templateEngine.CodemaJavaSourcePrinter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -26,7 +29,16 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
     private CompilationUnit compilationUnit;
 
     public JavaTemplateResult(AbstractJavaMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
-        compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(config,javaSrcTemplate);
+        compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(JavaSrcLoader.getJavaSrcCompilationUnit(javaSrcTemplate));
+        //package
+        pack(config.getDestPackage());
+
+        //JavaDoc comment
+        JavaLexer.getClass(compilationUnit).ifPresent(classOrInterfaceDeclaration -> {
+            classOrInterfaceDeclaration.setJavadocComment(
+                    String.format("\n * Created by %s on %s.\n ",config.getAuthor(),
+                            new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
+        });
         //bind默认的参数
         bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass,config));
         filePath(config.getDestRootDir());

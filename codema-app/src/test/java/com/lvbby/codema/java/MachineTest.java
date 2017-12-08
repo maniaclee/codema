@@ -82,7 +82,8 @@ public class MachineTest extends BaseTest {
 
         JavaDelegateMachine config =  new JavaDelegateMachine();
         config.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Impl"));
-        exec(config);
+        config.setDetectInterface(true);
+        JavaClassMachineFactory.fromClass().source(Machine.class).next(config).code();
     }
 
     @Test

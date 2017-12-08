@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
  * Created by lipeng on 2016/12/24.
  */
 @Sentence("var Delegate = destClassName;")
+@Sentence("if(strutil.length(interfaces)>0){Delegate = Delegate + ' implements ' + interfaces;}")
 @Service
 public class $Delegate_{
     @Autowired

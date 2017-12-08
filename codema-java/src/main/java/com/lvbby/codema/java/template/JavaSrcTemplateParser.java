@@ -8,12 +8,8 @@ import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaMachine;
 import com.lvbby.codema.java.tool.JavaLexer;
-import com.lvbby.codema.java.tool.JavaSrcLoader;
-import org.apache.commons.lang3.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -48,18 +44,8 @@ public class JavaSrcTemplateParser {
         return clz.getSimpleName().replaceAll("[$_]", "");
     }
 
-    public CompilationUnit loadSrcTemplateRaw(AbstractJavaMachine config,
-                                              Class<?> javaSrcTemplate) {
-        CompilationUnit cu = JavaSrcLoader.getJavaSrcCompilationUnit(javaSrcTemplate);
+    public CompilationUnit loadSrcTemplateRaw(CompilationUnit cu ) {
         filterImport(cu);
-        if(StringUtils.isNotBlank(config.getDestPackage())) {
-            cu.setPackageDeclaration(config.getDestPackage());
-        }
-        JavaLexer.getClass(cu).ifPresent(classOrInterfaceDeclaration -> {
-            classOrInterfaceDeclaration.setJavadocComment(
-                    String.format("\n * Created by %s on %s.\n ",config.getAuthor(),
-                            new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
-        });
         return cu;
     }
 
