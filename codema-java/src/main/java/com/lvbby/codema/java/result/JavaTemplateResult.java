@@ -29,7 +29,11 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
     private CompilationUnit compilationUnit;
 
     public JavaTemplateResult(AbstractJavaMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
-        compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(JavaSrcLoader.getJavaSrcCompilationUnit(javaSrcTemplate));
+        this(config,JavaSrcLoader.loadJavaSrcFromProjectAsString(javaSrcTemplate.getName()),javaClass);
+    }
+
+    public JavaTemplateResult(AbstractJavaMachine config, String javaSrcTemplate, JavaClass javaClass) {
+        compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(JavaLexer.read(javaSrcTemplate));
         //package
         pack(config.getDestPackage());
 

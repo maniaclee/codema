@@ -3,8 +3,11 @@ package com.lvbby.codema.java.tool;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -66,7 +69,7 @@ public class JavaSrcLoader {
      * @return
      * @throws Exception
      */
-    private static CompilationUnit loadJavaSrcFromProject(Class clz) throws Exception {
+    public static CompilationUnit loadJavaSrcFromProject(Class clz) throws Exception {
         return loadJavaSrcFromProject(clz.getName());
     }
 
@@ -77,12 +80,24 @@ public class JavaSrcLoader {
      * @return
      * @throws Exception
      */
-    private static CompilationUnit loadJavaSrcFromProject(String className) throws Exception {
+    public static CompilationUnit loadJavaSrcFromProject(String className) throws Exception {
+        String s = loadJavaSrcFromProjectAsString(className);
+        if(StringUtils.isNotBlank(s)){
+            return JavaLexer.read(s);
+        }
+        return null;
+    }
+
+    public static String loadJavaSrcFromProjectAsString(String className)  {
         if (mavenDirectoryScanner != null) {
             for (File file : mavenDirectoryScanner.getMavenSrcDirectories()) {
                 File re = new File(file, className.replace('.', '/') + ".java");
                 if (re.isFile() && re.exists()) {
-                    return JavaLexer.read(re);
+                    try {
+                        return IOUtils.toString(new FileInputStream(re));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }

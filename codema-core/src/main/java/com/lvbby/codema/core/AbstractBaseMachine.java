@@ -222,8 +222,12 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
         this.result = result;
     }
 
-    protected String loadResourceAsString(String resourceName) throws IOException {
-        return ReflectionUtils.loadResource(getClass(), resourceName);
+    protected String loadResourceAsString(String resourceName)   {
+        try {
+            return ReflectionUtils.loadResource(getClass(), resourceName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private <A> Class<A> getType(int i) {

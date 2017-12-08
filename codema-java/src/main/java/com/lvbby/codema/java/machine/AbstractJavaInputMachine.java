@@ -1,9 +1,12 @@
 package com.lvbby.codema.java.machine;
 
 import com.lvbby.codema.core.TemplateCapable;
+import com.lvbby.codema.core.VoidType;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.result.JavaTemplateResult;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.Supplier;
@@ -21,20 +24,30 @@ public abstract class AbstractJavaInputMachine
 
     public abstract Result<JavaClass> codeEach(JavaClass cu) throws Exception;
 
+    protected JavaTemplateResult buildJavaTemplateResult(){
+        return new JavaTemplateResult(this,getTemplate(),getSource());
+    }
+
     @Override
     public String getTemplate() {
-        if(StringUtils.isBlank(template)){
+        if (StringUtils.isBlank(template)) {
             TemplateResource annotation = getClass().getAnnotation(TemplateResource.class);
-            if(annotation!=null){
-                return null;
+            if (annotation != null) {
+                if(annotation.value()!=null && !annotation.value().equals(VoidType.class)) {
+                    this.template = JavaSrcLoader
+                            .loadJavaSrcFromProjectAsString(annotation.value().getName());
+                }
+                if(StringUtils.isNotBlank(annotation.resource())){
+                    this.template=loadResourceAsString(annotation.resource());
+                }
             }
         }
         return template;
     }
 
     @Override
-    public void setTemplate() {
-
+    public void setTemplate(String template) {
+        this.template=template;
     }
 
     public Supplier<String> getDestJavaClassFullNameFuture(){

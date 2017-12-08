@@ -2,6 +2,7 @@ package com.lvbby.codema.app.delegate;
 
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.baisc.JavaClassNameParser;
+import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaInputMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * Created by lipeng on 17/1/6.
  */
+@TemplateResource($Delegate_.class)
 public class JavaDelegateMachine extends AbstractJavaInputMachine {
     private List<JavaClassNameParser> interfaces;
     /***
@@ -26,15 +28,9 @@ public class JavaDelegateMachine extends AbstractJavaInputMachine {
         if (detectInterface && cu.isBeInterface()) {
             is = cu.getName();
         }
-        JavaTemplateResult javaTemplateResult = new JavaTemplateResult(this, $Delegate_.class, cu);
-        //        if(CollectionUtils.isNotEmpty(interfaces)){
-        //         javaTemplateResult
-        //                .bind("interfaces",interfaces.stream().map(javaClassNameParser -> javaClassNameParser.getClassName(cu))
-        //                        .collect(Collectors.joining(",")));
-        //        }
+        JavaTemplateResult javaTemplateResult = buildJavaTemplateResult();
         if (StringUtils.isNotBlank(is)) {
-            javaTemplateResult
-                    .bind("interfaces", is);
+            javaTemplateResult.bind("interfaces", is);
         }
         return javaTemplateResult;
     }

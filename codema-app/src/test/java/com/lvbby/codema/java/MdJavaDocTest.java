@@ -20,7 +20,7 @@ public class MdJavaDocTest extends BaseTest {
     @Before
     public void init() {
         JavaSrcLoader.initJavaSrcRoots(
-            Lists.newArrayList(new File(System.getProperty("user.home"), "workspace")),6);
+            Lists.newArrayList(new File(System.getProperty("user.home"), "workspace")));
     }
 
     public void mdJavaDoc(String reference) throws Exception {
@@ -43,7 +43,7 @@ public class MdJavaDocTest extends BaseTest {
     }
 
     @Test public void testMdJavaDoc() throws Exception {
-        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryAppointmentPeriods");
+        mdJavaDoc("com.alipay.finbatchcore.biz.shared.action.ProcessAction");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductCount");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductList");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AssetQueryFacade#queryAssetStatistic");

@@ -6,5 +6,5 @@ package com.lvbby.codema.core;
 public interface TemplateCapable {
     String getTemplate();
 
-    void setTemplate();
+    void setTemplate(String template);
 }
