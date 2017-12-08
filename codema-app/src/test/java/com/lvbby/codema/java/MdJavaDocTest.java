@@ -60,5 +60,6 @@ public class MdJavaDocTest extends BaseTest {
 //        mdJavaDoc("com.alipay.zcbprod.common.service.facade.asset.service.AssetQueryFacade#queryAssetProfitList");
 //        mdJavaDoc("com.alipay.zcbprod.common.service.facade.appointment.service.AppointmentQueryFacade#queryAppointmentHistoryList");
 //        mdJavaDoc("com.alipay.zcbprod.common.service.facade.common.BaseMultiSourcePageRequest");
+//        System.out.println(new JavaMdDocInterfaceMachine().getTemplate());
     }
 }

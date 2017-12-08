@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.Result;
+import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
@@ -22,16 +23,15 @@ import java.util.stream.Collectors;
 /**
  * Created by dushang.lp on 2017/8/16.
  */
+@TemplateResource(resource = "mdJavaDoc.md")
 public class JavaMdDocInterfaceMachine extends AbstractJavaInputMachine {
-    private String templateResource="mdJavaDoc.md";
     @ConfigProperty
     private String method;
     public Result<JavaClass> codeEach(JavaClass cu) throws Exception {
 
-        String template = loadResourceAsString(templateResource);
         JavaMethod method = StringUtils.isBlank(getMethod())?null:cu.findMethodByName( getMethod());
         if(method!=null) {
-            TemplateEngineResult result = new JavaMdTemplateResult(this, template, cu)
+            TemplateEngineResult result = new JavaMdTemplateResult(this, getTemplate(), cu)
                     .bind("javaMethod", method)
                     .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
                     .bind("result", printParam(cu, method.getReturnType()))
@@ -49,7 +49,7 @@ public class JavaMdDocInterfaceMachine extends AbstractJavaInputMachine {
             ClassOrInterfaceDeclaration clz = JavaLexer.getClass(clone).get();
             clz.getFields().stream().filter(fieldDeclaration -> fieldDeclaration.isStatic()).forEach(fieldDeclaration -> clz.remove(fieldDeclaration));
             clz.getMethods().stream().filter(m -> m.isStatic()||m.getNameAsString().matches("(set|get).*")).forEach(f->clz.remove(f));
-            return                     new JavaMdTemplateResult(this, template, cu)
+            return                     new JavaMdTemplateResult(this, getTemplate(), cu)
                     .bind("type", clone)
                     .bind("javaMethod", method);
 
