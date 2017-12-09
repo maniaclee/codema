@@ -1,8 +1,10 @@
 package com.lvbby.codema.core;
 
 import com.lvbby.codema.core.result.Result;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -18,6 +20,7 @@ public interface Machine<S, O> {
     Machine<S, O> source(S source);
 
     S getSource();
+
     /***
      * 设置handlers
      * @param handlers
@@ -25,7 +28,23 @@ public interface Machine<S, O> {
      */
     Machine<S, O> resultHandlers(List<ResultHandler> handlers);
 
-    void code() throws Exception;
+    Machine<S, O> addResultHandler(ResultHandler handler);
+
+    /***
+     * 运行
+     * @throws Exception
+     */
+    void run() throws Exception;
+
+    /***
+     * 获取运行结果
+     * @return
+     * @throws Exception
+     */
+    default O runAndFetch() throws Exception {
+        run();
+        return Optional.ofNullable(getResult()).map(Result::getResult).orElse(null);
+    }
 
     Result<O> getResult();
 
@@ -37,12 +56,16 @@ public interface Machine<S, O> {
      * 连接下一个CodemaMachine
      * @param next
      */
-     Machine< S, O> next(Machine next);
+    Machine<S, O> next(Machine next);
+
     /**
      * 连接下一个CodemaMachine,类型必须一致
      * @param next
      */
-     <Output> Machine<S, O> nextWithCheck(Machine<O,Output> next);
+    default <Output> Machine<S, O> nextWithCheck(Machine<O, Output> next) {
+        next(next);
+        return this;
+    }
 
     /***
      * 获取source类型
@@ -52,6 +75,5 @@ public interface Machine<S, O> {
 
     /** 获取输出类型*/
     Class<O> outputType();
-
 
 }

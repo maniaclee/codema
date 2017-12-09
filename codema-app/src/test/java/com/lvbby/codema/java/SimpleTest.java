@@ -21,13 +21,19 @@ import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.mozilla.intl.chardet.nsDetector;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -37,8 +43,7 @@ public class SimpleTest {
 
     public static int a = 1;
 
-    @Test
-    public void uri() {
+    @Test public void uri() {
         URI uri = URI.create("asdf:///root/leaf?path=sdf&&sub=sdf");
         System.out.println(uri.getAuthority());
         System.out.println(uri.getPath());
@@ -46,8 +51,7 @@ public class SimpleTest {
         System.out.println(uri);
     }
 
-    @Test
-    public void yaml() throws Exception {
+    @Test public void yaml() throws Exception {
         Yaml yaml = new Yaml();
         A a = new A();
         a.setName("sdf");
@@ -57,30 +61,27 @@ public class SimpleTest {
         System.out.println(yaml.dump(a));
     }
 
-    @Test
-    public void beanProperty() throws Exception {
-        ReflectionUtils.getAllFields(Codema.class, null).forEach(field -> System.out.println(field.getName()));
+    @Test public void beanProperty() throws Exception {
+        ReflectionUtils.getAllFields(Codema.class, null)
+                .forEach(field -> System.out.println(field.getName()));
     }
 
-    @Test
-    public void methods() throws Exception {
+    @Test public void methods() throws Exception {
         for (Method method : ReflectionUtils.getAllMethods(Codema.class)) {
             System.out.println(method.getName());
         }
-        String s = "public Codema addCodemaMachine(SourceParser sourceParser) {\n" +
-                "        this.sourceParserFactory.getSourceParsers().add(sourceParser);\n" +
-                "        return this;\n" +
-                "    }";
+        String s = "public Codema addCodemaMachine(SourceParser sourceParser) {\n"
+                   + "        this.sourceParserFactory.getSourceParsers().add(sourceParser);\n"
+                   + "        return this;\n" + "    }";
         String field = "sourceParserFactory";
-        List<Object> allConvert = ReflectionUtils.findAllConvert(s, field + "\\.([^\\(\\)]+)\\(", matcher -> matcher.group(1));
+        List<Object> allConvert = ReflectionUtils
+                .findAllConvert(s, field + "\\.([^\\(\\)]+)\\(", matcher -> matcher.group(1));
         System.out.println(allConvert);
     }
 
-
     class A {
         private List<A> a;
-        private String name;
-
+        private String  name;
 
         public List<A> getA() {
             return a;
@@ -99,9 +100,7 @@ public class SimpleTest {
         }
     }
 
-
-    @Test
-    public void java() throws Exception {
+    @Test public void java() throws Exception {
         System.out.println(getClass().getResource("/"));
         System.out.println(getClass().getResource("/").getFile().toString());
         System.out.println(getJavaSource(JavaLexer.class));
@@ -114,39 +113,37 @@ public class SimpleTest {
         return IOUtils.toString(resourceAsStream);
     }
 
-    @Test
-    public void sql() throws Exception {
+    @Test public void sql() throws Exception {
 
         // String sql = "update t set name = 'x' where id < 100 limit 10";
         // String sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ? limit 2";
         // String sql = "select * from tablename limit 10";
 
-        String sql = "CREATE TABLE `SB_Article_Audit_Interview` (\n" +
-                "  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据表id',\n" +
-                "  `article_id` bigint(11) NOT NULL COMMENT '文章id',\n" +
-                "  `guest_name` varchar(50) DEFAULT NULL COMMENT '嘉宾姓名',\n" +
-                "  `guest_avatar` varchar(200) DEFAULT NULL COMMENT '嘉宾头像',\n" +
-                "  `guest_desc` varchar(1000) DEFAULT NULL COMMENT '嘉宾描述',\n" +
-                "  `ask_end_time` datetime DEFAULT NULL COMMENT '提问截止时间（日期格式）',\n" +
-                "  `background_type` smallint(4) NOT NULL COMMENT '背景图片类型',\n" +
-                "  `join_num` int(11) NOT NULL COMMENT '参加人数',\n" +
-                "  `result_url` varchar(500) DEFAULT '' COMMENT '访谈全文url',\n" +
-                "  `result_pices` varchar(5000) NOT NULL DEFAULT '' COMMENT '访谈过程中图片(地址数组)',\n" +
-                "  `result_context` varchar(5000) NOT NULL DEFAULT '' COMMENT '访谈摘要',\n" +
-                "  `result_head_pic` varchar(500) DEFAULT '' COMMENT '访谈结果新闻头图',\n" +
-                "  `result_video_url` varchar(500) DEFAULT NULL COMMENT '访谈视频url',\n" +
-                "  `status` smallint(6) NOT NULL DEFAULT '1' COMMENT '访谈状态',\n" +
-                "  `ad_pic` varchar(5000) DEFAULT '' COMMENT '广告页图片',\n" +
-                "  `brand_desc` text COMMENT '品牌说明',\n" +
-                "  `create_time` datetime NOT NULL COMMENT '创建时间',\n" +
-                "  `updatetime` datetime NOT NULL COMMENT '更新时间',\n" +
-                "  `background` text COMMENT '背景',\n" +
-                "  `source_pic` text COMMENT '来源logo图片',\n" +
-                "  PRIMARY KEY (`id`),\n" +
-                "  UNIQUE KEY `UX_articleId` (`article_id`),\n" +
-                "  KEY `updatetime` (`updatetime`),\n" +
-                "  KEY `ix_create_time` (`create_time`)\n" +
-                ") ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='访谈型文章扩展表';";
+        String sql = "CREATE TABLE `SB_Article_Audit_Interview` (\n"
+                     + "  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据表id',\n"
+                     + "  `article_id` bigint(11) NOT NULL COMMENT '文章id',\n"
+                     + "  `guest_name` varchar(50) DEFAULT NULL COMMENT '嘉宾姓名',\n"
+                     + "  `guest_avatar` varchar(200) DEFAULT NULL COMMENT '嘉宾头像',\n"
+                     + "  `guest_desc` varchar(1000) DEFAULT NULL COMMENT '嘉宾描述',\n"
+                     + "  `ask_end_time` datetime DEFAULT NULL COMMENT '提问截止时间（日期格式）',\n"
+                     + "  `background_type` smallint(4) NOT NULL COMMENT '背景图片类型',\n"
+                     + "  `join_num` int(11) NOT NULL COMMENT '参加人数',\n"
+                     + "  `result_url` varchar(500) DEFAULT '' COMMENT '访谈全文url',\n"
+                     + "  `result_pices` varchar(5000) NOT NULL DEFAULT '' COMMENT '访谈过程中图片(地址数组)',\n"
+                     + "  `result_context` varchar(5000) NOT NULL DEFAULT '' COMMENT '访谈摘要',\n"
+                     + "  `result_head_pic` varchar(500) DEFAULT '' COMMENT '访谈结果新闻头图',\n"
+                     + "  `result_video_url` varchar(500) DEFAULT NULL COMMENT '访谈视频url',\n"
+                     + "  `status` smallint(6) NOT NULL DEFAULT '1' COMMENT '访谈状态',\n"
+                     + "  `ad_pic` varchar(5000) DEFAULT '' COMMENT '广告页图片',\n"
+                     + "  `brand_desc` text COMMENT '品牌说明',\n"
+                     + "  `create_time` datetime NOT NULL COMMENT '创建时间',\n"
+                     + "  `updatetime` datetime NOT NULL COMMENT '更新时间',\n"
+                     + "  `background` text COMMENT '背景',\n"
+                     + "  `source_pic` text COMMENT '来源logo图片',\n" + "  PRIMARY KEY (`id`),\n"
+                     + "  UNIQUE KEY `UX_articleId` (`article_id`),\n"
+                     + "  KEY `updatetime` (`updatetime`),\n"
+                     + "  KEY `ix_create_time` (`create_time`)\n"
+                     + ") ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='访谈型文章扩展表';";
         String dbType = JdbcConstants.MYSQL;
 
         //格式化输出
@@ -190,23 +187,19 @@ public class SimpleTest {
             System.out.println("fields : " + visitor.getColumns());
         }
 
-
     }
 
-    @Test
-    public void template() throws Exception {
+    @Test public void template() throws Exception {
         System.out.println(TemplateEngineFactory.create("\\${abc}").render());
     }
 
-    @Test
-    public void env() throws Exception {
+    @Test public void env() throws Exception {
         System.out.println(System.getProperty("user.home"));
         System.out.println(System.getProperty("user.name"));
 
     }
 
-    @Test
-    public void primitiveClass() throws Exception {
+    @Test public void primitiveClass() throws Exception {
         System.out.println(boolean.class.getPackage());
         System.out.println(String.class.getClass());
 
@@ -219,15 +212,16 @@ public class SimpleTest {
 
     }
 
-    @Test
-    public void commentAtEnd() throws Exception {
-        VariableDeclarator variableDeclarator = new VariableDeclarator(PrimitiveType.booleanType(), "a");
+    @Test public void commentAtEnd() throws Exception {
+        VariableDeclarator variableDeclarator = new VariableDeclarator(PrimitiveType.booleanType(),
+                "a");
         System.out.println(variableDeclarator);
     }
 
-    private List<String> split(String s ){
+    private List<String> split(String s) {
         return Lists.newArrayList(s.split("[<>,]+"));
     }
+
     @Test public void genericType() throws Exception {
         System.out.println(split("List<Long>"));
         System.out.println(split("List"));
@@ -236,25 +230,64 @@ public class SimpleTest {
     }
 
     @Test public void multimap() throws Exception {
-//          LinkedHashMap<String, String> runMap            = new LinkedHashMap<>();
-          Multimap<String, String> runMap            = LinkedHashMultimap.create();
-          runMap.put("ssss" , "xxxx");
-          runMap.put("aaaa","xxxx");
-          runMap.put("XXXX","xxxx");
-          runMap.put("111","xxxx");
-          runMap.put("zzzzz","xxxx");
+        //          LinkedHashMap<String, String> runMap            = new LinkedHashMap<>();
+        Multimap<String, String> runMap = LinkedHashMultimap.create();
+        runMap.put("ssss", "xxxx");
+        runMap.put("aaaa", "xxxx");
+        runMap.put("XXXX", "xxxx");
+        runMap.put("111", "xxxx");
+        runMap.put("zzzzz", "xxxx");
         for (String s : runMap.keySet()) {
             System.out.println(s);
         }
 
-
     }
 
     @Test public void tst() throws Exception {
-//        JavaMdDocInterfaceCodemaMachine md = new JavaMdDocInterfaceCodemaMachine();
-//        System.out.println(md);
-//        Codema.source(new JavaClass())
-//                .machine(md .nextWithCheck(md).nextWithCheck(new JavaSpringBootCodemaMachine()))
-//                .run();
+        String f = "/Users/dushang.lp/workspace/fintradecenter/app/core/model/src/main/java/com/alipay/fintradecenter/core/model/allowance/AssetAllowanceDetail.java";
+        String cs = IOUtils.toString(new FileInputStream(f));
+        System.out.println(Charset.forName("GBK").newEncoder().canEncode(cs));
+        System.out.println(Charset.forName("utf-8").newEncoder().canEncode(cs));
+        String charset = charset(new FileInputStream(f));
+        System.out.println(charset);
+        System.out.println(IOUtils.toString(new FileInputStream(f),charset));
+    }
+
+    public String charset(String s) throws Exception {
+        nsDetector det = new nsDetector();
+
+        // Set an observer...
+        // The Notify() will be called when a matching charset is found.
+
+        final String[] charsertResult = { null };
+        det.Init(charset -> charsertResult[0] = charset);
+
+        byte[] data = s.getBytes();
+        det.DoIt(data, data.length, false);
+        det.DataEnd();
+        return charsertResult[0];
+    }
+
+    public String charset(InputStream inputStream) throws Exception {
+        nsDetector det = new nsDetector();
+
+        // Set an observer...
+        // The Notify() will be called when a matching charset is found.
+
+        final String[] charsertResult = { null };
+        det.Init(charset -> charsertResult[0] = charset);
+
+        BufferedInputStream imp = new BufferedInputStream(inputStream);
+
+        byte[] buf = new byte[1024];
+        int len;
+        boolean done = false;
+        boolean isAscii = true;
+
+        while ((len = imp.read(buf, 0, buf.length)) != -1) {
+            det.DoIt(buf, len, false);
+        }
+        det.DataEnd();
+        return charsertResult[0];
     }
 }

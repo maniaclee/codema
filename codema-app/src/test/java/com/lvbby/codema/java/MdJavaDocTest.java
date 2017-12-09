@@ -1,10 +1,8 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.app.javaMdDoc.JavaMdDocInterfaceMachine;
-import com.lvbby.codema.core.handler.ClipBoardResultHandler;
-import com.lvbby.codema.core.handler.PrintResultHandler;
-import com.lvbby.codema.java.machine.JavaClassMachineFactory;
+import com.lvbby.codema.app.javaMdDoc.JavaMdDocEasyMachine;
+import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,22 +22,27 @@ public class MdJavaDocTest extends BaseTest {
     }
 
     public void mdJavaDoc(String reference) throws Exception {
-        String service;
-        String method;
-        if(reference.matches(".*(\\.[a-z][^\\.]+)$")){
-            int i = reference.lastIndexOf(".");
-            service=reference.substring(0,i);
-            method=reference.substring(i+1);
-        }else {
-            String[] split = reference.split("[#]");
-            service = split[0];
-            method = split.length > 1 ? split[1] : null;
-        }
-
-        JavaMdDocInterfaceMachine md = new JavaMdDocInterfaceMachine();
-        md.resultHandlers(Lists.newArrayList(new PrintResultHandler(),new ClipBoardResultHandler()));
-        md.setMethod(method);
-        JavaClassMachineFactory.fromClassFullName().source(service).next(md).code();
+        new JavaMdDocEasyMachine()
+                .source(reference)
+                .addResultHandler(ResultHandlerFactory.print)
+                .run();
+//        String service;
+//        String method;
+//        if(reference.matches(".*(\\.[a-z][^\\.]+)$")){
+//            int i = reference.lastIndexOf(".");
+//            service=reference.substring(0,i);
+//            method=reference.substring(i+1);
+//        }else {
+//            String[] split = reference.split("[#]");
+//            service = split[0];
+//            method = split.length > 1 ? split[1] : null;
+//        }
+//
+//        JavaMdDocMachine md = new JavaMdDocMachine();
+//        md.setTemplate(md.getTemplate()+"====================");
+//        md.resultHandlers(Lists.newArrayList(new PrintResultHandler(),new ClipBoardResultHandler()));
+//        md.setMethod(method);
+//        JavaClassMachineFactory.fromClassFullName().source(service).next(md).run();
     }
 
     @Test public void testMdJavaDoc() throws Exception {

@@ -10,7 +10,8 @@ import com.lvbby.codema.core.result.PrintableResult;
  */
 public class ResultHandlerFactory {
 
-    public static final ResultHandler print           = new PrintResultHandler();
-    public static final ResultHandler fileWrite       = new FileWriterResultHandler();
-    public static final ResultHandler clipBoard       = new ClipBoardResultHandler();
+    public static final ResultHandler print     = new PrintResultHandler();
+    public static final ResultHandler fileWrite = new FileWriterResultHandler();
+    public static final ResultHandler clipBoard = new ClipBoardResultHandler();
+    public static final ResultHandler collect   = new CollectResultHandler();
 }

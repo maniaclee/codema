@@ -62,7 +62,7 @@ public class Codema<S> {
             for (S source : sources) {
                 for (Machine machine : machines) {
                     machine.source(source);
-                    machine.code();
+                    machine.run();
                 }
             }
         } finally {
@@ -80,7 +80,7 @@ public class Codema<S> {
                 executor.execute(() -> {
                     try {
                         machine.source(source);
-                        machine.code();
+                        machine.run();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

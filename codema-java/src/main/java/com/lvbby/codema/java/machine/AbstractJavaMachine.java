@@ -76,7 +76,7 @@ public abstract class AbstractJavaMachine<S,O>
         //2. 从本地找
         Machine<String, JavaClass> sourceMachine = JavaClassMachineFactory.fromClassFullName()
                 .source(classFullName);
-        sourceMachine.code();
+        sourceMachine.run();
         Result<JavaClass> result = sourceMachine.getResult();
         if(result!=null && result.getResult()!=null){
             return result.getResult();

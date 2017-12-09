@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * Created by dushang.lp on 2017/8/16.
  */
 @TemplateResource(resource = "mdJavaDoc.md")
-public class JavaMdDocInterfaceMachine extends AbstractJavaInputMachine {
+public class JavaMdDocMachine extends AbstractJavaInputMachine {
     @ConfigProperty
     private String method;
     public Result<JavaClass> codeEach(JavaClass cu) throws Exception {
@@ -44,12 +44,13 @@ public class JavaMdDocInterfaceMachine extends AbstractJavaInputMachine {
         }else{
             //class
             CompilationUnit clone = cu.getSrc().clone();
-            clone.setComment(null);
             clone.setImports(NodeList.nodeList());
+            clone.setComment(null);
             ClassOrInterfaceDeclaration clz = JavaLexer.getClass(clone).get();
+            clz.setComment(null);
             clz.getFields().stream().filter(fieldDeclaration -> fieldDeclaration.isStatic()).forEach(fieldDeclaration -> clz.remove(fieldDeclaration));
             clz.getMethods().stream().filter(m -> m.isStatic()||m.getNameAsString().matches("(set|get).*")).forEach(f->clz.remove(f));
-            return                     new JavaMdTemplateResult(this, getTemplate(), cu)
+            return new JavaMdTemplateResult(this, getTemplate(), cu)
                     .bind("type", clone)
                     .bind("javaMethod", method);
 

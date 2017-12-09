@@ -2,6 +2,7 @@ package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanMachine;
+import com.lvbby.codema.app.charset.CharsetMachine;
 import com.lvbby.codema.app.convert.JavaConvertMachine;
 import com.lvbby.codema.app.delegate.JavaDelegateMachine;
 import com.lvbby.codema.app.interfaces.JavaInterfaceMachine;
@@ -13,6 +14,7 @@ import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
+import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.machine.JavaClassMachineFactory;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
@@ -21,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * Created by dushang.lp on 2017/6/26.
@@ -49,7 +52,7 @@ public class MachineTest extends BaseTest {
                 .source(CodemaBean.class)
                 .next(machine
                         .resultHandlers(Lists.newArrayList(new PrintResultHandler())))
-                .code();
+                .run();
     }
 
     @Test
@@ -83,7 +86,7 @@ public class MachineTest extends BaseTest {
         JavaDelegateMachine config =  new JavaDelegateMachine();
         config.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Impl"));
         config.setDetectInterface(true);
-        JavaClassMachineFactory.fromClass().source(Machine.class).next(config).code();
+        JavaClassMachineFactory.fromClass().source(Machine.class).next(config).run();
     }
 
     @Test
@@ -116,7 +119,7 @@ public class MachineTest extends BaseTest {
         JavaClassMachineFactory.fromSrc()
                 .source(src)
                 .next(sqlCreate)
-                .code();
+                .run();
     }
     @Test
     public void mysql() throws Exception {
@@ -124,4 +127,10 @@ public class MachineTest extends BaseTest {
 //            .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
     }
 
+    @Test public void charset() throws Exception {
+        String f = "/Users/dushang.lp/workspace/fintradecenter/app/core/model/src/main/java/com/alipay/fintradecenter/core/model/allowance/AssetAllowanceDetail.java";
+        new CharsetMachine().source(new FileInputStream(f))
+                .addResultHandler(ResultHandlerFactory.print)
+                .run();
+    }
 }

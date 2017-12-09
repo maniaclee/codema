@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.core.config.NotNull;
-import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
@@ -35,7 +34,7 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
     protected AbstractBaseMachine parent;
     @ConfigProperty
     protected S                   source;
-    protected List<ResultHandler> handlers=Lists.newArrayList(ResultHandlerFactory.print);
+    protected List<ResultHandler> handlers;
     @ConfigProperty
     protected String              destRootDir;
     private   Machine             dependency;
@@ -59,7 +58,7 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
         return source;
     }
 
-    @Override public void code() throws Exception {
+    @Override public void run() throws Exception {
         check();
         doCode();
         //触发后续的machine
@@ -69,7 +68,7 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
                 //设置source
                 machine.source(getResult().getResult());
                 //run
-                machine.code();
+                machine.run();
             }
         }
     }
@@ -192,13 +191,16 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
         return this;
     }
 
-    @Override public <Output> Machine<S, O> nextWithCheck(Machine<O, Output> next) {
-        next(next);
+    @Override public Machine<S, O> resultHandlers(List<ResultHandler> handlers) {
+        this.handlers=handlers;
         return this;
     }
 
-    @Override public Machine<S, O> resultHandlers(List<ResultHandler> handlers) {
-        this.handlers=handlers;
+    @Override public Machine<S, O> addResultHandler(ResultHandler handler) {
+        if(handlers==null){
+            handlers=Lists.newLinkedList();
+        }
+        this.handlers.add(handler);
         return this;
     }
 

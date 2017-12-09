@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by dushang.lp on 2017/6/7.
- * java code related functions
+ * java run related functions
  */
 public class JavaCodeUtils {
 
@@ -103,11 +103,11 @@ public class JavaCodeUtils {
 
     /**
      * 结果类似
-     * <code>
+     * <run>
      * JavaBasicCodemaConfig javaBasicCodemaConfig = new JavaBasicCodemaConfig();
      * javaBasicCodemaConfig.setAuthor("");
      * javaBasicCodemaConfig.setDestFile("");
-     * </code>
+     * </run>
      *
      * @param clz
      * @param varName

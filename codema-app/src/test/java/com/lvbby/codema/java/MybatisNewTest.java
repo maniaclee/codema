@@ -64,7 +64,7 @@ public class MybatisNewTest extends BaseTest {
 
             sql.resultHandlers(Lists.newArrayList(ResultHandlerFactory.print,ResultHandlerFactory.fileWrite))
                     .nextWithCheck(JavaClassMachineFactory.fromSqlTable().nextWithCheck(bean))
-                    .nextWithCheck(mybatis).code();
+                    .nextWithCheck(mybatis).run();
         }
     }
 }
