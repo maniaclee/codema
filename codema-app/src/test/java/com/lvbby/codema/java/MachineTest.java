@@ -1,5 +1,6 @@
 package com.lvbby.codema.java;
 
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanMachine;
 import com.lvbby.codema.app.charset.CharsetMachine;
@@ -7,7 +8,9 @@ import com.lvbby.codema.app.convert.JavaConvertMachine;
 import com.lvbby.codema.app.delegate.JavaDelegateMachine;
 import com.lvbby.codema.app.interfaces.JavaInterfaceMachine;
 import com.lvbby.codema.app.mvn.MavenMachine;
+import com.lvbby.codema.app.mysql.MysqlInsertMachine;
 import com.lvbby.codema.app.mysql.MysqlSchemaMachine;
+import com.lvbby.codema.app.mysql.SqlSelectColumnsMachine;
 import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
 import com.lvbby.codema.core.Machine;
@@ -15,6 +18,8 @@ import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
+import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
+import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.machine.JavaClassMachineFactory;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
@@ -24,6 +29,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 
 /**
  * Created by dushang.lp on 2017/6/26.
@@ -132,5 +138,20 @@ public class MachineTest extends BaseTest {
         new CharsetMachine().source(new FileInputStream(f))
                 .addResultHandler(ResultHandlerFactory.print)
                 .run();
+    }
+
+    @Test public void sql() throws Exception {
+        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
+                .fromJdbcUrl("jdbc:mysql://10.210.170.12:2883/zcbmodule?useUnicode=true", "obdv1:zcb0_721:root",
+                        "ali88", "fbc.*");
+//        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
+//                .fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8", "root",
+//                        "", "article");
+        for (Machine<SqlTable, SqlTable> source : machines) {
+            source.next(new MysqlInsertMachine())
+                    .next(new SqlSelectColumnsMachine())
+                    .addResultHandler(ResultHandlerFactory.print)
+                    .run();
+        }
     }
 }

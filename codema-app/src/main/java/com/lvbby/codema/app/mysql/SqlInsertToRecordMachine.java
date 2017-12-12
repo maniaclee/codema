@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @author dushang.lp
  * @version $Id: SqlInsertMachine.java, v 0.1 2017年12月04日 上午11:36 dushang.lp Exp $
  */
-public class SqlInsertMachine extends AbstractBaseMachine<String,List<Map<String,Object>>>{
+public class SqlInsertToRecordMachine extends AbstractBaseMachine<String,List<Map<String,Object>>>{
     @Override protected void doCode() throws Exception {
         List<SQLStatement> sqlStatements = SQLUtils.parseStatements(source, JdbcConstants.MYSQL);
         List<Map<String, Object>> result = sqlStatements.stream().map(sqlStatement -> {
@@ -64,6 +64,6 @@ public class SqlInsertMachine extends AbstractBaseMachine<String,List<Map<String
                      + "insert into `rt_evaluation_question`( question_id,  question_code,  title,  is_active,  version,  val_type,  question_type,  gmt_create,  gmt_modified) values('2017112200000002', '2', '开元盛世，商业发达，你会经营什么？', 'T', null, '2017112200000001', '0', '2017-11-22 20:17:01', '2017-11-22 20:17:38');\n"
                      + "insert into `rt_evaluation_question`( question_id,  question_code,  title,  is_active,  version,  val_type,  question_type,  gmt_create,  gmt_modified) values('2017112200000003', '3', '3 如果要投资房地产，你选择哪个唐朝城市？', 'T', null, '2017112200000001', '0', '2017-11-22 20:19:04', '2017-11-22 20:19:39');\n"
                      + "insert into `rt_evaluation_question`( question_id,  question_code,  title,  is_active,  version,  val_type,  question_type,  gmt_create,  gmt_modified) values('2017112200000004', '3', '安史之乱很快到来，你要如何保护家财？', 'T', null, '2017112200000001', '0', '2017-11-22 20:19:56', '2017-11-22 20:22:16');\n";
-        new SqlInsertMachine().source(sql).resultHandlers(Lists.newArrayList(ResultHandlerFactory.print)).run();
+        new SqlInsertToRecordMachine().source(sql).resultHandlers(Lists.newArrayList(ResultHandlerFactory.print)).run();
     }
 }
