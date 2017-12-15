@@ -6,7 +6,7 @@ package com.lvbby.codema.app.javaMdDoc;
 
 import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.result.BasicResult;
-import com.lvbby.codema.java.machine.JavaClassMachineFactory;
+import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
 
 /**
  *
@@ -30,6 +30,6 @@ public class JavaMdDocEasyMachine extends AbstractBaseMachine<String,String>{
         //link到JavaMdDocMachine
         JavaMdDocMachine mdDocMachine = new JavaMdDocMachine();
         mdDocMachine.setMethod(method);
-        nextWithCheck(JavaClassMachineFactory.fromClassFullName().next(mdDocMachine));
+        nextWithCheck(JavaSourceMachineFactory.fromClassFullName().next(mdDocMachine));
     }
 }

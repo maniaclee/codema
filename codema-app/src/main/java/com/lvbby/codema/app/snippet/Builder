@@ -1,0 +1,9 @@
+<%for(var f in source.fields){
+ var arg = f.name;
+ var type =f.type;
+%>
+    public ${source.name} ${lee.capital(f.name)}(${type} ${arg}){
+        this.${f.name} = ${f.name};
+        return this;
+    }
+<%}%>

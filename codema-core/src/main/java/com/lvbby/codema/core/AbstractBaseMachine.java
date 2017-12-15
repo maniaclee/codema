@@ -62,11 +62,21 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
         check();
         doCode();
         //触发后续的machine
-        if (CollectionUtils.isNotEmpty(machines) && getResult() != null
-            && getResult().getResult() != null) {
+        if (getResult() != null && getResult().getResult() != null) {
+            invokeNext(getResult().getResult());
+        }
+    }
+
+    /***
+     * 让后续machine执行
+     * @param srcForNext
+     * @throws Exception
+     */
+    protected void invokeNext(O srcForNext) throws Exception {
+        if (CollectionUtils.isNotEmpty(machines)) {
             for (Machine machine : machines) {
                 //设置source
-                machine.source(getResult().getResult());
+                machine.source(srcForNext);
                 //run
                 machine.run();
             }

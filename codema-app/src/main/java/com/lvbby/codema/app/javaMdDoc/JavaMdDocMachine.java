@@ -14,7 +14,7 @@ import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.machine.JavaMachine;
 import com.lvbby.codema.java.result.JavaBasicTemplateResult;
-import com.lvbby.codema.java.source.JavaClassSourceParser;
+import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.lang3.StringUtils;
 
@@ -88,7 +88,7 @@ public class JavaMdDocMachine extends JavaMachine {
         paramClz.getFields().stream().filter(fieldDeclaration -> fieldDeclaration.isStatic())
                 .forEach(fieldDeclaration -> paramClz.remove(fieldDeclaration));
         try {
-            return JavaClassSourceParser.fromClassSrc(compilationUnit).loadSource().get(0);
+            return JavaClassUtils.fromClassSrc(compilationUnit);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

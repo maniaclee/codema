@@ -10,7 +10,7 @@ import com.lvbby.codema.core.resource.ClassPathResource;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
-import com.lvbby.codema.java.machine.JavaClassMachineFactory;
+import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class MybatisNewTest extends BaseTest {
                     new ClassPathResource(String.format("%s.xml", sql.getSource().getName())));
 
             sql.resultHandlers(Lists.newArrayList(ResultHandlerFactory.print,ResultHandlerFactory.fileWrite))
-                    .nextWithCheck(JavaClassMachineFactory.fromSqlTable().nextWithCheck(bean))
+                    .nextWithCheck(JavaSourceMachineFactory.fromSqlTable().nextWithCheck(bean))
                     .nextWithCheck(mybatis).run();
         }
     }

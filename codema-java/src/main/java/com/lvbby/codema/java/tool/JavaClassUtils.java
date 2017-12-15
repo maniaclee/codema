@@ -19,6 +19,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet;
@@ -56,7 +57,46 @@ public class JavaClassUtils {
         return clz;
     }
 
+    public static JavaClass fromFile(File file) throws Exception {
+        return JavaClassUtils.convert(JavaLexer.read(file));
+    }
+    public static JavaClass fromClass(Class clz) throws Exception {
+        CompilationUnit src = JavaSrcLoader.getJavaSrcCompilationUnit(clz);
 
+        JavaClass re = new JavaClass();
+        re.setName(clz.getSimpleName());
+        re.setFrom(clz);
+        re.setPack(clz.getPackage().getName());
+        re.setType(clz);
+
+        re.setFields(JavaField.from(clz));
+        re.setMethods(JavaMethod.from(clz).stream().map(method -> method.src(JavaLexer.getClass(src).orElse(null))).collect(Collectors.toList()));
+        re.setSrc(src);
+        re.setBeInterface(clz.isInterface());
+        return re;
+    }
+    /***
+     * 从一段java代码解析
+     * @param javaSrc
+     * @return
+     * @throws Exception
+     */
+    public static JavaClass fromClassSrcString(String javaSrc ) throws Exception {
+        return JavaClassUtils.convert(JavaLexer.read(javaSrc));
+    }
+    /***
+     * 从项目目录里按照全类名加载
+     * @param classFullName
+     * @return
+     * @throws Exception
+     */
+    public static JavaClass fromClassFullName(String classFullName) throws Exception {
+        return fromClassSrc(JavaSrcLoader.getJavaSrcCompilationUnit(classFullName));
+    }
+
+    public static JavaClass fromClassSrc(CompilationUnit compilationUnit) throws Exception {
+        return JavaClassUtils.convert(compilationUnit);
+    }
 
     public static JavaClass convert(CompilationUnit cu) {
         JavaClass re = new JavaClass();

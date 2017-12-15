@@ -1,6 +1,7 @@
 package com.lvbby.codema.java.entity;
 
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.tool.JavaClassUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -37,7 +38,7 @@ public class JavaField {
 
     public JavaClass tryFindJavaClass() {
         try {
-            return JavaClass.from(getType().getJavaType());
+            return JavaClassUtils.fromClass(getType().getJavaType());
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -2,16 +2,14 @@ package com.lvbby.codema.java.entity;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.google.common.collect.Maps;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.source.JavaClassSourceParser;
+import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,30 +32,6 @@ public class JavaClass extends AnnotationType{
     private transient CompilationUnit src;
     private Class type;
     private boolean beInterface = false;
-
-    /**
-     * 缓存
-     */
-    private static Map<Class, JavaClass> cache = Maps.newHashMap();
-
-    public static JavaClass from(Class clz) throws Exception {
-        if (cache.containsKey(clz))
-            return cache.get(clz);
-        CompilationUnit src = JavaSrcLoader.getJavaSrcCompilationUnit(clz);
-
-        JavaClass re = new JavaClass();
-        re.setName(clz.getSimpleName());
-        re.setFrom(clz);
-        re.setPack(clz.getPackage().getName());
-        re.setType(clz);
-
-        re.setFields(JavaField.from(clz));
-        re.setMethods(JavaMethod.from(clz).stream().map(method -> method.src(JavaLexer.getClass(src).orElse(null))).collect(Collectors.toList()));
-        re.setSrc(src);
-        re.setBeInterface(clz.isInterface());
-        cache.put(clz, re);
-        return re;
-    }
 
     public JavaClass() {
     }
@@ -133,7 +107,7 @@ public class JavaClass extends AnnotationType{
             return this;
         }
         try {
-            return JavaClassSourceParser.fromClassFullName(s).loadSource().get(0);
+            return JavaClassUtils.fromClassFullName(s);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

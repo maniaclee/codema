@@ -1,6 +1,5 @@
 package com.lvbby.codema.java;
 
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanMachine;
 import com.lvbby.codema.app.charset.CharsetMachine;
@@ -23,8 +22,7 @@ import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
-import com.lvbby.codema.java.machine.JavaClassMachineFactory;
-import com.lvbby.codema.java.source.JavaClassSourceParser;
+import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -38,7 +36,6 @@ import java.util.List;
  * Created by dushang.lp on 2017/6/26.
  */
 public class MachineTest extends BaseTest {
-    JavaClassSourceParser sourceLoader;
 
     @Before
     public void init() throws Exception {
@@ -48,17 +45,11 @@ public class MachineTest extends BaseTest {
 
         /** 设置java src 根路径*/
         JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(f));
-        try {
-            sourceLoader = JavaClassSourceParser.fromClass(CodemaBean.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
     }
 
     private void exec(Machine machine) throws Exception {
         Codema.exec(
-                JavaClassMachineFactory.fromClass().source(CodemaBean.class)
+                JavaSourceMachineFactory.fromClass().source(CodemaBean.class)
                 ,machine);
     }
 
@@ -93,7 +84,7 @@ public class MachineTest extends BaseTest {
         JavaDelegateMachine config =  new JavaDelegateMachine();
         config.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Impl"));
         config.setDetectInterface(true);
-        JavaClassMachineFactory.fromClass().source(Machine.class).next(config).run();
+        JavaSourceMachineFactory.fromClass().source(Machine.class).next(config).run();
     }
 
     @Test
@@ -123,7 +114,7 @@ public class MachineTest extends BaseTest {
                      + "        private String body;\n" + "        private String extra;}";
         MysqlSchemaMachine sqlCreate = new MysqlSchemaMachine();
         sqlCreate.setPrimaryKey("startDate");
-        JavaClassMachineFactory.fromSrc()
+        JavaSourceMachineFactory.fromSrc()
                 .source(src)
                 .next(sqlCreate)
                 .run();
@@ -156,11 +147,38 @@ public class MachineTest extends BaseTest {
         }
     }
 
+    @Test public void sqlCreate() throws Exception {
+        String s = "CREATE TABLE `finance_sequence_00` (\n"
+                   + "  `name` varchar(64) NOT NULL COMMENT 'sequence名称',\n"
+                   + "  `gmt_create` timestamp NOT NULL COMMENT '创建时间',\n"
+                   + "  `gmt_modified` timestamp NOT NULL COMMENT '修改时间',\n"
+                   + "  `value` int(11) NOT NULL COMMENT '序列值',\n"
+                   + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n"
+                   + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n"
+                   + "  `step` int(11) NOT NULL COMMENT '步长',\n" + "  PRIMARY KEY (`name`)\n"
+                   + ") \n" + "CREATE TABLE `finance_sequence_111` (\n"
+                   + "  `name` varchar(64) NOT NULL COMMENT 'sequence名称',\n"
+                   + "  `gmt_create` timestamp NOT NULL COMMENT '创建时间',\n"
+                   + "  `gmt_modified` timestamp NOT NULL COMMENT '修改时间',\n"
+                   + "  `value` int(11) NOT NULL COMMENT '序列值',\n"
+                   + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n"
+                   + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n"
+                   + "  `step` int(11) NOT NULL COMMENT '步长',\n" + "  PRIMARY KEY (`name`)\n" + ") ";
+        Codema.exec(SqlMachineFactory.fromSqlCreate().source(s),new MysqlInsertMachine());
+    }
+
     @Test public void snippet() throws Exception {
         String template = IOUtils.toString(new FileInputStream(
                 "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/RequestSetting"));
         BasicJavaCodeMachine next = new BasicJavaCodeMachine(template);
 
-        Codema.exec(JavaClassMachineFactory.fromClass().source(SqlTable.class),next);
+        Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class),next);
+    }
+    @Test public void snippetBuilder() throws Exception {
+        String template = IOUtils.toString(new FileInputStream(
+                "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/Builder"));
+        BasicJavaCodeMachine next = new BasicJavaCodeMachine(template);
+
+        Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class),next);
     }
 }

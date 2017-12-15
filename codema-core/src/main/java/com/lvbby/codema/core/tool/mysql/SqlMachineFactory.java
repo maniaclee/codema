@@ -15,9 +15,17 @@ import java.util.stream.Collectors;
  */
 public class SqlMachineFactory {
 
-    public static List<Machine<SqlTable, SqlTable>> fromSqlCreate(String sqlCreate) {
-        return SqlParser.fromSql(sqlCreate).stream().map(table -> fromTable(table))
-                .collect(Collectors.toList());
+    public static Machine<String, SqlTable> fromSqlCreate() {
+        return new AbstractBaseMachine<String, SqlTable>() {
+            @Override protected void doCode() throws Exception {
+                for (SqlTable table : SqlParser.fromSql(source)) {
+                    //调用处理器，但是不设置result
+                    handleSimple(BasicResult.instance(table));
+                    //出发后续流程
+                    invokeNext(table);
+                }
+            }
+        };
     }
 
     public static Machine<SqlTable, SqlTable> fromTable(SqlTable sqlTable) {

@@ -16,7 +16,7 @@ import java.io.File;
 /**
  * Created by lipeng on 17/1/9.
  */
-public class JavaClassMachineFactory {
+public class JavaSourceMachineFactory {
 
     /***
      * 从Class解析
@@ -24,7 +24,7 @@ public class JavaClassMachineFactory {
      * @throws Exception
      */
     public static Machine<Class, JavaClass> fromClass() throws Exception {
-        return buildJavaMachine(s -> JavaClass.from(s));
+        return buildJavaMachine(s -> JavaClassUtils.fromClass(s));
     }
 
     /***
