@@ -22,20 +22,24 @@ import java.util.regex.Pattern;
 public class JavaSrcTemplateParser {
     public static JavaSrcTemplateParser instance = new JavaSrcTemplateParser();
 
+    public static final String KEY_SOURCE = "source";
+    public static final String KEY_SRC_CLASS_NAME = "srcClassName";
+    public static final String KEY_SRC_CLASS_NAME_UNCAPITALIZED = "srcClassNameUncapitalized";
+    public static final String KEY_DEST_CLASS_NAME = "destClassName";
+    public static final String KEY_CONFIG = "config";
+    public static final String KEY_JAVA_UTIL = "javautil";
     public Map getArgs4te(JavaClass src, AbstractJavaMachine config) {
         HashMap<Object, Object> map = Maps.newHashMap();
         if (src != null) {
-            map.put("source", src);
-            map.put("srcClassName", src.getName());
-            map.put("srcClassNameUncapitalized", JavaLexer.camel(src.getName()));
-            if (config.getJavaClassNameParser() != null) {
-                map.put("destClassName", config.getJavaClassNameParser().getClassName(src));
-            }
+            map.put(KEY_SOURCE, src);
+            map.put(KEY_SRC_CLASS_NAME, src.getName());
+            map.put(KEY_SRC_CLASS_NAME_UNCAPITALIZED, JavaLexer.camel(src.getName()));
+            map.put(KEY_DEST_CLASS_NAME, config.getJavaClassNameParser() == null?null:config.getJavaClassNameParser().getClassName(src));
         }
-        map.put("config",config);
+        map.put(KEY_CONFIG,config);
         map.put(_getInnerTemplateClassVar($Null_.class), "");
         map.put(_getInnerTemplateClassVar($NullAnnotation_.class), "");
-        map.put("javautil",  new JavaTemplateEngineUtils());
+        map.put(KEY_JAVA_UTIL,  new JavaTemplateEngineUtils());
         return map;
     }
 

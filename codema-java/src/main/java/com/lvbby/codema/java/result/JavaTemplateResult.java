@@ -23,9 +23,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
+ * 结果为JavaClass
  * Created by lipeng on 17/1/6.
  */
-public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implements MergeCapableFileResult<JavaClass>{
+public class JavaTemplateResult extends JavaBasicTemplateResult<JavaClass> implements MergeCapableFileResult<JavaClass>{
     private CompilationUnit compilationUnit;
 
     public JavaTemplateResult(AbstractJavaMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
@@ -33,6 +34,7 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
     }
 
     public JavaTemplateResult(AbstractJavaMachine config, String javaSrcTemplate, JavaClass javaClass) {
+        super(config,javaSrcTemplate,javaClass);
         compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(JavaLexer.read(javaSrcTemplate));
         //package
         pack(config.getDestPackage());
@@ -43,8 +45,6 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
                     String.format("\n * Created by %s on %s.\n ",config.getAuthor(),
                             new SimpleDateFormat("yyyy/MM/dd").format(new Date())));
         });
-        //bind默认的参数
-        bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass,config));
         filePath(config.getDestRootDir());
     }
 

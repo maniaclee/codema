@@ -15,18 +15,10 @@ import java.util.function.Supplier;
  * 入参JavaClass
  * Created by dushang.lp on 2017/8/16.
  */
-public abstract class AbstractJavaInputMachine
-        extends AbstractJavaMachine<JavaClass, JavaClass> implements TemplateCapable{
+public abstract class AbstractJavaInputMachine<O>
+        extends AbstractJavaMachine<JavaClass, O> implements TemplateCapable{
     private String template;
-    @Override protected void doCode() throws Exception {
-        handle(codeEach(source));
-    }
 
-    public abstract Result<JavaClass> codeEach(JavaClass cu) throws Exception;
-
-    protected JavaTemplateResult buildJavaTemplateResult(){
-        return new JavaTemplateResult(this,getTemplate(),getSource());
-    }
 
     @Override
     public String getTemplate() {

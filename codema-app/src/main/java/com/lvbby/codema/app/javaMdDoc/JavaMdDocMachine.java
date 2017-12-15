@@ -12,8 +12,8 @@ import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.machine.AbstractJavaInputMachine;
-import com.lvbby.codema.java.result.JavaMdTemplateResult;
+import com.lvbby.codema.java.machine.JavaMachine;
+import com.lvbby.codema.java.result.JavaBasicTemplateResult;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.lang3.StringUtils;
@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
  * Created by dushang.lp on 2017/8/16.
  */
 @TemplateResource(resource = "mdJavaDoc.md")
-public class JavaMdDocMachine extends AbstractJavaInputMachine {
+public class JavaMdDocMachine extends JavaMachine {
     @ConfigProperty
     private String method;
     public Result<JavaClass> codeEach(JavaClass cu) throws Exception {
 
         JavaMethod method = StringUtils.isBlank(getMethod())?null:cu.findMethodByName( getMethod());
         if(method!=null) {
-            TemplateEngineResult result = new JavaMdTemplateResult(this, getTemplate(), cu)
+            TemplateEngineResult result = new JavaBasicTemplateResult(this, getTemplate(), cu)
                     .bind("javaMethod", method)
                     .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
                     .bind("result", printParam(cu, method.getReturnType()))
@@ -50,7 +50,7 @@ public class JavaMdDocMachine extends AbstractJavaInputMachine {
             clz.setComment(null);
             clz.getFields().stream().filter(fieldDeclaration -> fieldDeclaration.isStatic()).forEach(fieldDeclaration -> clz.remove(fieldDeclaration));
             clz.getMethods().stream().filter(m -> m.isStatic()||m.getNameAsString().matches("(set|get).*")).forEach(f->clz.remove(f));
-            return new JavaMdTemplateResult(this, getTemplate(), cu)
+            return new JavaBasicTemplateResult(this, getTemplate(), cu)
                     .bind("type", clone)
                     .bind("javaMethod", method);
 

@@ -5,7 +5,7 @@ import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
-import com.lvbby.codema.java.machine.AbstractJavaInputMachine;
+import com.lvbby.codema.java.machine.JavaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Created by dushang.lp on 2017/5/31.
  */
-public class JavaMockTestMachine extends AbstractJavaInputMachine {
+public class JavaMockTestMachine extends JavaMachine {
 
     @ConfigProperty
     private List annotations ;

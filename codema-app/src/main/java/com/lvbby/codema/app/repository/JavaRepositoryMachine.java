@@ -8,7 +8,7 @@ import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.machine.AbstractJavaInputMachine;
+import com.lvbby.codema.java.machine.JavaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import org.apache.commons.lang3.Validate;
 
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /** 代理dao interface生成repository， 进行source到convert的转化
  * Created by lipeng on 16/12/23.
  */
-public class JavaRepositoryMachine extends AbstractJavaInputMachine {
+public class JavaRepositoryMachine extends JavaMachine {
     private JavaClassNameParser convertUtilsClass = JavaClassNameParserFactory.className("BuildUtils");
 
     public Result<JavaClass> codeEach(JavaClass javaClass) throws Exception {

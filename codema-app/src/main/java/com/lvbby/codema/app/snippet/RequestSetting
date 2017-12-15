@@ -1,0 +1,7 @@
+<% var param = @source.getNameCamel(); %>
+${source.name} ${param} = new ${source.name};
+<% for( var f in source.fields){
+   var fieldName = lee.capital(f.name);
+%>
+${param}.set${fieldName}();
+<%}%>

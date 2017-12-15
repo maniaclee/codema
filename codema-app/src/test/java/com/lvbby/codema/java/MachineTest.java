@@ -11,8 +11,10 @@ import com.lvbby.codema.app.mvn.MavenMachine;
 import com.lvbby.codema.app.mysql.MysqlInsertMachine;
 import com.lvbby.codema.app.mysql.MysqlSchemaMachine;
 import com.lvbby.codema.app.mysql.SqlSelectColumnsMachine;
+import com.lvbby.codema.app.snippet.BasicJavaCodeMachine;
 import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
+import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
@@ -24,6 +26,7 @@ import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.machine.JavaClassMachineFactory;
 import com.lvbby.codema.java.source.JavaClassSourceParser;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,11 +57,9 @@ public class MachineTest extends BaseTest {
     }
 
     private void exec(Machine machine) throws Exception {
-        JavaClassMachineFactory.fromClass()
-                .source(CodemaBean.class)
-                .next(machine
-                        .resultHandlers(Lists.newArrayList(new PrintResultHandler())))
-                .run();
+        Codema.exec(
+                JavaClassMachineFactory.fromClass().source(CodemaBean.class)
+                ,machine);
     }
 
     @Test
@@ -153,5 +154,13 @@ public class MachineTest extends BaseTest {
                     .addResultHandler(ResultHandlerFactory.print)
                     .run();
         }
+    }
+
+    @Test public void snippet() throws Exception {
+        String template = IOUtils.toString(new FileInputStream(
+                "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/RequestSetting"));
+        BasicJavaCodeMachine next = new BasicJavaCodeMachine(template);
+
+        Codema.exec(JavaClassMachineFactory.fromClass().source(SqlTable.class),next);
     }
 }

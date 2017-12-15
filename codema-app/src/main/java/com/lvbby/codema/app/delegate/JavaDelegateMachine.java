@@ -4,7 +4,7 @@ import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.AbstractJavaInputMachine;
+import com.lvbby.codema.java.machine.JavaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by lipeng on 17/1/6.
  */
 @TemplateResource($Delegate_.class)
-public class JavaDelegateMachine extends AbstractJavaInputMachine {
+public class JavaDelegateMachine extends JavaMachine {
     private List<JavaClassNameParser> interfaces;
     /***
      * 如果source是一个interface，实现它

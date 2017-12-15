@@ -2,7 +2,7 @@ package com.lvbby.codema.core.source;
 
 import java.util.List;
 
-/**解析source，如果返回List，则任务是多个source
+/**瑙ｆ瀽source锛屽鏋滆繑鍥濴ist锛屽垯浠诲姟鏄涓猻ource
  * Created by lipeng on 2017/8/19.
  */
 public interface SourceLoader<T> {
@@ -10,7 +10,7 @@ public interface SourceLoader<T> {
     List<T> loadSource() throws Exception;
 
     /***
-     * 获取解析出来的source类型
+     * 鑾峰彇瑙ｆ瀽鍑烘潵鐨剆ource绫诲瀷
      * @return
      */
     Class<T> getType();
