@@ -14,6 +14,9 @@ import com.lvbby.codema.java.result.JavaBasicTemplateResult;
  */
 public class BasicJavaCodeMachine extends AbstractJavaInputMachine<String> {
 
+    public BasicJavaCodeMachine() {
+    }
+
     public BasicJavaCodeMachine(String template) {
         setTemplate(template);
     }
