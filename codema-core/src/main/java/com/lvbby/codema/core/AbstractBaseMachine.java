@@ -59,11 +59,15 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
     }
 
     @Override public void run() throws Exception {
-        check();
-        doCode();
-        //触发后续的machine
-        if (getResult() != null && getResult().getResult() != null) {
-            invokeNext(getResult().getResult());
+        try {
+            check();
+            doCode();
+            //触发后续的machine
+            if (getResult() != null && getResult().getResult() != null) {
+                invokeNext(getResult().getResult());
+            }
+        } finally {
+            CodemaContextHolder.clear();
         }
     }
 

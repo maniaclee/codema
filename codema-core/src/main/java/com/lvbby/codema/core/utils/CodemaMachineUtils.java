@@ -15,7 +15,8 @@ public class CodemaMachineUtils {
     public static <S, O> Machine<S, O> build(FunctionAdaptor<S, Result<O>> functionAdaptor) {
         return new AbstractBaseMachine<S, O>() {
             @Override protected void doCode() throws Exception {
-                setResult(functionAdaptor.apply(this.source));
+//                setResult(functionAdaptor.apply(this.source));
+                handle(functionAdaptor.apply(this.source));
             }
         };
     }

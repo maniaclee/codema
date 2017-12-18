@@ -62,7 +62,6 @@ public class JavaTemplateResult extends JavaBasicTemplateResult<JavaClass> imple
                 matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
         super.beforeRender(bindingParameters);
         template(JavaSrcTemplateParser.prepareTemplate(template));
-        System.err.println(template);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class JavaTemplateResult extends JavaBasicTemplateResult<JavaClass> imple
         try {
             cu = JavaLexer.read(getString());
         } catch (Exception e) {
-            System.out.println("==============");
+            System.out.println("==== render error =====");
             System.out.println(getString());
             throw e;
         }

@@ -10,6 +10,7 @@ import com.lvbby.codema.app.mvn.MavenMachine;
 import com.lvbby.codema.app.mysql.MysqlInsertMachine;
 import com.lvbby.codema.app.mysql.MysqlSchemaMachine;
 import com.lvbby.codema.app.mysql.SqlSelectColumnsMachine;
+import com.lvbby.codema.app.mysql.SqlUpdateMachine;
 import com.lvbby.codema.app.snippet.BasicJavaCodeMachine;
 import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
@@ -132,23 +133,28 @@ public class MachineTest extends BaseTest {
                 .run();
     }
 
+    /***
+     * 读jdbc url
+     * @throws Exception
+     */
     @Test public void sql() throws Exception {
         List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
                 .fromJdbcUrl("jdbc:mysql://10.210.170.12:2883/zcbmodule?useUnicode=true", "obdv1:zcb0_721:root",
-                        "ali88", "fbc.*");
+                        "ali88", "fbc_user_contract");
 //        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
 //                .fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8", "root",
 //                        "", "article");
         for (Machine<SqlTable, SqlTable> source : machines) {
-            source.next(new MysqlInsertMachine())
+              source.next(new MysqlInsertMachine())
                     .next(new SqlSelectColumnsMachine())
+                    .next(new SqlUpdateMachine())
                     .addResultHandler(ResultHandlerFactory.print)
                     .run();
         }
     }
 
     @Test public void sqlCreate() throws Exception {
-        String s = "CREATE TABLE `finance_sequence_00` (\n"
+        String s = "\n" + "\n" + " CREATE TABLE `finance_sequence_00` (\n"
                    + "  `name` varchar(64) NOT NULL COMMENT 'sequence名称',\n"
                    + "  `gmt_create` timestamp NOT NULL COMMENT '创建时间',\n"
                    + "  `gmt_modified` timestamp NOT NULL COMMENT '修改时间',\n"
@@ -156,7 +162,7 @@ public class MachineTest extends BaseTest {
                    + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n"
                    + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n"
                    + "  `step` int(11) NOT NULL COMMENT '步长',\n" + "  PRIMARY KEY (`name`)\n"
-                   + ") \n" + "CREATE TABLE `finance_sequence_111` (\n"
+                   + ") \n" + "CREATE TABLE `finance_sequence_xxxx` (\n"
                    + "  `name` varchar(64) NOT NULL COMMENT 'sequence名称',\n"
                    + "  `gmt_create` timestamp NOT NULL COMMENT '创建时间',\n"
                    + "  `gmt_modified` timestamp NOT NULL COMMENT '修改时间',\n"
@@ -164,7 +170,9 @@ public class MachineTest extends BaseTest {
                    + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n"
                    + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n"
                    + "  `step` int(11) NOT NULL COMMENT '步长',\n" + "  PRIMARY KEY (`name`)\n" + ") ";
-        Codema.exec(SqlMachineFactory.fromSqlCreate().source(s),new MysqlInsertMachine());
+//        Codema.exec(SqlMachineFactory.fromSqlCreate().source(s),new MysqlInsertMachine());
+        Codema.exec(SqlMachineFactory.fromSqlCreate().source(s).next(
+                JavaSourceMachineFactory.fromSqlTable()));
     }
 
     @Test public void snippet() throws Exception {
@@ -174,6 +182,11 @@ public class MachineTest extends BaseTest {
 
         Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class),next);
     }
+
+    /***
+     * 生成builder
+     * @throws Exception
+     */
     @Test public void snippetBuilder() throws Exception {
         String template = IOUtils.toString(new FileInputStream(
                 "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/Builder"));

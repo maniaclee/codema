@@ -7,5 +7,5 @@ import com.lvbby.codema.core.result.Result;
  */
 public interface ResultHandler {
 
-    void handle(Result resultContext) throws Exception;
+    void handle(Result result) throws Exception;
 }

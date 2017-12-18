@@ -3,6 +3,7 @@ package com.lvbby.codema.java.machine;
 import com.lvbby.codema.core.TemplateCapable;
 import com.lvbby.codema.core.VoidType;
 import com.lvbby.codema.core.result.Result;
+import com.lvbby.codema.core.utils.CodemaCacheHolder;
 import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.result.JavaTemplateResult;
@@ -23,6 +24,11 @@ public abstract class AbstractJavaInputMachine<O>
     @Override
     public String getTemplate() {
         if (StringUtils.isBlank(template)) {
+                    String key = String.format("cach_template_%s", getClass().getName());
+            Object cache = CodemaCacheHolder.getCache().get(key);
+            if(cache != null){
+                return (String) cache;
+            }
             TemplateResource annotation = getClass().getAnnotation(TemplateResource.class);
             if (annotation != null) {
                 if(annotation.value()!=null && !annotation.value().equals(VoidType.class)) {
@@ -31,6 +37,9 @@ public abstract class AbstractJavaInputMachine<O>
                 }
                 if(StringUtils.isNotBlank(annotation.resource())){
                     this.template=loadResourceAsString(annotation.resource());
+                }
+                if(this.template!=null){
+                    CodemaCacheHolder.getCache().put(key,template);
                 }
             }
         }

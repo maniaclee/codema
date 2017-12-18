@@ -89,6 +89,15 @@ public class JavaSrcLoader {
     }
 
     public static String loadJavaSrcFromProjectAsString(String className)  {
+        //内部使用
+        if(className.startsWith("com.lvbby.codema")){
+            try {
+                return IOUtils.toString(loadJavaSrcFromInnerProject(Class.forName(className)));
+            } catch ( Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
         if (mavenDirectoryScanner != null) {
             for (File file : mavenDirectoryScanner.getMavenSrcDirectories()) {
                 File re = new File(file, className.replace('.', '/') + ".java");
