@@ -54,6 +54,15 @@ public class ReflectionUtils {
         }
     }
 
+    public static <T> T instance(String clzName) {
+        try {
+            return instance((Class<T>) Class.forName(clzName));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     public static Map<String, Object> object2map(Object object) throws Exception {
         Map<String, Object> re = Maps.newHashMap();
         for (PropertyDescriptor propertyDescriptor : Introspector.getBeanInfo(object.getClass(), Object.class).getPropertyDescriptors()) {
@@ -438,4 +447,5 @@ public class ReflectionUtils {
         }
         return null;
     }
+
 }

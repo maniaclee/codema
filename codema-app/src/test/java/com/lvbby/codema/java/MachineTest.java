@@ -40,10 +40,11 @@ public class MachineTest extends BaseTest {
 
     @Before
     public void init() throws Exception {
-        File f = new File(JavaMockTestMachine.class.getResource("/").getPath());
-        f = f.getParentFile().getParentFile();//codema-app
-        f = f.getParentFile();//codema
+//        File f = new File(JavaMockTestMachine.class.getResource("/").getPath());
+//        f = f.getParentFile().getParentFile();//codema-app
+//        f = f.getParentFile();//codema
 
+        File f = new File(System.getProperty("user.home"),"workspace");
         /** 设置java src 根路径*/
         JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(f));
     }
@@ -81,7 +82,6 @@ public class MachineTest extends BaseTest {
     }
     @Test
     public void delegate() throws Exception {
-
         JavaDelegateMachine config =  new JavaDelegateMachine();
         config.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Impl"));
         config.setDetectInterface(true);
@@ -192,6 +192,7 @@ public class MachineTest extends BaseTest {
                 "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/Builder"));
         BasicJavaCodeMachine next = new BasicJavaCodeMachine(template);
 
-        Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class),next);
+        Codema.exec(JavaSourceMachineFactory.fromClassFullName().source("com.lvbby.coder.MachineConfig"),next);
     }
+
 }

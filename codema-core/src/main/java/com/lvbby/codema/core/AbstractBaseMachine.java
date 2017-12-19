@@ -40,6 +40,9 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
     private   Machine             dependency;
     private   Supplier            param;
 
+    public AbstractBaseMachine() {
+    }
+
     @Override public Machine<S, O> source(S source) {
         this.source = source;
         return this;

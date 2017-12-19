@@ -1,6 +1,7 @@
 package com.lvbby.codema.java.machine;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
@@ -23,8 +24,14 @@ public class JavaSourceMachineFactory {
      * @return
      * @throws Exception
      */
-    public static Machine<Class, JavaClass> fromClass() throws Exception {
+    public static Machine<Class, JavaClass> fromClass()  {
         return buildJavaMachine(s -> JavaClassUtils.fromClass(s));
+    }
+    public static class JavaSourceFromClassMachine extends AbstractBaseMachine<Class,JavaClass>{
+
+        @Override protected void doCode() throws Exception {
+            handle(BasicResult.instance(JavaClassUtils.fromClass(source)));
+        }
     }
 
     /***
