@@ -99,6 +99,7 @@ public class JavaClassUtils {
     }
 
     public static JavaClass convert(CompilationUnit cu) {
+        Validate.notNull(cu,"java class can't be null");
         JavaClass re = new JavaClass();
         re.setPack(JavaLexer.getPackage(cu));
         ClassOrInterfaceDeclaration clz = JavaLexer.getClass(cu).orElseThrow(() -> new CodemaRuntimeException("no class found"));

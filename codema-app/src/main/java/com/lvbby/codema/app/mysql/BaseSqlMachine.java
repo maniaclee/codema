@@ -3,6 +3,7 @@ package com.lvbby.codema.app.mysql;
 import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.TemplateCapable;
 import com.lvbby.codema.core.render.SqlTemplateResult;
+import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaClassUtils;
@@ -27,7 +28,7 @@ public abstract class BaseSqlMachine extends AbstractBaseMachine<Object, String>
             table = JavaClassUtils.convertToSqlTable((JavaClass) source);
         }
         if (table != null) {
-            handle(new SqlTemplateResult().template(getTemplate()).bind("table", table));
+            handle(new TemplateEngineResult(getTemplate()).bind("table", table));
         }
 
     }

@@ -23,6 +23,7 @@ import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
+import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
@@ -46,7 +47,7 @@ public class MachineTest extends BaseTest {
 
         File f = new File(System.getProperty("user.home"),"workspace");
         /** 设置java src 根路径*/
-        JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(f));
+        JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(f),6);
     }
 
     private void exec(Machine machine) throws Exception {
@@ -77,8 +78,11 @@ public class MachineTest extends BaseTest {
     public void convert() throws Exception {
         JavaConvertMachine machine = new JavaConvertMachine();
         machine.setDestPackage("com.lvbby.test.pack");
-        machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("Shit"));
-        exec(machine);
+        machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("RepayPlanVO"));
+        machine.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
+        Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName()
+                .source("com.alipay.finfiprod.common.service.facade.p2p.product.result.RepayPlanItem");
+        Codema.exec(source,machine);
     }
     @Test
     public void delegate() throws Exception {
@@ -140,7 +144,7 @@ public class MachineTest extends BaseTest {
     @Test public void sql() throws Exception {
         List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
                 .fromJdbcUrl("jdbc:mysql://10.210.170.12:2883/zcbmodule?useUnicode=true", "obdv1:zcb0_721:root",
-                        "ali88", "fbc_user_contract");
+                        "ali88", "fbc_trans_order");
 //        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
 //                .fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8", "root",
 //                        "", "article");
