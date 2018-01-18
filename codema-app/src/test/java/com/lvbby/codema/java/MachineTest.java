@@ -12,6 +12,7 @@ import com.lvbby.codema.app.mysql.MysqlSchemaMachine;
 import com.lvbby.codema.app.mysql.SqlSelectColumnsMachine;
 import com.lvbby.codema.app.mysql.SqlUpdateMachine;
 import com.lvbby.codema.app.snippet.BasicJavaCodeMachine;
+import com.lvbby.codema.app.snippet.JavaRequestSettingMachine;
 import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
 import com.lvbby.codema.core.Codema;
@@ -41,19 +42,17 @@ public class MachineTest extends BaseTest {
 
     @Before
     public void init() throws Exception {
-//        File f = new File(JavaMockTestMachine.class.getResource("/").getPath());
-//        f = f.getParentFile().getParentFile();//codema-app
-//        f = f.getParentFile();//codema
+        //        File f = new File(JavaMockTestMachine.class.getResource("/").getPath());
+        //        f = f.getParentFile().getParentFile();//codema-app
+        //        f = f.getParentFile();//codema
 
-        File f = new File(System.getProperty("user.home"),"workspace");
+        File f = new File(System.getProperty("user.home"), "workspace");
         /** 设置java src 根路径*/
-        JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(f),6);
+        JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(f));
     }
 
     private void exec(Machine machine) throws Exception {
-        Codema.exec(
-                JavaSourceMachineFactory.fromClass().source(CodemaBean.class)
-                ,machine);
+        Codema.exec(JavaSourceMachineFactory.fromClass().source(CodemaBean.class), machine);
     }
 
     @Test
@@ -73,20 +72,20 @@ public class MachineTest extends BaseTest {
         exec(machine);
     }
 
-
     @Test
     public void convert() throws Exception {
         JavaConvertMachine machine = new JavaConvertMachine();
         machine.setDestPackage("com.lvbby.test.pack");
         machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("RepayPlanVO"));
         machine.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
-        Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName()
-                .source("com.alipay.finfiprod.common.service.facade.p2p.product.result.RepayPlanItem");
-        Codema.exec(source,machine);
+        Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName().source(
+            "com.alipay.finfiprod.common.service.facade.p2p.product.result.RepayPlanItem");
+        Codema.exec(source, machine);
     }
+
     @Test
     public void delegate() throws Exception {
-        JavaDelegateMachine config =  new JavaDelegateMachine();
+        JavaDelegateMachine config = new JavaDelegateMachine();
         config.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Impl"));
         config.setDetectInterface(true);
         JavaSourceMachineFactory.fromClass().source(Machine.class).next(config).run();
@@ -106,97 +105,90 @@ public class MachineTest extends BaseTest {
         config.setGroupId("lvbby");
         config.setArtifactId("lvbby-maven");
         config.setDestRootDir("~/temp");
-        config.resultHandlers(
-            Lists.newArrayList(new PrintResultHandler(), new FileWriterResultHandler()));
+        config.resultHandlers(Lists.newArrayList(new PrintResultHandler(), new FileWriterResultHandler()));
         config.doCode();
     }
 
     @Test
     public void mysqlFromString() throws Exception {
-        String src = "public   class TimeEvent {\n" + "\n" + "        private long id;\n"
-                     + "        private long startDate;\n" + "        private long endDate;\n"
-                     + "        private String type;\n"
-                     + "        private String body;\n" + "        private String extra;}";
+        String src = "public   class TimeEvent {\n" + "\n" + "        private long id;\n" + "        private long startDate;\n"
+                     + "        private long endDate;\n" + "        private String type;\n" + "        private String body;\n"
+                     + "        private String extra;}";
         MysqlSchemaMachine sqlCreate = new MysqlSchemaMachine();
         sqlCreate.setPrimaryKey("startDate");
-        JavaSourceMachineFactory.fromSrc()
-                .source(src)
-                .next(sqlCreate)
-                .run();
-    }
-    @Test
-    public void mysql() throws Exception {
-//         Codema.source(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
-//            .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
+        JavaSourceMachineFactory.fromSrc().source(src).next(sqlCreate).run();
     }
 
-    @Test public void charset() throws Exception {
+    @Test
+    public void mysql() throws Exception {
+        //         Codema.source(JavaClassJdbcTableFactory.of(Bean.class).getTables().get(0))
+        //            .bind(new MysqlSchemaCodemaConfig().addResultHandler(PrintResultHandler.class)).run();
+    }
+
+    @Test
+    public void charset() throws Exception {
         String f = "/Users/dushang.lp/workspace/fintradecenter/app/core/model/src/main/java/com/alipay/fintradecenter/core/model/allowance/AssetAllowanceDetail.java";
-        new CharsetMachine().source(new FileInputStream(f))
-                .addResultHandler(ResultHandlerFactory.print)
-                .run();
+        new CharsetMachine().source(new FileInputStream(f)).addResultHandler(ResultHandlerFactory.print).run();
     }
 
     /***
      * 读jdbc url
      * @throws Exception
      */
-    @Test public void sql() throws Exception {
-        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
-                .fromJdbcUrl("jdbc:mysql://10.210.170.12:2883/zcbmodule?useUnicode=true", "obdv1:zcb0_721:root",
-                        "ali88", "fbc_trans_order");
-//        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
-//                .fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8", "root",
-//                        "", "article");
+    @Test
+    public void sql() throws Exception {
+        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory.fromJdbcUrl(
+            "jdbc:mysql://10.210.170.12:2883/zcbmodule?useUnicode=true", "obdv1:zcb0_721:root", "ali88", "fbc_trans_order");
+        //        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
+        //                .fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8", "root",
+        //                        "", "article");
         for (Machine<SqlTable, SqlTable> source : machines) {
-              source.next(new MysqlInsertMachine())
-                    .next(new SqlSelectColumnsMachine())
-                    .next(new SqlUpdateMachine())
-                    .addResultHandler(ResultHandlerFactory.print)
-                    .run();
+            source.next(new MysqlInsertMachine()).next(new SqlSelectColumnsMachine()).next(new SqlUpdateMachine())
+                .addResultHandler(ResultHandlerFactory.print).run();
         }
     }
 
-    @Test public void sqlCreate() throws Exception {
-        String s = "\n" + "\n" + " CREATE TABLE `finance_sequence_00` (\n"
-                   + "  `name` varchar(64) NOT NULL COMMENT 'sequence名称',\n"
-                   + "  `gmt_create` timestamp NOT NULL COMMENT '创建时间',\n"
-                   + "  `gmt_modified` timestamp NOT NULL COMMENT '修改时间',\n"
-                   + "  `value` int(11) NOT NULL COMMENT '序列值',\n"
-                   + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n"
-                   + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n"
-                   + "  `step` int(11) NOT NULL COMMENT '步长',\n" + "  PRIMARY KEY (`name`)\n"
-                   + ") \n" + "CREATE TABLE `finance_sequence_xxxx` (\n"
-                   + "  `name` varchar(64) NOT NULL COMMENT 'sequence名称',\n"
-                   + "  `gmt_create` timestamp NOT NULL COMMENT '创建时间',\n"
-                   + "  `gmt_modified` timestamp NOT NULL COMMENT '修改时间',\n"
-                   + "  `value` int(11) NOT NULL COMMENT '序列值',\n"
-                   + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n"
-                   + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n"
+    @Test
+    public void sqlCreate() throws Exception {
+        String s = "\n" + "\n" + " CREATE TABLE `finance_sequence_00` (\n" + "  `name` varchar(64) NOT NULL COMMENT 'sequence名称',\n"
+                   + "  `gmt_create` timestamp NOT NULL COMMENT '创建时间',\n" + "  `gmt_modified` timestamp NOT NULL COMMENT '修改时间',\n"
+                   + "  `value` int(11) NOT NULL COMMENT '序列值',\n" + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n"
+                   + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n" + "  `step` int(11) NOT NULL COMMENT '步长',\n"
+                   + "  PRIMARY KEY (`name`)\n" + ") \n" + "CREATE TABLE `finance_sequence_xxxx` (\n"
+                   + "  `name` varchar(64) NOT NULL COMMENT 'sequence名称',\n" + "  `gmt_create` timestamp NOT NULL COMMENT '创建时间',\n"
+                   + "  `gmt_modified` timestamp NOT NULL COMMENT '修改时间',\n" + "  `value` int(11) NOT NULL COMMENT '序列值',\n"
+                   + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n" + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n"
                    + "  `step` int(11) NOT NULL COMMENT '步长',\n" + "  PRIMARY KEY (`name`)\n" + ") ";
-//        Codema.exec(SqlMachineFactory.fromSqlCreate().source(s),new MysqlInsertMachine());
-        Codema.exec(SqlMachineFactory.fromSqlCreate().source(s).next(
-                JavaSourceMachineFactory.fromSqlTable()));
+        Codema.exec(SqlMachineFactory.fromSqlCreate().source(s).next(JavaSourceMachineFactory.fromSqlTable())
+            .next(new MysqlInsertMachine()));
     }
 
-    @Test public void snippet() throws Exception {
+    @Test public void requestSetting() throws Exception {
+        Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class)
+                .next(new JavaRequestSettingMachine())
+        );
+    }
+
+    @Test
+    public void snippet() throws Exception {
         String template = IOUtils.toString(new FileInputStream(
-                "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/RequestSetting"));
+            "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/RequestSetting"));
         BasicJavaCodeMachine next = new BasicJavaCodeMachine(template);
 
-        Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class),next);
+        Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class), next);
     }
 
     /***
      * 生成builder
      * @throws Exception
      */
-    @Test public void snippetBuilder() throws Exception {
+    @Test
+    public void snippetBuilder() throws Exception {
         String template = IOUtils.toString(new FileInputStream(
-                "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/Builder"));
+            "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/Builder"));
         BasicJavaCodeMachine next = new BasicJavaCodeMachine(template);
 
-        Codema.exec(JavaSourceMachineFactory.fromClassFullName().source("com.lvbby.coder.MachineConfig"),next);
+        Codema.exec(JavaSourceMachineFactory.fromClassFullName().source("com.lvbby.coder.MachineConfig"), next);
     }
 
 }

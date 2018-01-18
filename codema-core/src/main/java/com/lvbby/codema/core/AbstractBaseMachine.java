@@ -279,4 +279,13 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
         this.destRootDir = destRootDir;
         return this;
     }
+
+    /**
+     * Getter method for property   machines.
+     *
+     * @return property value of machines
+     */
+    public List<Machine> getMachines() {
+        return machines;
+    }
 }
