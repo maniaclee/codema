@@ -288,4 +288,13 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
     public List<Machine> getMachines() {
         return machines;
     }
+
+    /**
+     * Getter method for property   handlers.
+     *
+     * @return property value of handlers
+     */
+    public List<ResultHandler> getHandlers() {
+        return handlers;
+    }
 }

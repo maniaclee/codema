@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanMachine;
 import com.lvbby.codema.app.charset.CharsetMachine;
 import com.lvbby.codema.app.convert.JavaConvertMachine;
+import com.lvbby.codema.app.convert.JavaMapStructConvertMachine;
 import com.lvbby.codema.app.delegate.JavaDelegateMachine;
 import com.lvbby.codema.app.interfaces.JavaInterfaceMachine;
 import com.lvbby.codema.app.mvn.MavenMachine;
@@ -80,6 +81,15 @@ public class MachineTest extends BaseTest {
         machine.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
         Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName().source(
             "com.alipay.finfiprod.common.service.facade.p2p.product.result.RepayPlanItem");
+        Codema.exec(source, machine);
+    }
+    @Test
+    public void mapStructConvert() throws Exception {
+        JavaMapStructConvertMachine machine = new JavaMapStructConvertMachine();
+        machine.setDestPackage("com.lvbby.test.pack");
+        machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("RepayPlanVO"));
+        machine.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
+        Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName().source(Machine.class.getName());
         Codema.exec(source, machine);
     }
 

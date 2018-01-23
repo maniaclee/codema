@@ -16,6 +16,8 @@
     <properties>
         <spring-version>4.3.3.RELEASE</spring-version>
         <spring-boot-version>1.4.1.RELEASE</spring-boot-version>
+        <org.mapstruct.version>1.2.0.Final</org.mapstruct.version>
+
     </properties>
     <dependencies>
         <dependency>
@@ -80,6 +82,13 @@
             <artifactId>jchardet</artifactId>
             <version>1.0</version>
         </dependency>
+        <!--mapstruct-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+        <!--mapstrct end -->
     </dependencies>
     <build>
         <resources>
@@ -142,6 +151,7 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

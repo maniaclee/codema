@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Created by lipeng on 2017/1/6.
@@ -73,7 +72,7 @@ public class SqlType {
     }
 
     public static String getJdbcType(Class clz) {
-        Validate.notNull(clz);
+        Validate.notNull(clz,"failed to convert %s to jdbc type",clz);
         String s = java2jdbcMap.get(clz);
         Validate.notBlank(s,"unknown db type for : %s" , clz.getName());
         return s;

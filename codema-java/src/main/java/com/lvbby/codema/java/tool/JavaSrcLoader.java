@@ -92,9 +92,10 @@ public class JavaSrcLoader {
         //内部使用
         if(className.startsWith("com.lvbby.codema")){
             try {
-                return IOUtils.toString(loadJavaSrcFromInnerProject(Class.forName(className)));
+                InputStream input = loadJavaSrcFromInnerProject(Class.forName(className));
+                if (input != null)
+                    return IOUtils.toString(input);
             } catch ( Exception e) {
-                e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }

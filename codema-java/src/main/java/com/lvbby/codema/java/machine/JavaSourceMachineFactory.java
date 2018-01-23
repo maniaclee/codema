@@ -8,6 +8,10 @@ import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.CodemaMachineUtils;
 import com.lvbby.codema.core.utils.FunctionAdaptor;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.machine.impl.JavaSourceFromClassFullNameMachine;
+import com.lvbby.codema.java.machine.impl.JavaSourceFromClassMachine;
+import com.lvbby.codema.java.machine.impl.JavaSourceFromSqlTableMachine;
+import com.lvbby.codema.java.machine.impl.JavaSourceFromSrcMachine;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -25,13 +29,8 @@ public class JavaSourceMachineFactory {
      * @throws Exception
      */
     public static Machine<Class, JavaClass> fromClass()  {
-        return buildJavaMachine(s -> JavaClassUtils.fromClass(s));
-    }
-    public static class JavaSourceFromClassMachine extends AbstractBaseMachine<Class,JavaClass>{
-
-        @Override protected void doCode() throws Exception {
-            handle(BasicResult.instance(JavaClassUtils.fromClass(source)));
-        }
+        return new JavaSourceFromClassMachine();
+        //                return buildJavaMachine(s -> JavaClassUtils.fromClass(s));
     }
 
     /***
@@ -47,16 +46,19 @@ public class JavaSourceMachineFactory {
      * 从一段java代码解析
      */
     public static Machine<String, JavaClass> fromSrc()  {
-        return buildJavaMachine(s -> JavaClassUtils.convert(JavaLexer.read(s)));
+        return new JavaSourceFromSrcMachine();
+        //        return buildJavaMachine(s -> JavaClassUtils.convert(JavaLexer.read(s)));
     }
 
     public static Machine<String, JavaClass> fromClassFullName()  {
-        return buildJavaMachine(
-                s -> JavaClassUtils.convert(JavaSrcLoader.getJavaSrcCompilationUnit(s)));
+        return new JavaSourceFromClassFullNameMachine();
+        //        return buildJavaMachine(
+//                s -> JavaClassUtils.convert(JavaSrcLoader.getJavaSrcCompilationUnit(s)));
     }
     public static Machine<SqlTable, JavaClass> fromSqlTable()  {
-        return buildJavaMachine(
-                s -> JavaClassUtils.convert(s));
+        return new JavaSourceFromSqlTableMachine();
+//        return buildJavaMachine(
+//                s -> JavaClassUtils.convert(s));
     }
 
     public static Machine<CompilationUnit, JavaClass> fromUnit(){

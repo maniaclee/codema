@@ -4,6 +4,7 @@ import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
+import com.lvbby.codema.core.tool.mysql.machine.SqlSourceFromSqlCreateMachine;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,16 +17,7 @@ import java.util.stream.Collectors;
 public class SqlMachineFactory {
 
     public static Machine<String, SqlTable> fromSqlCreate() {
-        return new AbstractBaseMachine<String, SqlTable>() {
-            @Override protected void doCode() throws Exception {
-                for (SqlTable table : SqlParser.fromSql(source)) {
-                    //调用处理器，但是不设置result
-                    handleSimple(BasicResult.instance(table));
-                    //出发后续流程
-                    invokeNext(table);
-                }
-            }
-        };
+        return new SqlSourceFromSqlCreateMachine();
     }
 
     public static Machine<SqlTable, SqlTable> fromTable(SqlTable sqlTable) {
