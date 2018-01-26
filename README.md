@@ -13,6 +13,7 @@ public static void main(String[] args) throws Exception {
 ## source工厂类
 * com.lvbby.codema.java.machine.JavaSourceMachineFactory
 * com.lvbby.codema.core.tool.mysql.SqlMachineFactory
+* com.lvbby.codema.core.machine.DataSrcMachineFactory
 ## ResultHandler工厂
 * com.lvbby.codema.core.handler.ResultHandlerFactory
 
@@ -21,6 +22,7 @@ public static void main(String[] args) throws Exception {
 * com.lvbby.codema.app.charset.CharsetMachine
 * com.lvbby.codema.app.codemadoc.CodemaDocMachine
 * com.lvbby.codema.app.convert.JavaConvertMachine
+* com.lvbby.codema.app.convert.JavaMapStructConvertMachine
 * com.lvbby.codema.app.delegate.JavaDelegateMachine
 * com.lvbby.codema.app.interfaces.JavaInterfaceMachine
 * com.lvbby.codema.app.javaMdDoc.JavaMdDocEasyMachine

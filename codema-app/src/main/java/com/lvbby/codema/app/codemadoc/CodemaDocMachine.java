@@ -1,12 +1,9 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2017 All Rights Reserved.
- */
 package com.lvbby.codema.app.codemadoc;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.machine.CommonMachineFactory;
 import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
@@ -43,7 +40,8 @@ public class CodemaDocMachine extends AbstractBaseMachine<Object,String>{
                 .bind("resultHandlers", Lists.newArrayList(ResultHandlerFactory.class).stream().map(Class::getName).collect(Collectors.toList()))
                 .bind("sources", Lists.newArrayList(
                         JavaSourceMachineFactory.class,
-                        SqlMachineFactory.class)
+                        SqlMachineFactory.class,
+                        CommonMachineFactory.class)
                         .stream().map(Class::getName).collect(Collectors.toList())
                 )
                 .filePath(getDestRootDir(),"README.md")

@@ -114,6 +114,7 @@ public class JavaClassUtils {
             javaField.setPrimitive(false);//TODO
             javaField.setAnnotations(fieldDeclaration.getAnnotations().stream().map(annotationExpr -> JavaType.ofClassName(annotationExpr.getNameAsString())).collect(Collectors.toList()));
             javaField.setProperty(hasGetterSetter(clz, javaField.getName()));
+            javaField.setComment(JavaLexer.getComment(fieldDeclaration.getComment().orElse(null)));
             return javaField;
         }).collect(Collectors.toList()));
         re.setMethods(JavaLexer.getMethods(clz).stream().map(methodDeclaration -> {
@@ -154,6 +155,7 @@ public class JavaClassUtils {
             javaField.setName(sqlColumn.getNameCamel());
             javaField.setType(JavaType.ofClass(sqlColumn.getJavaType()));
             javaField.setProperty(true);
+            javaField.setComment(sqlColumn.getComment());
             return javaField;
         }).collect(Collectors.toList()));
         javaClass.setFrom(sqlTable);
@@ -170,7 +172,7 @@ public class JavaClassUtils {
             SqlColumn column = SqlColumn.instance(javaField.getName());
             column.setJavaType(javaField.getType().getJavaType());
             column.setDbType(SqlType.getJdbcType(column.getJavaType()));
-            column.setComment("");
+            column.setComment(StringUtils.trimToEmpty(javaField.getComment()));
             return column;
         }).collect(Collectors.toList()));
         //primary key

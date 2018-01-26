@@ -20,6 +20,7 @@ public class JavaField {
      * is java bean property has getter/setter
      */
     private boolean property = false;
+    private String comment;
 
 
     public static List<JavaField> from(Class<?> clz) {
@@ -94,6 +95,24 @@ public class JavaField {
 
         if (!name.equals(javaField.name)) return false;
         return type.equals(javaField.type);
+    }
+
+    /**
+     * Getter method for property   comment.
+     *
+     * @return property value of comment
+     */
+    public String getComment() {
+        return comment;
+    }
+
+    /**
+     * Setter method for property   comment .
+     *
+     * @param comment  value to be assigned to property comment
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @Override

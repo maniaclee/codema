@@ -86,6 +86,21 @@ public class JavaLexer {
         return node;
     }
 
+    public static String getComment(Comment comment){
+        return Optional.ofNullable(comment).map(c->{
+            /**
+             *  * 序列化后的machine
+             * @see MachineSerialConfig
+             *
+             */
+            String content = c.getContent();
+            System.err.println(content);
+            content = content.replaceAll("@.*","");
+            content=content.replaceAll("\\s*\\*+\\s*","");
+            return StringUtils.trim(content);
+        }).orElse(null);
+    }
+
     public static <T extends Node> T ensureComment(T node) {
         return ensureComment(node, true);
     }

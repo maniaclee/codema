@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.config.NotBlank;
 import com.lvbby.codema.core.config.NotNull;
+import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -74,6 +76,19 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
         }
     }
 
+    protected void handleList(List<O> resultList) throws Exception {
+        handleList(resultList,null);
+    }
+
+    protected void handleList(List<O> resultList, Function<O,Result<O>> resultBuilder) throws Exception {
+        for (O result : resultList) {
+            //调用处理器，但是不设置result
+            Result<O> instance = resultBuilder==null?BasicResult.instance(result):resultBuilder.apply(result);
+            handleSimple(instance);
+            //出发后续流程
+            invokeNext(result);
+        }
+    }
     /***
      * 让后续machine执行
      * @param srcForNext
