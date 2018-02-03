@@ -1,5 +1,7 @@
 package com.lvbby.codema.app.snippet;
 
+import com.lvbby.codema.java.machine.impl.BasicJavaCodeMachine;
+
 /**
  *
  * @author dushang.lp

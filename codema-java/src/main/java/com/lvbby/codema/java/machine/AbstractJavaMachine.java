@@ -38,7 +38,8 @@ public abstract class AbstractJavaMachine<S,O>
     @ConfigProperty
     private JavaClassNameParser javaClassNameParser = JavaClassNameParserFactory.defaultInstance();
 
-    @Override protected void handle(Result result) throws Exception {
+    @Override
+    protected void handle(Result result) throws Exception {
         super.handle(result);
         //注册java class 到容器
         if(result!=null && result.getResult()!=null && result.getResult()instanceof JavaClass){

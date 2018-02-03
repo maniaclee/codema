@@ -13,7 +13,7 @@ import com.lvbby.codema.app.mysql.MysqlInsertMachine;
 import com.lvbby.codema.app.mysql.SqlCreateMachine;
 import com.lvbby.codema.app.mysql.SqlSelectColumnsMachine;
 import com.lvbby.codema.app.mysql.SqlUpdateMachine;
-import com.lvbby.codema.app.snippet.BasicJavaCodeMachine;
+import com.lvbby.codema.java.machine.impl.BasicJavaCodeMachine;
 import com.lvbby.codema.app.snippet.JavaRequestSettingMachine;
 import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;

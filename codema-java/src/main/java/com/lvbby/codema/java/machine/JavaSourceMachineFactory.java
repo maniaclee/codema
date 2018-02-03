@@ -7,6 +7,7 @@ import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.CodemaMachineUtils;
 import com.lvbby.codema.core.utils.FunctionAdaptor;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.machine.impl.BasicJavaCodeMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromClassFullNameMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromClassMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromSqlTableMachine;
@@ -29,6 +30,23 @@ public class JavaSourceMachineFactory {
     public static Machine<Class, JavaClass> fromClass()  {
         return new JavaSourceFromClassMachine();
     }
+    /***
+     * template
+     * @return
+     * @throws Exception
+     */
+    public static Machine<JavaClass,String> fromTemplate(String template)  {
+        return new BasicJavaCodeMachine(template);
+    }
+    /***
+     * template
+     * @return
+     * @throws Exception
+     */
+    public static Machine<JavaClass,String> fromTemplate()  {
+        return new BasicJavaCodeMachine();
+    }
+
 
     /***
      * 从文件解析

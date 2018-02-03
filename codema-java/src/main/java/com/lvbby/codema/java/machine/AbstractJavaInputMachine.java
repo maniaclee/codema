@@ -2,13 +2,12 @@ package com.lvbby.codema.java.machine;
 
 import com.lvbby.codema.core.TemplateCapable;
 import com.lvbby.codema.core.VoidType;
-import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.CodemaCacheHolder;
 import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.util.function.Supplier;
 
@@ -24,7 +23,7 @@ public abstract class AbstractJavaInputMachine<O>
     @Override
     public String getTemplate() {
         if (StringUtils.isBlank(template)) {
-                    String key = String.format("cach_template_%s", getClass().getName());
+            String key = String.format("cach_template_%s", getClass().getName());
             Object cache = CodemaCacheHolder.getCache().get(key);
             if(cache != null){
                 return (String) cache;
@@ -43,6 +42,7 @@ public abstract class AbstractJavaInputMachine<O>
                 }
             }
         }
+        Validate.notBlank(template,"template can't be blank");
         return template;
     }
 
