@@ -25,7 +25,6 @@ public static void main(String[] args) throws Exception {
 * com.lvbby.codema.app.convert.JavaMapStructConvertMachine
 * com.lvbby.codema.app.delegate.JavaDelegateMachine
 * com.lvbby.codema.app.interfaces.JavaInterfaceMachine
-* com.lvbby.codema.app.javaMdDoc.JavaMdDocEasyMachine
 * com.lvbby.codema.app.javaMdDoc.JavaMdDocMachine
 * com.lvbby.codema.app.mvn.MavenMachine
 * com.lvbby.codema.app.mybatis.MybatisMachine

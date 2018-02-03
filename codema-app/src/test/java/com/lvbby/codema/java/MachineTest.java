@@ -125,7 +125,7 @@ public class MachineTest extends BaseTest {
     public void java2sqlCreate() throws Exception {
         String src = "@Data\n" + "@NoArgsConstructor\n" + "public class MachineEntity {\n" + "    //给前端的标识\n"
                      + "    private String          id;\n" + "    //展示文案\n" + "    private String          title;\n" + "    //描述\n"
-                     + "    private String          desc;\n" + "    //反序列化的方式\n" + "    private String machineTypeEnum;\n"
+                     + "    private String          description;\n" + "    //反序列化的方式\n" + "    private String type;\n"
                      + "    //machine的扩展参数\n" + "    private String          arg;\n" + "    /** 输入格式 */\n"
                      + "    private String          inFormat;\n" + "    /** 输出格式 */\n" + "    private String          outFormat;\n"
                      + "    /**\n" + "     * 序列化后的machine\n" + "     * @see MachineSerialConfig\n" + "     * */\n"
@@ -134,6 +134,7 @@ public class MachineTest extends BaseTest {
         sqlCreate.setPrimaryKey("id");
         Codema.exec(JavaSourceMachineFactory.fromSrc().source(src).next(sqlCreate));
     }
+
 
     @Test
     public void mysql() throws Exception {
@@ -252,4 +253,7 @@ public class MachineTest extends BaseTest {
 
     }
 
+    @Test public void json2insert() throws Exception {
+        List  object;
+    }
 }

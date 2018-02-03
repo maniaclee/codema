@@ -17,7 +17,8 @@ public class BasicJavaCodeMachine extends AbstractJavaInputMachine<String> {
         setTemplate(template);
     }
 
-    @Override protected void doCode() throws Exception {
+    @Override
+    protected void doCode() throws Exception {
         handle(new JavaBasicTemplateResult(this, getTemplate(), getSource()));
     }
 }

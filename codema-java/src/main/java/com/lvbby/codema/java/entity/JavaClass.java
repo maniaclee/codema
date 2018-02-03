@@ -6,11 +6,13 @@ import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -22,10 +24,6 @@ public class JavaClass extends AnnotationType{
     private List<JavaField> fields;
     private List<JavaMethod> methods;
     private List<String> imports;
-    /**
-     * 来源于什么对象
-     */
-    private Object from;
     /**
      * 源代码
      */
@@ -45,6 +43,19 @@ public class JavaClass extends AnnotationType{
         if(StringUtils.isNotBlank(s)) {
             setName(ReflectionUtils.getSimpleClassName(s));
             setPack(ReflectionUtils.getPackage(s));
+        }
+        return this;
+    }
+
+    public JavaClass removeMethod(Predicate<String> predicate){
+        if(CollectionUtils.isNotEmpty(getMethods()) && predicate!=null) {
+            getMethods().removeAll(getMethods().stream().filter(method -> predicate.test(method.getName())).collect(Collectors.toList()));
+            CompilationUnit src = getSrc();
+            if (src != null) {
+                JavaLexer.getClass(src).ifPresent(
+                        clz -> clz.getMethods().stream().filter(methodDeclaration -> predicate.test(methodDeclaration.getNameAsString()))
+                                .forEach(methodDeclaration -> clz.remove(methodDeclaration)));
+            }
         }
         return this;
     }
@@ -156,14 +167,6 @@ public class JavaClass extends AnnotationType{
 
     public void setMethods(List<JavaMethod> methods) {
         this.methods = methods;
-    }
-
-    public Object getFrom() {
-        return from;
-    }
-
-    public void setFrom(Object from) {
-        this.from = from;
     }
 
     public List<String> getImports() {

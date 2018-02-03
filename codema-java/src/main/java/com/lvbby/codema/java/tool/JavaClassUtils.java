@@ -65,7 +65,6 @@ public class JavaClassUtils {
 
         JavaClass re = new JavaClass();
         re.setName(clz.getSimpleName());
-        re.setFrom(clz);
         re.setPack(clz.getPackage().getName());
         re.setType(clz);
 
@@ -130,7 +129,6 @@ public class JavaClassUtils {
             }).collect(Collectors.toList()));
             return javaMethod;
         }).collect(Collectors.toList()));
-        re.setFrom(cu);
         re.setSrc(cu);
         return re;
     }
@@ -158,7 +156,6 @@ public class JavaClassUtils {
             javaField.setComment(sqlColumn.getComment());
             return javaField;
         }).collect(Collectors.toList()));
-        javaClass.setFrom(sqlTable);
         return javaClass;
     }
 

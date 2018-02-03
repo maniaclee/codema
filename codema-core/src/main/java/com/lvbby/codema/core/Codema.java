@@ -1,8 +1,10 @@
 package com.lvbby.codema.core;
 
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -20,12 +22,19 @@ public class Codema {
         return null;
     }
 
-    public static void exec(List<ResultHandler> resultHandlers, Machine... machines)
-            throws Exception {
+    public static void exec(List<ResultHandler> resultHandlers, Machine... machines) throws Exception {
         link(machines).resultHandlers(resultHandlers).run();
     }
 
     public static void exec(Machine... machines) throws Exception {
         link(machines).addResultHandler(ResultHandlerFactory.print).run();
     }
+
+    public static <Input> void exec(List<Input> source, Supplier<Machine> machineFunction) throws Exception {
+        Validate.notEmpty(source, "source list can't be empty");
+        for (Input input : source) {
+            exec(machineFunction.get().source(input));
+        }
+    }
+
 }

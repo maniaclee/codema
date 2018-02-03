@@ -94,7 +94,6 @@ public class JavaLexer {
              *
              */
             String content = c.getContent();
-            System.err.println(content);
             content = content.replaceAll("@.*","");
             content=content.replaceAll("\\s*\\*+\\s*","");
             return StringUtils.trim(content);

@@ -1,7 +1,3 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2017 All Rights Reserved.
- */
 package com.lvbby.codema.java.result;
 
 import com.lvbby.codema.core.result.BasicResult;

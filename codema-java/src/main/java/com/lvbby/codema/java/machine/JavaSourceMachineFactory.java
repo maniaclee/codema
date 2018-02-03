@@ -1,7 +1,6 @@
 package com.lvbby.codema.java.machine;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
@@ -14,7 +13,6 @@ import com.lvbby.codema.java.machine.impl.JavaSourceFromSqlTableMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromSrcMachine;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
-import com.lvbby.codema.java.tool.JavaSrcLoader;
 
 import java.io.File;
 
@@ -30,7 +28,6 @@ public class JavaSourceMachineFactory {
      */
     public static Machine<Class, JavaClass> fromClass()  {
         return new JavaSourceFromClassMachine();
-        //                return buildJavaMachine(s -> JavaClassUtils.fromClass(s));
     }
 
     /***
@@ -47,18 +44,13 @@ public class JavaSourceMachineFactory {
      */
     public static Machine<String, JavaClass> fromSrc()  {
         return new JavaSourceFromSrcMachine();
-        //        return buildJavaMachine(s -> JavaClassUtils.convert(JavaLexer.read(s)));
     }
 
     public static Machine<String, JavaClass> fromClassFullName()  {
         return new JavaSourceFromClassFullNameMachine();
-        //        return buildJavaMachine(
-//                s -> JavaClassUtils.convert(JavaSrcLoader.getJavaSrcCompilationUnit(s)));
     }
     public static Machine<SqlTable, JavaClass> fromSqlTable()  {
         return new JavaSourceFromSqlTableMachine();
-//        return buildJavaMachine(
-//                s -> JavaClassUtils.convert(s));
     }
 
     public static Machine<CompilationUnit, JavaClass> fromUnit(){

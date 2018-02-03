@@ -1,8 +1,9 @@
 package com.lvbby.codema.java;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.app.javaMdDoc.JavaMdDocEasyMachine;
+import com.lvbby.codema.app.javaMdDoc.JavaMdDocMachine;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
+import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +23,9 @@ public class MdJavaDocTest extends BaseTest {
     }
 
     public void mdJavaDoc(String reference) throws Exception {
-        new JavaMdDocEasyMachine()
+        JavaSourceMachineFactory.fromClassFullName()
                 .source(reference)
+                .next(new JavaMdDocMachine())
                 .addResultHandler(ResultHandlerFactory.print)
                 .run();
 //        String service;
@@ -46,8 +48,8 @@ public class MdJavaDocTest extends BaseTest {
     }
 
     @Test public void testMdJavaDoc() throws Exception {
-        mdJavaDoc("com.alipay.finbatchcore.biz.shared.action.ProcessAction");
-//        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductCount");
+//        mdJavaDoc("com.alipay.finbatchcore.biz.shared.action.ProcessAction");
+        mdJavaDoc("com.lvbby.codema.app.javaMdDoc.JavaMdDocMachine#codeEach");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductList");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AssetQueryFacade#queryAssetStatistic");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryUserAppointmentStatistic");

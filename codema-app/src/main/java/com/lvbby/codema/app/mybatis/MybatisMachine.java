@@ -19,6 +19,8 @@ import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.machine.AbstractJavaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaClassUtils;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -48,6 +50,8 @@ import java.util.stream.Stream;
  * 4. DalConfig.java
  * Created by lipeng on 16/12/23.
  */
+@NoArgsConstructor
+@Data
 public class MybatisMachine extends AbstractJavaMachine<SqlTable,VoidType> {
 
     public static final String tag_select="select";
@@ -364,111 +368,4 @@ public class MybatisMachine extends AbstractJavaMachine<SqlTable,VoidType> {
         return re.stream();
     }
 
-    /**
-     * Getter method for property   mapperDir.
-     *
-     * @return property value of mapperDir
-     */
-    public String getMapperDir() {
-        return mapperDir;
-    }
-
-    /**
-     * Setter method for property   mapperDir .
-     *
-     * @param mapperDir  value to be assigned to property mapperDir
-     */
-    public void setMapperDir(String mapperDir) {
-        this.mapperDir = mapperDir;
-    }
-
-    /**
-     * Getter method for property   configPackage.
-     *
-     * @return property value of configPackage
-     */
-    public String getConfigPackage() {
-        return configPackage;
-    }
-
-    /**
-     * Setter method for property   configPackage .
-     *
-     * @param configPackage  value to be assigned to property configPackage
-     */
-    public void setConfigPackage(String configPackage) {
-        this.configPackage = configPackage;
-    }
-
-    /**
-     * Getter method for property   mapperXmlTemplate.
-     *
-     * @return property value of mapperXmlTemplate
-     */
-    public Resource getMapperXmlTemplate() {
-        return mapperXmlTemplate;
-    }
-
-    /**
-     * Setter method for property   mapperXmlTemplate .
-     *
-     * @param mapperXmlTemplate  value to be assigned to property mapperXmlTemplate
-     */
-    public void setMapperXmlTemplate(Resource mapperXmlTemplate) {
-        this.mapperXmlTemplate = mapperXmlTemplate;
-    }
-
-    /**
-     * Getter method for property   table2mapperName.
-     *
-     * @return property value of table2mapperName
-     */
-    public Function<String, String> getTable2mapperName() {
-        return table2mapperName;
-    }
-
-    /**
-     * Setter method for property   table2mapperName .
-     *
-     * @param table2mapperName  value to be assigned to property table2mapperName
-     */
-    public void setTable2mapperName(Function<String, String> table2mapperName) {
-        this.table2mapperName = table2mapperName;
-    }
-
-    /**
-     * Getter method for property   javaBeanClassFullName.
-     *
-     * @return property value of javaBeanClassFullName
-     */
-    public Supplier<String> getJavaBeanClassFullName() {
-        return javaBeanClassFullName;
-    }
-
-    /**
-     * Setter method for property   javaBeanClassFullName .
-     *
-     * @param javaBeanClassFullName  value to be assigned to property javaBeanClassFullName
-     */
-    public void setJavaBeanClassFullName(Supplier<String> javaBeanClassFullName) {
-        this.javaBeanClassFullName = javaBeanClassFullName;
-    }
-
-    /**
-     * Getter method for property   mybatisConfigXmlDir.
-     *
-     * @return property value of mybatisConfigXmlDir
-     */
-    public String getMybatisConfigXmlDir() {
-        return mybatisConfigXmlDir;
-    }
-
-    /**
-     * Setter method for property   mybatisConfigXmlDir .
-     *
-     * @param mybatisConfigXmlDir  value to be assigned to property mybatisConfigXmlDir
-     */
-    public void setMybatisConfigXmlDir(String mybatisConfigXmlDir) {
-        this.mybatisConfigXmlDir = mybatisConfigXmlDir;
-    }
 }
