@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 /**
  *
  * @author dushang.lp
- * @version $Id: CaseFormatUtils.java, v 0.1 2017-09-21 ионГ11:57 dushang.lp Exp $
+ * @version $Id: CaseFormatUtils.java, v 0.1 2017-09-21 dushang.lp Exp $
  */
 public class CaseFormatUtils {
     public static String toCaseFormat(CaseFormat caseFormat, String s) {

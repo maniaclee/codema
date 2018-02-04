@@ -74,7 +74,6 @@ public class UrlJdbcTableFactory implements JdbcTableFactory {
         ResultSet rs = md.getTables(null, null, "%", null);
         List<String> re = Lists.newLinkedList();
         while (rs.next()) re.add(rs.getString(3));
-        //¹ýÂË±í
         if (StringUtils.isNotBlank(tableRegularFilter) ) {
             re=re.stream().filter(s -> s.matches(tableRegularFilter)).collect(Collectors.toList());
         }
