@@ -131,7 +131,7 @@ public class MachineTest extends BaseTest {
                      + "    /**\n" + "     * 序列化后的machine\n" + "     * @see MachineSerialConfig\n" + "     * */\n"
                      + "    private String          config;\n" + "\n" + "}";
         SqlCreateMachine sqlCreate = new SqlCreateMachine();
-        sqlCreate.setPrimaryKey("id");
+//        sqlCreate.setPrimaryKey("id");
         Codema.exec(JavaSourceMachineFactory.fromSrc().source(src).next(sqlCreate));
     }
 

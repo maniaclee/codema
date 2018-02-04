@@ -10,7 +10,8 @@ import com.lvbby.codema.core.result.BasicResult;
  * @version $Id: JsonMachine.java, v 0.1 2017年12月15日 下午8:32 dushang.lp Exp $
  */
 public class JsonMachine extends AbstractBaseMachine<String, String> {
-    @Override protected void doCode() throws Exception {
+    @Override
+    protected void doCode() throws Exception {
         handle(BasicResult.instance(JSON.toJSONString(JSON.parseObject(source), true)));
     }
 }
