@@ -11,7 +11,7 @@ import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.machine.JavaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaDuplexMachine;
 import com.lvbby.codema.java.result.JavaBasicTemplateResult;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * Created by dushang.lp on 2017/8/16.
  */
 @TemplateResource(resource = "mdJavaDoc.md")
-public class JavaMdDocMachine extends JavaMachine {
+public class JavaMdDocMachine extends AbstractJavaDuplexMachine {
 
     public Result<JavaClass> codeEach(JavaClass cu) throws Exception {
         JavaMethod method = CollectionUtils.size(cu.getMethods()) == 1?cu.getMethods().get(0):null;

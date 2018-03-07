@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.AbstractJavaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.tool.JavaLexer;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class JavaSrcTemplateParser {
     public static final String KEY_DEST_CLASS_NAME = "destClassName";
     public static final String KEY_CONFIG = "config";
     public static final String KEY_JAVA_UTIL = "javautil";
-    public Map getArgs4te(JavaClass src, AbstractJavaMachine config) {
+    public Map getArgs4te(JavaClass src, AbstractJavaBaseMachine config) {
         HashMap<Object, Object> map = Maps.newHashMap();
         if (src != null) {
             map.put(KEY_SOURCE, src);

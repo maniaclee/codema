@@ -10,7 +10,7 @@ import com.lvbby.codema.core.resource.ClassPathResource;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
-import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
+import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
 import org.junit.Test;

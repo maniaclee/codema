@@ -1,11 +1,11 @@
 package com.lvbby.codema.app.testcase.mock;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.app.AppMachine;
+import com.lvbby.codema.app.AppTemplateResource;
 import com.lvbby.codema.core.config.ConfigProperty;
-import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
-import com.lvbby.codema.java.machine.JavaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaCodeUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,13 +19,14 @@ import java.util.stream.Collectors;
 /**
  * Created by dushang.lp on 2017/5/31.
  */
-public class JavaMockTestMachine extends JavaMachine {
+@AppTemplateResource($Mock_Test.class)
+public class JavaMockTestMachine extends AppMachine {
 
     @ConfigProperty
     private List annotations ;
-    public Result<JavaClass> codeEach(  JavaClass cu)
+    public JavaTemplateResult codeEach(  JavaClass cu)
             throws Exception {
-        return new JavaTemplateResult(this, $Mock_Test.class, cu)
+        return super.codeEach(cu)
                 .bind("Mock", cu.getName() + "Test")
                 .bind("injectFields", extractAllInjectFields(cu,  getAnnotations()))
                 .bind("methods", MockMethod

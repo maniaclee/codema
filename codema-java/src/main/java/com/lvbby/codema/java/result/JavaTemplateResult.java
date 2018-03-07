@@ -2,11 +2,10 @@ package com.lvbby.codema.java.result;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.CodemaContextHolder;
-import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.MergeCapableFileResult;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.AbstractJavaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 import com.lvbby.codema.java.tool.AutoImport;
 import com.lvbby.codema.java.tool.JavaClassUtils;
@@ -29,11 +28,11 @@ import java.util.Map;
 public class JavaTemplateResult extends JavaBasicTemplateResult<JavaClass> implements MergeCapableFileResult<JavaClass>{
     private CompilationUnit compilationUnit;
 
-    public JavaTemplateResult(AbstractJavaMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
+    public JavaTemplateResult(AbstractJavaBaseMachine config, Class<?> javaSrcTemplate, JavaClass javaClass) {
         this(config,JavaSrcLoader.loadJavaSrcFromProjectAsString(javaSrcTemplate.getName()),javaClass);
     }
 
-    public JavaTemplateResult(AbstractJavaMachine config, String javaSrcTemplate, JavaClass javaClass) {
+    public JavaTemplateResult(AbstractJavaBaseMachine config, String javaSrcTemplate, JavaClass javaClass) {
         super(config,javaSrcTemplate,javaClass);
         compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(JavaLexer.read(javaSrcTemplate));
         //package

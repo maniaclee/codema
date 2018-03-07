@@ -13,7 +13,7 @@ import com.lvbby.codema.app.mysql.MysqlInsertMachine;
 import com.lvbby.codema.app.mysql.SqlCreateMachine;
 import com.lvbby.codema.app.mysql.SqlSelectColumnsMachine;
 import com.lvbby.codema.app.mysql.SqlUpdateMachine;
-import com.lvbby.codema.java.machine.impl.BasicJavaCodeMachine;
+import com.lvbby.codema.java.machine.impl.JavaSimpleTemplateMachine;
 import com.lvbby.codema.app.snippet.JavaRequestSettingMachine;
 import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
@@ -27,7 +27,7 @@ import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
+import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -189,7 +189,7 @@ public class MachineTest extends BaseTest {
     public void snippet() throws Exception {
         String template = IOUtils.toString(new FileInputStream(
             "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/RequestSetting"));
-        BasicJavaCodeMachine next = new BasicJavaCodeMachine(template);
+        JavaSimpleTemplateMachine next = new JavaSimpleTemplateMachine(template);
 
         Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class), next);
     }
@@ -202,7 +202,7 @@ public class MachineTest extends BaseTest {
     public void snippetBuilder() throws Exception {
         String template = IOUtils.toString(new FileInputStream(
             "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/Builder"));
-        BasicJavaCodeMachine next = new BasicJavaCodeMachine(template);
+        JavaSimpleTemplateMachine next = new JavaSimpleTemplateMachine(template);
 
         Codema.exec(JavaSourceMachineFactory.fromClassFullName().source("com.lvbby.coder.MachineConfig"), next);
     }

@@ -8,8 +8,9 @@ import com.lvbby.codema.java.result.JavaTemplateResult;
  * 入参出参都是JavaClass
  * Created by dushang.lp on 2017/8/16.
  */
-public abstract class JavaMachine extends AbstractJavaInputMachine<JavaClass> {
-    @Override protected void doCode() throws Exception {
+public abstract class AbstractJavaDuplexMachine extends AbstractJavaInputMachine<JavaClass> {
+    @Override
+    protected void doCode() throws Exception {
         handle(codeEach(source));
     }
 

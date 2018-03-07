@@ -16,7 +16,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.machine.AbstractJavaMachine;
+import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import lombok.Data;
@@ -52,7 +52,7 @@ import java.util.stream.Stream;
  */
 @NoArgsConstructor
 @Data
-public class MybatisMachine extends AbstractJavaMachine<SqlTable,VoidType> {
+public class MybatisMachine extends AbstractJavaBaseMachine<SqlTable,VoidType> {
 
     public static final String tag_select="select";
     public static final String tag_update="update";

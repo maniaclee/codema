@@ -6,6 +6,7 @@ import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.result.Result;
+import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
@@ -18,7 +19,7 @@ import java.util.List;
  * 具有java的配置信息
  * Created by dushang.lp on 2017/8/16.
  */
-public abstract class AbstractJavaMachine<S,O>
+public abstract class AbstractJavaBaseMachine<S,O>
         extends AbstractBaseMachine<S, O> {
 
     /**
@@ -98,7 +99,7 @@ public abstract class AbstractJavaMachine<S,O>
     public void setDestPackage(String destPackage) {
         this.destPackage = destPackage;
     }
-    public AbstractJavaMachine<S, O> destPackage(String destPackage) {
+    public AbstractJavaBaseMachine<S, O> destPackage(String destPackage) {
         this.destPackage = destPackage;
         return this;
     }
@@ -110,7 +111,7 @@ public abstract class AbstractJavaMachine<S,O>
     public void setJavaClassNameParser(JavaClassNameParser javaClassNameParser) {
         this.javaClassNameParser = javaClassNameParser;
     }
-    public AbstractJavaMachine<S, O> javaClassNameParser(JavaClassNameParser javaClassNameParser) {
+    public AbstractJavaBaseMachine<S, O> javaClassNameParser(JavaClassNameParser javaClassNameParser) {
         this.javaClassNameParser = javaClassNameParser;
         return this;
     }

@@ -1,4 +1,4 @@
-package com.lvbby.codema.java.machine;
+package com.lvbby.codema.java.api;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.Machine;
@@ -7,11 +7,12 @@ import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.CodemaMachineUtils;
 import com.lvbby.codema.core.utils.FunctionAdaptor;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.impl.BasicJavaCodeMachine;
+import com.lvbby.codema.java.machine.impl.JavaSimpleTemplateMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromClassFullNameMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromClassMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromSqlTableMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromSrcMachine;
+import com.lvbby.codema.java.machine.impl.JavaTemplateMachine;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 
@@ -30,21 +31,25 @@ public class JavaSourceMachineFactory {
     public static Machine<Class, JavaClass> fromClass()  {
         return new JavaSourceFromClassMachine();
     }
+
     /***
      * template
+     * JavaClass ==> String
      * @return
      * @throws Exception
      */
-    public static Machine<JavaClass,String> fromTemplate(String template)  {
-        return new BasicJavaCodeMachine(template);
+    public static JavaSimpleTemplateMachine simpleTemplate()  {
+        return new JavaSimpleTemplateMachine();
     }
+
     /***
-     * template
+     * java template
+     * JavaClass ==> JavaClass
      * @return
      * @throws Exception
      */
-    public static Machine<JavaClass,String> fromTemplate()  {
-        return new BasicJavaCodeMachine();
+    public static JavaTemplateMachine javaTemplate()  {
+        return new JavaTemplateMachine();
     }
 
 

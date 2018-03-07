@@ -4,16 +4,17 @@ import com.lvbby.codema.java.machine.AbstractJavaInputMachine;
 import com.lvbby.codema.java.result.JavaBasicTemplateResult;
 
 /**
- * 基本的模板machine
+ * 模板是普通模板
+ * JavaClass --> String
  * @author dushang.lp
  * @version $Id: BasicJavaCodeMachine.java, v 0.1 2017年12月15日 下午1:10 dushang.lp Exp $
  */
-public class BasicJavaCodeMachine extends AbstractJavaInputMachine<String> {
+public class JavaSimpleTemplateMachine extends AbstractJavaInputMachine<String> {
 
-    public BasicJavaCodeMachine() {
+    public JavaSimpleTemplateMachine() {
     }
 
-    public BasicJavaCodeMachine(String template) {
+    public JavaSimpleTemplateMachine(String template) {
         setTemplate(template);
     }
 

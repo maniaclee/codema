@@ -3,7 +3,7 @@ package com.lvbby.codema.java;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.javaMdDoc.JavaMdDocMachine;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
-import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
+import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.junit.Before;
 import org.junit.Test;

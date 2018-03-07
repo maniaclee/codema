@@ -10,7 +10,7 @@ import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.utils.ClassUtils;
-import com.lvbby.codema.java.machine.JavaSourceMachineFactory;
+import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import com.lvbby.codema.java.tool.MavenDirectoryScanner;

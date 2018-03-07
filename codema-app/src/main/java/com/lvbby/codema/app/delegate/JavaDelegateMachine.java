@@ -1,11 +1,12 @@
 package com.lvbby.codema.app.delegate;
 
-import com.lvbby.codema.core.result.Result;
+import com.lvbby.codema.app.AppMachine;
+import com.lvbby.codema.app.AppTemplateResource;
 import com.lvbby.codema.java.baisc.JavaClassNameParser;
-import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.JavaMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -13,17 +14,21 @@ import java.util.List;
 /**
  * Created by lipeng on 17/1/6.
  */
-@TemplateResource($Delegate_.class)
-public class JavaDelegateMachine extends JavaMachine {
+@AppTemplateResource($Delegate_.class)
+public class JavaDelegateMachine extends AppMachine {
+    @Getter
+    @Setter
     private List<JavaClassNameParser> interfaces;
     /***
      * 如果source是一个interface，实现它
      */
+    @Getter
+    @Setter
     private boolean detectInterface = false;
 
 
     @Override
-    public Result<JavaClass> codeEach(JavaClass cu) throws Exception {
+    public JavaTemplateResult codeEach(JavaClass cu) throws Exception {
         String is = null;
         if (detectInterface && cu.isBeInterface()) {
             is = cu.getName();
@@ -35,29 +40,4 @@ public class JavaDelegateMachine extends JavaMachine {
         return javaTemplateResult;
     }
 
-    /**
-     * Getter method for property   interfaces.
-     *
-     * @return property value of interfaces
-     */
-    public List<JavaClassNameParser> getInterfaces() {
-        return interfaces;
-    }
-
-    /**
-     * Setter method for property   interfaces .
-     *
-     * @param interfaces value to be assigned to property interfaces
-     */
-    public void setInterfaces(List<JavaClassNameParser> interfaces) {
-        this.interfaces = interfaces;
-    }
-
-    public boolean isDetectInterface() {
-        return detectInterface;
-    }
-
-    public void setDetectInterface(boolean detectInterface) {
-        this.detectInterface = detectInterface;
-    }
 }

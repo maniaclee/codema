@@ -17,7 +17,8 @@ public class FileResource extends AbstractNamedResource {
         setResourceName(file.getName());
     }
 
-    @Override public InputStream getInputStream() throws Exception {
+    @Override
+    public InputStream getInputStream() throws Exception {
         return new FileInputStream(file);
     }
 }
