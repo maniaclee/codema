@@ -12,7 +12,6 @@ import com.lvbby.codema.java.machine.impl.JavaSourceFromClassFullNameMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromClassMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromSqlTableMachine;
 import com.lvbby.codema.java.machine.impl.JavaSourceFromSrcMachine;
-import com.lvbby.codema.java.machine.impl.JavaTemplateMachine;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 
@@ -41,17 +40,6 @@ public class JavaSourceMachineFactory {
     public static JavaSimpleTemplateMachine simpleTemplate()  {
         return new JavaSimpleTemplateMachine();
     }
-
-    /***
-     * java template
-     * JavaClass ==> JavaClass
-     * @return
-     * @throws Exception
-     */
-    public static JavaTemplateMachine javaTemplate()  {
-        return new JavaTemplateMachine();
-    }
-
 
     /***
      * 从文件解析

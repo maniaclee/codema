@@ -4,15 +4,13 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.lvbby.codema.core.AbstractTemplateMachine;
 import com.lvbby.codema.core.render.TemplateEngineResult;
-import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaArg;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
-import com.lvbby.codema.java.machine.AbstractJavaDuplexMachine;
-import com.lvbby.codema.java.result.JavaBasicTemplateResult;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,17 +22,22 @@ import java.util.stream.Collectors;
  * Created by dushang.lp on 2017/8/16.
  */
 @TemplateResource(resource = "mdJavaDoc.md")
-public class JavaMdDocMachine extends AbstractJavaDuplexMachine {
-
-    public Result<JavaClass> codeEach(JavaClass cu) throws Exception {
+public class JavaMdDocMachine extends AbstractTemplateMachine<JavaClass,String> {
+    @Override
+    protected void doCode() throws Exception {
+        JavaClass cu = source;
         JavaMethod method = CollectionUtils.size(cu.getMethods()) == 1?cu.getMethods().get(0):null;
-        TemplateEngineResult result = new JavaBasicTemplateResult(this, getTemplate(), cu).bind("javaMethod", method);
+        TemplateEngineResult result = new TemplateEngineResult(getTemplate())
+                .bind("source",cu)
+                .bind("javaMethod", method);
         if (method != null) {
-            return result
+             result
                     .bind("method", genClassWithMethod(cu.getSrc(), method.getSrc()))
                     .bind("result", printParam(cu, method.getReturnType()))
                     .bind("parameters", method.getArgs().stream().map(JavaArg::getType).filter(javaType -> !javaType.bePrimitive())
                             .map(javaType -> printParam(cu, javaType)).filter(s -> s != null).collect(Collectors.toList()));
+             handle(result);
+             return ;
         }
         //class
         CompilationUnit clone = cu.getSrc().clone();
@@ -46,7 +49,7 @@ public class JavaMdDocMachine extends AbstractJavaDuplexMachine {
                     .forEach(fieldDeclaration -> clz.remove(fieldDeclaration));
             clz.getMethods().stream().filter(m -> m.isStatic() || m.getNameAsString().matches("(set|get).*")).forEach(f -> clz.remove(f));
         });
-        return result.bind("type", clone);
+        handle(result.bind("type", clone));
     }
 
     private String genClassWithMethod(CompilationUnit compilationUnit, MethodDeclaration methodDeclaration) {

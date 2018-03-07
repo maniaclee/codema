@@ -36,10 +36,6 @@ public interface Machine<S, O> {
 
     Result<O> getResult();
 
-    Machine<S, O> depend(Machine supplier);
-
-    <T> T getDependency();
-
     /**
      * 连接下一个CodemaMachine
      * @param next

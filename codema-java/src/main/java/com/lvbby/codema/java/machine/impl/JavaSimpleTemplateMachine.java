@@ -1,6 +1,7 @@
 package com.lvbby.codema.java.machine.impl;
 
-import com.lvbby.codema.java.machine.AbstractJavaInputMachine;
+import com.lvbby.codema.core.AbstractTemplateMachine;
+import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.result.JavaBasicTemplateResult;
 
 /**
@@ -9,7 +10,7 @@ import com.lvbby.codema.java.result.JavaBasicTemplateResult;
  * @author dushang.lp
  * @version $Id: BasicJavaCodeMachine.java, v 0.1 2017年12月15日 下午1:10 dushang.lp Exp $
  */
-public class JavaSimpleTemplateMachine extends AbstractJavaInputMachine<String> {
+public class JavaSimpleTemplateMachine extends AbstractTemplateMachine<JavaClass,String> {
 
     public JavaSimpleTemplateMachine() {
     }

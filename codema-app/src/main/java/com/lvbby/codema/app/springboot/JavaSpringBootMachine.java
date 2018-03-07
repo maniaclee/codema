@@ -1,19 +1,17 @@
 package com.lvbby.codema.app.springboot;
 
-import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.java.baisc.TemplateResource;
-import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.AbstractJavaDuplexMachine;
+import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 
 /**
  * Created by lipeng on 16/12/23.
  */
 @TemplateResource(MainApp.class)
-public class JavaSpringBootMachine extends AbstractJavaDuplexMachine {
+public class JavaSpringBootMachine extends AbstractJavaBaseMachine {
 
-    public Result<JavaClass> codeEach(JavaClass source) throws Exception {
-        return new JavaTemplateResult(this, getTemplate(),null);
+    @Override
+    protected void doCode() throws Exception {
+        handle(new JavaTemplateResult(this, getTemplate(), null));
     }
-
 }
