@@ -1,10 +1,8 @@
 package com.lvbby.codema.core;
 
 import com.lvbby.codema.core.result.Result;
-import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by lipeng on 16/12/23.
@@ -35,16 +33,6 @@ public interface Machine<S, O> {
      * @throws Exception
      */
     void run() throws Exception;
-
-    /***
-     * 获取运行结果
-     * @return
-     * @throws Exception
-     */
-    default O runAndFetch() throws Exception {
-        run();
-        return Optional.ofNullable(getResult()).map(Result::getResult).orElse(null);
-    }
 
     Result<O> getResult();
 

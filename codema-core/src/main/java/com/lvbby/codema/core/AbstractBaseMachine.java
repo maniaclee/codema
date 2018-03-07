@@ -21,7 +21,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +39,6 @@ public abstract class AbstractBaseMachine<S, O> implements Machine<S, O> {
     @ConfigProperty
     protected String              destRootDir;
     private   Machine             dependency;
-    private   Supplier            param;
 
     public AbstractBaseMachine() {
     }

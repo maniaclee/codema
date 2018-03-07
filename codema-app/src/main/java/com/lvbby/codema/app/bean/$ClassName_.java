@@ -15,7 +15,6 @@ public class $ClassName_ implements Serializable {
     @Foreach(value = "f in source.fields", body = {
             "var Class1 = f.type",
             "var class1 = f.name"
-
     })
     private $Class1_ $class1_;
 
