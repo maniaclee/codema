@@ -1,5 +1,6 @@
 package com.lvbby.codema.java.result;
 
+import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
@@ -12,7 +13,7 @@ import com.lvbby.codema.java.template.JavaSrcTemplateParser;
  */
 public class JavaBasicTemplateResult<O> extends TemplateEngineResult<O> {
 
-    public JavaBasicTemplateResult(AbstractJavaBaseMachine config, String template, JavaClass javaClass) {
+    public JavaBasicTemplateResult(AbstractBaseMachine config, String template, JavaClass javaClass) {
         super(template);
         if (javaClass != null){
             bind(JavaSrcTemplateParser.instance.getArgs4te(javaClass, config));

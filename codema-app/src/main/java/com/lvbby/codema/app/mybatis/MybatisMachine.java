@@ -1,6 +1,7 @@
 package com.lvbby.codema.app.mybatis;
 
 import com.google.common.collect.Lists;
+import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.VoidType;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.render.XmlTemplateResult;
@@ -52,7 +53,7 @@ import java.util.stream.Stream;
  */
 @NoArgsConstructor
 @Data
-public class MybatisMachine extends AbstractJavaBaseMachine<SqlTable,VoidType> {
+public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
 
     public static final String tag_select="select";
     public static final String tag_update="update";

@@ -1,5 +1,6 @@
 package com.lvbby.codema.app;
 
+import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -18,7 +19,7 @@ public class AppMachine extends AbstractJavaBaseMachine {
     }
 
     @Override
-    protected void doCode() throws Exception {
-        handle(new JavaTemplateResult(this, getTemplate(), getSource()));
+    public JavaTemplateResult codeEach(JavaClass cu) throws Exception {
+        return buildJavaTemplateResult();
     }
 }

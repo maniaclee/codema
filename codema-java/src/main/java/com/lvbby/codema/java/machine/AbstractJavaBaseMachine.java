@@ -14,6 +14,7 @@ import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.result.JavaTemplateResult;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
@@ -64,12 +65,23 @@ public abstract class AbstractJavaBaseMachine
         }
     }
 
+    @Override
+    protected void doCode() throws Exception {
+        handle(codeEach(source));
+    }
+
+    public abstract JavaTemplateResult codeEach(JavaClass cu) throws Exception;
+
+    protected JavaTemplateResult buildJavaTemplateResult() throws Exception {
+        return new JavaTemplateResult(this, getTemplate(), getSource());
+    }
+
 
     public String parseDestClassName(JavaClass javaClass) {
         return javaClassNameParser.getClassName(javaClass);
     }
 
-    protected String parseDestClassFullName(JavaClass javaClass) {
+    public String parseDestClassFullName(JavaClass javaClass) {
         return String.format("%s.%s", getDestPackage(), parseDestClassName(javaClass));
     }
 
@@ -82,6 +94,7 @@ public abstract class AbstractJavaBaseMachine
         this.javaClassNameParser = javaClassNameParser;
         return this;
     }
+
     @Override
     public String getTemplate() {
         if (StringUtils.isBlank(template)) {
@@ -110,6 +123,7 @@ public abstract class AbstractJavaBaseMachine
         Validate.notBlank(template, "template can't be blank");
         return template;
     }
+
     /***
      * 查找java 对象，从容器里或本地
      * @param classFullName

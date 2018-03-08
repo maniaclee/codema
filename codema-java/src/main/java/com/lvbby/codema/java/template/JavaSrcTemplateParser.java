@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
@@ -28,13 +29,16 @@ public class JavaSrcTemplateParser {
     public static final String KEY_DEST_CLASS_NAME = "destClassName";
     public static final String KEY_CONFIG = "config";
     public static final String KEY_JAVA_UTIL = "javautil";
-    public Map getArgs4te(JavaClass src, AbstractJavaBaseMachine config) {
+    public Map getArgs4te(JavaClass src, AbstractBaseMachine config) {
         HashMap<Object, Object> map = Maps.newHashMap();
         if (src != null) {
             map.put(KEY_SOURCE, src);
             map.put(KEY_SRC_CLASS_NAME, src.getName());
             map.put(KEY_SRC_CLASS_NAME_UNCAPITALIZED, JavaLexer.camel(src.getName()));
-            map.put(KEY_DEST_CLASS_NAME, config.getJavaClassNameParser() == null?null:config.getJavaClassNameParser().getClassName(src));
+            if(config instanceof AbstractJavaBaseMachine) {
+                AbstractJavaBaseMachine javaBaseMachine = (AbstractJavaBaseMachine) config;
+                map.put(KEY_DEST_CLASS_NAME, javaBaseMachine.getJavaClassNameParser() == null ? null : javaBaseMachine.getJavaClassNameParser().getClassName(src));
+            }
         }
         map.put(KEY_CONFIG,config);
         map.put(_getInnerTemplateClassVar($Null_.class), "");
