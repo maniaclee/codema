@@ -40,6 +40,10 @@ public abstract class AbstractConfigMachine<S, O> implements Machine<S, O> {
     @Getter
     @Setter
     protected String              destRootDir;
+    @ConfigProperty
+    @Getter
+    @Setter
+    private String author = System.getProperty("user.name");
 
     protected AbstractConfigMachine parent;
 
@@ -135,7 +139,6 @@ public abstract class AbstractConfigMachine<S, O> implements Machine<S, O> {
         this.handlers.add(handler);
         return this;
     }
-
 
     private <A> Class<A> getType(int i) {
         ParameterizedType parameterizedType = (ParameterizedType) getClass()

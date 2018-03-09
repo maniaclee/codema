@@ -1,17 +1,15 @@
 package com.lvbby.codema.java.baisc;
 
-import com.lvbby.codema.java.entity.JavaClass;
-
 /**
  *
  * @author dushang.lp
- * @version $Id: JavaClassNameParser.java, v 0.1 2017-08-27 œ¬ŒÁ5:49 dushang.lp Exp $$
+ * @version $Id: JavaClassNameParser.java, v 0.1 2017-08-27 ‰∏ãÂçà5:49 dushang.lp Exp $$
  */
-public interface JavaClassNameParser {
+public interface JavaClassNameParser<T> {
     /***
      *
-     * @param source ¿¥‘¥
+     * @param source Êù•Ê∫ê
      * @return
      */
-    String getClassName(JavaClass source );
+    String getClassName(T source );
 }

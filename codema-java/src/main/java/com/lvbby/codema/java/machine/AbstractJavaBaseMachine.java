@@ -1,6 +1,6 @@
 package com.lvbby.codema.java.machine;
 
-import com.lvbby.codema.core.AbstractBaseMachine;
+import com.lvbby.codema.core.AbstractTemplateMachine;
 import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.TemplateCapable;
@@ -8,10 +8,8 @@ import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.config.ConfigProperty;
 import com.lvbby.codema.core.resource.ResourceLoader;
 import com.lvbby.codema.core.result.Result;
-import com.lvbby.codema.core.utils.CodemaCacheHolder;
 import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.baisc.JavaClassNameParser;
-import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.result.JavaTemplateResult;
@@ -20,7 +18,6 @@ import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
@@ -29,10 +26,7 @@ import java.util.List;
  * Created by dushang.lp on 2017/8/16.
  */
 public abstract class AbstractJavaBaseMachine
-        extends AbstractBaseMachine<JavaClass, JavaClass> implements TemplateCapable {
-
-    @Setter
-    private String template;
+        extends AbstractTemplateMachine<JavaClass, JavaClass> implements TemplateCapable {
     /**
      * 目标package
      */
@@ -40,13 +34,6 @@ public abstract class AbstractJavaBaseMachine
     @Getter
     @Setter
     private String destPackage;
-    /**
-     * 目标package
-     */
-    @ConfigProperty
-    @Getter
-    @Setter
-    private String author = System.getProperty("user.name");
 
     /***
      * 获取目标bean的名称
@@ -54,14 +41,14 @@ public abstract class AbstractJavaBaseMachine
     @ConfigProperty
     @Getter
     @Setter
-    private JavaClassNameParser javaClassNameParser = JavaClassNameParserFactory.defaultInstance();
+    private JavaClassNameParser<JavaClass> javaClassNameParser = source1 -> source1.getName();
 
     @Override
-    protected void handle(Result<JavaClass> result) throws Exception {
+    protected void handle(Result result) throws Exception {
         super.handle(result);
         //注册java class 到容器
         if (result != null && result.getResult() != null && result.getResult() instanceof JavaClass) {
-            CodemaContextHolder.get().getCodemaBeanFactory().register(new CodemaBean(result.getResult(), o -> o.classFullName()));
+            CodemaContextHolder.get().getCodemaBeanFactory().register(new CodemaBean(result.getResult(), o -> ((JavaClass)o).classFullName()));
         }
     }
 
@@ -73,9 +60,8 @@ public abstract class AbstractJavaBaseMachine
     public abstract JavaTemplateResult codeEach(JavaClass cu) throws Exception;
 
     protected JavaTemplateResult buildJavaTemplateResult() throws Exception {
-        return new JavaTemplateResult(this, getTemplate(), getSource());
+        return JavaTemplateResult.fromMachine(this);
     }
-
 
     public String parseDestClassName(JavaClass javaClass) {
         return javaClassNameParser.getClassName(javaClass);
@@ -97,31 +83,15 @@ public abstract class AbstractJavaBaseMachine
 
     @Override
     public String getTemplate() {
-        if (StringUtils.isBlank(template)) {
-            String key = String.format("cach_template_%s", getClass().getName());
-            Object cache = CodemaCacheHolder.getCache().get(key);
-            if (cache != null) {
-                return (String) cache;
-            }
+        if (StringUtils.isBlank(super.getTemplate()) && getClass().isAnnotationPresent(TemplateResource.class)) {
             TemplateResource annotation = getClass().getAnnotation(TemplateResource.class);
-            if (annotation != null) {
-                //                if (annotation.value() != null && !annotation.value().equals(VoidType.class)) {
-                //                    this.template = JavaSrcLoader.loadJavaSrcFromProjectAsString(annotation.value().getName());
-                //                }
-                if (StringUtils.isNotBlank(annotation.resource())) {
-                    try {
-                        this.template = IOUtils.toString(ResourceLoader.instance.load(annotation.resource()).getInputStream());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                if (this.template != null) {
-                    CodemaCacheHolder.getCache().put(key, template);
-                }
+            try {
+                setTemplate(IOUtils.toString(ResourceLoader.instance.load(annotation.resource()).getInputStream()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
-        Validate.notBlank(template, "template can't be blank");
-        return template;
+        return super.getTemplate();
     }
 
     /***

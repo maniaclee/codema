@@ -5,6 +5,7 @@ import com.lvbby.codema.core.config.NotNull;
 import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.result.Result;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 
@@ -47,7 +48,7 @@ public abstract class AbstractBaseMachine<S, O> extends AbstractConfigMachine<S,
      * @param result
      * @throws Exception
      */
-    protected void handle(Result<O> result) throws Exception {
+    protected void handle(Result result) throws Exception {
         setResult(result);
         List<ResultHandler> hs = handlers;
         //如果handlers为空，一直找父亲节点的handlers
@@ -108,6 +109,26 @@ public abstract class AbstractBaseMachine<S, O> extends AbstractConfigMachine<S,
             }
         }
     }
+
+    /**
+     * 触发其他的machine
+     * @param source
+     * @param machine
+     * @throws Exception
+     */
+    public void invokeSub(Object source , AbstractBaseMachine machine ) throws Exception {
+        machine.parent=this;
+        machine.source(source)
+        .resultHandlers(getHandlers())
+        .run();
+    }
+
+    public <T extends AbstractBaseMachine> T copy(Class<T> clz) throws Exception {
+        T t = clz.newInstance();
+        BeanUtils.copyProperties(t,this);
+        return t;
+    }
+
     private void check() throws Exception{
         for (Field field : ReflectionUtils.getAllFields(getClass(), null)) {
             Object object = field.get(this);

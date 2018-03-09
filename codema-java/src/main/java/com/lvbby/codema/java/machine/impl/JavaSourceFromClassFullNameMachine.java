@@ -1,6 +1,7 @@
 package com.lvbby.codema.java.machine.impl;
 
-import com.lvbby.codema.core.machine.AbstractSourceMachine;
+import com.lvbby.codema.core.AbstractBaseMachine;
+import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -13,8 +14,9 @@ import org.apache.commons.lang3.Validate;
  * @author dushang.lp
  * @version $Id: JavaSourceFromClassFullNameMachine.java, v 0.1 2018年01月19日 下午6:51 dushang.lp Exp $
  */
-public class JavaSourceFromClassFullNameMachine extends AbstractSourceMachine<String, JavaClass> {
-    @Override public JavaClass genSource(String source) {
+public class JavaSourceFromClassFullNameMachine extends AbstractBaseMachine<String, JavaClass> {
+    @Override
+    protected void doCode() throws Exception {
         String method = null;
         if (source.contains("#")) {
             int i = source.indexOf("#");
@@ -25,6 +27,7 @@ public class JavaSourceFromClassFullNameMachine extends AbstractSourceMachine<St
         JavaClass result = JavaClassUtils.convert(JavaSrcLoader.getJavaSrcCompilationUnit(source));
         String finalMethod = method;
         result.removeMethod(s -> !StringUtils.equals(finalMethod, s));
-        return result;
+        handle(BasicResult.instance(result));
+
     }
 }

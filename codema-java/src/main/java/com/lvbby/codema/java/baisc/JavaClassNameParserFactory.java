@@ -1,5 +1,7 @@
 package com.lvbby.codema.java.baisc;
 
+import com.lvbby.codema.java.entity.JavaClass;
+
 /**
  *
  * @author dushang.lp
@@ -22,15 +24,8 @@ public class JavaClassNameParserFactory {
      * @param suffix
      * @return
      */
-    public static JavaClassNameParser suffix(String suffix) {
+    public static JavaClassNameParser<JavaClass> suffix(String suffix) {
         return source -> source.getName() + suffix;
     }
 
-    /***
-     * 直接使用source的名称
-     * @return
-     */
-    public static JavaClassNameParser defaultInstance() {
-        return source -> source.getName();
-    }
 }
