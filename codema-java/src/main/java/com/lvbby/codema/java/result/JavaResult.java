@@ -10,14 +10,8 @@ import com.lvbby.codema.java.entity.JavaClass;
  */
 public class JavaResult extends BasicResult<JavaClass> {
 
-    private JavaClass javaClass;
-
     public JavaResult(JavaClass javaClass) {
-        this.javaClass = javaClass;
         result(javaClass);
     }
 
-    @Override public String getString() {
-        return super.getString();
-    }
 }

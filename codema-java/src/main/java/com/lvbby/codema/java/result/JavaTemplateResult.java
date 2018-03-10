@@ -4,7 +4,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.MergeCapableFileResult;
-import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
@@ -28,7 +27,6 @@ import java.util.Map;
  * Created by lipeng on 17/1/6.
  */
 public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implements MergeCapableFileResult<JavaClass>{
-    private CompilationUnit compilationUnit;
     @Getter
     @Setter
     private String pack;
@@ -77,7 +75,7 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
         bind("destClassName",destClassName);
         bind("author",author);
         //加载java template
-        compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(JavaLexer.read(getTemplate()));
+        CompilationUnit compilationUnit = JavaSrcTemplateParser.instance.loadSrcTemplateRaw(JavaLexer.read(getTemplate()));
         //JavaDoc comment
         JavaLexer.getClass(compilationUnit).ifPresent(classOrInterfaceDeclaration -> {
             classOrInterfaceDeclaration.setJavadocComment(
@@ -89,21 +87,25 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
             compilationUnit.setPackageDeclaration(pack);
         }
 
+        //处理各种注解标签，输出template
         String template = CodemaJavaSourcePrinter.toJavaSource(compilationUnit);
-        template = ReflectionUtils.replace(template, "/\\*\\s*#(\\}+)\\*/\\s*([^;]+);",
-                matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
         super.beforeRender(bindingParameters);
         template(JavaSrcTemplateParser.prepareTemplate(template));
+        //处理dest file
+        filePath(getPack().replace('.', '/'));
+        filePath(String.format("%s.java", destClassName));
+
     }
 
     @Override
     protected void afterRender() {
         CompilationUnit cu = null;
+        String resultString = string;
         try {
-            cu = JavaLexer.read(getString());
+            cu = JavaLexer.read(resultString);
         } catch (Exception e) {
             System.out.println("==== render error =====");
-            System.out.println(getString());
+            System.out.println(resultString);
             throw e;
         }
         //自动import
@@ -115,11 +117,8 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
 
         setString(cu.toString());
 
-        JavaClass javaClass = JavaClassUtils.convert(JavaLexer.read(getString()));
         //注册result
-        result(javaClass);
-        //处理dest file
-        filePath(javaClass.getPack().replace('.', '/'), javaClass.getName() + ".java");
+        result(JavaClassUtils.convert(cu));
     }
 
     /***
@@ -139,4 +138,5 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
     public String parseMergeResult(InputStream dest) throws Exception {
         return new JavaMerger(IOUtils.toString(dest), JavaLexer.read(getString())).merge().toString();
     }
+
 }

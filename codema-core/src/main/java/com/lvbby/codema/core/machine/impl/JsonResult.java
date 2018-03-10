@@ -15,7 +15,7 @@ public class JsonResult extends BasicResult<JSONObject> {
     }
 
     @Override
-    public String getString() {
+    public String doGetString() {
         return JSON.toJSONString(getResult(), true);
     }
 }

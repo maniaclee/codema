@@ -26,14 +26,14 @@ public class Codema {
         link(machines).resultHandlers(resultHandlers).run();
     }
 
-    public static void exec(Machine... machines) throws Exception {
+    public static void execPrint(Machine... machines) throws Exception {
         link(machines).addResultHandler(ResultHandlerFactory.print).run();
     }
 
     public static <Input> void exec(List<Input> source, Supplier<Machine> machineFunction) throws Exception {
         Validate.notEmpty(source, "source list can't be empty");
         for (Input input : source) {
-            exec(machineFunction.get().source(input));
+            machineFunction.get().source(input).run();
         }
     }
 

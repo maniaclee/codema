@@ -10,6 +10,8 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.Validate;
 
 import java.util.List;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
  */
 @AppTemplateResource($Repository_.class)
 public class JavaRepositoryMachine extends AppMachine {
+    @Getter
+    @Setter
     private JavaClassNameParser convertUtilsClass = JavaClassNameParserFactory.className("BuildUtils");
 
     public JavaTemplateResult codeEach(JavaClass javaClass) throws Exception {

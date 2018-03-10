@@ -3,6 +3,7 @@ package com.lvbby.codema.core.result;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.utils.FileUtils;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -19,17 +20,9 @@ public class BasicResult<T> extends AbstractFileResult<T> {
 
     protected static Logger logger = LoggerFactory.getLogger(BasicResult.class);
     /***
-     * result的原始对象
-     */
-    private T result;
-    /***
      * 目标文件或目标路径路径，这里由几部分组成，方便调用方分多个部分组装
      */
     private List<String> filePaths = Lists.newLinkedList();
-    /**
-     * 目标文件
-     */
-    private String destFile;
 
     public BasicResult filePath(String... paths) {
         if (paths != null && paths.length > 0) {
@@ -40,13 +33,9 @@ public class BasicResult<T> extends AbstractFileResult<T> {
         return this;
     }
 
-    public BasicResult destFile(String file) {
-        this.destFile = file;
-        return this;
-    }
 
     public BasicResult result(T result) {
-        this.result = result;
+        super.setResult(result);
         return this;
     }
 
@@ -60,18 +49,9 @@ public class BasicResult<T> extends AbstractFileResult<T> {
         return new BasicResult().result(object);
     }
 
-    @Override
-    public T getResult() {
-        return result;
-    }
 
     @Override
-    public String getString() {
-        return result == null ? "" : result.toString();
-    }
-
-    @Override
-    public File getFile() {
+    public File doGetFile() {
         for (String filePath : filePaths) {
             if (StringUtils.isBlank(filePath)) {
                 throw new IllegalArgumentException(
@@ -79,9 +59,8 @@ public class BasicResult<T> extends AbstractFileResult<T> {
             }
         }
         List<String> destPaths = Lists.newArrayList(filePaths);
-        //加入目标文件
-        if (StringUtils.isNotBlank(destFile)) {
-            destPaths.add(destFile);
+        if(CollectionUtils.isEmpty(filePaths)){
+            return null;
         }
         File re = FileUtils.parseFile(destPaths.toArray(new String[0]));
         File parentFile = re.getParentFile();

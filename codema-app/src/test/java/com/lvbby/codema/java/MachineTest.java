@@ -5,6 +5,7 @@ import com.lvbby.codema.app.bean.JavaBeanMachine;
 import com.lvbby.codema.app.charset.CharsetMachine;
 import com.lvbby.codema.app.convert.JavaConvertMachine;
 import com.lvbby.codema.app.convert.JavaMapStructConvertMachine;
+import com.lvbby.codema.app.repository.JavaRepositoryMachine;
 import com.lvbby.codema.core.machine.CommonMachineFactory;
 import com.lvbby.codema.app.delegate.JavaDelegateMachine;
 import com.lvbby.codema.app.interfaces.JavaInterfaceMachine;
@@ -54,7 +55,7 @@ public class MachineTest extends BaseTest {
     }
 
     private void exec(Machine machine) throws Exception {
-        Codema.exec(JavaSourceMachineFactory.fromClass().source(CodemaBean.class), machine);
+        Codema.execPrint(JavaSourceMachineFactory.fromClass().source(CodemaBean.class), machine);
     }
 
     @Test
@@ -82,7 +83,7 @@ public class MachineTest extends BaseTest {
         machine.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
         Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName()
             .source("com.alipay.finfiprod.common.service.facade.p2p.product.result.RepayPlanItem");
-        Codema.exec(source, machine);
+        Codema.execPrint(source, machine);
     }
 
     @Test
@@ -92,7 +93,7 @@ public class MachineTest extends BaseTest {
         machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("RepayPlanVO"));
         machine.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
         Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName().source(Machine.class.getName());
-        Codema.exec(source, machine);
+        Codema.execPrint(source, machine);
     }
 
     @Test
@@ -132,7 +133,7 @@ public class MachineTest extends BaseTest {
                      + "    private String          config;\n" + "\n" + "}";
         SqlCreateMachine sqlCreate = new SqlCreateMachine();
 //        sqlCreate.setPrimaryKey("id");
-        Codema.exec(JavaSourceMachineFactory.fromSrc().source(src).next(sqlCreate));
+        Codema.execPrint(JavaSourceMachineFactory.fromSrc().source(src).next(sqlCreate));
     }
 
 
@@ -177,12 +178,12 @@ public class MachineTest extends BaseTest {
                    + "  `max_value` int(11) NOT NULL COMMENT '最大值',\n" + "  `min_value` int(11) NOT NULL COMMENT '最小值',\n"
                    + "  `step` int(11) NOT NULL COMMENT '步长',\n" + "  PRIMARY KEY (`name`)\n" + ") ";
         Codema
-            .exec(SqlMachineFactory.fromSqlCreate().source(s).next(JavaSourceMachineFactory.fromSqlTable()).next(new MysqlInsertMachine()));
+            .execPrint(SqlMachineFactory.fromSqlCreate().source(s).next(JavaSourceMachineFactory.fromSqlTable()).next(new MysqlInsertMachine()));
     }
 
     @Test
     public void requestSetting() throws Exception {
-        Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class).next(new JavaRequestSettingMachine()));
+        Codema.execPrint(JavaSourceMachineFactory.fromClass().source(SqlTable.class).next(new JavaRequestSettingMachine()));
     }
 
     @Test
@@ -191,7 +192,7 @@ public class MachineTest extends BaseTest {
             "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/RequestSetting"));
         JavaSimpleTemplateMachine next = new JavaSimpleTemplateMachine(template);
 
-        Codema.exec(JavaSourceMachineFactory.fromClass().source(SqlTable.class), next);
+        Codema.execPrint(JavaSourceMachineFactory.fromClass().source(SqlTable.class), next);
     }
 
     /***
@@ -204,25 +205,25 @@ public class MachineTest extends BaseTest {
             "/Users/dushang.lp/workspace/project/codema/codema-app/src/main/java/com/lvbby/codema/app/snippet/Builder"));
         JavaSimpleTemplateMachine next = new JavaSimpleTemplateMachine(template);
 
-        Codema.exec(JavaSourceMachineFactory.fromClassFullName().source("com.lvbby.coder.MachineConfig"), next);
+        Codema.execPrint(JavaSourceMachineFactory.fromClassFullName().source("com.lvbby.coder.MachineConfig"), next);
     }
 
     @Test
     public void sqlInsert2json() throws Exception {
         String source = "insert into `fbc_batch_41`( id,  batch_id,  request_biz_no,  biz_identity,  scenario,  product_id,  div_db_flag,  batch_status,  batch_num,  dispatch_num,  trigger_source,  execute_time,  biz_time,  gmt_create,  gmt_modified,  batch_type) values(1, '20180111009170000000410000000001', '20180111009190010000410000000001', 'p2p.jiebei', 'RAISE_PUSH', null, '201801110091700000004100', 'INITIAL', 1, 0, null, null, '2018-01-11 22:18:35', '2018-01-11 22:18:36', '2018-01-11 22:18:36', '');\n";
-        Codema.exec(CommonMachineFactory.fromSqlInsert().source(source));
+        Codema.execPrint(CommonMachineFactory.fromSqlInsert().source(source));
     }
     @Test
     public void sqlInsert2yaml() throws Exception {
         String source = "insert into `fbc_batch_41`( id,  batch_id,  request_biz_no,  biz_identity,  scenario,  product_id,  div_db_flag,  batch_status,  batch_num,  dispatch_num,  trigger_source,  execute_time,  biz_time,  gmt_create,  gmt_modified,  batch_type) values(1, '20180111009170000000410000000001', '20180111009190010000410000000001', 'p2p.jiebei', 'RAISE_PUSH', null, '201801110091700000004100', 'INITIAL', 1, 0, null, null, '2018-01-11 22:18:35', '2018-01-11 22:18:36', '2018-01-11 22:18:36', '');\n\n";
-        Codema.exec(CommonMachineFactory.fromSqlInsert().source(source).next(CommonMachineFactory.toYaml()));
+        Codema.execPrint(CommonMachineFactory.fromSqlInsert().source(source).next(CommonMachineFactory.toYaml()));
     }
 
 
     @Test
     public void yaml() throws Exception {
         String source = "insert into fin_user_loan_statement_41( statement_id,  gmt_create,  gmt_modified,  user_id,  statement_type,  disclose_date,  loan_demand_id,  product_id,  source_biz_no,  content,  uuid,  statement_source) values('20180117009190030000410000000398', '2018-01-17 22:38:27', '2018-01-17 22:38:27', '2088302233034419', 'DEMAND', '2018-01-17 22:38:27', '20180117009190010000410000000388', null, '201801171019301814000000000032000055555', '{\"profession\":\"SOCIAL_ORGANIZATION\",\"riskLevel\":\"低风险\",\"loanUsage\":\"消费\",\"loanOnOtherSource\":\"YES\",\"repaySource\":\"劳动所得\",\"repayGuarantee\":\"保证保险\",\"borrowerType\":\"INDIVIDUAL\",\"incomeInfo\":\"INCOME_0_5\",\"repayOverdueInfo\":\"YES\",\"debt\":\"DEBT_20_50\"}', '201801171019301814000000000032000055555', 'USER');\n";
-        Codema.exec(CommonMachineFactory.fromSqlInsert().source(source).next(CommonMachineFactory.toYaml()));
+        Codema.execPrint(CommonMachineFactory.fromSqlInsert().source(source).next(CommonMachineFactory.toYaml()));
     }
     @Test
     public void properties() throws Exception {
@@ -233,7 +234,7 @@ public class MachineTest extends BaseTest {
                         + "ERROR_HANDLER = org.beetl.core.ConsoleErrorHandler\n"
                         + "NATIVE_SECUARTY_MANAGER= org.beetl.core.DefaultNativeSecurityManager\n"
                         + "RESOURCE_LOADER=org.beetl.core.resource.ClasspathResourceLoader\n" + "MVC_STRICT = FALSE";
-        Codema.exec(CommonMachineFactory.fromProperties().source(source));
+        Codema.execPrint(CommonMachineFactory.fromProperties().source(source));
     }
     @Test
     public void properties2yaml() throws Exception {
@@ -244,16 +245,16 @@ public class MachineTest extends BaseTest {
                         + "ERROR_HANDLER = org.beetl.core.ConsoleErrorHandler\n"
                         + "NATIVE_SECUARTY_MANAGER= org.beetl.core.DefaultNativeSecurityManager\n"
                         + "RESOURCE_LOADER=org.beetl.core.resource.ClasspathResourceLoader\n" + "MVC_STRICT = FALSE";
-        Codema.exec(CommonMachineFactory.fromProperties().source(source).next(CommonMachineFactory.toYaml()));
+        Codema.execPrint(CommonMachineFactory.fromProperties().source(source).next(CommonMachineFactory.toYaml()));
     }
     @Test
     public void toProperties() throws Exception {
         String source = "insert into fin_user_loan_statement_41( statement_id,  gmt_create,  gmt_modified,  user_id,  statement_type,  disclose_date,  loan_demand_id,  product_id,  source_biz_no,  content,  uuid,  statement_source) values('20180117009190030000410000000398', '2018-01-17 22:38:27', '2018-01-17 22:38:27', '2088302233034419', 'DEMAND', '2018-01-17 22:38:27', '20180117009190010000410000000388', null, '201801171019301814000000000032000055555', '{\"profession\":\"SOCIAL_ORGANIZATION\",\"riskLevel\":\"低风险\",\"loanUsage\":\"消费\",\"loanOnOtherSource\":\"YES\",\"repaySource\":\"劳动所得\",\"repayGuarantee\":\"保证保险\",\"borrowerType\":\"INDIVIDUAL\",\"incomeInfo\":\"INCOME_0_5\",\"repayOverdueInfo\":\"YES\",\"debt\":\"DEBT_20_50\"}', '201801171019301814000000000032000055555', 'USER');\n";
-        Codema.exec(CommonMachineFactory.fromSqlInsert().source(source).next(CommonMachineFactory.toProperties()));
+        Codema.execPrint(CommonMachineFactory.fromSqlInsert().source(source).next(CommonMachineFactory.toProperties()));
 
     }
 
-    @Test public void json2insert() throws Exception {
-        List  object;
+    @Test public void repo() throws Exception {
+
     }
 }

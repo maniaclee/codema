@@ -2,9 +2,12 @@ package com.lvbby.codema.app.mybatis;
 
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.AbstractBaseMachine;
+import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.VoidType;
-import com.lvbby.codema.core.config.ConfigProperty;
+import com.lvbby.codema.core.config.NotNull;
+import com.lvbby.codema.core.render.XmlTemplateResult;
 import com.lvbby.codema.core.resource.Resource;
+import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.ReflectionUtils;
@@ -14,9 +17,12 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaField;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
+import com.lvbby.codema.java.result.JavaTemplateResult;
+import com.lvbby.codema.java.tool.JavaSrcLoader;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.dom4j.Attribute;
@@ -26,13 +32,11 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultElement;
 import org.xml.sax.SAXException;
 
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -62,66 +66,51 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
     public static final String attribute_inner_return="return";
     public static final String attribute_inner_args="args";
 
-    /***
-     * mapper xml 的路径
-     */
-    @ConfigProperty
-    private String   mapperDir;
-    @ConfigProperty
-    private String   configPackage;
-    @ConfigProperty
-    private String   mybatisConfigXmlDir;
-    @ConfigProperty
-    private Resource mapperXmlTemplate;
-    /** entity，数据库对应的java实体类 */
-    @ConfigProperty
-    private Supplier<String> javaBeanClassFullName;
-    /***
-     * 表名到mapper xml的映射关系
-     */
-    @ConfigProperty
-    private Function<String,String> table2mapperName = s -> s + ".xml";
+
+    /** 根据table找到template */
+    private Function<SqlTable,Resource> templateFunction;
+    /** mapper全类名 */
+    private Function<SqlTable,String> mapperName;
+
+    private String mapperDir;
+    @NotNull
+    /** do machine */
+    private Machine<?,JavaClass> entityMachine;
 
     @Override protected void doCode() throws Exception {
-//        SqlTable sqlTable = source;
-//        JavaClass cu = JavaClassUtils.convert(source).name(javaBeanClassFullName.get());
-//        validate(sqlTable);
-//        if (mapperXmlTemplate == null) {
-//            return;
-//        }
-//        /** 1. 渲染mapper xml ， 替换变量*/
-//        String renderXml = new XmlTemplateResult(read(mapperXmlTemplate.getInputStream()))
-//                .bind("mapper", parseDestClassFullName(cu))
-//                .bind("resultClass", cu.classFullName()).getString();
-//
-//        Document document = read(renderXml);
-//        /** 处理预设模板 */
-//        processPresetTemplate(document,cu,sqlTable);
-//
-//        List<JavaMethod> javaMethods = parseMethods(document, cu, sqlTable);
-//        /** 2. 生成mapper interface */
-//        handle(
-//                new JavaTemplateResult(this, $Mapper_.class, cu).bind("methods", javaMethods));
-//
-//        /** 3. 根据mapper xml 生成mapper */
-//        //预设的模板处理
-//        BasicResult mapperXml = new XmlTemplateResult(document)
-//                .filePath(getMapperDir(),
-//                        String.format("%s.xml",sqlTable.getName()));
-//        handle(mapperXml);
-//
-//        /**mybatis config*/
-//        if (StringUtils.isNotBlank(mybatisConfigXmlDir)) {
-//            handle(new BasicResult().result(loadResourceAsString("mybatis.xml"))
-//                    .filePath(mybatisConfigXmlDir, "mybatis.xml").writeMode(WriteMode.writeIfNoExist));
-//        }
-//        /** dal config */
-//        if (StringUtils.isNotBlank(getConfigPackage())) {
-//            handle( new JavaTemplateResult( this,DalConfig.class,null)
-//                    .pack(getConfigPackage())
-//                    .writeMode(WriteMode.writeIfNoExist));
-//        }
+        String sqlTemplate = IOUtils.toString(templateFunction.apply(source).getInputStream());
+        String mapper = mapperName.apply(source);
+        /** entity */
+        JavaClass entity = entityMachine.getResult().getResult();
 
+        SqlTable sqlTable = source;
+        validate(sqlTable);
+
+        /** 1. 渲染mapper xml ， 替换变量*/
+        String renderXml = new XmlTemplateResult(read(sqlTemplate))
+                .bind("mapper", mapper)
+                .bind("resultClass", entity.classFullName()).getString();
+
+        Document document = read(renderXml);
+        /** 处理预设模板 */
+        processPresetTemplate(document,entity,sqlTable);
+
+        List<JavaMethod> javaMethods = parseMethods(document, entity, sqlTable);
+        /** 2. 生成mapper interface */
+        handle(new JavaTemplateResult(JavaSrcLoader.loadJavaSrcFromProjectAsString($Mapper_.class.getName()))
+                .bindSource(entity)
+                .pack(ReflectionUtils.getPackage(mapper))
+                .destClassName(ReflectionUtils.getSimpleClassName(mapper))
+                .author(getAuthor())
+                .bind("methods", javaMethods)
+                .filePath(getDestRootDir()));
+
+        /** 3. 根据mapper xml 生成mapper */
+        //预设的模板处理
+        BasicResult mapperXml = new XmlTemplateResult(document)
+                .filePath(getMapperDir(),
+                        String.format("%s.xml",sqlTable.getName()));
+        handle(mapperXml);
     }
 
     /***
@@ -132,10 +121,6 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
      */
     private Document read(String s) throws Exception {
         return reader().read(new StringReader(s));
-    }
-
-    private Document read(InputStream inputStream) throws Exception {
-        return reader().read(inputStream);
     }
 
     private SAXReader reader() throws SAXException {
@@ -307,7 +292,7 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
         //update
         Element update = rootElement.element(tag_update);
         if(update!=null && StringUtils.isBlank(update.getText())){
-            update.setText(String.format("\nupdate %s set\n", table.getNameInDb()));
+            update.setText(String.format("\n\t\tupdate %s set\n", table.getNameInDb()));
             table.getFields().stream()
                     .forEach(sqlColumn -> {
                         DefaultElement result = new DefaultElement("if");

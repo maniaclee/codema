@@ -1,9 +1,10 @@
 package com.lvbby.codema.java;
 
-import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanMachine;
+import com.lvbby.codema.app.convert.JavaMapStructConvertMachine;
 import com.lvbby.codema.app.mvn.MavenMachine;
-import com.lvbby.codema.app.mybatis.MybatisOldMachine;
+import com.lvbby.codema.app.mybatis.MybatisMachine;
+import com.lvbby.codema.app.repository.JavaRepositoryMachine;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.core.resource.ClassPathResource;
@@ -33,22 +34,39 @@ public class MybatisTest extends BaseTest {
 
         for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8",
             "root", "", "article")) {
-            //            entity
+            //entity
             JavaBeanMachine bean = new JavaBeanMachine();
-            bean.javaClassNameParser(JavaClassNameParserFactory.suffix("Entity")).destPackage("com.lvbby.mybatis.entity")
+            bean.javaClassNameParser(JavaClassNameParserFactory.suffix("Entity"))
+                    .destPackage("com.lvbby.mybatis.entity")
                 .destRootDir(maven.getDestSrcRoot());
 
+            JavaBeanMachine dto = new JavaBeanMachine();
+            dto.javaClassNameParser(JavaClassNameParserFactory.suffix("DTO"))
+                    .destPackage("com.lvbby.mybatis.dto")
+                .destRootDir(maven.getDestSrcRoot());
+
+            JavaMapStructConvertMachine convert = new JavaMapStructConvertMachine();
+
             //dao & xml mapper & dal config & mybatis xml config
-            MybatisOldMachine mybatis = new MybatisOldMachine();
+            MybatisMachine mybatis = new MybatisMachine();
             mybatis.setDestRootDir(maven.getDestSrcRoot());
             mybatis.setMapperName(sqlTable -> String.format("com.lvbby.mybatis.mapper.%sDao", sqlTable.getName()));
             mybatis.setMapperDir(new File(maven.getDestResourceRoot(), "mapper").getAbsolutePath());
-            mybatis.setEntityName(sqlTable -> String.format("com.lvbby.mybatis.entity.%sEntity", sqlTable.getName()));
+            mybatis.setEntityMachine(bean);
             mybatis.setTemplateFunction(sqlTable -> new ClassPathResource(String.format("%s.xml", sqlTable.getName())));
 
-            sql.resultHandlers(Lists.newArrayList(ResultHandlerFactory.print))
-                    .next(JavaSourceMachineFactory.fromSqlTable().next(bean))
-                    .nextWithCheck(mybatis).run();
+
+            JavaRepositoryMachine repo = new JavaRepositoryMachine();
+            repo.javaClassNameParser(source -> source.getName()+"Repo");
+            repo.setDestPackage("com.lvbby.mybatis.repo");
+            repo.setDestRootDir(maven.getDestSrcRoot());
+            sql
+                .next(JavaSourceMachineFactory.fromSqlTable().next(bean).next(dto).next(repo))
+                .nextWithCheck(mybatis)
+                .addResultHandler(ResultHandlerFactory.print)
+//                .addResultHandler(ResultHandlerFactory.fileWrite)
+//                .addResultHandler(result -> System.err.println(((FileResult) result).getFile()))
+                .run();
         }
     }
 }

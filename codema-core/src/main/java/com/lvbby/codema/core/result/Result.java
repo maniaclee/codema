@@ -10,4 +10,6 @@ public interface Result<T> {
 
     Class<T> getResultType();
 
+    void init();
+
 }

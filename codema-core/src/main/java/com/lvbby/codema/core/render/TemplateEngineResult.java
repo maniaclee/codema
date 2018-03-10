@@ -3,6 +3,8 @@ package com.lvbby.codema.core.render;
 import com.google.common.collect.Maps;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import com.lvbby.codema.core.result.BasicResult;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
@@ -10,11 +12,12 @@ import java.util.Map;
  * Created by lipeng on 2017/1/3.
  */
 public class TemplateEngineResult<T> extends BasicResult<T> {
+    @Getter
+    @Setter
     private String template;
     /* rendered result */
-    private String string;
-    private Map parameters = Maps.newHashMap();
-    private transient boolean rendered = false;
+    private Map<String,Object> parameters = Maps.newHashMap();
+    protected String string;
 
     protected TemplateEngineResult() {
     }
@@ -58,27 +61,10 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
     }
 
     @Override
-    public String getString() {
-        render();
-        return string;
-    }
-
-    @Override public T getResult() {
-        render();
-        return super.getResult();
-    }
-
-    /***
-     *  渲染
-     */
-    public TemplateEngineResult render() {
-        if (!rendered) {
-            beforeRender(parameters);
-            doRender();
-            rendered = true;
-            afterRender();
-        }
-        return this;
+    public void doInit() {
+        beforeRender(parameters);
+        doRender();
+        afterRender();
     }
 
     private void doRender() {
@@ -94,20 +80,17 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
         return this;
     }
 
-    public String getTemplate() {
-        return template;
-    }
-
     public TemplateEngineResult setParameters(Map parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    public Map getParameters() {
-        return parameters;
-    }
-
     protected void setString(String string) {
         this.string = string;
+    }
+
+    @Override
+    protected String doGetString() {
+        return string;
     }
 }

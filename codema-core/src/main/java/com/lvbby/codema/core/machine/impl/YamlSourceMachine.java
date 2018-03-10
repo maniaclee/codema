@@ -22,6 +22,6 @@ public class YamlSourceMachine extends AbstractBaseMachine<String, JSONObject> {
 
     public static void main(String[] args) throws Exception {
         String source = "rules:\n" + "    internal-no-invalid-meta: \"error\"\n" + "    internal-consistent-docs-description: \"error\"\n";
-        Codema.exec(new YamlSourceMachine().source(source));
+        Codema.execPrint(new YamlSourceMachine().source(source));
     }
 }

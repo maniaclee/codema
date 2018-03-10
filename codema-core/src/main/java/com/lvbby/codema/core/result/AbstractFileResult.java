@@ -1,5 +1,7 @@
 package com.lvbby.codema.core.result;
 
+import java.io.File;
+
 /**
  *
  * @author dushang.lp
@@ -16,4 +18,12 @@ public abstract class AbstractFileResult<T>extends AbstractResult<T> implements 
         this.writeMode = writeMode;
         return this;
     }
+
+    @Override
+    public final File getFile() {
+        init();
+        return doGetFile();
+    }
+
+    protected abstract File doGetFile();
 }

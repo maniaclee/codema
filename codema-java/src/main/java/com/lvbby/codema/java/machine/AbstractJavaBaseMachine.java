@@ -76,7 +76,7 @@ public abstract class AbstractJavaBaseMachine
         return this;
     }
 
-    public AbstractJavaBaseMachine javaClassNameParser(JavaClassNameParser javaClassNameParser) {
+    public AbstractJavaBaseMachine javaClassNameParser(JavaClassNameParser<JavaClass> javaClassNameParser) {
         this.javaClassNameParser = javaClassNameParser;
         return this;
     }

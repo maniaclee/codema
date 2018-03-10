@@ -63,6 +63,9 @@ public class JavaSrcTemplateParser {
      * @return
      */
     public static String prepareTemplate(String s) {
+        //处理注释，将/*# 开头的注释转为<%
+        s = ReflectionUtils.replace(s, "/\\*\\s*#(\\}+)\\*/\\s*([^;]+);",
+                matcher -> matcher.group(2) + ";//<%" + matcher.group(1) + "%>");
         //删除行注释符号//
         String re = ReflectionUtils.replace(s,"(\\s+)(//)\\s*",matcher -> matcher.group(1));
         re = re.replaceAll("\\(\\s+", "(");
