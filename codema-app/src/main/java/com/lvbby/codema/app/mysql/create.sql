@@ -9,7 +9,7 @@ CREATE TABLE ${table.nameInDb} (
   # %>
   ${f.nameInDb} ${f.dbType}  ${nullable} ${auto_inc} COMMENT '${f.comment}',
   #<%} %>
-  PRIMARY KEY (${table.primaryKeyField.nameInDb})
+  PRIMARY KEY (${table.primaryKey.nameInDb})
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

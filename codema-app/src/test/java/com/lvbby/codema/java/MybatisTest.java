@@ -7,7 +7,6 @@ import com.lvbby.codema.app.mybatis.MybatisMachine;
 import com.lvbby.codema.app.repository.JavaRepositoryMachine;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
-import com.lvbby.codema.core.resource.ClassPathResource;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.api.JavaSourceMachineFactory;
@@ -46,6 +45,10 @@ public class MybatisTest extends BaseTest {
                 .destRootDir(maven.getDestSrcRoot());
 
             JavaMapStructConvertMachine convert = new JavaMapStructConvertMachine();
+            convert.setConvertToClass(dto);
+            convert.setDestRootDir(maven.getDestSrcRoot());
+            convert.setDestPackage("com.lvbby.mybatis.util");
+            convert.setDestClassName(JavaClassNameParserFactory.suffix("BuildUtil"));
 
             //dao & xml mapper & dal config & mybatis xml config
             MybatisMachine mybatis = new MybatisMachine();
@@ -53,15 +56,15 @@ public class MybatisTest extends BaseTest {
             mybatis.setMapperName(sqlTable -> String.format("com.lvbby.mybatis.mapper.%sDao", sqlTable.getName()));
             mybatis.setMapperDir(new File(maven.getDestResourceRoot(), "mapper").getAbsolutePath());
             mybatis.setEntityMachine(bean);
-            mybatis.setTemplateFunction(sqlTable -> new ClassPathResource(String.format("%s.xml", sqlTable.getName())));
-
 
             JavaRepositoryMachine repo = new JavaRepositoryMachine();
             repo.javaClassNameParser(source -> source.getName()+"Repo");
             repo.setDestPackage("com.lvbby.mybatis.repo");
             repo.setDestRootDir(maven.getDestSrcRoot());
+            repo.setBuildClassMachine(convert);
+
             sql
-                .next(JavaSourceMachineFactory.fromSqlTable().next(bean).next(dto).next(repo))
+                .next(JavaSourceMachineFactory.fromSqlTable().next(bean).next(dto).next(convert).next(repo))
                 .nextWithCheck(mybatis)
                 .addResultHandler(ResultHandlerFactory.print)
 //                .addResultHandler(ResultHandlerFactory.fileWrite)

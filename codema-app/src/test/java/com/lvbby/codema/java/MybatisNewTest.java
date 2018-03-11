@@ -31,7 +31,7 @@ public class MybatisNewTest extends BaseTest {
 //                        "", "article")) {
 //            //entity
 //            JavaBeanMachine bean = new JavaBeanMachine();
-//            bean.javaClassNameParser(JavaClassNameParserFactory.suffix("Entity"))
+//            bean.destClassName(JavaClassNameParserFactory.suffix("Entity"))
 //                    .destPackage("com.lvbby.mybatis.entity")
 //                    .destRootDir(maven.getDestSrcRoot());
 //
@@ -40,7 +40,7 @@ public class MybatisNewTest extends BaseTest {
 //            mybatis.setDestRootDir(maven.getDestSrcRoot());
 //            mybatis.setConfigPackage("com.lvbby.mybatis.config");
 //            mybatis.setMapperDir(new File(maven.getDestResourceRoot(),"mapper").getAbsolutePath());
-//            mybatis.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Dao"));
+//            mybatis.setDestClassName(JavaClassNameParserFactory.suffix("Dao"));
 //            //        mybatis.setConfigPackage(mybatis.relativePackage("config"));
 //            mybatis.setDestPackage("com.lvbby.mybatis.dao");
 //            mybatis.setJavaBeanClassFullName(bean.getDestJavaClassFullNameFuture());

@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.lvbby.codema.core.CodemaContextHolder;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.result.MergeCapableFileResult;
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.template.JavaSrcTemplateParser;
@@ -41,7 +42,7 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
         return (JavaTemplateResult) new JavaTemplateResult(machine.getTemplate())
                 .bindSource(machine.getSource())
                 .pack(machine.getDestPackage())
-                .destClassName(machine.getJavaClassNameParser().getClassName(machine.getSource()))
+                .destClassName(machine.getDestClassName().getClassName(machine.getSource()))
                 .author(machine.getAuthor())
                 .filePath(machine.getDestRootDir());
     }
@@ -55,10 +56,17 @@ public class JavaTemplateResult extends TemplateEngineResult<JavaClass> implemen
         bind("source",source);
         return this;
     }
+
     public JavaTemplateResult destClassName(String  destClassName){
-        setDestClassName(destClassName);
+        if (destClassName.contains(".")) {
+            setPack(ReflectionUtils.getPackage(destClassName));
+            setDestClassName(ReflectionUtils.getSimpleClassName(destClassName));
+        } else {
+            setDestClassName(destClassName);
+        }
         return this;
     }
+
     public JavaTemplateResult author(String  author){
         setAuthor(author);
         return this;

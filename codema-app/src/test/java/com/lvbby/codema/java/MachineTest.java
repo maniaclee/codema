@@ -4,9 +4,6 @@ import com.google.common.collect.Lists;
 import com.lvbby.codema.app.bean.JavaBeanMachine;
 import com.lvbby.codema.app.charset.CharsetMachine;
 import com.lvbby.codema.app.convert.JavaConvertMachine;
-import com.lvbby.codema.app.convert.JavaMapStructConvertMachine;
-import com.lvbby.codema.app.repository.JavaRepositoryMachine;
-import com.lvbby.codema.core.machine.CommonMachineFactory;
 import com.lvbby.codema.app.delegate.JavaDelegateMachine;
 import com.lvbby.codema.app.interfaces.JavaInterfaceMachine;
 import com.lvbby.codema.app.mvn.MavenMachine;
@@ -14,7 +11,6 @@ import com.lvbby.codema.app.mysql.MysqlInsertMachine;
 import com.lvbby.codema.app.mysql.SqlCreateMachine;
 import com.lvbby.codema.app.mysql.SqlSelectColumnsMachine;
 import com.lvbby.codema.app.mysql.SqlUpdateMachine;
-import com.lvbby.codema.java.machine.impl.JavaSimpleTemplateMachine;
 import com.lvbby.codema.app.snippet.JavaRequestSettingMachine;
 import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
@@ -24,11 +20,13 @@ import com.lvbby.codema.core.bean.CodemaBean;
 import com.lvbby.codema.core.handler.FileWriterResultHandler;
 import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
+import com.lvbby.codema.core.machine.CommonMachineFactory;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
+import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.api.JavaSourceMachineFactory;
+import com.lvbby.codema.java.machine.impl.JavaSimpleTemplateMachine;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -80,7 +78,7 @@ public class MachineTest extends BaseTest {
         JavaConvertMachine machine = new JavaConvertMachine();
         machine.setDestPackage("com.lvbby.test.pack");
         machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("RepayPlanVO"));
-        machine.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
+        machine.setDestClassName(JavaClassNameParserFactory.className("BuildUtils"));
         Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName()
             .source("com.alipay.finfiprod.common.service.facade.p2p.product.result.RepayPlanItem");
         Codema.execPrint(source, machine);
@@ -88,18 +86,18 @@ public class MachineTest extends BaseTest {
 
     @Test
     public void mapStructConvert() throws Exception {
-        JavaMapStructConvertMachine machine = new JavaMapStructConvertMachine();
-        machine.setDestPackage("com.lvbby.test.pack");
-        machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("RepayPlanVO"));
-        machine.setJavaClassNameParser(JavaClassNameParserFactory.className("BuildUtils"));
-        Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName().source(Machine.class.getName());
-        Codema.execPrint(source, machine);
+//        JavaMapStructConvertMachine machine = new JavaMapStructConvertMachine();
+//        machine.setDestPackage("com.lvbby.test.pack");
+//        machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("RepayPlanVO"));
+//        machine.setDestClassName(JavaClassNameParserFactory.className("BuildUtils"));
+//        Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName().source(Machine.class.getName());
+//        Codema.execPrint(source, machine);
     }
 
     @Test
     public void delegate() throws Exception {
         JavaDelegateMachine config = new JavaDelegateMachine();
-        config.setJavaClassNameParser(JavaClassNameParserFactory.suffix("Impl"));
+        config.setDestClassName(JavaClassNameParserFactory.suffix("Impl"));
         config.setDetectInterface(true);
         JavaSourceMachineFactory.fromClass().source(Machine.class).next(config).run();
     }

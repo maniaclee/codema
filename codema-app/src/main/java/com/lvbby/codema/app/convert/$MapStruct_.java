@@ -9,7 +9,7 @@ import org.mapstruct.Mappings;
 import java.util.List;
 
 @Sentence("var Class = srcClassName; var class=lee.unCapital(srcClassName);")
-@Sentence("var Class1 =  @config.getConvertToClassNameParser().getClassName(source);var class1=lee.unCapital(Class1);")
+@Sentence("var Class1 =  config.convertToClass.result.result.name;var class1=lee.unCapital(Class1);")
 @Sentence("var MapStruct = destClassName;")
 @Mapper
 public interface $MapStruct_ {

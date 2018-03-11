@@ -179,7 +179,7 @@ public class JavaClassUtils {
                 .collect(Collectors.toList());
             Validate.isTrue(collect.size() <= 1);
             if (collect.size() == 1) {
-                re.setPrimaryKeyField(collect.get(0));
+                re.setPrimaryKey(collect.get(0));
                 collect.get(0).setPrimaryKey(true);
             } else {
                 re.buildPrimaryKeyField("id");

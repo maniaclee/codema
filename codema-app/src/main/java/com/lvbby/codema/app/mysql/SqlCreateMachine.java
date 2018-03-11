@@ -32,7 +32,7 @@ public class SqlCreateMachine extends AbstractBaseMachine<Object, String> {
         if (table != null) {
             if (StringUtils.isNotBlank(primaryKey))
                 table.buildPrimaryKeyField(primaryKey);
-            Validate.notNull(table.getPrimaryKeyField(), "primary id can't be null");
+            Validate.notNull(table.getPrimaryKey(), "primary id can't be null");
             handle(new SqlTemplateResult().template(loadResourceAsString("create.sql")).bind("table", table));
         }
 

@@ -30,7 +30,7 @@ public class SqlParser {
             MySqlCreateTableStatement create = (MySqlCreateTableStatement) sqlStatement;
             SqlTable t = SqlTable.dbName(create.getTableSource().toString());
             t.setFields(create.getTableElementList().stream().filter(s -> s instanceof MySqlSQLColumnDefinition).map(sqlTableElement -> buildColumn((MySqlSQLColumnDefinition) sqlTableElement)).collect(Collectors.toList()));
-            t.setPrimaryKeyField(t.getFields().stream().filter(sqlColumn -> sqlColumn.isPrimaryKey()).findAny().orElse(null));
+            t.setPrimaryKey(t.getFields().stream().filter(sqlColumn -> sqlColumn.isPrimaryKey()).findAny().orElse(null));
             return t;
         }).collect(Collectors.toList());
     }

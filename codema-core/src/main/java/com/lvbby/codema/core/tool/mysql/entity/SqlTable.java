@@ -22,7 +22,7 @@ public class SqlTable {
     String name;
     String nameInDb;
     List<SqlColumn> fields = Lists.newLinkedList();
-    private SqlColumn primaryKeyField;
+    private SqlColumn primaryKey;
 
     /**
      * 从Java class name解析
@@ -55,18 +55,18 @@ public class SqlTable {
         if(StringUtils.isBlank(primaryKeyColumn))
             return;
         Function<String,String> format=input -> input.replaceAll("-|_","").toLowerCase();
-        this.primaryKeyField = fields.stream().filter(f -> Objects.equals(format.apply(f.getNameInDb()), format.apply(primaryKeyColumn))).findFirst().orElse(null);
-        if(this.primaryKeyField!=null){
-            primaryKeyField.setPrimaryKey(true);
+        this.primaryKey = fields.stream().filter(f -> Objects.equals(format.apply(f.getNameInDb()), format.apply(primaryKeyColumn))).findFirst().orElse(null);
+        if(this.primaryKey !=null){
+            primaryKey.setPrimaryKey(true);
         }
     }
 
-    public SqlColumn getPrimaryKeyField() {
-        return primaryKeyField;
+    public SqlColumn getPrimaryKey() {
+        return primaryKey;
     }
 
-    public void setPrimaryKeyField(SqlColumn primaryKeyField) {
-        this.primaryKeyField = primaryKeyField;
+    public void setPrimaryKey(SqlColumn primaryKey) {
+        this.primaryKey = primaryKey;
     }
 
     public String getNameInDb() {

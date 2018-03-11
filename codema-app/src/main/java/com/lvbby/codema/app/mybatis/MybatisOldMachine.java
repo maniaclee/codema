@@ -6,7 +6,9 @@ import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.VoidType;
 import com.lvbby.codema.core.config.NotNull;
 import com.lvbby.codema.core.render.XmlTemplateResult;
+import com.lvbby.codema.core.resource.Resource;
 import com.lvbby.codema.core.result.BasicResult;
+import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.entity.*;
@@ -14,15 +16,21 @@ import com.lvbby.codema.java.result.JavaTemplateResult;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.dom4j.tree.DefaultElement;
 import org.xml.sax.SAXException;
 
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,7 +46,7 @@ import java.util.stream.Stream;
  */
 @NoArgsConstructor
 @Data
-public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
+public class MybatisOldMachine extends AbstractBaseMachine<SqlTable,VoidType> {
 
     public static final String tag_select="select";
     public static final String tag_update="update";
@@ -53,6 +61,9 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
     public static final String attribute_inner_return="return";
     public static final String attribute_inner_args="args";
 
+
+    /** 根据table找到template */
+    private Function<SqlTable,Resource> templateFunction;
     /** mapper全类名 */
     private Function<SqlTable,String> mapperName;
 
@@ -62,6 +73,7 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
     private Machine<?,JavaClass> entityMachine;
 
     @Override protected void doCode() throws Exception {
+        String sqlTemplate = IOUtils.toString(templateFunction.apply(source).getInputStream());
         String mapper = mapperName.apply(source);
         /** entity */
         JavaClass entity = entityMachine.getResult().getResult();
@@ -69,17 +81,17 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
         SqlTable sqlTable = source;
         validate(sqlTable);
 
-        /** 3. 根据mapper xml */
-        BasicResult mapperXml = new XmlTemplateResult(loadResourceAsString("mapper.xml"))
-                .bind("mapper",mapper)
-                .bind("entity",entity)
-                .bind("table",sqlTable)
-                .filePath(getMapperDir(), String.format("%s.xml",sqlTable.getName()));
-        handle(mapperXml);
+        /** 1. 渲染mapper xml ， 替换变量*/
+        String renderXml = new XmlTemplateResult(read(sqlTemplate))
+                .bind("mapper", mapper)
+                .bind("resultClass", entity.classFullName()).getString();
 
-        /** 2. 生成mapper interface */
-        Document document = read(mapperXml.getString());
+        Document document = read(renderXml);
+        /** 处理预设模板 */
+        processPresetTemplate(document,entity,sqlTable);
+
         List<JavaMethod> javaMethods = parseMethods(document, entity, sqlTable);
+        /** 2. 生成mapper interface */
         handle(new JavaTemplateResult(JavaSrcLoader.loadJavaSrcFromProjectAsString($Mapper_.class.getName()))
                 .bindSource(entity)
                 .pack(ReflectionUtils.getPackage(mapper))
@@ -88,7 +100,12 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
                 .bind("methods", javaMethods)
                 .filePath(getDestRootDir()));
 
-
+        /** 3. 根据mapper xml 生成mapper */
+        //预设的模板处理
+        BasicResult mapperXml = new XmlTemplateResult(document)
+                .filePath(getMapperDir(),
+                        String.format("%s.xml",sqlTable.getName()));
+        handle(mapperXml);
     }
 
     /***
@@ -137,15 +154,22 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
      * @return
      */
     private JavaType parseReturnType(Document document, Element element, JavaClass entity, SqlTable sqlTable) {
-        switch (element.getName()) {
-            case tag_insert:
-            case tag_delete:
-            case tag_update:
-                return JavaType.ofClass(int.class);
+        //提取resultMap信息
+        Element resultMap = document.getRootElement().element(attribute_resultMap);
+        String resultMapName = Optional.ofNullable(resultMap).map(element1 -> element1.attributeValue("id")).orElse(null);
+        String resultMapType = Optional.ofNullable(resultMap).map(element1 -> element1.attributeValue("type")).orElse(null);
+
+        String returnType = _innerXmlAttribute(element, attribute_inner_return);
+        if (tags_transaction.contains(element.getName())) {
+            return JavaType.ofClass(int.class);
         }
+        if (StringUtils.isNotBlank(returnType)) {
+            return JavaType.ofClassName(escape(returnType));
+        }
+
         String resultMapValue = element.attributeValue(attribute_resultMap);
-        if (StringUtils.isNotBlank(resultMapValue)) {
-            return JavaType.ofClassName(entity.classFullName());
+        if (StringUtils.equals(resultMapName, resultMapValue)) {
+            return JavaType.ofClassName(resultMapType);
         }
 
         String resultType = element.attributeValue(attribute_resultType);
@@ -163,12 +187,12 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
      * 1. args标签
      */
     private List<JavaArg> parseArgs(Element element, JavaClass entity, SqlTable sqlTable) {
-        switch (element.getName()) {
-            case tag_insert:
-                return Lists.newArrayList(
-                        JavaArg.of(entity.getNameCamel(), JavaType.ofClassName(entity.getName())));
-            case tag_delete:
-            case tag_update:
+        String args = _innerXmlAttribute(element, attribute_inner_args);
+        if (args != null) {
+            return Arrays.stream(args.trim().split(",")).map(s -> {
+                String[] split = s.trim().split("\\s+");
+                return JavaArg.of(split[1], JavaType.ofClassName(split[0]));
+            }).collect(Collectors.toList());
         }
 
         String parameterType = element.attributeValue(attribute_parameterType);
@@ -185,6 +209,19 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
             return Lists.newArrayList(argWithParam(vars.get(0), JavaType.ofClassName(escape(parameterType))));
         }
         return parseArgsAsMap(element, entity, sqlTable);
+    }
+
+    /***
+     * 解析内部标签后然后删除
+     */
+    private String _innerXmlAttribute(Element element, String s) {
+        Attribute attribute = element.attribute(s);
+        if (attribute != null) {
+            String value = attribute.getValue();
+            element.remove(attribute);
+            return escape(value);
+        }
+        return null;
     }
 
     /***
@@ -234,6 +271,62 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
     private void validate(SqlTable sqlTable) {
         Validate.notNull(sqlTable.getPrimaryKey(),
                 "no primary key found for table : " + sqlTable.getNameInDb());
+    }
+    protected void processPresetTemplate(Document document, JavaClass cu, SqlTable table){
+        Element rootElement = document.getRootElement();
+        //insert
+        Element insert = rootElement.element(tag_insert);
+        if(insert!=null && StringUtils.isBlank(insert.getText())){
+            String insertSql = String.format("insert into %s(%s) values(%s)",
+                    table.getNameInDb(),
+                    table.getFields().stream().map(SqlColumn::getNameInDb).collect(Collectors.joining(",")),
+                    table.getFields().stream().map(sqlColumn -> String.format("#{%s}",sqlColumn.getNameCamel())).collect(Collectors.joining(","))
+            );
+            insert.setText(insertSql);
+        }
+        //update
+        Element update = rootElement.element(tag_update);
+        if(update!=null && StringUtils.isBlank(update.getText())){
+            update.setText(String.format("\n\t\tupdate %s set\n", table.getNameInDb()));
+            table.getFields().stream()
+                    .forEach(sqlColumn -> {
+                        DefaultElement result = new DefaultElement("if");
+                        result.addAttribute("test", String.format("%s !=null", sqlColumn.getNameCamel()));
+                        result.setText(String.format("%s = #{%s}", sqlColumn.getNameInDb(),sqlColumn.getNameCamel()));
+                        update.add(result);
+                    });
+            update.addAttribute(attribute_parameterType,"object");
+        }
+        //resultMap
+        Element resultMap = rootElement.element(attribute_resultMap);
+        if(resultMap!=null && StringUtils.isBlank(resultMap.getText())){
+                    //"<result property=\"%s\" column=\"%s\" javaType=\"%s\" jdbcType=\"%s\"/>"
+             table.getFields().stream()
+                .forEach(sqlColumn -> {
+                    DefaultElement result = new DefaultElement("result");
+                    result.addAttribute("property", sqlColumn.getNameCamel());
+                    result.addAttribute("column", sqlColumn.getNameInDb());
+                    result.addAttribute("javaType", sqlColumn.getJavaType().getName());
+                    result.addAttribute("jdbcType", sqlColumn.getDbType());
+                    resultMap.add(result);
+                });
+        }
+        //springData style
+        visitElements(rootElement)
+                .filter(element -> CollectionUtils.isEmpty(element.elements())&&StringUtils.isBlank(element.getText()))
+                .forEach(element -> {
+                    System.out.println(element);
+                    SqlBuilder sql = SqlBuilder
+                            .parseFromSpringDataStyle(id(element));
+                    element.setText(sql.getSql(table.getNameInDb()));
+                    if(StringUtils.isBlank(element.attributeValue(attribute_resultMap))&&StringUtils.isBlank(element.attributeValue("resultType"))){
+                        if(resultMap!=null){
+                            element.addAttribute(attribute_resultMap,id(resultMap));
+                        }else{
+                            element.addAttribute(attribute_resultType,cu.classFullName());
+                        }
+                    }
+                });
     }
 
     private String id(Element element){

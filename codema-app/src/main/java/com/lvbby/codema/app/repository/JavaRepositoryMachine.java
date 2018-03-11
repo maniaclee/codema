@@ -3,16 +3,15 @@ package com.lvbby.codema.app.repository;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.app.AppMachine;
 import com.lvbby.codema.app.AppTemplateResource;
+import com.lvbby.codema.core.Machine;
+import com.lvbby.codema.core.config.NotNull;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.baisc.JavaClassNameParser;
-import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.entity.JavaMethod;
 import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 import java.util.Map;
@@ -25,14 +24,14 @@ import java.util.stream.Collectors;
 public class JavaRepositoryMachine extends AppMachine {
     @Getter
     @Setter
-    private JavaClassNameParser convertUtilsClass = JavaClassNameParserFactory.className("BuildUtils");
+    @NotNull
+    private Machine<?,JavaClass> buildClassMachine;
 
     public JavaTemplateResult codeEach(JavaClass javaClass) throws Exception {
-        JavaClass buildUtil = findJavaBean(convertUtilsClass.getClassName(javaClass));
-        Validate.notNull(buildUtil, "buildClass not found");
+        JavaClass buildUtil = buildClassMachine.getResult().getResult();
 
         List<RepositoryMethod> collect = javaClass.getMethods().stream().map(javaMethod -> new RepositoryMethod(javaMethod, buildUtil)).collect(Collectors.toList());
-        return super.codeEach(javaClass)
+        return buildJavaTemplateResult()
                 .bind("methods", collect)
                 .bind("buildUtilClass", buildUtil);
     }

@@ -6,8 +6,8 @@
     <insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="object" >
     </insert>
     <select id="queryByIds"  resultType="long" parameterType="list" return="List(Long)" args="List(Long) ids">
-        select id from article
-        where  id in
+        select * from article
+        where  article_id in
         <foreach item="item" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>

@@ -13,6 +13,7 @@ import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import com.lvbby.codema.java.baisc.TemplateResource;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.result.JavaTemplateResult;
+import com.lvbby.codema.java.template.JavaSrcTemplateParser;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,7 +42,7 @@ public abstract class AbstractJavaBaseMachine
     @ConfigProperty
     @Getter
     @Setter
-    private JavaClassNameParser<JavaClass> javaClassNameParser = source1 -> source1.getName();
+    private JavaClassNameParser<JavaClass> destClassName = source1 -> source1.getName();
 
     @Override
     protected void handle(Result result) throws Exception {
@@ -60,11 +61,12 @@ public abstract class AbstractJavaBaseMachine
     public abstract JavaTemplateResult codeEach(JavaClass cu) throws Exception;
 
     protected JavaTemplateResult buildJavaTemplateResult() throws Exception {
-        return JavaTemplateResult.fromMachine(this);
+        return JavaTemplateResult.fromMachine(this)
+                .bind(JavaSrcTemplateParser.instance.getArgs4te(source, this));
     }
 
     public String parseDestClassName(JavaClass javaClass) {
-        return javaClassNameParser.getClassName(javaClass);
+        return destClassName.getClassName(javaClass);
     }
 
     public String parseDestClassFullName(JavaClass javaClass) {
@@ -77,7 +79,7 @@ public abstract class AbstractJavaBaseMachine
     }
 
     public AbstractJavaBaseMachine javaClassNameParser(JavaClassNameParser<JavaClass> javaClassNameParser) {
-        this.javaClassNameParser = javaClassNameParser;
+        this.destClassName = javaClassNameParser;
         return this;
     }
 

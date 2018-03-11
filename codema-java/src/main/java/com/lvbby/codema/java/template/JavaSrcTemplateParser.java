@@ -37,7 +37,7 @@ public class JavaSrcTemplateParser {
             map.put(KEY_SRC_CLASS_NAME_UNCAPITALIZED, JavaLexer.camel(src.getName()));
             if(config instanceof AbstractJavaBaseMachine) {
                 AbstractJavaBaseMachine javaBaseMachine = (AbstractJavaBaseMachine) config;
-                map.put(KEY_DEST_CLASS_NAME, javaBaseMachine.getJavaClassNameParser() == null ? null : javaBaseMachine.getJavaClassNameParser().getClassName(src));
+                map.put(KEY_DEST_CLASS_NAME, javaBaseMachine.getDestClassName() == null ? null : javaBaseMachine.getDestClassName().getClassName(src));
             }
         }
         map.put(KEY_CONFIG,config);
