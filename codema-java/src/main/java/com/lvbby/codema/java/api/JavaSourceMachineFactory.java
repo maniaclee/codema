@@ -7,11 +7,7 @@ import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.CodemaMachineUtils;
 import com.lvbby.codema.core.utils.FunctionAdaptor;
 import com.lvbby.codema.java.entity.JavaClass;
-import com.lvbby.codema.java.machine.impl.JavaSimpleTemplateMachine;
-import com.lvbby.codema.java.machine.impl.JavaSourceFromClassFullNameMachine;
-import com.lvbby.codema.java.machine.impl.JavaSourceFromClassMachine;
-import com.lvbby.codema.java.machine.impl.JavaSourceFromSqlTableMachine;
-import com.lvbby.codema.java.machine.impl.JavaSourceFromSrcMachine;
+import com.lvbby.codema.java.machine.impl.*;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 
@@ -67,6 +63,15 @@ public class JavaSourceMachineFactory {
     public static Machine<CompilationUnit, JavaClass> fromUnit(){
         return buildJavaMachine(s -> JavaClassUtils.convert(s));
     }
+
+    /***
+     * 从jar file 路径解析
+     * @return
+     */
+    public static Machine<String, JavaClass> fromJarFile(){
+        return new JavaSourceFromJarMachine();
+    }
+
 
     /***
      * 简单的构造出参为javaClass的machine
