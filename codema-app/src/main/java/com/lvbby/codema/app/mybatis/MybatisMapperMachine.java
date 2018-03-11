@@ -1,19 +1,20 @@
 package com.lvbby.codema.app.mybatis;
 
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.AbstractBaseMachine;
+import com.lvbby.codema.app.AppMachine;
+import com.lvbby.codema.app.AppTemplateResource;
 import com.lvbby.codema.core.Machine;
-import com.lvbby.codema.core.VoidType;
-import com.lvbby.codema.core.config.NotNull;
-import com.lvbby.codema.core.render.XmlTemplateResult;
-import com.lvbby.codema.core.result.BasicResult;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.core.utils.ReflectionUtils;
-import com.lvbby.codema.java.entity.*;
+import com.lvbby.codema.java.entity.JavaAnnotation;
+import com.lvbby.codema.java.entity.JavaArg;
+import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.entity.JavaField;
+import com.lvbby.codema.java.entity.JavaMethod;
+import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.result.JavaTemplateResult;
-import com.lvbby.codema.java.tool.JavaSrcLoader;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.dom4j.Document;
@@ -23,7 +24,6 @@ import org.xml.sax.SAXException;
 
 import java.io.StringReader;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,9 +36,8 @@ import java.util.stream.Stream;
  * 4. DalConfig.java
  * Created by lipeng on 16/12/23.
  */
-@NoArgsConstructor
-@Data
-public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
+@AppTemplateResource($Mapper_.class)
+public class MybatisMapperMachine extends AppMachine {
 
     public static final String tag_select="select";
     public static final String tag_update="update";
@@ -53,43 +52,26 @@ public class MybatisMachine extends AbstractBaseMachine<SqlTable,VoidType> {
     public static final String attribute_inner_return="return";
     public static final String attribute_inner_args="args";
 
-    /** mapper全类名 */
-    private Function<SqlTable,String> mapperName;
+    @Getter
+    @Setter
+    private Machine<?,String> mapperXmlMachine;
+    @Setter
+    @Getter
+    private Machine<?,SqlTable> sqlTableMachine;
 
-    private String mapperDir;
-    @NotNull
-    /** do machine */
-    private Machine<?,JavaClass> entityMachine;
+    @Override
+    public JavaTemplateResult codeEach(JavaClass cu) throws Exception {
 
-    @Override protected void doCode() throws Exception {
-        String mapper = mapperName.apply(source);
-        /** entity */
-        JavaClass entity = entityMachine.getResult().getResult();
-
-        SqlTable sqlTable = source;
+        SqlTable sqlTable = sqlTableMachine.getResult().getResult();
         validate(sqlTable);
 
-        /** 3. 根据mapper xml */
-        BasicResult mapperXml = new XmlTemplateResult(loadResourceAsString("mapper.xml"))
-                .bind("mapper",mapper)
-                .bind("entity",entity)
-                .bind("table",sqlTable)
-                .filePath(getMapperDir(), String.format("%s.xml",sqlTable.getName()));
-        handle(mapperXml);
-
         /** 2. 生成mapper interface */
-        Document document = read(mapperXml.getString());
-        List<JavaMethod> javaMethods = parseMethods(document, entity, sqlTable);
-        handle(new JavaTemplateResult(JavaSrcLoader.loadJavaSrcFromProjectAsString($Mapper_.class.getName()))
-                .bindSource(entity)
-                .pack(ReflectionUtils.getPackage(mapper))
-                .destClassName(ReflectionUtils.getSimpleClassName(mapper))
-                .author(getAuthor())
-                .bind("methods", javaMethods)
-                .filePath(getDestRootDir()));
-
-
+        Document document = read(mapperXmlMachine.getResult().getResult());
+        List<JavaMethod> javaMethods = parseMethods(document, source, sqlTable);
+        return buildJavaTemplateResult()
+                .bind("methods", javaMethods);
     }
+
 
     /***
      * 不要用这个方法，太慢：DocumentHelper.parseText

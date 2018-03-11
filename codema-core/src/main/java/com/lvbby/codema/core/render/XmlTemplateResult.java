@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by lipeng on 2017/1/14.
  */
-public class XmlTemplateResult extends TemplateEngineResult implements MergeCapableFileResult {
+public class XmlTemplateResult extends TemplateEngineResult<String> implements MergeCapableFileResult<String> {
 
     public   XmlTemplateResult(Document document) {
         super(format(document));
@@ -55,6 +55,12 @@ public class XmlTemplateResult extends TemplateEngineResult implements MergeCapa
     @Override
     protected void beforeRender(Map bindingParameters) {
         template(getTemplate().replaceAll("<!--\\s*", "").replaceAll("\\s*-->", ""));
+    }
+
+    @Override
+    protected void afterRender() {
+        super.afterRender();
+        setResult(doGetString());
     }
 
     @Override

@@ -27,5 +27,11 @@ public class JavaClassNameParserFactory {
     public static JavaClassNameParser<JavaClass> suffix(String suffix) {
         return source -> source.getName() + suffix;
     }
+    /***
+     * format 形式
+     */
+    public static JavaClassNameParser<JavaClass> format(String format) {
+        return source ->String.format(format,source.getName());
+    }
 
 }
