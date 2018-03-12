@@ -20,9 +20,11 @@ public class TemplateEngineResult<T> extends BasicResult<T> {
     protected String string;
 
     protected TemplateEngineResult() {
+        bind("_dollar","$");
     }
 
     public TemplateEngineResult(String template) {
+        this();
         this.template = template;
     }
 

@@ -32,8 +32,8 @@ public class MavenMachine extends AbstractBaseMachine<MavenMachine,MavenMachine>
     private transient boolean mavenInitialized = false;
     private List<MavenMachine> modules;
 
-    @Override public Machine<MavenMachine, MavenMachine> source(
-            MavenMachine source) {
+    @Override
+    public Machine<MavenMachine, MavenMachine> source(MavenMachine source) {
         //把自己加入到parent的modules里
         if(source!=null ){
             if(source.modules==null){

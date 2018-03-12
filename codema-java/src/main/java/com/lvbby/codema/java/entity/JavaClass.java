@@ -46,6 +46,9 @@ public class JavaClass extends AnnotationType{
         }
         return this;
     }
+    public String getVarName(){
+        return StringUtils.uncapitalize(getName());
+    }
 
     public JavaClass removeMethod(Predicate<String> predicate){
         if(CollectionUtils.isNotEmpty(getMethods()) && predicate!=null) {
