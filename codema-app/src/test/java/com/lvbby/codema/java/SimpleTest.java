@@ -5,7 +5,11 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
@@ -18,6 +22,7 @@ import com.google.common.collect.Multimap;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.render.TemplateEngineFactory;
 import com.lvbby.codema.core.utils.ReflectionUtils;
+import com.lvbby.codema.java.tool.IJavaSourceLoader;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -25,16 +30,15 @@ import org.mozilla.intl.chardet.nsDetector;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * Created by lipeng on 2016/12/24.
@@ -42,6 +46,11 @@ import java.util.List;
 public class SimpleTest {
 
     public static int a = 1;
+
+    @Test public void name() throws Exception {
+        ServiceLoader<IJavaSourceLoader> load = ServiceLoader.load(IJavaSourceLoader.class);
+        load.forEach(iJavaSourceLoader -> System.out.println(iJavaSourceLoader.getClass().getName()));
+    }
 
     @Test public void uri() {
         URI uri = URI.create("asdf:///root/leaf?path=sdf&&sub=sdf");

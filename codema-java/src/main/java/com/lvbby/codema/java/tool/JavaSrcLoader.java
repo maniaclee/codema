@@ -2,6 +2,8 @@ package com.lvbby.codema.java.tool;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,22 +11,37 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
 
 /**
  * Created by lipeng on 2017/1/1.
  */
 public class JavaSrcLoader {
 
+    public static List<MavenConfig> mavenDirectoryScanner;
 
-    private static MavenDirectoryScanner mavenDirectoryScanner;
-
+    /***
+     * 初始化maven扫描路径
+     * @param javaFileSrcRoot
+     */
     public static void initJavaSrcRoots(List<File> javaFileSrcRoot) {
         initJavaSrcRoots(javaFileSrcRoot, 5);
     }
 
+    /**
+     * 初始化maven扫描路径
+     * @param javaFileSrcRoot
+     * @param depth 0:不限层数
+     */
     public static void initJavaSrcRoots(List<File> javaFileSrcRoot, int depth) {
-        mavenDirectoryScanner = new MavenDirectoryScanner(javaFileSrcRoot, depth);
+        synchronized (JavaSrcLoader.class) {
+            mavenDirectoryScanner = Lists.newArrayList();
+            for (MavenConfig mavenConfig : MavenConfig.scan(javaFileSrcRoot, depth)) {
+                mavenDirectoryScanner.addAll(mavenConfig.toList());
+            }
+        }
     }
 
     public static MethodDeclaration getMethod(Class clz, String methodName) {
@@ -89,19 +106,21 @@ public class JavaSrcLoader {
     }
 
     public static String loadJavaSrcFromProjectAsString(String className)  {
-        //内部使用
-        if(className.startsWith("com.lvbby.codema")){
+        ServiceLoader<IJavaSourceLoader> loader = ServiceLoader.load(IJavaSourceLoader.class);
+        for(Iterator<IJavaSourceLoader> i = loader.iterator();i.hasNext();){
+            String source = null;
             try {
-                InputStream input = loadJavaSrcFromInnerProject(Class.forName(className));
-                if (input != null)
-                    return IOUtils.toString(input);
-            } catch ( Exception e) {
+                source = i.next().loadJavaSource(className);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+            if(StringUtils.isNotBlank(source)){
+                return source;
+            }
         }
-        if (mavenDirectoryScanner != null) {
-            for (File file : mavenDirectoryScanner.getMavenSrcDirectories()) {
-                File re = new File(file, className.replace('.', '/') + ".java");
+        if (CollectionUtils.isNotEmpty(mavenDirectoryScanner)) {
+            for (MavenConfig mavenConfig : mavenDirectoryScanner) {
+                File re = new File(mavenConfig.getDestSrcRoot(), className.replace('.', '/') + ".java");
                 if (re.isFile() && re.exists()) {
                     try {
                         return IOUtils.toString(new FileInputStream(re));

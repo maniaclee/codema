@@ -26,10 +26,10 @@ import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.machine.impl.JavaSimpleTemplateMachine;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -41,11 +41,7 @@ import java.util.List;
  */
 public class MachineTest extends BaseTest {
 
-    @Before
-    public void init() throws Exception {
-        //        File f = new File(JavaMockTestMachine.class.getResource("/").getPath());
-        //        f = f.getParentFile().getParentFile();//codema-app
-        //        f = f.getParentFile();//codema
+    static {
 
         File f = new File(System.getProperty("user.home"), "workspace");
         /** 设置java src 根路径*/
@@ -53,6 +49,9 @@ public class MachineTest extends BaseTest {
     }
 
     private void exec(Machine machine) throws Exception {
+        if(machine instanceof AbstractJavaBaseMachine){
+            ((AbstractJavaBaseMachine) machine).setDestPackage("com.test");
+        }
         Codema.execPrint(JavaSourceMachineFactory.fromClass().source(CodemaBean.class), machine);
     }
 
@@ -80,7 +79,7 @@ public class MachineTest extends BaseTest {
         machine.setConvertToClassNameParser(JavaClassNameParserFactory.className("RepayPlanVO"));
         machine.setDestClassName(JavaClassNameParserFactory.className("BuildUtils"));
         Machine<String, JavaClass> source = JavaSourceMachineFactory.fromClassFullName()
-            .source("com.alipay.finfiprod.common.service.facade.p2p.product.result.RepayPlanItem");
+            .source("com.lvbby.codema.java.tool.AutoImport");
         Codema.execPrint(source, machine);
     }
 
@@ -99,6 +98,7 @@ public class MachineTest extends BaseTest {
         JavaDelegateMachine config = new JavaDelegateMachine();
         config.setDestClassName(JavaClassNameParserFactory.suffix("Impl"));
         config.setDetectInterface(true);
+        config.setDestPackage("com.test");
         JavaSourceMachineFactory.fromClass().source(Machine.class).next(config).run();
     }
 

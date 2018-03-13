@@ -19,6 +19,7 @@ import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.util.List;
 
@@ -55,7 +56,10 @@ public abstract class AbstractJavaBaseMachine
 
     @Override
     protected void doCode() throws Exception {
-        handle(codeEach(source));
+        JavaTemplateResult result = codeEach(source);
+        Validate.notBlank(result.getPack(),"target pack can't be empty: %s",getClass().getName());
+        Validate.notBlank(result.getDestClassName(),"target class name can't be empty",getClass().getName());
+        handle(result);
     }
 
     public abstract JavaTemplateResult codeEach(JavaClass cu) throws Exception;

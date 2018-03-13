@@ -3,17 +3,16 @@ package com.lvbby.codema.app.codemadoc;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import com.google.common.collect.Lists;
-import com.lvbby.codema.core.machine.CommonMachineFactory;
 import com.lvbby.codema.core.AbstractBaseMachine;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
+import com.lvbby.codema.core.machine.CommonMachineFactory;
 import com.lvbby.codema.core.render.TemplateEngineResult;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.utils.ClassUtils;
 import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
-import com.lvbby.codema.java.tool.MavenDirectoryScanner;
 
 import java.io.File;
 import java.util.List;
@@ -49,17 +48,16 @@ public class CodemaDocMachine extends AbstractBaseMachine<Object,String>{
     }
 
     public static void main(String[] args) throws Exception {
-        MavenDirectoryScanner mavenDirectoryScanner = new MavenDirectoryScanner(
-                Lists.newArrayList(new File(System.getProperty("user.home"),"workspace")));
+        JavaSrcLoader.initJavaSrcRoots(Lists.newArrayList(new File(System.getProperty("user.home"),"workspace")));
 
-        File dir = mavenDirectoryScanner.getMavenDirectories().stream()
-                .filter(file -> file.getAbsolutePath().endsWith("codema")).findAny().orElse(null);
+        File dir = JavaSrcLoader.mavenDirectoryScanner.stream().filter(mavenConfig -> mavenConfig.getDestRootDir().endsWith("codema"))
+                .findAny().map(mavenConfig -> new File(mavenConfig.getDestRootDir())).orElse(null);
         System.out.println(dir.getAbsolutePath());
 
         CodemaDocMachine codemaDocMachine = new CodemaDocMachine();
         codemaDocMachine.setDestRootDir(dir.getAbsolutePath());
         codemaDocMachine
-                .addResultHandler(ResultHandlerFactory.fileWrite)
+//                .addResultHandler(ResultHandlerFactory.fileWrite)
                 .addResultHandler(ResultHandlerFactory.print)
                 .run();
     }
