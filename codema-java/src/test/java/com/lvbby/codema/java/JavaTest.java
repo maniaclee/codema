@@ -28,7 +28,7 @@ public class JavaTest {
      }
      @Test
      public void scan() throws Exception {
-         List<MavenConfig> parse = MavenConfig.scan(Lists.newArrayList(new File("/Users/dushang.lp/workspace/project/")));
+         List<MavenConfig> parse = MavenConfig.scan(Lists.newArrayList(new File("/Users/lipeng/workspace/codema")));
          System.out.println(JSON.toJSONString(parse,true));
 
          MavenConfig mavenConfig = parse.get(0);

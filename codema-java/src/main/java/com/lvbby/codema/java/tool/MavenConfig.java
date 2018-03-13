@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -101,22 +102,26 @@ public class MavenConfig {
      */
     public List<MavenConfig> toList(){
         List<MavenConfig> re = Lists.newLinkedList();
-        re.add(this);
-        if(CollectionUtils.isNotEmpty(modules)){
-            for (MavenConfig module : modules) {
-                List<MavenConfig> mavenConfigs = module.toList();
-                if(CollectionUtils.isNotEmpty(mavenConfigs)){
-                    re.addAll(mavenConfigs);
-                }
-            }
-        }
+        visit(mavenConfig -> re.add(mavenConfig));
         return re;
     }
 
+    public void visit(Consumer<MavenConfig> vistor){
+        vistor.accept(this);
+        if(CollectionUtils.isNotEmpty(modules)){
+            modules.forEach(vistor);
+        }
+    }
+
+    /**
+     * 扫描自己下面的目录，装配子module
+     */
     public void scanChild() {
         scanChild(-1);
     }
-
+    /**
+     * 扫描自己下面的目录，装配子module
+     */
     public void scanChild(int maxDepth) {
         scanChild(1, maxDepth);
     }
