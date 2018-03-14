@@ -17,10 +17,9 @@ import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
 import com.lvbby.codema.core.Codema;
 import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.bean.CodemaBean;
-import com.lvbby.codema.core.handler.FileWriterResultHandler;
-import com.lvbby.codema.core.handler.PrintResultHandler;
 import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.core.machine.CommonMachineFactory;
+import com.lvbby.codema.core.result.FileResult;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.api.JavaSourceMachineFactory;
@@ -29,6 +28,7 @@ import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.machine.AbstractJavaBaseMachine;
 import com.lvbby.codema.java.machine.impl.JavaSimpleTemplateMachine;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
+import com.lvbby.codema.java.tool.MavenConfig;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
@@ -111,13 +111,14 @@ public class MachineTest extends BaseTest {
 
     @Test
     public void maven() throws Exception {
-        MavenMachine config = new MavenMachine();
-        config.setName("lvbby-maven-project");
+        MavenConfig config = new MavenConfig();
         config.setGroupId("lvbby");
         config.setArtifactId("lvbby-maven");
-        config.setDestRootDir("~/temp");
-        config.resultHandlers(Lists.newArrayList(new PrintResultHandler(), new FileWriterResultHandler()));
-        config.doCode();
+        config.setDestRootDir("~/temp/lvbby-maven-project");
+        new MavenMachine().source(config)
+                .addResultHandler(ResultHandlerFactory.print)
+                .addResultHandler(result -> System.out.println(((FileResult)result).getFile().getAbsolutePath()))
+                .run();
     }
 
     @Test

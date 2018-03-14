@@ -2,7 +2,6 @@ package com.lvbby.codema.java;
 
 import com.lvbby.codema.app.bean.JavaBeanMachine;
 import com.lvbby.codema.app.convert.JavaMapStructConvertMachine;
-import com.lvbby.codema.app.mvn.MavenMachine;
 import com.lvbby.codema.app.mybatis.MybatisMapperMachine;
 import com.lvbby.codema.app.mybatis.MybatisMapperXmlMachine;
 import com.lvbby.codema.app.repository.JavaRepositoryMachine;
@@ -13,6 +12,7 @@ import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.api.JavaSourceMachineFactory;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.tool.MavenConfig;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,13 +25,10 @@ import java.io.File;
 public class MybatisTest extends BaseTest {
     @Test
     public void mybatis() throws Exception {
-        MavenMachine maven = new MavenMachine();
-
-        maven.setDestRootDir("~/workspace/");
-        maven.setName("test-codema");
+        MavenConfig maven = new MavenConfig();
+        maven.setDestRootDir("~/workspace/test-codema");
         maven.setGroupId("lvbby");
-        maven.setArtifactId(maven.getName());
-        maven.initMaven();
+        maven.setArtifactId("test-codema");
 
         for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8",
             "root", "", "article")) {

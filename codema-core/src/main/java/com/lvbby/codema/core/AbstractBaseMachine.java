@@ -72,7 +72,7 @@ public abstract class AbstractBaseMachine<S, O> extends AbstractConfigMachine<S,
      * @param result
      * @throws Exception
      */
-    protected void handleSimple(Result<O> result) throws Exception {
+    protected void handleSimple(Result result) throws Exception {
         if (CollectionUtils.isNotEmpty(handlers)) {
             for (ResultHandler handler : handlers) {
                 handler.handle(result);
