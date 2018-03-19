@@ -36,6 +36,10 @@ public interface Machine<S, O> {
 
     Result<O> getResult();
 
+    default O runAndFetch() throws Exception {
+        run();
+        return getResult().getResult();
+    }
     /**
      * 连接下一个CodemaMachine
      * @param next
