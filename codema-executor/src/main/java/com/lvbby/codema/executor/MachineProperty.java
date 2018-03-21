@@ -9,4 +9,5 @@ public class MachineProperty {
     private String key;
     private String desc;
     private String defaultValue;
+    private String type;
 }

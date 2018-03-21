@@ -7,9 +7,11 @@ import java.util.List;
  * @author dushang.lp
  * @version $Id: MachineAppDefinition.java, v 0.1 2018年03月21日 下午7:31 dushang.lp Exp $
  */
-public class MachineAppUnit {
+public class MachineApp {
     /** 对应的machine id */
     private String machineDefinitionId;
     /** 自定义的属性value */
-    private List<MachineAppDefinition> defaultValue;
+    private List<MachineProperty> defaultValue;
+    /** children */
+    private List<MachineApp> children;
 }
