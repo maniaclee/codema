@@ -12,6 +12,7 @@
         <module>codema-core</module>
         <module>codema-java</module>
         <module>codema-app</module>
+        <module>codema-executor</module>
     </modules>
     <dependencies>
         <dependency>
