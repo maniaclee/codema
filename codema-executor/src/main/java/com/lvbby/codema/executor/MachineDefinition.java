@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class MachineDefinition extends BaseEntity {
 
+    private static final long serialVersionUID = -3219987384733432231L;
     /**
      * 唯一表示，name
      */
@@ -35,4 +36,52 @@ public class MachineDefinition extends BaseEntity {
      * template
      */
     private String template;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public List<MachineProperty> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(List<MachineProperty> properties) {
+        this.properties = properties;
+    }
+
+    public String getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(String sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public String getOutType() {
+        return outType;
+    }
+
+    public void setOutType(String outType) {
+        this.outType = outType;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
 }

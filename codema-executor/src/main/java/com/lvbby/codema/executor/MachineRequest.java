@@ -2,6 +2,8 @@ package com.lvbby.codema.executor;
 
 import com.lvbby.codema.core.bean.BaseEntity;
 
+import java.util.List;
+
 /**
  *
  * @author dushang.lp
@@ -10,4 +12,23 @@ import com.lvbby.codema.core.bean.BaseEntity;
 public class MachineRequest extends BaseEntity {
 
     private static final long serialVersionUID = -4143408148595085610L;
+
+    private String machineId;
+    private List<MachineRequestArg> args;
+
+    public String getMachineId() {
+        return machineId;
+    }
+
+    public void setMachineId(String machineId) {
+        this.machineId = machineId;
+    }
+
+    public List<MachineRequestArg> getArgs() {
+        return args;
+    }
+
+    public void setArgs(List<MachineRequestArg> args) {
+        this.args = args;
+    }
 }
