@@ -18,7 +18,7 @@ public class MachineDefinition extends BaseEntity {
      */
     private String id;
     /** 描述 */
-    private String desc;
+    private String description;
     /**
      * 给用户输入的自定义参数
      */
@@ -37,20 +37,20 @@ public class MachineDefinition extends BaseEntity {
      */
     private String template;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public List<MachineProperty> getProperties() {

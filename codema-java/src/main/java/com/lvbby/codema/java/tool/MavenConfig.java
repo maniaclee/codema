@@ -50,6 +50,7 @@ public class MavenConfig {
         return new MavenConfig(destRootDir, artifactId, groupId);
     }
 
+
     /***
      * 解析某个maven项目路径，只构造，不扫描
      * @param destRootDir
@@ -76,7 +77,7 @@ public class MavenConfig {
         return mavenConfig;
     }
 
-    private MavenConfig(String destRootDir, String artifactId, String groupId) {
+    public MavenConfig(String destRootDir, String artifactId, String groupId) {
         Validate.isTrue(!FileUtils.isRelativeFilePath(destRootDir));
         this.artifactId = artifactId;
         this.groupId = groupId;

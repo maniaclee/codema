@@ -30,6 +30,7 @@ public class BasicTemplateMachine<S, O> extends AbstractTemplateMachine<S, O> {
      * @return
      */
     public TemplateEngineResult<O> templateEngineResult(String template) {
-        return new TemplateEngineResult(getTemplate());
+        return new TemplateEngineResult(template);
     }
+
 }
