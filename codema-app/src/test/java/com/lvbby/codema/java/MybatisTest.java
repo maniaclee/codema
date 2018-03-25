@@ -25,46 +25,45 @@ import java.io.File;
 public class MybatisTest extends BaseTest {
     @Test
     public void mybatis() throws Exception {
-        MavenConfig maven = new MavenConfig();
-        maven.setDestRootDir("~/workspace/test-codema");
-        maven.setGroupId("lvbby");
-        maven.setArtifactId("test-codema");
+        MavenConfig maven =  MavenConfig.parse("/Users/lipeng/workspace/lvbby-service/lvbby-service-biz");
 
-        for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8",
-            "root", "", "article")) {
+//        for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8",
+//            "root", "", "article")) {
+        for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://103.37.159.247:3306/lvbby?characterEncoding=UTF-8",
+            "lee", "#Caonima123", "machine_definition")) {
             /** entity */
             Machine<JavaClass, JavaClass> bean = new JavaBeanMachine()
-                    .javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.mybatis.entity.%sEntity"))
+                    .javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.garfield.entity.%sEntity"))
                     .destRootDir(maven.getDestSrcRoot());
 
             /** DTO */
             Machine<JavaClass, JavaClass> dto = new JavaBeanMachine()
-                    .javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.mybatis.dto.%sDTO"))
+                    .javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.garfield.dto.%sDTO"))
                     .destRootDir(maven.getDestSrcRoot());
 
             /** build util */
             JavaMapStructConvertMachine convert = new JavaMapStructConvertMachine();
             convert.setConvertToClass(dto);
             convert.setDestRootDir(maven.getDestSrcRoot());
-            convert.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.mybatis.util.BuildUtil"));
+            convert.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.garfield.util.BuildUtil"));
 
             /** xml */
             MybatisMapperXmlMachine mybatisXml = new MybatisMapperXmlMachine();
             mybatisXml.setDestRootDir(maven.getDestResourceRoot());
-            mybatisXml.setMapperName(sqlTable -> String.format("com.lvbby.mybatis.mapper.%sDao", sqlTable.getName()));
+            mybatisXml.setMapperName(sqlTable -> String.format("com.lvbby.garfield.dao.%sDao", sqlTable.getName()));
             mybatisXml.setMapperDir(new File(maven.getDestResourceRoot(), "mapper").getAbsolutePath());
             mybatisXml.setSqlTableMachine(sql);
 
             /** Dao mapper */
             MybatisMapperMachine mapper = new MybatisMapperMachine();
-            mapper.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.mybatis.mapper.%sDao"));
+            mapper.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.garfield.dao.%sDao"));
             mapper.setDestRootDir(maven.getDestSrcRoot());
             mapper.setMapperXmlMachine(mybatisXml);
             mapper.setSqlTableMachine(sql);
 
             /** repository */
             JavaRepositoryMachine repo = new JavaRepositoryMachine();
-            repo.javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.mybatis.repo.%sRepo"));
+            repo.javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.garfield.repo.%sRepo"));
             repo.setDestRootDir(maven.getDestSrcRoot());
             repo.setBuildClassMachine(convert);
 
@@ -74,7 +73,8 @@ public class MybatisTest extends BaseTest {
                                 .next(mybatisXml)
                                 .next(mapper))
                         .next(dto)
-                        .next(convert) )
+                        .next(convert)
+                )
                 .addResultHandler(ResultHandlerFactory.print)
 //                .addResultHandler(ResultHandlerFactory.fileWrite)
 //                .addResultHandler(result -> System.err.println(((FileResult) result).getFile()))
