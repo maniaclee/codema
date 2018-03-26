@@ -9,8 +9,6 @@ import com.lvbby.codema.app.interfaces.JavaInterfaceMachine;
 import com.lvbby.codema.app.mvn.MavenMachine;
 import com.lvbby.codema.app.mysql.MysqlInsertMachine;
 import com.lvbby.codema.app.mysql.SqlCreateMachine;
-import com.lvbby.codema.app.mysql.SqlSelectColumnsMachine;
-import com.lvbby.codema.app.mysql.SqlUpdateMachine;
 import com.lvbby.codema.app.snippet.JavaRequestSettingMachine;
 import com.lvbby.codema.app.testcase.JavaTestcaseMachine;
 import com.lvbby.codema.app.testcase.mock.JavaMockTestMachine;
@@ -34,7 +32,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.List;
 
 /**
  * Created by dushang.lp on 2017/6/26.
@@ -154,15 +151,15 @@ public class MachineTest extends BaseTest {
      */
     @Test
     public void sql() throws Exception {
-        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
-            .fromJdbcUrl("jdbc:mysql://10.210.170.12:2883/zcbmodule?useUnicode=true", "obdv1:zcb0_721:root", "ali88", "fbc_trans_order");
-        //        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
-        //                .fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8", "root",
-        //                        "", "article");
-        for (Machine<SqlTable, SqlTable> source : machines) {
-            source.next(new MysqlInsertMachine()).next(new SqlSelectColumnsMachine()).next(new SqlUpdateMachine())
-                .addResultHandler(ResultHandlerFactory.print).run();
-        }
+//        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
+//            .fromJdbcUrl("jdbc:mysql://10.210.170.12:2883/zcbmodule?useUnicode=true", "obdv1:zcb0_721:root", "ali88", "fbc_trans_order");
+//        //        List<Machine<SqlTable, SqlTable>> machines = SqlMachineFactory
+//        //                .fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8", "root",
+//        //                        "", "article");
+//        for (Machine<SqlTable, SqlTable> source : machines) {
+//            source.next(new MysqlInsertMachine()).next(new SqlSelectColumnsMachine()).next(new SqlUpdateMachine())
+//                .addResultHandler(ResultHandlerFactory.print).run();
+//        }
     }
 
     @Test

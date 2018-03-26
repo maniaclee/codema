@@ -72,7 +72,7 @@ public class JavaClassUtils {
         re.setMethods(JavaMethod.from(clz).stream().map(method -> method.src(JavaLexer.getClass(src).orElse(null))).collect(Collectors.toList()));
         re.setSrc(src);
         re.setBeInterface(clz.isInterface());
-        return re;
+        return re.init();
     }
     /***
      * 从一段java代码解析
@@ -130,7 +130,7 @@ public class JavaClassUtils {
             return javaMethod;
         }).collect(Collectors.toList()));
         re.setSrc(cu);
-        return re;
+        return re.init();
     }
 
     public static boolean hasGetterSetter(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, String field) {
@@ -156,7 +156,7 @@ public class JavaClassUtils {
             javaField.setComment(sqlColumn.getComment());
             return javaField;
         }).collect(Collectors.toList()));
-        return javaClass;
+        return javaClass.init();
     }
 
     public static SqlTable convertToSqlTable(JavaClass javaClass ){

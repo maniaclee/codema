@@ -127,7 +127,7 @@ public class MybatisMapperMachine extends AppMachine {
         }
         String resultMapValue = element.attributeValue(attribute_resultMap);
         if (StringUtils.isNotBlank(resultMapValue)) {
-            return JavaType.ofClassName(entity.classFullName());
+            return JavaType.ofClassName(entity.getClassFullName());
         }
 
         String resultType = element.attributeValue(attribute_resultType);
@@ -148,7 +148,7 @@ public class MybatisMapperMachine extends AppMachine {
         switch (element.getName()) {
             case tag_insert:
                 return Lists.newArrayList(
-                        JavaArg.of(entity.getNameCamel(), JavaType.ofClassName(entity.getName())));
+                        JavaArg.of(ReflectionUtils.camel(entity.getName()), JavaType.ofClassName(entity.getName())));
             case tag_delete:
             case tag_update:
         }
@@ -157,7 +157,7 @@ public class MybatisMapperMachine extends AppMachine {
         if (StringUtils.isNotBlank(parameterType)) {
             if (StringUtils.equalsIgnoreCase(parameterType, "object")) {
                 return Lists.newArrayList(
-                        JavaArg.of(entity.getNameCamel(), JavaType.ofClassName(entity.getName())));
+                        JavaArg.of(ReflectionUtils.camel(entity.getName()), JavaType.ofClassName(entity.getName())));
             }
             if (StringUtils.equalsIgnoreCase(parameterType, "map")) {
                 parseArgsAsMap(element, entity, sqlTable);

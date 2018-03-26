@@ -50,7 +50,7 @@ public abstract class AbstractJavaBaseMachine
         super.handle(result);
         //注册java class 到容器
         if (result != null && result.getResult() != null && result.getResult() instanceof JavaClass) {
-            CodemaContextHolder.get().getCodemaBeanFactory().register(new CodemaBean(result.getResult(), o -> ((JavaClass)o).classFullName()));
+            CodemaContextHolder.get().getCodemaBeanFactory().register(new CodemaBean(result.getResult(), o -> ((JavaClass)o).getClassFullName()));
         }
     }
 
@@ -124,7 +124,7 @@ public abstract class AbstractJavaBaseMachine
             throw new RuntimeException(String.format("multi beans found for %s", classFullName));
         }
         JavaClass bean = findBeanAny(JavaClass.class,
-                javaClass -> StringUtils.equals(classFullName, javaClass.classFullName()));
+                javaClass -> StringUtils.equals(classFullName, javaClass.getClassFullName()));
         if (bean != null) {
             return bean;
         }

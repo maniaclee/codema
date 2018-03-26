@@ -27,7 +27,7 @@ public class $Mock_Test {
     private $Class1_ $class1_;
 
     @Sentence("var Class = source.name;")
-    @Sentence("var class = @source.getNameCamel();")
+    @Sentence("var class = lee.camel(source.name);")
     @InjectMocks
     private $Class_ $class_;
 

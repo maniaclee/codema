@@ -64,7 +64,7 @@ public class AutoImport extends VoidVisitorAdapter {
 
     public void addCandidate(JavaClass javaClass) {
         if(javaClass!=null){
-            addCandidate(javaClass.getName(),javaClass.classFullName());
+            addCandidate(javaClass.getName(),javaClass.getClassFullName());
         }
     }
 

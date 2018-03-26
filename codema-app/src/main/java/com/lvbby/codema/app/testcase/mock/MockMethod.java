@@ -45,7 +45,7 @@ public class MockMethod {
                 javaMethod.getArgs().stream()
                         .map(javaArg -> String.format("Mockito.any(%s.class)", javaArg.getType().getName()))
                         .collect(Collectors.joining(","));
-        return String.format("%s.%s(%s)", parentClass.getNameCamel(), javaMethod.getName(), params);
+        return String.format("%s.%s(%s)", ReflectionUtils.camel(parentClass.getName()), javaMethod.getName(), params);
     }
 
     public List<String> parseMockSentence() {

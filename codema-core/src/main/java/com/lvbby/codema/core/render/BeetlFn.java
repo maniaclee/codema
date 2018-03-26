@@ -1,5 +1,6 @@
 package com.lvbby.codema.core.render;
 
+import com.lvbby.codema.core.utils.ReflectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -12,5 +13,9 @@ public class BeetlFn {
 
     public String unCapital(String s) {
         return StringUtils.uncapitalize(s);
+    }
+
+    public String camel(String s) {
+        return ReflectionUtils.camel(s);
     }
 }

@@ -2,7 +2,6 @@ package com.lvbby.codema.java.entity;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.lvbby.codema.core.utils.ReflectionUtils;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import com.lvbby.codema.java.tool.JavaSrcLoader;
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 public class JavaClass extends AnnotationType{
     private String pack;
     private String name;
+    private String classFullName;
     private List<JavaField> fields;
     private List<JavaMethod> methods;
     private List<String> imports;
@@ -34,21 +34,11 @@ public class JavaClass extends AnnotationType{
     public JavaClass() {
     }
 
-    /***
-     * 设置name和package
-     * @param s
-     * @return
-     */
-    public JavaClass name(String s){
-        if(StringUtils.isNotBlank(s)) {
-            setName(ReflectionUtils.getSimpleClassName(s));
-            setPack(ReflectionUtils.getPackage(s));
-        }
+    public JavaClass init() {
+        classFullName = StringUtils.isNotBlank(pack) ? String.format(String.format("%s.%s", pack, name)) : name;
         return this;
     }
-    public String getVarName(){
-        return StringUtils.uncapitalize(getName());
-    }
+
 
     public JavaClass removeMethod(Predicate<String> predicate){
         if(CollectionUtils.isNotEmpty(getMethods()) && predicate!=null) {
@@ -88,7 +78,7 @@ public class JavaClass extends AnnotationType{
         ClassOrInterfaceDeclaration classOrInterfaceDeclaration = JavaLexer.getClass(src).get();
         //类型就是自己
         if (StringUtils.equals(classSymbol, classOrInterfaceDeclaration.getNameAsString())) {
-            return classFullName();
+            return classFullName;
         }
         //从imports中找
         String result = src.getImports().stream()
@@ -117,7 +107,7 @@ public class JavaClass extends AnnotationType{
         String s = parseSymbolAsFullClassName(classSymbol);
         if(s==null)
             return null;
-        if(StringUtils.equals(s,classFullName())){
+        if(StringUtils.equals(s,classFullName)){
             return this;
         }
         try {
@@ -125,19 +115,6 @@ public class JavaClass extends AnnotationType{
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public String javaSrc(){
-        return src.toString();
-    }
-
-
-    public String classFullName() {
-        return StringUtils.isBlank(pack) ? name : (pack + "." + name);
-    }
-
-    public String getNameCamel() {
-        return ReflectionUtils.camel(name);
     }
 
     public String getPack() {
@@ -202,6 +179,14 @@ public class JavaClass extends AnnotationType{
 
     public void setBeInterface(boolean beInterface) {
         this.beInterface = beInterface;
+    }
+
+    public String getClassFullName() {
+        return classFullName;
+    }
+
+    public void setClassFullName(String classFullName) {
+        this.classFullName = classFullName;
     }
 
     @Override
