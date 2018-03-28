@@ -14,6 +14,8 @@ import java.util.Map;
 public class CodemaContext {
     private CodemaBeanFactory codemaBeanFactory = new DefaultCodemaBeanFactory();
 
+    private Machine currentMachine;
+
     Map<Class, Object> paramMap = Maps.newConcurrentMap();
 
     public <T> T findBeanBlur(Class<T> clz, String id) {
@@ -37,4 +39,21 @@ public class CodemaContext {
         this.codemaBeanFactory = codemaBeanFactory;
     }
 
+    /**
+     * Getter method for property   currentMachine.
+     *
+     * @return property value of currentMachine
+     */
+    public Machine getCurrentMachine() {
+        return currentMachine;
+    }
+
+    /**
+     * Setter method for property   currentMachine .
+     *
+     * @param currentMachine  value to be assigned to property currentMachine
+     */
+    public void setCurrentMachine(Machine currentMachine) {
+        this.currentMachine = currentMachine;
+    }
 }

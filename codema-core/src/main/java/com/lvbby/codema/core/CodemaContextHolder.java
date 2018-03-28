@@ -22,4 +22,10 @@ public class CodemaContextHolder {
     public static void clear() {
         beanFactoryThreadLocal.remove();
     }
+
+    public static void main(String[] args) {
+        System.out.println(get());
+        clear();
+        System.out.println(get());
+    }
 }

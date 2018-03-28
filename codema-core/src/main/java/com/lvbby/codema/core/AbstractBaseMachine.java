@@ -23,6 +23,8 @@ public abstract class AbstractBaseMachine<S, O> extends AbstractConfigMachine<S,
     @Override
     public void run() throws Exception {
         try {
+            /** 标识当前的machine */
+            CodemaContextHolder.get().setCurrentMachine(this);
             check();
             doCode();
             //触发后续的machine
@@ -60,11 +62,7 @@ public abstract class AbstractBaseMachine<S, O> extends AbstractConfigMachine<S,
                 }
             }
         }
-        if (CollectionUtils.isNotEmpty(hs)) {
-            for (ResultHandler handler : hs) {
-                handler.handle(result);
-            }
-        }
+        invokeResultHandlers(result,hs);
     }
 
     /***
@@ -73,6 +71,10 @@ public abstract class AbstractBaseMachine<S, O> extends AbstractConfigMachine<S,
      * @throws Exception
      */
     protected void handleSimple(Result result) throws Exception {
+        invokeResultHandlers(result,handlers);
+    }
+
+    private void invokeResultHandlers(Result result,List<ResultHandler> handlers) throws Exception {
         if (CollectionUtils.isNotEmpty(handlers)) {
             for (ResultHandler handler : handlers) {
                 handler.handle(result);

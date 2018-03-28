@@ -47,11 +47,11 @@ public abstract class AbstractJavaBaseMachine
 
     @Override
     protected void handle(Result result) throws Exception {
-        super.handle(result);
         //注册java class 到容器
         if (result != null && result.getResult() != null && result.getResult() instanceof JavaClass) {
             CodemaContextHolder.get().getCodemaBeanFactory().register(new CodemaBean(result.getResult(), o -> ((JavaClass)o).getClassFullName()));
         }
+        super.handle(result);
     }
 
     @Override
