@@ -9,7 +9,10 @@
     <packaging>jar</packaging>
 
     <artifactId>codema-core</artifactId>
-
+    <properties>
+        <encoding>UTF-8</encoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
