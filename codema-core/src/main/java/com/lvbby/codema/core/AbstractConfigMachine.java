@@ -168,4 +168,12 @@ public abstract class AbstractConfigMachine<S, O> implements Machine<S, O> {
         }
     }
 
+    /**
+     * Getter method for property   parent.
+     *
+     * @return property value of parent
+     */
+    public AbstractConfigMachine getParent() {
+        return parent;
+    }
 }
