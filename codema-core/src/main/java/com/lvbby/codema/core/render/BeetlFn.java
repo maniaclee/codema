@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Created by lipeng on 2017/1/7.
  */
-public class BeetlFn {
+public class BeetlFn extends StringUtils{
     public String capital(String s) {
         return StringUtils.capitalize(s);
     }
@@ -18,4 +18,19 @@ public class BeetlFn {
     public String camel(String s) {
         return ReflectionUtils.camel(s);
     }
+
+    public static String getJavaClassName(String className) {
+        return className.replaceAll("[^.<>]+\\.", "");
+    }
+
+    public static String getPackage(String className) {
+        if (!className.contains("."))
+            return "";
+        return className.replaceAll("(\\.[^.]+)$", "");
+    }
+
+    public static String format(String format,Object... args){
+        return String.format(format,args);
+    }
+
 }
