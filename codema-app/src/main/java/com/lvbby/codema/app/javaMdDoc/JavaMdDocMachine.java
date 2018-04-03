@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  */
 @TemplateResource(resource = "mdJavaDoc.md")
 public class JavaMdDocMachine extends AbstractTemplateMachine<JavaClass,String> {
+
     @Override
     protected void doCode() throws Exception {
         JavaClass cu = source;

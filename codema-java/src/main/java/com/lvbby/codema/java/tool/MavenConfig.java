@@ -128,8 +128,12 @@ public class MavenConfig {
     }
 
     private void scanChild(int depth, int maxDepth) {
+        Arrays.stream(new File(getDestRootDir()).listFiles((dir, name) -> dir.isDirectory())).forEach(f -> walk(f, depth + 1, maxDepth));
+    }
+
+    private void walk(File file ,int depth , int maxDepth ) {
         if (maxDepth < 0 || depth <= maxDepth) {
-            Arrays.stream(new File(destRootDir).listFiles()).filter(file -> isMavenDirectory(file)).forEach(file -> {
+            if (isMavenDirectory(file)) {
                 MavenConfig mvn = null;
                 try {
                     mvn = parse(file.getAbsolutePath());
@@ -139,7 +143,11 @@ public class MavenConfig {
                 }
                 addChild(mvn);
                 mvn.scanChild(depth + 1, maxDepth);
-            });
+                return;
+            }
+            if (file.isDirectory()) {
+                Arrays.stream(file.listFiles((dir, name) -> dir.isDirectory())).forEach(f -> walk(f, depth + 1, maxDepth));
+            }
         }
     }
 
@@ -167,7 +175,7 @@ public class MavenConfig {
                     e.printStackTrace();
                     return;
                 }
-                mvn.scanChild(depth + 1, maxDepth);
+                mvn.scanChild(depth, maxDepth);
                 result.add(mvn);
                 return;
             }
@@ -177,4 +185,8 @@ public class MavenConfig {
         }
     }
 
+    @Override
+    public String toString() {
+        return "MavenConfig{" + "artifactId='" + artifactId + '\'' + ", destRootDir='" + destRootDir + '\'' + '}';
+    }
 }
