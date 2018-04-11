@@ -1,18 +1,26 @@
 package com.lvbby.codema.core.tool.mysql;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueKey;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.util.JdbcConstants;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import org.apache.commons.lang3.Validate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +44,7 @@ public class SqlParser {
     }
 
     private static SqlColumn buildColumn(MySqlSQLColumnDefinition column) {
-        SqlColumn sqlColumn =  SqlColumn.instance(column.getName().getSimpleName());
+        SqlColumn sqlColumn = SqlColumn.instance(column.getName().getSimpleName());
         sqlColumn.setComment(Optional.ofNullable(column.getComment()).map(sqlExpr -> sqlExpr.toString()).orElse(null));
         sqlColumn.setNullable(!hasConstrain(column, NotNullConstraint.class));
         sqlColumn.setPrimaryKey(hasConstrain(column, SQLColumnPrimaryKey.class));
@@ -45,6 +53,37 @@ public class SqlParser {
         sqlColumn.setJavaType(SqlType.getJavaType(sqlColumn.getDbType()));
         Validate.notNull(sqlColumn.getJavaType() == null, "unknown sql type : " + sqlColumn.getDbType());
         return sqlColumn;
+    }
+
+    public static List<JSONObject> parseInsert(String s) {
+        List<SQLStatement> sqlStatements = SQLUtils.parseStatements(s, JdbcConstants.MYSQL);
+        return sqlStatements.stream().map(sqlStatement -> {
+            Validate.isTrue(sqlStatement instanceof SQLInsertStatement, "必须是insert语句");
+            SQLInsertStatement insertStatement = (SQLInsertStatement) sqlStatement;
+            JSONObject re = new JSONObject();
+            for (int i = 0; i < insertStatement.getColumns().size(); i++) {
+                re.put(insertStatement.getColumns().get(i).toString(),parse(insertStatement.getValues().getValues().get(i)));
+            }
+            return re;
+        }).collect(Collectors.toList());
+    }
+
+    private static Object parse(SQLExpr sqlExpr) {
+        if (sqlExpr instanceof SQLIntegerExpr) {
+            return ((SQLIntegerExpr) sqlExpr).getNumber();
+        }
+        if (sqlExpr instanceof SQLCharExpr) {
+            String text = ((SQLCharExpr) sqlExpr).getText();
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(text);
+            } catch (ParseException e) {
+                return text;
+            }
+        }
+        if (sqlExpr instanceof SQLNullExpr)
+            return null;
+        return null;
+
     }
 
 
