@@ -14,7 +14,9 @@ import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.tool.JavaClassUtils;
 import com.lvbby.codema.java.tool.JavaLexer;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +25,13 @@ import java.util.stream.Collectors;
  */
 @TemplateResource(resource = "mdJavaDoc.md")
 public class JavaMdDocMachine extends AbstractTemplateMachine<JavaClass,String> {
-
+    {
+        try {
+            setTemplate(IOUtils.toString(getClass().getResourceAsStream("mdJavaDoc.md")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     protected void doCode() throws Exception {
         JavaClass cu = source;
