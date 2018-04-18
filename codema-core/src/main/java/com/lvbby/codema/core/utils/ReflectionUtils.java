@@ -7,8 +7,8 @@ import com.google.common.reflect.ClassPath;
 import com.lvbby.codema.core.error.CodemaRuntimeException;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.*;
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.joor.Reflect;
 import org.joor.ReflectException;
@@ -386,6 +386,32 @@ public class ReflectionUtils {
     }
 
 
+    public static <A extends Annotation> A getAnnotation(Class clz, Class<A> annotation) {
+        A re = (A) clz.getAnnotation(annotation);
+        if (re != null)
+            return re;
+        re = ClassUtils.getAllInterfaces(clz).stream().filter(aClass -> aClass.isAnnotationPresent(annotation)).findAny()
+            .map(aClass -> aClass.getAnnotation(annotation)).orElse(null);
+        if (re == null) {
+            re = ClassUtils.getAllSuperclasses(clz).stream().filter(aClass -> aClass.isAnnotationPresent(annotation)).findAny()
+                    .map(aClass -> aClass.getAnnotation(annotation)).orElse(null);
+        }
+        return re;
+    }
+
+    /***
+     * 从方法或class上查找注解
+     * @param method
+     * @param annotation
+     * @param <A>
+     * @return
+     */
+    public static <A extends Annotation> A getAnnotationFromMethodOrClass(Method method, Class<A> annotation) {
+        A re = method.getAnnotation(annotation);
+        if(re!=null)
+            return re;
+        return getAnnotation(method.getDeclaringClass(),annotation);
+    }
     /***
      * 是否是全类名(包含package)
      * @param s

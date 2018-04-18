@@ -23,7 +23,7 @@
         <!--<%}%>-->
         )
     </insert>
-    <select id="selectBy${table.primaryKey.nameCamel}" resultMap="resultMap">
+    <select id="selectBy${lee.capital(table.primaryKey.nameCamel)}" resultMap="resultMap">
         select
         <include refid="allFields"/>
         from ${table.nameInDb}

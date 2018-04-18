@@ -25,12 +25,12 @@ import java.io.File;
 public class MybatisTest extends BaseTest {
     @Test
     public void mybatis() throws Exception {
-        MavenConfig maven =  MavenConfig.parse("/Users/lipeng/workspace/lvbby-service/lvbby-service-biz");
+        MavenConfig maven =  MavenConfig.parse(path(myWorkspace(),"lvbby-service/lvbby-service-biz"));
 
-//        for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8",
-//            "root", "", "article")) {
-        for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://103.37.159.247:3306/lvbby?characterEncoding=UTF-8",
-            "lee", "#Caonima123", "machine_definition")) {
+        for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://localhost:3306/lvbby?characterEncoding=UTF-8",
+            "root", "", "notebook")) {
+//        for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://103.37.159.247:3306/lvbby?characterEncoding=UTF-8",
+//            "lee", "#Caonima123", "machine_definition")) {
             /** entity */
             Machine<JavaClass, JavaClass> bean = new JavaBeanMachine()
                     .javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.garfield.entity.%sEntity"))
@@ -45,7 +45,7 @@ public class MybatisTest extends BaseTest {
             JavaMapStructConvertMachine convert = new JavaMapStructConvertMachine();
             convert.setConvertToClass(dto);
             convert.setDestRootDir(maven.getDestSrcRoot());
-            convert.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.garfield.util.BuildUtil"));
+            convert.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.garfield.util.%sConvert"));
 
             /** xml */
             MybatisMapperXmlMachine mybatisXml = new MybatisMapperXmlMachine();
@@ -56,7 +56,7 @@ public class MybatisTest extends BaseTest {
 
             /** Dao mapper */
             MybatisMapperMachine mapper = new MybatisMapperMachine();
-            mapper.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.garfield.dao.%sDao"));
+            mapper.setDestClassName(source -> String.format("com.lvbby.garfield.dao.%sDao", source.getName().replace("Entity","")));
             mapper.setDestRootDir(maven.getDestSrcRoot());
             mapper.setMapperXmlMachine(mybatisXml);
             mapper.setSqlTableMachine(sql);
@@ -75,8 +75,8 @@ public class MybatisTest extends BaseTest {
                         .next(dto)
                         .next(convert)
                 )
-                .addResultHandler(ResultHandlerFactory.print)
-//                .addResultHandler(ResultHandlerFactory.fileWrite)
+//                .addResultHandler(ResultHandlerFactory.print)
+                .addResultHandler(ResultHandlerFactory.fileWrite)
 //                .addResultHandler(result -> System.err.println(((FileResult) result).getFile()))
                 .run();
         }
