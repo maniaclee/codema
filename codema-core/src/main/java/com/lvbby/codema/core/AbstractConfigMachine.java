@@ -43,10 +43,20 @@ public abstract class AbstractConfigMachine<S, O> implements Machine<S, O> {
     @ConfigProperty
     @Getter
     @Setter
+    protected List<String>        destFilePaths;
+    @ConfigProperty
+    @Getter
+    @Setter
     private String author = System.getProperty("user.name");
 
     protected AbstractConfigMachine parent;
 
+    public AbstractConfigMachine<S, O> addPath(String path){
+        if(destFilePaths==null)
+            destFilePaths=Lists.newArrayList();
+        destFilePaths.add(path);
+        return this;
+    }
 
     @Override
     public Machine<S, O> source(S source) {

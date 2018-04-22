@@ -75,6 +75,15 @@ public abstract class AbstractBaseMachine<S, O> extends AbstractConfigMachine<S,
     }
 
     private void invokeResultHandlers(Result result,List<ResultHandler> handlers) throws Exception {
+        //设置file路径
+        if(CollectionUtils.isNotEmpty(destFilePaths)){
+            if(result instanceof BasicResult){
+                BasicResult re = (BasicResult) result;
+                if(re.getFile()==null){
+                    destFilePaths.forEach(s -> re.filePath(s));
+                }
+            }
+        }
         if (CollectionUtils.isNotEmpty(handlers)) {
             for (ResultHandler handler : handlers) {
                 handler.handle(result);
