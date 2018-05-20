@@ -50,7 +50,7 @@ public class MybatisMeyouTest extends BaseTest {
 
             /** build util */
             JavaMapStructConvertMachine convert = new JavaMapStructConvertMachine();
-            convert.setConvertToClass(dto);
+            convert.setConvertToClass(JavaClassNameParserFactory.replace("Entity","DTO"));
             convert.setDestRootDir(maven.getDestSrcRoot());
             convert.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.garfield.util.%sConvert"));
 

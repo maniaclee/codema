@@ -12,6 +12,7 @@ import com.lvbby.codema.java.entity.JavaType;
 import com.lvbby.codema.java.result.JavaTemplateResult;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,8 @@ public class JavaRepositoryMachine extends AppMachine {
             this.javaMethod = ReflectionUtils.copy(javaMethod, JavaMethod.class);
             this.buildClass = buildClass;
             //收集build类里的信息
-            Map<JavaType, JavaMethod> byParameter = buildClass.getMethods().stream().collect(Collectors.toMap(m -> m.getArgs().get(0).getType(), m -> m));
+            Map<JavaType, JavaMethod> byParameter = buildClass.getMethods().stream().filter(method -> CollectionUtils.isNotEmpty(method.getArgs()))
+                    .collect(Collectors.toMap(m -> m.getArgs().get(0).getType(), m -> m));
             Map<JavaType, JavaMethod> byReturnType = buildClass.getMethods().stream().collect(Collectors.toMap(m -> m.getReturnType(), m -> m));
             //处理parameter
             javaMethod.getArgs().forEach(javaArg -> {
