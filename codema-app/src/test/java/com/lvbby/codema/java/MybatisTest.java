@@ -10,6 +10,7 @@ import com.lvbby.codema.core.handler.ResultHandlerFactory;
 import com.lvbby.codema.core.tool.mysql.SqlMachineFactory;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
 import com.lvbby.codema.java.api.JavaSourceMachineFactory;
+import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import com.lvbby.codema.java.baisc.JavaClassNameParserFactory;
 import com.lvbby.codema.java.entity.JavaClass;
 import com.lvbby.codema.java.tool.MavenConfig;
@@ -32,18 +33,20 @@ public class MybatisTest extends BaseTest {
 //        for (Machine<SqlTable, SqlTable> sql : SqlMachineFactory.fromJdbcUrl("jdbc:mysql://103.37.159.247:3306/lvbby?characterEncoding=UTF-8",
 //            "lee", "#Caonima123", "machine_definition")) {
             /** entity */
+            JavaClassNameParser<JavaClass> entityName = JavaClassNameParserFactory.format("com.lvbby.garfield.entity.%sEntity");
             Machine<JavaClass, JavaClass> bean = new JavaBeanMachine()
-                    .javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.garfield.entity.%sEntity"))
+                    .javaClassNameParser(entityName)
                     .destRootDir(maven.getDestSrcRoot());
 
             /** DTO */
+            JavaClassNameParser<JavaClass> dtoName = JavaClassNameParserFactory.format("com.lvbby.garfield.dto.%sDTO");
             Machine<JavaClass, JavaClass> dto = new JavaBeanMachine()
-                    .javaClassNameParser(JavaClassNameParserFactory.format("com.lvbby.garfield.dto.%sDTO"))
+                    .javaClassNameParser(dtoName)
                     .destRootDir(maven.getDestSrcRoot());
 
             /** build util */
             JavaMapStructConvertMachine convert = new JavaMapStructConvertMachine();
-            convert.setConvertToClass(dto);
+            convert.setConvertToClass(JavaClassNameParserFactory.replace("Entity","DTO"));
             convert.setDestRootDir(maven.getDestSrcRoot());
             convert.setDestClassName(JavaClassNameParserFactory.format("com.lvbby.garfield.util.%sConvert"));
 
@@ -70,13 +73,14 @@ public class MybatisTest extends BaseTest {
             sql
                 .next(JavaSourceMachineFactory.fromSqlTable()
                         .next(bean
+                                .next(convert)
                                 .next(mybatisXml)
-                                .next(mapper))
+                                .next(mapper
+                                        .next(repo)))
                         .next(dto)
-                        .next(convert)
                 )
-//                .addResultHandler(ResultHandlerFactory.print)
-                .addResultHandler(ResultHandlerFactory.fileWrite)
+                .addResultHandler(ResultHandlerFactory.print)
+//                .addResultHandler(ResultHandlerFactory.fileWrite)
 //                .addResultHandler(result -> System.err.println(((FileResult) result).getFile()))
                 .run();
         }

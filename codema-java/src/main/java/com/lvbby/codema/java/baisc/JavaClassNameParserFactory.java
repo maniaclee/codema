@@ -33,5 +33,8 @@ public class JavaClassNameParserFactory {
     public static JavaClassNameParser<JavaClass> format(String format) {
         return source ->String.format(format,source.getName());
     }
+    public static JavaClassNameParser<JavaClass> replace(String expr,String replace) {
+        return source ->source.getName().replaceAll(expr,replace);
+    }
 
 }

@@ -2,9 +2,8 @@ package com.lvbby.codema.app.convert;
 
 import com.lvbby.codema.app.AppMachine;
 import com.lvbby.codema.app.AppTemplateResource;
-import com.lvbby.codema.core.Machine;
 import com.lvbby.codema.core.config.NotNull;
-import com.lvbby.codema.java.entity.JavaClass;
+import com.lvbby.codema.java.baisc.JavaClassNameParser;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +15,5 @@ public class JavaMapStructConvertMachine extends AppMachine {
     @NotNull
     @Getter
     @Setter
-    private Machine<?,JavaClass> convertToClass;
+    private JavaClassNameParser convertToClass;
 }

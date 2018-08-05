@@ -91,6 +91,82 @@ public class ReflectionUtils {
         return s.toLowerCase() + Lists.newArrayList(ss).stream().map(e -> StringUtils.capitalize(e)).collect(Collectors.joining());
     }
 
+    /***
+     * ToStringBuilder 转化为JSON
+     * @return
+     * @throws Exception
+     */
+//    public static String apacheToStringBuilder2json(String s){
+//        /** 限定一个固定格式 */
+//        String arraySpecialCharLeft = "\\$[";
+//        String arraySpecialCharRight = "\\$]";
+//
+//        //处理array
+//        Function<String,String> arrayPrProcess = s1 -> replace(s1,"=(\\[)([^\\[\\]]+)(\\])",matcher -> String.format("=%s%s%s", arraySpecialCharLeft,matcher.group(2),arraySpecialCharRight));
+//        s=arrayPrProcess.apply(s);
+//        s=arrayPrProcess.apply(s);
+//
+//        Validate.isTrue(s.matches("^[^\\[=]+\\[.*"));
+//        s = s.replaceAll("^[^\\[=]+\\[", "");
+//        Validate.isTrue(s.endsWith("]"), "invalid format");
+//        s = s.substring(0, s.length() - 1);
+//
+//        /** 整体包装一下 */
+//        s = String.format("{%s}", s);
+//
+//        Function<String,String> process = value -> {
+//            value = value.trim();
+//            if (value.matches("\\d+(\\.\\d+)?")) {
+//                return value;
+//            }
+//            if(StringUtils.equalsIgnoreCase("<null>",value)){
+//                return "null";
+//            }
+//            return String.format("'%s'", value);
+//        };
+//        /**处理value*/
+//        s = ReflectionUtils.replace(s, "=([^{}\\[\\],]+)([,}\\]])",
+//                matcher1 -> String.format("=%s%s", process.apply(matcher1.group(1)), matcher1.group(2)));
+//        /** 替换= */
+//        s = s.replaceAll("=", ":");
+//
+//        /** 处理array */
+//        s=s.replace(arraySpecialCharLeft,"[");
+//        s=s.replace(arraySpecialCharRight,"]");
+//        return JSON.toJSONString(JSON.parseObject(s),true);
+//    }
+    /***
+     * ToStringBuilder 转化为JSON
+     * @return
+     * @throws Exception
+     */
+    public static String apacheToStringBuilder2json(String s){
+        /** 限定一个固定格式 */
+        Validate.isTrue(s.matches("^[^\\[=]+\\[.*"));
+        s = s.replaceAll("^[^\\[=]+\\[", "");
+        Validate.isTrue(s.endsWith("]"), "invalid format");
+        s = s.substring(0, s.length() - 1);
+
+        /** 整体包装一下 */
+        s = String.format("{%s}", s);
+
+        Function<String,String> process = value -> {
+            value = value.trim();
+            if (value.matches("\\d+(\\.\\d+)?")) {
+                return value;
+            }
+            if(StringUtils.equalsIgnoreCase("<null>",value)){
+                return "null";
+            }
+            return String.format("'%s'", value);
+        };
+        /**处理value*/
+        s = ReflectionUtils.replace(s, "=([^{}\\[\\],]+)([,}\\]])",
+                matcher1 -> String.format("=%s%s", process.apply(matcher1.group(1)), matcher1.group(2)));
+        /** 替换= */
+        s = s.replaceAll("=", ":");
+        return JSON.toJSONString(JSON.parseObject(s),true);
+    }
     public static String replace(String s, String regx, Function<Matcher, String> function) {
         StringBuilder re = new StringBuilder();
         int last = 0;
