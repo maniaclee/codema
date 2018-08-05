@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.lvbby.codema.core.tool.mysql.entity.SqlColumn;
 import com.lvbby.codema.core.tool.mysql.entity.SqlTable;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.text.ParseException;
@@ -62,10 +63,23 @@ public class SqlParser {
             SQLInsertStatement insertStatement = (SQLInsertStatement) sqlStatement;
             JSONObject re = new JSONObject();
             for (int i = 0; i < insertStatement.getColumns().size(); i++) {
-                re.put(insertStatement.getColumns().get(i).toString(),parse(insertStatement.getValues().getValues().get(i)));
+                re.put(parseColumn(insertStatement.getColumns().get(i).toString()),parse(insertStatement.getValues().getValues().get(i)));
             }
             return re;
         }).collect(Collectors.toList());
+    }
+
+    private static String parseColumn(String s) {
+        s = StringUtils.trimToEmpty(s);
+        if (!s.isEmpty()) {
+            if (s.startsWith("`") || s.startsWith("'") || s.startsWith("\"")) {
+                s = s.substring(1);
+            }
+            if (s.endsWith("`") || s.endsWith("'") || s.endsWith("\"")) {
+                s = s.substring(0, s.length() - 1);
+            }
+        }
+        return s;
     }
 
     private static Object parse(SQLExpr sqlExpr) {
