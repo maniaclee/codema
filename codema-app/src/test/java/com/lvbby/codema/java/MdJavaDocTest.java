@@ -19,7 +19,7 @@ public class MdJavaDocTest extends BaseTest {
     @Before
     public void init() {
         JavaSrcLoader.initJavaSrcRoots(
-            Lists.newArrayList(new File(System.getProperty("user.home"), "workspace")));
+            Lists.newArrayList(new File(System.getProperty("user.home"), "workspace/finfiprod")));
     }
 
     public void mdJavaDoc(String reference) throws Exception {
@@ -27,6 +27,7 @@ public class MdJavaDocTest extends BaseTest {
                 .source(reference)
                 .next(new JavaMdDocMachine())
                 .addResultHandler(ResultHandlerFactory.print)
+                .addResultHandler(ResultHandlerFactory.clipBoard)
                 .run();
 //        String service;
 //        String method;
@@ -49,7 +50,7 @@ public class MdJavaDocTest extends BaseTest {
 
     @Test public void testMdJavaDoc() throws Exception {
 //        mdJavaDoc("com.alipay.finbatchcore.biz.shared.action.ProcessAction");
-        mdJavaDoc("com.lvbby.codema.app.javaMdDoc.JavaMdDocMachine#codeEach");
+        mdJavaDoc("com.alipay.finfiprod.common.service.facade.rfm.user.service.RfmInvestorCertifyFacade#userCheck");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.UserPurchaseFacade#queryPurchaseProductList");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AssetQueryFacade#queryAssetStatistic");
 //        mdJavaDoc("com.alipay.finfiprod.common.service.facade.service.AppointmentQueryFacade#queryUserAppointmentStatistic");
